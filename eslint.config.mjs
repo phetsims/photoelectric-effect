@@ -15,7 +15,8 @@ export default [
   ...banTSCommentConfig,
   {
     rules: {
-      'phet/require-fluent': 'error'
+      'phet/require-fluent': 'error',
+      'phet/todo-should-have-issue': 'off'
     }
   }
 ];
