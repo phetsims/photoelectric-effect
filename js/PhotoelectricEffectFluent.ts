@@ -23,7 +23,8 @@ const addToMapIfDefined = ( key: string, path: string ) => {
   }
 };
 
-
+addToMapIfDefined( 'photoelectric_effect_title', 'photoelectric-effect.titleStringProperty' );
+addToMapIfDefined( 'screen_name', 'screen.nameStringProperty' );
 
 // A function that creates contents for a new Fluent file, which will be needed if any string changes.
 const createFluentFile = (): string => {
