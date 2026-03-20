@@ -17,6 +17,6 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
 // Log query parameters
 logGlobal( 'phet.chipper.queryParameters' );
 logGlobal( 'phet.preloads.phetio.queryParameters' );
-logGlobal( 'phet.photoelectricEffect.PhotoelectricEffectQueryParameters' );
+phet.log && phet.log( `PhotoelectricEffectQueryParameters: ${JSON.stringify( PhotoelectricEffectQueryParameters, null, 2 )}` );
 
 export default PhotoelectricEffectQueryParameters;
