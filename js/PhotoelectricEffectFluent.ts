@@ -47,5 +47,3 @@ const PhotoelectricEffectFluent = {
 };
 
 export default PhotoelectricEffectFluent;
-
-photoelectricEffect.register('PhotoelectricEffectFluent', PhotoelectricEffectFluent);

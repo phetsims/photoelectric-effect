@@ -10,7 +10,6 @@ import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.j
 import optionize from '../../../../phet-core/js/optionize.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import photoelectricEffect from '../../photoelectricEffect.js';
 import PhotoelectricEffectModel from '../model/PhotoelectricEffectModel.js';
 
 type SelfOptions = {
@@ -59,5 +58,3 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     //TODO
   }
 }
-
-photoelectricEffect.register( 'PhotoelectricEffectScreenView', PhotoelectricEffectScreenView );

@@ -9,7 +9,6 @@
 import Screen, { ScreenOptions } from '../../../joist/js/Screen.js';
 import optionize from '../../../phet-core/js/optionize.js';
 import PhotoelectricEffectColors from '../common/PhotoelectricEffectColors.js';
-import photoelectricEffect from '../photoelectricEffect.js';
 import PhotoelectricEffectFluent from '../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectModel from './model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectScreenView from './view/PhotoelectricEffectScreenView.js';
@@ -40,5 +39,3 @@ export default class PhotoelectricEffectScreen extends Screen<PhotoelectricEffec
     );
   }
 }
-
-photoelectricEffect.register( 'PhotoelectricEffectScreen', PhotoelectricEffectScreen );

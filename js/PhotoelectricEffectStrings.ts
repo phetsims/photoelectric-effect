@@ -22,6 +22,4 @@ type StringsType = {
 
 const PhotoelectricEffectStrings = getStringModule( 'PHOTOELECTRIC_EFFECT' ) as StringsType;
 
-photoelectricEffect.register( 'PhotoelectricEffectStrings', PhotoelectricEffectStrings );
-
 export default PhotoelectricEffectStrings;

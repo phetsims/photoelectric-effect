@@ -6,8 +6,6 @@
  * @author Marla A. Schulz
  */
 
-import photoelectricEffect from '../photoelectricEffect.js';
-
 export default class PhotoelectricEffectConstants {
 
   private constructor() {
@@ -17,5 +15,3 @@ export default class PhotoelectricEffectConstants {
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
   public static readonly SCREEN_VIEW_Y_MARGIN = 15;
 }
-
-photoelectricEffect.register( 'PhotoelectricEffectConstants', PhotoelectricEffectConstants );

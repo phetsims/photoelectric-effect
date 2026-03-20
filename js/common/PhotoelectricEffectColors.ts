@@ -28,6 +28,3 @@ export default class PhotoelectricEffectColors {
     default: 'white'
   } );
 }
-
-
-photoelectricEffect.register( 'PhotoelectricEffectColors', PhotoelectricEffectColors );
