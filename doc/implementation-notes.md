@@ -52,6 +52,7 @@ Particle:
 - wavelength: number
 
 **Electron:**
+- setAcceleration()
 - energy: number
   - The amount of energy the electron needed to escape. 
 
