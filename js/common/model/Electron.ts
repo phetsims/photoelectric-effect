@@ -1,10 +1,11 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2026, University of Colorado Boulder
+
 /**
- * TODO: describe file
+ * Model for an emitted electron in the photoelectric effect simulation.
+ * Extends Particle with energy and supports acceleration updates during motion.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
- *
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';

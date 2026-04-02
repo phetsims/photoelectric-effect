@@ -1,10 +1,11 @@
 // Copyright 2026, University of Colorado Boulder
+
 /**
- * Photon is a particle emitted by the photon source. It has a wavelength that determines its energy.
+ * Model for a photon emitted by the photon source.
+ * Extends Particle with wavelength to determine its energy.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
- *
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
