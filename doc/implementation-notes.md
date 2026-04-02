@@ -19,10 +19,13 @@ Model Structure Intro Screen:
 - ammeter: Ammeter
 - battery: Battery
 
+**Material**
+- workFunctionProperty<number>
+- Name (string)
+
 ## Plates
 **Target:**
-- workFunctionProperty<number>
-- materialProperty
+- materialProperty<Material>
 - bounds: Bounds2
 - particleCollisions()
   - When it hits the target

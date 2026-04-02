@@ -18,6 +18,15 @@ type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioObjectOp
 
 export default class PhotoelectricEffectModel implements TModel {
 
+  // public readonly photons: Photon[];
+  // public readonly electrons: Electron[];
+
+  // public readonly target: Target;
+  // public readonly sink: Sink;
+  // public readonly photonSource: PhotonSource;
+
+  // public readonly currentProperty: TReadOnlyProperty<number>;
+
   public constructor( providedOptions: PhotoelectricEffectModelOptions ) {
     //TODO
   }
