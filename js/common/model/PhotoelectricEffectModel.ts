@@ -9,6 +9,7 @@
 import TModel from '../../../../joist/js/TModel.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import Target from './Target.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectModel here
@@ -21,21 +22,21 @@ export default class PhotoelectricEffectModel implements TModel {
   // public readonly photons: Photon[];
   // public readonly electrons: Electron[];
 
-  // public readonly target: Target;
+  public readonly target: Target;
   // public readonly sink: Sink;
   // public readonly photonSource: PhotonSource;
 
   // public readonly currentProperty: TReadOnlyProperty<number>;
 
   public constructor( providedOptions: PhotoelectricEffectModelOptions ) {
-    //TODO
+    this.target = new Target( providedOptions.tandem );
   }
 
   /**
    * Resets the model.
    */
   public reset(): void {
-    //TODO
+    this.target.reset();
   }
 
   /**

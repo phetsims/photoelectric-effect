@@ -9,20 +9,21 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import EnumerationProperty from '../../../../axon/js/EnumerationProperty.js';
-import TProperty from '../../../../axon/js/TProperty.js';
+import Property from '../../../../axon/js/Property.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import Material from './Material.js';
+import Material, { MaterialType } from './Material.js';
 import Particle from './Particle.js';
 
 export default class Target {
 
+
   /**
-   * Currently selected target material.
-   * Used by the UI to select presets and by the model to determine work function.
+   * The active material instance, owns the live workFunctionProperty.
+   * Created from the selected materialType.
    */
-  public readonly materialProperty: TProperty<Material>;
+  public readonly materialProperty: Property<Material>;
+  private customMaterial: Material;
 
   /**
    * Bounds of the target plate in model coordinates.
@@ -31,9 +32,11 @@ export default class Target {
   public readonly bounds: Bounds2;
 
   public constructor( tandem: Tandem ) {
-    this.materialProperty = new EnumerationProperty( Material.COPPER, {
-      tandem: tandem.createTandem( 'materialProperty' )
-    } );
+
+    // TODO create an array of all possible materials for this target, to become the validValues.
+    this.customMaterial = new Material( MaterialType.CUSTOM );
+
+    this.materialProperty = new Property( new Material( MaterialType.COPPER ) );
 
     // TODO: Determine correct model bounds, see #5.
     this.bounds = new Bounds2( 0, 0, 25, 25 );
@@ -45,5 +48,13 @@ export default class Target {
    */
   public particleCollisions( _particle: Particle ): void {
     //TODO implement collision behavior
+  }
+
+  public reset(): void {
+    this.materialProperty.reset();
+
+    // The only material whose workFunction needs to be reset is the custom material.
+    // TODO do we want to call reset on customMaterial directly?
+    this.customMaterial.workFunctionProperty.reset();
   }
 }
