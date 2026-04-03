@@ -9,7 +9,7 @@
 import Sim, { SimOptions } from '../../joist/js/Sim.js';
 import simLauncher from '../../joist/js/simLauncher.js';
 import Tandem from '../../tandem/js/Tandem.js';
-import PhotoelectricEffectScreen from './intro/PhotoelectricEffectScreen.js';
+import IntroScreen from './intro/IntroScreen.js';
 import PhotoelectricEffectFluent from './PhotoelectricEffectFluent.js';
 import './common/PhotoelectricEffectQueryParameters.js';
 
@@ -20,7 +20,7 @@ simLauncher.launch( () => {
   const titleStringProperty = PhotoelectricEffectFluent[ 'photoelectric-effect' ].titleStringProperty;
 
   const screens = [
-    new PhotoelectricEffectScreen( { tandem: Tandem.ROOT.createTandem( 'photoelectricEffectScreen' ) } )
+    new IntroScreen( { tandem: Tandem.ROOT.createTandem( 'photoelectricEffectScreen' ) } )
   ];
 
   const options: SimOptions = {

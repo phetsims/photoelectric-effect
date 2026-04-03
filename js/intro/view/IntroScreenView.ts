@@ -18,7 +18,7 @@ type SelfOptions = {
 
 type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
-export default class PhotoelectricEffectScreenView extends ScreenView {
+export default class IntroScreenView extends ScreenView {
 
   public constructor( model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 

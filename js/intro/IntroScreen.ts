@@ -11,7 +11,7 @@ import optionize from '../../../phet-core/js/optionize.js';
 import PhotoelectricEffectColors from '../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectModel from '../common/model/PhotoelectricEffectModel.js';
-import PhotoelectricEffectScreenView from './view/PhotoelectricEffectScreenView.js';
+import IntroScreenView from './view/IntroScreenView.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreen here
@@ -19,7 +19,7 @@ type SelfOptions = {
 
 type PhotoelectricEffectScreenOptions = SelfOptions & ScreenOptions;
 
-export default class PhotoelectricEffectScreen extends Screen<PhotoelectricEffectModel, PhotoelectricEffectScreenView> {
+export default class IntroScreen extends Screen<PhotoelectricEffectModel, IntroScreenView> {
 
   public constructor( providedOptions: PhotoelectricEffectScreenOptions ) {
 
@@ -34,7 +34,7 @@ export default class PhotoelectricEffectScreen extends Screen<PhotoelectricEffec
 
     super(
       () => new PhotoelectricEffectModel( { tandem: options.tandem.createTandem( 'model' ) } ),
-      model => new PhotoelectricEffectScreenView( model, { tandem: options.tandem.createTandem( 'view' ) } ),
+      model => new IntroScreenView( model, { tandem: options.tandem.createTandem( 'view' ) } ),
       options
     );
   }
