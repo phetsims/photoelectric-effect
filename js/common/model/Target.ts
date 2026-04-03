@@ -23,7 +23,6 @@ export default class Target {
    * Created from the selected materialType.
    */
   public readonly materialProperty: Property<Material>;
-  private customMaterial: Material;
 
   /**
    * Bounds of the target plate in model coordinates.
@@ -31,12 +30,19 @@ export default class Target {
    */
   public readonly bounds: Bounds2;
 
-  public constructor( tandem: Tandem ) {
+  /**
+   * @param allMaterials - the full list of materials that can exist on this Target
+   * @param tandem
+   */
+  public constructor(
+    private readonly allMaterials: Material[],
+    tandem: Tandem
+  ) {
 
-    // TODO create an array of all possible materials for this target, to become the validValues.
-    this.customMaterial = new Material( MaterialType.CUSTOM );
-
-    this.materialProperty = new Property( new Material( MaterialType.COPPER ) );
+    this.materialProperty = new Property( allMaterials[ 0 ], {
+      validValues: allMaterials,
+      tandem: tandem.createTandem( 'materialProperty' )
+    } );
 
     // TODO: Determine correct model bounds, see #5.
     this.bounds = new Bounds2( 0, 0, 25, 25 );
@@ -53,8 +59,8 @@ export default class Target {
   public reset(): void {
     this.materialProperty.reset();
 
-    // The only material whose workFunction needs to be reset is the custom material.
-    // TODO do we want to call reset on customMaterial directly?
-    this.customMaterial.workFunctionProperty.reset();
+    // Only custom materials are resettable. The standard set cannot change, mystery materials are controlled globally,
+    // PhET-iO customizable materials should not be reset and should only be controlled with PhET-iO.
+    this.allMaterials.forEach( material => material.materialType === MaterialType.CUSTOM && material.reset() );
   }
 }

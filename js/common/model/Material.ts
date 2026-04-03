@@ -25,9 +25,7 @@ export class MaterialType extends EnumerationValue {
 
   // The work function for mystery is set in preferences.
   // Reset should not affect the workFunctionProperty of mystery.
-  public static readonly MYSTERY1 = new MaterialType( 5 );
-  public static readonly MYSTERY2 = new MaterialType( 5 );
-  public static readonly MYSTERY3 = new MaterialType( 5 );
+  public static readonly MYSTERY = new MaterialType( 5 );
 
   // The work function for custom is set by the user in the screen.
   // Reset should set the workFunctionProperty back to its initial value.
@@ -52,7 +50,11 @@ export default class Material {
    */
   public readonly workFunctionProperty: NumberProperty;
 
-  public constructor( materialType: MaterialType ) {
+  public constructor( public readonly materialType: MaterialType ) {
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue );
+  }
+
+  public reset(): void {
+    this.workFunctionProperty.reset();
   }
 }

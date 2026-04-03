@@ -9,13 +9,14 @@
 import TModel from '../../../../joist/js/TModel.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import Material, { MaterialType } from './Material.js';
 import Target from './Target.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectModel here
 };
 
-type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
+export type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
 
 export default class PhotoelectricEffectModel implements TModel {
 
@@ -28,8 +29,23 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // public readonly currentProperty: TReadOnlyProperty<number>;
 
-  public constructor( providedOptions: PhotoelectricEffectModelOptions ) {
-    this.target = new Target( providedOptions.tandem );
+  public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
+    const standardMaterials = [
+      new Material( MaterialType.SODIUM ),
+      new Material( MaterialType.COPPER ),
+      new Material( MaterialType.CALCIUM ),
+      new Material( MaterialType.MAGNESIUM ),
+      new Material( MaterialType.PLATINUM ),
+      new Material( MaterialType.ZINC ),
+      new Material( MaterialType.CUSTOM )
+    ];
+
+    const allMaterials = [
+      ...standardMaterials,
+      ...mysteryMaterials
+    ];
+
+    this.target = new Target( allMaterials, providedOptions.tandem );
   }
 
   /**
