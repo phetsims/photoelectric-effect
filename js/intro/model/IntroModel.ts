@@ -13,7 +13,7 @@ import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Battery from '../../common/model/Battery.js';
 import Ammeter from '../../common/model/Ammeter.js';
 import Sink from '../../common/model/Sink.js';
-import PhotoelectricEffectModel from './PhotoelectricEffectModel.js';
+import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 
 type IntroModelOptions = ConstructorParameters<typeof PhotoelectricEffectModel>[ 0 ];
 

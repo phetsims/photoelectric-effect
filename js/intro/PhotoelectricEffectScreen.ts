@@ -10,7 +10,7 @@ import Screen, { ScreenOptions } from '../../../joist/js/Screen.js';
 import optionize from '../../../phet-core/js/optionize.js';
 import PhotoelectricEffectColors from '../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../PhotoelectricEffectFluent.js';
-import PhotoelectricEffectModel from './model/PhotoelectricEffectModel.js';
+import PhotoelectricEffectModel from '../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectScreenView from './view/PhotoelectricEffectScreenView.js';
 
 type SelfOptions = {

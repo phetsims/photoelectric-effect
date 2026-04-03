@@ -18,6 +18,8 @@ export default class Material extends EnumerationValue {
   public static readonly MAGNESIUM = new Material( 3.7 );
   public static readonly PLATINUM = new Material( 6.3 );
   public static readonly ZINC = new Material( 4.3 );
+
+  // These materials are the only ones where their workFunctionProperty is mutable.
   public static readonly MYSTERY = new Material( 5 );
   public static readonly CUSTOM = new Material( 5 );
 

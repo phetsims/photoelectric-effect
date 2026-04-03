@@ -9,7 +9,7 @@
 import Sim, { SimOptions } from '../../joist/js/Sim.js';
 import simLauncher from '../../joist/js/simLauncher.js';
 import Tandem from '../../tandem/js/Tandem.js';
-import PhotoelectricEffectScreen from './photoelectric-effect/PhotoelectricEffectScreen.js';
+import PhotoelectricEffectScreen from './intro/PhotoelectricEffectScreen.js';
 import PhotoelectricEffectFluent from './PhotoelectricEffectFluent.js';
 import './common/PhotoelectricEffectQueryParameters.js';
 
