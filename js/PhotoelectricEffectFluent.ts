@@ -25,6 +25,7 @@ const addToMapIfDefined = ( key: string, path: string ) => {
 
 addToMapIfDefined( 'photoelectric_effect_title', 'photoelectric-effect.titleStringProperty' );
 addToMapIfDefined( 'screen_name', 'screen.nameStringProperty' );
+addToMapIfDefined( 'introScreen_workFunction_label', 'introScreen.workFunction.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialLabel', 'preferences.mysteryMaterialLabelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialDescription', 'preferences.mysteryMaterialDescriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionLabel', 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' );
@@ -47,6 +48,11 @@ const PhotoelectricEffectFluent = {
   },
   screen: {
     nameStringProperty: _.get( PhotoelectricEffectStrings, 'screen.nameStringProperty' )
+  },
+  introScreen: {
+    workFunction: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.workFunction.labelStringProperty' )
+    }
   },
   preferences: {
     mysteryMaterialLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialLabelStringProperty' ),

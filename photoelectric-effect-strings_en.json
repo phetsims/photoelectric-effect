@@ -5,6 +5,9 @@
   "screen.name": {
     "value": "Photoelectric Effect"
   },
+  "introScreen.workFunction.label": {
+    "value": "Work Function (eV)"
+  },
   "preferences.mysteryMaterialLabel": {
     "value": "Mystery Material"
   },
