@@ -9,8 +9,10 @@
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
+import ComboBox from '../../../../sun/js/ComboBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
 
 type SelfOptions = {
  //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -23,13 +25,22 @@ export default class IntroScreenView extends ScreenView {
   public constructor( model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
     const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {
-
-      //TODO add default values for optional SelfOptions here
-
-      //TODO add default values for optional ScreenViewOptions here
     }, providedOptions );
 
     super( options );
+
+    const comboBoxItems = model.target.materials.map( ( material, i ) => {
+      return {
+        value: material,
+        createNode: () => new Text( `Material ${i}` )
+      };
+    } );
+
+    const materialsComboBox = new ComboBox( model.target.materialProperty, comboBoxItems, this, {
+      center: this.layoutBounds.center
+    } );
+
+    this.addChild( materialsComboBox );
 
     const resetAllButton = new ResetAllButton( {
       listener: () => {

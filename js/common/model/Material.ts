@@ -11,6 +11,9 @@
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Enumeration from '../../../../phet-core/js/Enumeration.js';
 import EnumerationValue from '../../../../phet-core/js/EnumerationValue.js';
+import PhetioObject from '../../../../tandem/js/PhetioObject.js';
+import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
+import IOType from '../../../../tandem/js/types/IOType.js';
 
 export class MaterialType extends EnumerationValue {
 
@@ -42,7 +45,11 @@ export class MaterialType extends EnumerationValue {
   }
 }
 
-export default class Material {
+type MaterialStateObject = {
+  materialType: MaterialType;
+};
+
+export default class Material extends PhetioObject {
 
   /**
    * Minimum energy required for an electron to escape this material.
@@ -51,10 +58,22 @@ export default class Material {
   public readonly workFunctionProperty: NumberProperty;
 
   public constructor( public readonly materialType: MaterialType ) {
+
+    super( {
+      phetioType: Material.MaterialIO
+    } );
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue );
   }
 
   public reset(): void {
     this.workFunctionProperty.reset();
   }
+
+  // TODO: We need to test this with the state wrapper and studio.
+  public static readonly MaterialIO = new IOType<Material, MaterialStateObject>( 'MaterialIO', {
+    valueType: Material,
+    stateSchema: {
+      materialType: EnumerationIO( MaterialType )
+    }
+  } );
 }

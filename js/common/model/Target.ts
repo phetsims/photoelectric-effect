@@ -31,17 +31,18 @@ export default class Target {
   public readonly bounds: Bounds2;
 
   /**
-   * @param allMaterials - the full list of materials that can exist on this Target
+   * @param materials - the full list of materials that can exist on this Target
    * @param tandem
    */
   public constructor(
-    private readonly allMaterials: Material[],
+    public readonly materials: Material[],
     tandem: Tandem
   ) {
 
-    this.materialProperty = new Property( allMaterials[ 0 ], {
-      validValues: allMaterials,
-      tandem: tandem.createTandem( 'materialProperty' )
+    this.materialProperty = new Property( materials[ 0 ], {
+      validValues: materials,
+      tandem: tandem.createTandem( 'materialProperty' ),
+      phetioValueType: Material.MaterialIO
     } );
 
     // TODO: Determine correct model bounds, see #5.
@@ -61,6 +62,6 @@ export default class Target {
 
     // Only custom materials are resettable. The standard set cannot change, mystery materials are controlled globally,
     // PhET-iO customizable materials should not be reset and should only be controlled with PhET-iO.
-    this.allMaterials.forEach( material => material.materialType === MaterialType.CUSTOM && material.reset() );
+    this.materials.forEach( material => material.materialType === MaterialType.CUSTOM && material.reset() );
   }
 }
