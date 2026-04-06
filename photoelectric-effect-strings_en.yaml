@@ -1,2 +1,6 @@
 photoelectric-effect.title: 'Photoelectric Effect'
 screen.name: 'Photoelectric Effect'
+preferences.mysteryMaterialLabel: 'Mystery Material'
+preferences.mysteryMaterialDescription: 'When enabled, adds a mystery material with a configurable work function to the available materials.'
+preferences.mysteryMaterialWorkFunctionLabel: 'Work Function (eV)'
+preferences.mysteryMaterialWorkFunctionDescription: 'Set the work function of the mystery material.'

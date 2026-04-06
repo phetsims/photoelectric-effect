@@ -17,6 +17,12 @@ type StringsType = {
   };
   'screen': {
     'nameStringProperty': LocalizedStringProperty;
+  };
+  'preferences': {
+    'mysteryMaterialLabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterialDescriptionStringProperty': LocalizedStringProperty;
+    'mysteryMaterialWorkFunctionLabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterialWorkFunctionDescriptionStringProperty': LocalizedStringProperty;
   }
 };
 

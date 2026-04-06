@@ -12,6 +12,7 @@ import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Enumeration from '../../../../phet-core/js/Enumeration.js';
 import EnumerationValue from '../../../../phet-core/js/EnumerationValue.js';
 import PhetioObject from '../../../../tandem/js/PhetioObject.js';
+import Tandem from '../../../../tandem/js/Tandem.js';
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 
@@ -57,12 +58,14 @@ export default class Material extends PhetioObject {
    */
   public readonly workFunctionProperty: NumberProperty;
 
-  public constructor( public readonly materialType: MaterialType ) {
+  public constructor( public readonly materialType: MaterialType, tandem: Tandem ) {
 
     super( {
       phetioType: Material.MaterialIO
     } );
-    this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue );
+    this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
+      tandem: tandem.createTandem( 'workFunctionProperty' )
+    } );
   }
 
   public reset(): void {

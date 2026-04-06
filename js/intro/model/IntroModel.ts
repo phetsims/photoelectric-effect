@@ -12,6 +12,7 @@
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Ammeter from '../../common/model/Ammeter.js';
 import Battery from '../../common/model/Battery.js';
+import Material from '../../common/model/Material.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 import Sink from '../../common/model/Sink.js';
 
@@ -35,10 +36,8 @@ export default class IntroModel extends PhotoelectricEffectModel {
    */
   public readonly battery: Battery;
 
-  public constructor( providedOptions: PhotoelectricEffectModelOptions ) {
-
-    // TODO: Provide mystery materials here?
-    super( [], providedOptions );
+  public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
+    super( mysteryMaterials, providedOptions );
 
     this.sink = new Sink( Bounds2.NOTHING, providedOptions.tandem.createTandem( 'sink' ) );
     this.ammeter = new Ammeter();

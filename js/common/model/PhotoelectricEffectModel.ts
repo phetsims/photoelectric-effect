@@ -7,6 +7,7 @@
  */
 
 import TModel from '../../../../joist/js/TModel.js';
+import optionize from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import Material, { MaterialType } from './Material.js';
@@ -29,15 +30,25 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // public readonly currentProperty: TReadOnlyProperty<number>;
 
+  /**
+   * @param mysteryMaterials - mystery materials owned by PhotoelectricEffectPreferencesModel and passed down.
+   *   One entry for the user-configurable mystery material; additional entries can be added in the future
+   *   for PhET-iO clients to manipulate.
+   * @param providedOptions
+   */
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
+
+    const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {
+    }, providedOptions );
+
     const standardMaterials = [
-      new Material( MaterialType.SODIUM ),
-      new Material( MaterialType.COPPER ),
-      new Material( MaterialType.CALCIUM ),
-      new Material( MaterialType.MAGNESIUM ),
-      new Material( MaterialType.PLATINUM ),
-      new Material( MaterialType.ZINC ),
-      new Material( MaterialType.CUSTOM )
+      new Material( MaterialType.SODIUM, options.tandem ),
+      new Material( MaterialType.COPPER, options.tandem ),
+      new Material( MaterialType.CALCIUM, options.tandem ),
+      new Material( MaterialType.MAGNESIUM, options.tandem ),
+      new Material( MaterialType.PLATINUM, options.tandem ),
+      new Material( MaterialType.ZINC, options.tandem ),
+      new Material( MaterialType.CUSTOM, options.tandem )
     ];
 
     const allMaterials = [

@@ -4,5 +4,17 @@
   },
   "screen.name": {
     "value": "Photoelectric Effect"
+  },
+  "preferences.mysteryMaterialLabel": {
+    "value": "Mystery Material"
+  },
+  "preferences.mysteryMaterialDescription": {
+    "value": "When enabled, adds a mystery material with a configurable work function to the available materials."
+  },
+  "preferences.mysteryMaterialWorkFunctionLabel": {
+    "value": "Work Function (eV)"
+  },
+  "preferences.mysteryMaterialWorkFunctionDescription": {
+    "value": "Set the work function of the mystery material."
   }
 }

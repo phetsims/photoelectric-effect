@@ -11,7 +11,20 @@ import logGlobal from '../../../phet-core/js/logGlobal.js';
 import { QueryStringMachine } from '../../../query-string-machine/js/QueryStringMachineModule.js';
 
 const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
-  //TODO add schemas for query parameters
+
+  // Whether the mystery material is initially enabled.
+  mysteryMaterial: {
+    public: true,
+    type: 'flag'
+  },
+
+  // TODO: Do we want to keep this?
+  // Initial work function (in eV) for the mystery material.
+  mysteryMaterialWorkFunction: {
+    public: true,
+    type: 'number',
+    defaultValue: 5
+  }
 } );
 
 // Log query parameters

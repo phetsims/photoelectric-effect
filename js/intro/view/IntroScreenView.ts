@@ -29,6 +29,7 @@ export default class IntroScreenView extends ScreenView {
 
     super( options );
 
+    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see https://github.com/phetsims/photoelectric-effect/issues/5
     const comboBoxItems = model.target.materials.map( ( material, i ) => {
       return {
         value: material,
