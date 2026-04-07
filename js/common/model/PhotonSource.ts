@@ -13,10 +13,13 @@ import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import PhotoelectricEffectModelConstants from './PhotoelectricEffectModelConstants.js';
 
 const INITIAL_INTENSITY = 1;
 const INTENSITY_RANGE = new Range( 0, 1 );
 const INITIAL_WAVELENGTH = 400;
+const WAVELENGTH_RANGE = new Range( PhotoelectricEffectModelConstants.MIN_WAVELENGTH,
+  PhotoelectricEffectModelConstants.MAX_WAVELENGTH_UI );
 
 type PhotonSourceOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
 
@@ -43,7 +46,13 @@ export default class PhotonSource {
     } );
 
     this.wavelengthProperty = new NumberProperty( INITIAL_WAVELENGTH, {
+      range: WAVELENGTH_RANGE,
       tandem: tandem.createTandem( 'wavelengthProperty' )
     } );
+  }
+
+  public reset(): void {
+    this.intensityProperty.reset();
+    this.wavelengthProperty.reset();
   }
 }

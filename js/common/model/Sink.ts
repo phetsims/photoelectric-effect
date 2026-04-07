@@ -10,6 +10,7 @@
 
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import Electron from './Electron.js';
 import Particle from './Particle.js';
 
 export default class Sink {
@@ -30,5 +31,13 @@ export default class Sink {
    */
   public particleCollisions( _particle: Particle ): void {
     //TODO implement sink collision behavior
+  }
+
+  /**
+   * Returns true when the electron intersects the sink bounds.
+   */
+  public isHitByElectron( electron: Electron ): boolean {
+    // TODO: Consider segment intersection against sink bounds to avoid tunneling at larger dt.
+    return this.bounds.containsPoint( electron.getPosition() );
   }
 }

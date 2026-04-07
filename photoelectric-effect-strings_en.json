@@ -8,6 +8,33 @@
   "introScreen.workFunction.label": {
     "value": "Work Function (eV)"
   },
+  "introScreen.intensity.label": {
+    "value": "Light Intensity"
+  },
+  "introScreen.wavelength.label": {
+    "value": "Wavelength (nm)"
+  },
+  "introScreen.voltage.label": {
+    "value": "Voltage (V)"
+  },
+  "introScreen.current.label": {
+    "value": "Current (A)"
+  },
+  "introScreen.debugLegend.title": {
+    "value": "Legend:"
+  },
+  "introScreen.debugLegend.photons": {
+    "value": "Yellow = photons"
+  },
+  "introScreen.debugLegend.electrons": {
+    "value": "Cyan = electrons"
+  },
+  "introScreen.debugLegend.target": {
+    "value": "Red outline = target"
+  },
+  "introScreen.debugLegend.sink": {
+    "value": "Blue outline = sink"
+  },
   "preferences.mysteryMaterialLabel": {
     "value": "Mystery Material"
   },

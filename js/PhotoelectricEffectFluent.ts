@@ -26,6 +26,15 @@ const addToMapIfDefined = ( key: string, path: string ) => {
 addToMapIfDefined( 'photoelectric_effect_title', 'photoelectric-effect.titleStringProperty' );
 addToMapIfDefined( 'screen_name', 'screen.nameStringProperty' );
 addToMapIfDefined( 'introScreen_workFunction_label', 'introScreen.workFunction.labelStringProperty' );
+addToMapIfDefined( 'introScreen_intensity_label', 'introScreen.intensity.labelStringProperty' );
+addToMapIfDefined( 'introScreen_wavelength_label', 'introScreen.wavelength.labelStringProperty' );
+addToMapIfDefined( 'introScreen_voltage_label', 'introScreen.voltage.labelStringProperty' );
+addToMapIfDefined( 'introScreen_current_label', 'introScreen.current.labelStringProperty' );
+addToMapIfDefined( 'introScreen_debugLegend_title', 'introScreen.debugLegend.titleStringProperty' );
+addToMapIfDefined( 'introScreen_debugLegend_photons', 'introScreen.debugLegend.photonsStringProperty' );
+addToMapIfDefined( 'introScreen_debugLegend_electrons', 'introScreen.debugLegend.electronsStringProperty' );
+addToMapIfDefined( 'introScreen_debugLegend_target', 'introScreen.debugLegend.targetStringProperty' );
+addToMapIfDefined( 'introScreen_debugLegend_sink', 'introScreen.debugLegend.sinkStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialLabel', 'preferences.mysteryMaterialLabelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialDescription', 'preferences.mysteryMaterialDescriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionLabel', 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' );
@@ -52,6 +61,25 @@ const PhotoelectricEffectFluent = {
   introScreen: {
     workFunction: {
       labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.workFunction.labelStringProperty' )
+    },
+    intensity: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.intensity.labelStringProperty' )
+    },
+    wavelength: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.wavelength.labelStringProperty' )
+    },
+    voltage: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.voltage.labelStringProperty' )
+    },
+    current: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.current.labelStringProperty' )
+    },
+    debugLegend: {
+      titleStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.titleStringProperty' ),
+      photonsStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.photonsStringProperty' ),
+      electronsStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.electronsStringProperty' ),
+      targetStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.targetStringProperty' ),
+      sinkStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.sinkStringProperty' )
     }
   },
   preferences: {

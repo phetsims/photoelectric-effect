@@ -10,11 +10,15 @@
 
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Particle from './Particle.js';
+import { wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 
 export default class Photon extends Particle {
 
+  public constructor( position: Vector2, velocity: Vector2, acceleration: Vector2, public readonly wavelength: number ) {
+    super( position, velocity, acceleration );
+  }
 
-  public constructor( position: Vector2, acceleration: Vector2, velocity: Vector2, public readonly wavelength: number ) {
-    super( position, acceleration, velocity );
+  public getEnergy(): number {
+    return wavelengthToEnergy( this.wavelength );
   }
 }

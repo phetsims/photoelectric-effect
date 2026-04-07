@@ -9,10 +9,11 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Ammeter from '../../common/model/Ammeter.js';
 import Battery from '../../common/model/Battery.js';
+import Electron from '../../common/model/Electron.js';
 import Material from '../../common/model/Material.js';
+import PhotoelectricEffectModelConfig from '../../common/model/PhotoelectricEffectModelConfig.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 import Sink from '../../common/model/Sink.js';
 
@@ -39,8 +40,28 @@ export default class IntroModel extends PhotoelectricEffectModel {
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
     super( mysteryMaterials, providedOptions );
 
-    this.sink = new Sink( Bounds2.NOTHING, providedOptions.tandem.createTandem( 'sink' ) );
+    this.sink = new Sink( PhotoelectricEffectModelConfig.SINK_BOUNDS, providedOptions.tandem.createTandem( 'sink' ) );
     this.ammeter = new Ammeter();
-    this.battery = new Battery();
+    this.battery = new Battery( this.voltageProperty );
+  }
+
+  public override reset(): void {
+    super.reset();
+    this.ammeter.reset();
+    this.battery.reset();
+  }
+
+  protected override stepMeters( dt: number ): void {
+    super.stepMeters( dt );
+    this.ammeter.step( dt );
+  }
+
+  protected override handleElectronSinkCollision( electron: Electron ): boolean {
+    const absorbed = this.sink.isHitByElectron( electron );
+    if ( absorbed ) {
+      console.log( 'HIT DETECTED!' );
+      this.ammeter.recordElectron();
+    }
+    return absorbed;
   }
 }
