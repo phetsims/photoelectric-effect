@@ -10,22 +10,20 @@
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import Range from '../../../../dot/js/Range.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
+import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import TModel from '../../../../joist/js/TModel.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
-import BeamIntensityMeter from './BeamIntensityMeter.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
-import MetalEnergyAbsorptionModel from './MetalEnergyAbsorptionModel.js';
+import PhotoelectricEffectModelConfig from './PhotoelectricEffectModelConfig.js';
+import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon from './Photon.js';
 import PhotonSource from './PhotonSource.js';
-import PhotoelectricEffectModelConfig from './PhotoelectricEffectModelConfig.js';
-import PhotoelectricEffectModelConstants from './PhotoelectricEffectModelConstants.js';
-import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Target from './Target.js';
 
 type SelfOptions = {
@@ -58,11 +56,6 @@ export default class PhotoelectricEffectModel implements TModel {
   public readonly photonSource: PhotonSource;
 
   /**
-   * Meter tracking emitted photon intensity.
-   */
-  public readonly beamIntensityMeter: BeamIntensityMeter;
-
-  /**
    * Voltage across the plates in model units.
    */
   public readonly voltageProperty: NumberProperty;
@@ -91,8 +84,7 @@ export default class PhotoelectricEffectModel implements TModel {
    */
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
 
-    const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {
-    }, providedOptions );
+    const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {}, providedOptions );
 
     const standardMaterials = [
       new Material( MaterialType.SODIUM, options.tandem ),
@@ -114,11 +106,10 @@ export default class PhotoelectricEffectModel implements TModel {
       tandem: providedOptions.tandem.createTandem( 'photonSource' )
     } );
 
-    this.beamIntensityMeter = new BeamIntensityMeter();
 
     this.voltageProperty = new NumberProperty( 0, {
-      range: new Range( PhotoelectricEffectModelConstants.MIN_VOLTAGE,
-        PhotoelectricEffectModelConstants.MAX_VOLTAGE )
+      range: new Range( PhotoelectricEffectConstants.MIN_VOLTAGE,
+        PhotoelectricEffectConstants.MAX_VOLTAGE )
     } );
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
@@ -147,7 +138,6 @@ export default class PhotoelectricEffectModel implements TModel {
     this.electrons.length = 0;
     this.photonEmissionAccumulator = 0;
 
-    this.beamIntensityMeter.reset();
   }
 
   /**
@@ -159,15 +149,7 @@ export default class PhotoelectricEffectModel implements TModel {
       this.emitPhotons( dt );
       this.stepPhotons( dt );
       this.stepElectrons( dt );
-      this.stepMeters( dt );
     }
-  }
-
-  /**
-   * Steps any meter-style recorders tied to the model.
-   */
-  protected stepMeters( dt: number ): void {
-    this.beamIntensityMeter.step( dt );
   }
 
   /**
@@ -198,7 +180,6 @@ export default class PhotoelectricEffectModel implements TModel {
         const velocity = direction.timesScalar( PhotoelectricEffectModelConfig.PHOTON_SPEED );
         const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
         this.photons.push( photon );
-        this.beamIntensityMeter.recordPhoton();
       }
     }
   }
@@ -263,7 +244,7 @@ export default class PhotoelectricEffectModel implements TModel {
    */
   private getElectronAcceleration(): Vector2 {
     const accelerationMagnitude = ( this.voltageProperty.value *
-                                    PhotoelectricEffectModelConstants.ELECTRON_ACCELERATION_SCALE ) /
+                                    PhotoelectricEffectConstants.ELECTRON_ACCELERATION_SCALE ) /
                                   PhotoelectricEffectModelConfig.PLATE_SEPARATION;
     return new Vector2( accelerationMagnitude, 0 );
   }
@@ -276,36 +257,26 @@ export default class PhotoelectricEffectModel implements TModel {
     let electronsPerSecondFromTarget = 0;
     let electronsPerSecondToAnode = 0;
 
-    if ( this.target.energyAbsorptionModel instanceof MetalEnergyAbsorptionModel ) {
-      const photonEnergyBeyondWorkFunction = wavelengthToEnergy( wavelength ) - workFunction;
-      const electronRateAsFractionOfPhotonRate = Math.min(
-        photonEnergyBeyondWorkFunction / MetalEnergyAbsorptionModel.TOTAL_ENERGY_DEPTH,
-        1
-      );
-      electronsPerSecondFromTarget = electronRateAsFractionOfPhotonRate * photonsPerSecond;
+    const photonEnergyBeyondWorkFunction = wavelengthToEnergy( wavelength ) - workFunction;
+    const electronRateAsFractionOfPhotonRate = Math.min(
+      photonEnergyBeyondWorkFunction / Material.TOTAL_ENERGY_DEPTH,
+      1
+    );
+    electronsPerSecondFromTarget = electronRateAsFractionOfPhotonRate * photonsPerSecond;
 
-      const retardingVoltage = voltage < 0 ? -voltage : 0;
-      const fractionMoreEnergeticThanRetardingVoltage = Math.max(
-        0,
-        Math.min( ( photonEnergyBeyondWorkFunction - retardingVoltage ) /
-                  MetalEnergyAbsorptionModel.TOTAL_ENERGY_DEPTH, 1 )
-      );
-      electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
-    }
-    else {
-      electronsPerSecondFromTarget = photonsPerSecond;
-      electronsPerSecondToAnode = electronsPerSecondFromTarget;
-      const retardingVoltage = voltage < 0 ? voltage : 0;
-      electronsPerSecondToAnode = this.getStoppingVoltage( wavelength, workFunction ) < retardingVoltage ?
-                                  electronsPerSecondFromTarget :
-                                  0;
-    }
+    const retardingVoltage = voltage < 0 ? -voltage : 0;
+    const fractionMoreEnergeticThanRetardingVoltage = Math.max(
+      0,
+      Math.min( ( photonEnergyBeyondWorkFunction - retardingVoltage ) /
+                Material.TOTAL_ENERGY_DEPTH, 1 )
+    );
+    electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
 
     if ( electronsPerSecondToAnode < 1 ) {
       electronsPerSecondToAnode = 0;
     }
 
-    return electronsPerSecondToAnode * PhotoelectricEffectModelConstants.CURRENT_JIMMY_FACTOR;
+    return electronsPerSecondToAnode * PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR;
   }
 
   /**

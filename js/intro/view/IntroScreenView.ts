@@ -26,7 +26,6 @@ import ComboBox from '../../../../sun/js/ComboBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModelConfig from '../../common/model/PhotoelectricEffectModelConfig.js';
-import PhotoelectricEffectModelConstants from '../../common/model/PhotoelectricEffectModelConstants.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
@@ -100,8 +99,8 @@ export default class IntroScreenView extends ScreenView {
       PhotoelectricEffectFluent.introScreen.wavelength.labelStringProperty,
       model.photonSource.wavelengthProperty,
       new Range(
-        PhotoelectricEffectModelConstants.MIN_WAVELENGTH,
-        PhotoelectricEffectModelConstants.MAX_WAVELENGTH_UI
+        PhotoelectricEffectConstants.MIN_WAVELENGTH,
+        PhotoelectricEffectConstants.MAX_WAVELENGTH_UI
       ),
       {
         delta: 5,
@@ -115,7 +114,7 @@ export default class IntroScreenView extends ScreenView {
     const voltageControl = new NumberControl(
       PhotoelectricEffectFluent.introScreen.voltage.labelStringProperty,
       model.voltageProperty,
-      new Range( PhotoelectricEffectModelConstants.MIN_VOLTAGE, PhotoelectricEffectModelConstants.MAX_VOLTAGE ),
+      new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
       {
         delta: 0.1,
         numberDisplayOptions: {
@@ -127,7 +126,7 @@ export default class IntroScreenView extends ScreenView {
 
     const currentDisplay = new NumberDisplay(
       model.currentProperty,
-      new Range( 0, PhotoelectricEffectModelConstants.MAX_CURRENT ),
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT ),
       {
         decimalPlaces: 3,
         tandem: options.tandem.createTandem( 'currentDisplay' )
@@ -209,7 +208,6 @@ export default class IntroScreenView extends ScreenView {
    * @param dt - time step, in seconds
    */
   public override step( dt: number ): void {
-    void dt;
     this.updateParticleDebug( this.model );
   }
 

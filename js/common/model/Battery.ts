@@ -10,7 +10,8 @@
 
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Range from '../../../../dot/js/Range.js';
-import PhotoelectricEffectModelConstants from './PhotoelectricEffectModelConstants.js';
+import Tandem from '../../../../tandem/js/Tandem.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 export default class Battery {
 
@@ -21,12 +22,13 @@ export default class Battery {
 
   /**
    * Creates a battery, using the provided voltage Property if supplied.
-   * TODO: Why is voltageProperty optional?
    */
-  public constructor( voltageProperty?: NumberProperty ) {
-    this.voltageProperty = voltageProperty || new NumberProperty( 0, {
-      range: new Range( PhotoelectricEffectModelConstants.MIN_VOLTAGE,
-        PhotoelectricEffectModelConstants.MAX_VOLTAGE )
+  public constructor( tandem: Tandem ) {
+
+    this.voltageProperty = new NumberProperty( PhotoelectricEffectConstants.DEFAULT_BATTERY_VOLTAGE, {
+      range: new Range( PhotoelectricEffectConstants.MIN_VOLTAGE,
+        PhotoelectricEffectConstants.MAX_VOLTAGE ),
+      tandem: tandem.createTandem( 'voltageProperty' )
     } );
   }
 

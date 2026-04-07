@@ -8,7 +8,7 @@
  */
 
 import dotRandom from '../../../../dot/js/dotRandom.js';
-import PhotoelectricEffectModelConstants from './PhotoelectricEffectModelConstants.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 // TODO: Is this abstract pattern necessary or overkill?
 export default abstract class InitialElectronSpeedModel {
@@ -44,7 +44,7 @@ export class UniformElectronSpeedModel extends InitialElectronSpeedModel {
    * so the resulting speed matches the tuned legacy behavior.
    */
   public determineNewElectronSpeed( energy: number ): number {
-    const speed = Math.sqrt( 2 * energy / PhotoelectricEffectModelConstants.ELECTRON_MASS ) * this.scaleFactor;
+    const speed = Math.sqrt( 2 * energy / PhotoelectricEffectConstants.ELECTRON_MASS ) * this.scaleFactor;
     return speed;
   }
 }

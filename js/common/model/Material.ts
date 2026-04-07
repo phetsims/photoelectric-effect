@@ -9,6 +9,7 @@
  */
 
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
+import dotRandom from '../../../../dot/js/dotRandom.js';
 import Enumeration from '../../../../phet-core/js/Enumeration.js';
 import EnumerationValue from '../../../../phet-core/js/EnumerationValue.js';
 import PhetioObject from '../../../../tandem/js/PhetioObject.js';
@@ -61,6 +62,13 @@ type MaterialStateObject = {
 
 export default class Material extends PhetioObject {
 
+  // TODO: Is this where these should live?
+  // Number of sub-levels used to distribute absorption depth.
+  public static readonly NUM_SUB_LEVELS = 20;
+
+  // Total depth, in eV, over which absorption levels are distributed.
+  public static readonly TOTAL_ENERGY_DEPTH = 4;
+
   /**
    * Material type for this instance.
    */
@@ -100,4 +108,15 @@ export default class Material extends PhetioObject {
       materialType: EnumerationIO( MaterialType )
     }
   } );
+
+  /**
+   * Chooses a random sub-level and subtracts the corresponding energy requirement.
+   * This mirrors the legacy model by spreading absorbed energy across discrete levels.
+   */
+  public static energyAfterPhotonCollision( photonEnergy: number, workFunction: number ): number {
+    const level = dotRandom.nextInt( Material.NUM_SUB_LEVELS );
+    const energyRequired = workFunction + ( level * ( Material.TOTAL_ENERGY_DEPTH /
+                                                      Material.NUM_SUB_LEVELS ) );
+    return photonEnergy - energyRequired;
+  }
 }

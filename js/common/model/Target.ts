@@ -12,18 +12,16 @@
 import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import { lineSegmentIntersection } from '../../../../dot/js/util/lineSegmentIntersection.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
+import { lineSegmentIntersection } from '../../../../dot/js/util/lineSegmentIntersection.js';
+import Vector2 from '../../../../dot/js/Vector2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Electron from './Electron.js';
-import EnergyAbsorptionModel from './EnergyAbsorptionModel.js';
 import InitialElectronSpeedModel, { RandomizedElectronSpeedModel, UniformElectronSpeedModel } from './InitialElectronSpeedModel.js';
 import Material, { MaterialType } from './Material.js';
-import MetalEnergyAbsorptionModel from './MetalEnergyAbsorptionModel.js';
 import Particle from './Particle.js';
 import PhotoelectricEffectModelConfig from './PhotoelectricEffectModelConfig.js';
-import PhotoelectricEffectModelConstants from './PhotoelectricEffectModelConstants.js';
 import Photon from './Photon.js';
 
 export default class Target {
@@ -55,11 +53,6 @@ export default class Target {
   public readonly bounds: Bounds2;
 
   /**
-   * Energy absorption model for how photons interact with the target.
-   */
-  public readonly energyAbsorptionModel: EnergyAbsorptionModel;
-
-  /**
    * Model that determines initial emitted electron speeds.
    */
   private initialElectronSpeedModel: InitialElectronSpeedModel;
@@ -86,9 +79,8 @@ export default class Target {
 
     this.bounds = PhotoelectricEffectModelConfig.TARGET_BOUNDS;
 
-    this.energyAbsorptionModel = new MetalEnergyAbsorptionModel();
     this.initialElectronSpeedModel = new UniformElectronSpeedModel(
-      PhotoelectricEffectModelConstants.ELECTRON_SPEED_SCALE_FACTOR
+      PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR
     );
   }
 
@@ -124,7 +116,7 @@ export default class Target {
   public handlePhotonCollision( photon: Photon ): Electron | null {
     const photonEnergy = photon.getEnergy();
     const workFunction = this.workFunctionProperty.value;
-    const energyAfterCollision = this.energyAbsorptionModel.energyAfterPhotonCollision( photonEnergy, workFunction );
+    const energyAfterCollision = Material.energyAfterPhotonCollision( photonEnergy, workFunction );
 
     let electron: Electron | null = null;
     if ( energyAfterCollision > 0 ) {
@@ -180,7 +172,7 @@ export default class Target {
    */
   public setUniformInitialElectronSpeedModel(): void {
     this.initialElectronSpeedModel = new UniformElectronSpeedModel(
-      PhotoelectricEffectModelConstants.ELECTRON_SPEED_SCALE_FACTOR
+      PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR
     );
   }
 
@@ -189,8 +181,8 @@ export default class Target {
    */
   public setRandomizedInitialElectronSpeedModel(): void {
     this.initialElectronSpeedModel = new RandomizedElectronSpeedModel(
-      PhotoelectricEffectModelConstants.ELECTRON_SPEED_SCALE_FACTOR,
-      PhotoelectricEffectModelConstants.MINIMUM_ELECTRON_SPEED
+      PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR,
+      PhotoelectricEffectConstants.MINIMUM_ELECTRON_SPEED
     );
   }
 

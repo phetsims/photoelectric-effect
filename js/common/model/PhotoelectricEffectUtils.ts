@@ -7,7 +7,7 @@
  * @author Marla A. Schulz (PhET Interactive Simulations)
  */
 
-import PhotoelectricEffectModelConstants from './PhotoelectricEffectModelConstants.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 // hc constant in eV*nm for wavelength-energy conversions.
 const PHOTON_ENERGY_CONSTANT = 1240;
@@ -31,6 +31,6 @@ export const wavelengthToEnergy = ( wavelength: number ): number => {
  */
 export const intensityToPhotonRate = ( intensity: number, wavelength: number ): number => {
   const clampedIntensity = Math.max( 0, Math.min( intensity, 1 ) );
-  const wavelengthScale = wavelength / PhotoelectricEffectModelConstants.MAX_WAVELENGTH_UI;
-  return clampedIntensity * PhotoelectricEffectModelConstants.MAX_PHOTONS_PER_SECOND * wavelengthScale;
+  const wavelengthScale = wavelength / PhotoelectricEffectConstants.MAX_WAVELENGTH_UI;
+  return clampedIntensity * PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND * wavelengthScale;
 };

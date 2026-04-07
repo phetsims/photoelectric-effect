@@ -13,7 +13,7 @@ import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
-import PhotoelectricEffectModelConstants from './PhotoelectricEffectModelConstants.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 // Default intensity used at initialization.
 const INITIAL_INTENSITY = 1;
@@ -25,8 +25,8 @@ const INTENSITY_RANGE = new Range( 0, 1 );
 const INITIAL_WAVELENGTH = 400;
 
 // Allowed wavelength range in nanometers.
-const WAVELENGTH_RANGE = new Range( PhotoelectricEffectModelConstants.MIN_WAVELENGTH,
-  PhotoelectricEffectModelConstants.MAX_WAVELENGTH_UI );
+const WAVELENGTH_RANGE = new Range( PhotoelectricEffectConstants.MIN_WAVELENGTH,
+  PhotoelectricEffectConstants.MAX_WAVELENGTH_UI );
 
 type PhotonSourceOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
 
