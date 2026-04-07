@@ -30,9 +30,6 @@ export default class Target {
   // Horizontal offset from the target surface for emitted electrons.
   private static readonly EMISSION_OFFSET = 1;
 
-  // Vertical emission range as a fraction of target height.
-  private static readonly EMISSION_VERTICAL_RANGE = 1;
-
   /**
    * The active material instance, owns the live workFunctionProperty.
    * Created from the selected materialType.
@@ -87,8 +84,12 @@ export default class Target {
    * Determines whether a photon intersects the target bounds.
    */
   public isHitByPhoton( photon: Photon ): boolean {
-    return this.bounds.containsPoint( photon.getPosition() ) ||
-           this.bounds.containsPoint( photon.getPreviousPosition() );
+    const intersections = this.getPhotonBoundaryIntersections( photon );
+    const photonPosition = photon.getPosition();
+    const photonPreviousPosition = photon.getPreviousPosition();
+    return intersections.length > 0 ||
+           this.bounds.containsPoint( photonPosition ) ||
+           this.bounds.containsPoint( photonPreviousPosition );
   }
 
   /**
@@ -117,43 +118,43 @@ export default class Target {
       }
 
       const velocity = new Vector2( speed * Math.cos( angle ), speed * Math.sin( angle ) );
-      const photonPosition = photon.getPosition();
-      const photonPreviousPosition = photon.getPreviousPosition();
-      const minX = this.bounds.minX;
-      const maxX = this.bounds.maxX;
-      const minY = this.bounds.minY;
-      const maxY = this.bounds.maxY;
-      const intersections = [
-        lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
-          minX, minY, maxX, minY ),
-        lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
-          maxX, minY, maxX, maxY ),
-        lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
-          maxX, maxY, minX, maxY ),
-        lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
-          minX, maxY, minX, minY )
-      ].filter( intersection => intersection !== null );
+      const intersections = this.getPhotonBoundaryIntersections( photon );
 
-      let emissionPoint: Vector2 | null = null;
+      let emissionPosition: Vector2;
       if ( intersections.length > 0 ) {
-        emissionPoint = intersections[ 0 ];
+        const intersectionPoint = intersections[ 0 ];
+        emissionPosition = new Vector2( intersectionPoint.x + Target.EMISSION_OFFSET, intersectionPoint.y );
+      }
+      else {
+        emissionPosition = new Vector2( this.bounds.maxX + Target.EMISSION_OFFSET, this.bounds.minY + dotRandom.nextDouble() * this.bounds.height );
       }
 
-      let emissionY = this.bounds.getCenterY();
-      if ( emissionPoint ) {
-        emissionY = emissionPoint.y;
-      }
-      else if ( Target.EMISSION_VERTICAL_RANGE !== 0 ) {
-        emissionY = this.bounds.minY +
-                    dotRandom.nextDouble() * this.bounds.height * Target.EMISSION_VERTICAL_RANGE;
-      }
-
-      const emissionX = emissionPoint ? emissionPoint.x + Target.EMISSION_OFFSET : this.bounds.maxX + Target.EMISSION_OFFSET;
-      const emissionPosition = new Vector2( emissionX, emissionY );
       electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), energyAfterCollision );
     }
 
     return electron;
+  }
+
+  /**
+   * Returns the intersection points where a photon path crosses the target bounds.
+   */
+  private getPhotonBoundaryIntersections( photon: Photon ): Vector2[] {
+    const photonPosition = photon.getPosition();
+    const photonPreviousPosition = photon.getPreviousPosition();
+    const minX = this.bounds.minX;
+    const maxX = this.bounds.maxX;
+    const minY = this.bounds.minY;
+    const maxY = this.bounds.maxY;
+    return [
+      lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
+        minX, minY, maxX, minY ),
+      lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
+        maxX, minY, maxX, maxY ),
+      lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
+        maxX, maxY, minX, maxY ),
+      lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
+        minX, maxY, minX, minY )
+    ].filter( intersection => intersection !== null );
   }
 
   /**
