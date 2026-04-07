@@ -2,6 +2,7 @@
 
 /**
  * Shared physics utilities for the photoelectric effect model.
+ * Includes wavelength/energy conversions used across the model.
  *
  * @author Marla A. Schulz (PhET Interactive Simulations)
  */

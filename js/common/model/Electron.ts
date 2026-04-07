@@ -13,10 +13,22 @@ import Particle from './Particle.js';
 
 export default class Electron extends Particle {
 
-  public constructor( position: Vector2, velocity: Vector2, acceleration: Vector2, public readonly energy: number ) {
+  /**
+   * Energy of the electron in model units.
+   */
+  public readonly energy: number;
+
+  /**
+   * Creates an electron with initial kinematics and energy.
+   */
+  public constructor( position: Vector2, velocity: Vector2, acceleration: Vector2, energy: number ) {
     super( position, velocity, acceleration );
+    this.energy = energy;
   }
 
+  /**
+   * Updates the electron acceleration for subsequent motion updates.
+   */
   public setAcceleration( acceleration: Vector2 ): void {
     this.acceleration = acceleration;
   }

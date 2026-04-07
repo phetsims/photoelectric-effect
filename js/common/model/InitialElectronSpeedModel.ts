@@ -1,7 +1,8 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Base class for determining initial electron speeds after emission.
+ * Base class for determining initial electron speeds after emission. Subclasses
+ * define how available energy maps to the starting speed of an emitted electron.
  *
  * @author Marla A. Schulz (PhET Interactive Simulations)
  */
@@ -9,6 +10,7 @@
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import PhotoelectricEffectModelConstants from './PhotoelectricEffectModelConstants.js';
 
+// TODO: Is this abstract pattern necessary or overkill?
 export default abstract class InitialElectronSpeedModel {
 
   /**
@@ -19,6 +21,11 @@ export default abstract class InitialElectronSpeedModel {
 }
 
 export class UniformElectronSpeedModel extends InitialElectronSpeedModel {
+
+  /**
+   * Model that applies a uniform analytic mapping from energy to speed.
+   * A scale factor keeps the result aligned with legacy tuning.
+   */
 
   // Scales analytical speed to match the legacy model's simulation units.
   private readonly scaleFactor: number;
@@ -44,6 +51,11 @@ export class UniformElectronSpeedModel extends InitialElectronSpeedModel {
 
 export class RandomizedElectronSpeedModel extends UniformElectronSpeedModel {
 
+  /**
+   * Model that randomizes speed as a fraction of the uniform analytic result.
+   * The minimum speed prevents emitted electrons from stalling at the surface.
+   */
+
   // Enforces a lower bound on randomized speeds to avoid non-emission jitter.
   private readonly minimumSpeed: number;
 
@@ -63,9 +75,11 @@ export class RandomizedElectronSpeedModel extends UniformElectronSpeedModel {
   public override determineNewElectronSpeed( energy: number ): number {
     const maxSpeed = super.determineNewElectronSpeed( energy );
     let speed = maxSpeed * dotRandom.nextDouble();
+
     if ( speed < this.minimumSpeed ) {
       speed = this.minimumSpeed;
     }
+
     return speed;
   }
 }

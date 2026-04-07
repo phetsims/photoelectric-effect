@@ -14,15 +14,24 @@
 
 import ScalarDataRecorder from './ScalarDataRecorder.js';
 
+// Interval between client-facing updates, in seconds.
 const CLIENT_UPDATE_INTERVAL = 0.5;
+
+// Duration of the sliding window used for current, in seconds.
 const SIMULATION_TIME_WINDOW = 1;
 
 export default class Ammeter extends ScalarDataRecorder {
 
+  /**
+   * Creates an ammeter that records electrons over a fixed time window.
+   */
   public constructor() {
     super( CLIENT_UPDATE_INTERVAL, SIMULATION_TIME_WINDOW );
   }
 
+  /**
+   * Returns the current based on the recorded electron counts.
+   */
   public getCurrent(): number {
     this.computeDataStatistics();
     const timeSpan = this.getTimeSpanOfEntries();
@@ -39,14 +48,23 @@ export default class Ammeter extends ScalarDataRecorder {
     return current;
   }
 
+  /**
+   * Records a single electron for the current window.
+   */
   public recordElectron(): void {
     this.recordElectrons( 1 );
   }
 
+  /**
+   * Records one or more electrons for the current window.
+   */
   public recordElectrons( numElectrons: number ): void {
     this.addDataRecordEntry( numElectrons );
   }
 
+  /**
+   * Returns the time window used for current measurements.
+   */
   public getSimulationTimeWindow(): number {
     return SIMULATION_TIME_WINDOW;
   }

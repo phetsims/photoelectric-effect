@@ -28,8 +28,13 @@ import Photon from './Photon.js';
 
 export default class Target {
 
+  // Electron emission dispersion angle, in radians.
   private static readonly ELECTRON_DISPERSION_ANGLE = 0;
+
+  // Horizontal offset from the target surface for emitted electrons.
   private static readonly EMISSION_OFFSET = 1;
+
+  // Vertical emission range as a fraction of target height.
   private static readonly EMISSION_VERTICAL_RANGE = 1;
 
   /**
@@ -54,9 +59,13 @@ export default class Target {
    */
   public readonly energyAbsorptionModel: EnergyAbsorptionModel;
 
+  /**
+   * Model that determines initial emitted electron speeds.
+   */
   private initialElectronSpeedModel: InitialElectronSpeedModel;
 
   /**
+   * Creates a target plate with a selectable set of materials.
    * @param materials - the full list of materials that can exist on this Target
    * @param tandem
    */
@@ -142,7 +151,7 @@ export default class Target {
           maxX, maxY, minX, maxY ),
         lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
           minX, maxY, minX, minY )
-      ].filter( intersection => intersection !== null ) as Vector2[];
+      ].filter( intersection => intersection !== null );
 
       let emissionPoint: Vector2 | null = null;
       if ( intersections.length > 0 ) {
@@ -166,12 +175,18 @@ export default class Target {
     return electron;
   }
 
+  /**
+   * Switches to the uniform electron speed model.
+   */
   public setUniformInitialElectronSpeedModel(): void {
     this.initialElectronSpeedModel = new UniformElectronSpeedModel(
       PhotoelectricEffectModelConstants.ELECTRON_SPEED_SCALE_FACTOR
     );
   }
 
+  /**
+   * Switches to the randomized electron speed model.
+   */
   public setRandomizedInitialElectronSpeedModel(): void {
     this.initialElectronSpeedModel = new RandomizedElectronSpeedModel(
       PhotoelectricEffectModelConstants.ELECTRON_SPEED_SCALE_FACTOR,
@@ -179,6 +194,9 @@ export default class Target {
     );
   }
 
+  /**
+   * Resets the target material selection and custom material state.
+   */
   public reset(): void {
     this.materialProperty.reset();
 

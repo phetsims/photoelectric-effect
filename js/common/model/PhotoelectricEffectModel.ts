@@ -29,27 +29,61 @@ import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffect
 import Target from './Target.js';
 
 type SelfOptions = {
-  //TODO add options that are specific to PhotoelectricEffectModel here
+
+  // TODO add options that are specific to PhotoelectricEffectModel here
 };
 
 export type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
 
 export default class PhotoelectricEffectModel implements TModel {
 
+  /**
+   * Active photons in the model.
+   */
   public readonly photons: Photon[] = [];
+
+  /**
+   * Active electrons in the model.
+   */
   public readonly electrons: Electron[] = [];
 
+  /**
+   * Target plate that emits electrons.
+   */
   public readonly target: Target;
+
+  /**
+   * Photon source that emits toward the target.
+   */
   public readonly photonSource: PhotonSource;
+
+  /**
+   * Meter tracking emitted photon intensity.
+   */
   public readonly beamIntensityMeter: BeamIntensityMeter;
 
+  /**
+   * Voltage across the plates in model units.
+   */
   public readonly voltageProperty: NumberProperty;
+
+  /**
+   * Wavelength of emitted photons in nanometers.
+   */
   public readonly wavelengthProperty: NumberProperty;
+
+  /**
+   * Derived analytic current based on model settings.
+   */
   public readonly currentProperty: TReadOnlyProperty<number>;
 
+  /**
+   * Accumulates fractional photon emissions between steps.
+   */
   private photonEmissionAccumulator = 0;
 
   /**
+   * Creates the model and configures materials, sources, and derived current.
    * @param mysteryMaterials - mystery materials owned by PhotoelectricEffectPreferencesModel and passed down.
    *   One entry for the user-configurable mystery material; additional entries can be added in the future
    *   for PhET-iO clients to manipulate.
@@ -129,14 +163,24 @@ export default class PhotoelectricEffectModel implements TModel {
     }
   }
 
+  /**
+   * Steps any meter-style recorders tied to the model.
+   */
   protected stepMeters( dt: number ): void {
     this.beamIntensityMeter.step( dt );
   }
 
+  /**
+   * Handles collisions between emitted electrons and the sink.
+   * Returns true when the electron is absorbed by the sink.
+   */
   protected handleElectronSinkCollision( _electron: Electron ): boolean {
     return false;
   }
 
+  /**
+   * Emits new photons based on source intensity and elapsed time.
+   */
   private emitPhotons( dt: number ): void {
     const photonRate = intensityToPhotonRate(
       this.photonSource.intensityProperty.value,
@@ -159,6 +203,9 @@ export default class PhotoelectricEffectModel implements TModel {
     }
   }
 
+  /**
+   * Advances photons and handles collisions with the target.
+   */
   private stepPhotons( dt: number ): void {
     const nextPhotons: Photon[] = [];
 
@@ -184,6 +231,9 @@ export default class PhotoelectricEffectModel implements TModel {
     this.photons.push( ...nextPhotons );
   }
 
+  /**
+   * Advances electrons and handles collisions with the target or sink.
+   */
   private stepElectrons( dt: number ): void {
     const nextElectrons: Electron[] = [];
     const acceleration = this.getElectronAcceleration();
@@ -208,6 +258,9 @@ export default class PhotoelectricEffectModel implements TModel {
     this.electrons.push( ...nextElectrons );
   }
 
+  /**
+   * Computes the acceleration applied to electrons from the plate voltage.
+   */
   private getElectronAcceleration(): Vector2 {
     const accelerationMagnitude = ( this.voltageProperty.value *
                                     PhotoelectricEffectModelConstants.ELECTRON_ACCELERATION_SCALE ) /
@@ -215,6 +268,9 @@ export default class PhotoelectricEffectModel implements TModel {
     return new Vector2( accelerationMagnitude, 0 );
   }
 
+  /**
+   * Computes the analytic current expected for the given conditions.
+   */
   private getCurrentForVoltage( voltage: number, intensity: number, wavelength: number, workFunction: number ): number {
     const photonsPerSecond = intensityToPhotonRate( intensity, wavelength );
     let electronsPerSecondFromTarget = 0;
@@ -252,6 +308,9 @@ export default class PhotoelectricEffectModel implements TModel {
     return electronsPerSecondToAnode * PhotoelectricEffectModelConstants.CURRENT_JIMMY_FACTOR;
   }
 
+  /**
+   * Returns the stopping voltage for the given photon energy and work function.
+   */
   private getStoppingVoltage( wavelength: number, workFunction: number ): number {
     const photonEnergy = wavelengthToEnergy( wavelength );
     return workFunction - photonEnergy;

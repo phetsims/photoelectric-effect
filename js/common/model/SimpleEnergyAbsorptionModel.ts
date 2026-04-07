@@ -2,6 +2,7 @@
 
 /**
  * Simple absorption model where photon energy must exceed the work function.
+ * Subtracts the work function directly from the incoming photon energy.
  *
  * @author Marla A. Schulz (PhET Interactive Simulations)
  */

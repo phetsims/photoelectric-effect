@@ -2,6 +2,7 @@
 
 /**
  * Meter that computes beam intensity from emitted photon counts.
+ * Uses a sliding time window to smooth the reported rate.
  *
  * @author Marla A. Schulz (PhET Interactive Simulations)
  */

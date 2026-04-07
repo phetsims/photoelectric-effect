@@ -21,6 +21,9 @@ export default class Sink {
    */
   public readonly bounds: Bounds2;
 
+  /**
+   * Creates a sink plate with fixed bounds.
+   */
   public constructor( bounds: Bounds2, _tandem: Tandem ) {
     this.bounds = bounds;
   }
@@ -30,6 +33,7 @@ export default class Sink {
    * Called when a particle intersects the sink bounds.
    */
   public particleCollisions( _particle: Particle ): void {
+
     //TODO implement sink collision behavior
   }
 
@@ -37,6 +41,7 @@ export default class Sink {
    * Returns true when the electron intersects the sink bounds.
    */
   public isHitByElectron( electron: Electron ): boolean {
+
     // TODO: Consider segment intersection against sink bounds to avoid tunneling at larger dt.
     return this.bounds.containsPoint( electron.getPosition() );
   }

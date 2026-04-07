@@ -19,6 +19,10 @@ export default class Battery {
    */
   public readonly voltageProperty: NumberProperty;
 
+  /**
+   * Creates a battery, using the provided voltage Property if supplied.
+   * TODO: Why is voltageProperty optional?
+   */
   public constructor( voltageProperty?: NumberProperty ) {
     this.voltageProperty = voltageProperty || new NumberProperty( 0, {
       range: new Range( PhotoelectricEffectModelConstants.MIN_VOLTAGE,
@@ -26,6 +30,9 @@ export default class Battery {
     } );
   }
 
+  /**
+   * Resets the voltage to its initial value.
+   */
   public reset(): void {
     this.voltageProperty.reset();
   }

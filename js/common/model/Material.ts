@@ -19,6 +19,7 @@ import IOType from '../../../../tandem/js/types/IOType.js';
 export class MaterialType extends EnumerationValue {
 
   // All of the work functions for the following MaterialTypes are ReadOnly.
+
   // TODO: Do we want to protect against mutability here?
   public static readonly SODIUM = new MaterialType( 2.3 );
   public static readonly COPPER = new MaterialType( 4.7 );
@@ -28,10 +29,12 @@ export class MaterialType extends EnumerationValue {
   public static readonly ZINC = new MaterialType( 4.3 );
 
   // The work function for mystery is set in preferences.
+
   // Reset should not affect the workFunctionProperty of mystery.
   public static readonly MYSTERY = new MaterialType( 5 );
 
   // The work function for custom is set by the user in the screen.
+
   // Reset should set the workFunctionProperty back to its initial value.
   public static readonly CUSTOM = new MaterialType( 5 );
 
@@ -39,10 +42,16 @@ export class MaterialType extends EnumerationValue {
   public static readonly enumeration = new Enumeration( MaterialType );
 
   /**
+   * Initial work function value in eV for this material type.
+   */
+  public readonly workFunctionInitialValue: number;
+
+  /**
    * @param workFunctionInitialValue - initial work function value in eV for this material type
    */
-  public constructor( public readonly workFunctionInitialValue: number ) {
+  public constructor( workFunctionInitialValue: number ) {
     super();
+    this.workFunctionInitialValue = workFunctionInitialValue;
   }
 }
 
@@ -53,21 +62,33 @@ type MaterialStateObject = {
 export default class Material extends PhetioObject {
 
   /**
+   * Material type for this instance.
+   */
+  public readonly materialType: MaterialType;
+
+  /**
    * Minimum energy required for an electron to escape this material.
    * Used alongside photon energy to decide when emission occurs.
    */
   public readonly workFunctionProperty: NumberProperty;
 
-  public constructor( public readonly materialType: MaterialType, tandem: Tandem ) {
+  /**
+   * Creates a material instance with its own work function Property.
+   */
+  public constructor( materialType: MaterialType, tandem: Tandem ) {
 
     super( {
       phetioType: Material.MaterialIO
     } );
+    this.materialType = materialType;
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
       tandem: tandem.createTandem( 'workFunctionProperty' )
     } );
   }
 
+  /**
+   * Resets the work function to its initial value.
+   */
   public reset(): void {
     this.workFunctionProperty.reset();
   }
