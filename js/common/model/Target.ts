@@ -16,9 +16,7 @@ import dotRandom from '../../../../dot/js/dotRandom.js';
 import { lineSegmentIntersection } from '../../../../dot/js/util/lineSegmentIntersection.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Electron from './Electron.js';
-import InitialElectronSpeedModel, { RandomizedElectronSpeedModel, UniformElectronSpeedModel } from './InitialElectronSpeedModel.js';
 import Material, { MaterialType } from './Material.js';
 import Particle from './Particle.js';
 import PhotoelectricEffectModelConfig from './PhotoelectricEffectModelConfig.js';
@@ -53,11 +51,6 @@ export default class Target {
   public readonly bounds: Bounds2;
 
   /**
-   * Model that determines initial emitted electron speeds.
-   */
-  private initialElectronSpeedModel: InitialElectronSpeedModel;
-
-  /**
    * Creates a target plate with a selectable set of materials.
    * @param materials - the full list of materials that can exist on this Target
    * @param tandem
@@ -78,10 +71,6 @@ export default class Target {
     } );
 
     this.bounds = PhotoelectricEffectModelConfig.TARGET_BOUNDS;
-
-    this.initialElectronSpeedModel = new UniformElectronSpeedModel(
-      PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR
-    );
   }
 
   /**
@@ -120,7 +109,7 @@ export default class Target {
 
     let electron: Electron | null = null;
     if ( energyAfterCollision > 0 ) {
-      const speed = this.initialElectronSpeedModel.determineNewElectronSpeed( energyAfterCollision );
+      const speed = Electron.determineNewElectronSpeed( energyAfterCollision );
       let angle = 0;
       if ( Target.ELECTRON_DISPERSION_ANGLE !== 0 ) {
         angle = dotRandom.nextDouble() * Target.ELECTRON_DISPERSION_ANGLE -
@@ -165,25 +154,6 @@ export default class Target {
     }
 
     return electron;
-  }
-
-  /**
-   * Switches to the uniform electron speed model.
-   */
-  public setUniformInitialElectronSpeedModel(): void {
-    this.initialElectronSpeedModel = new UniformElectronSpeedModel(
-      PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR
-    );
-  }
-
-  /**
-   * Switches to the randomized electron speed model.
-   */
-  public setRandomizedInitialElectronSpeedModel(): void {
-    this.initialElectronSpeedModel = new RandomizedElectronSpeedModel(
-      PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR,
-      PhotoelectricEffectConstants.MINIMUM_ELECTRON_SPEED
-    );
   }
 
   /**

@@ -9,6 +9,7 @@
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Particle from './Particle.js';
 
 export default class Electron extends Particle {
@@ -31,5 +32,15 @@ export default class Electron extends Particle {
    */
   public setAcceleration( acceleration: Vector2 ): void {
     this.acceleration = acceleration;
+  }
+
+    /**
+   * Computes the electron speed from kinetic energy using a uniform mapping.
+   * Uses the analytic kinetic-energy relationship and then applies a scale factor
+   * so the resulting speed matches the tuned legacy behavior.
+   */
+  public static determineNewElectronSpeed( energy: number ): number {
+    const scaleFactor = PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR;
+    return Math.sqrt( 2 * energy / PhotoelectricEffectConstants.ELECTRON_MASS ) * scaleFactor;
   }
 }
