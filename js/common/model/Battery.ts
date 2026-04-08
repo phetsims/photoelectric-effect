@@ -16,18 +16,13 @@ import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 export default class Battery {
 
   /**
-   * Voltage across the plates, in model units.
+   * Voltage across the plates, in volts.
    */
   public readonly voltageProperty: NumberProperty;
 
-  /**
-   * Creates a battery, using the provided voltage Property if supplied.
-   */
   public constructor( tandem: Tandem ) {
-
     this.voltageProperty = new NumberProperty( PhotoelectricEffectConstants.DEFAULT_BATTERY_VOLTAGE, {
-      range: new Range( PhotoelectricEffectConstants.MIN_VOLTAGE,
-        PhotoelectricEffectConstants.MAX_VOLTAGE ),
+      range: new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
       tandem: tandem.createTandem( 'voltageProperty' )
     } );
   }
