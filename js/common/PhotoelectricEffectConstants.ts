@@ -21,16 +21,12 @@ export default class PhotoelectricEffectConstants {
   //--------------------------------------------------------------
 
   // X position of the target plate center in model coordinates.
-  public static readonly TARGET_X = 0;
+  public static readonly TARGET_X = 2.5;
 
   // X position of the sink plate center in model coordinates.
-  public static readonly SINK_X = 100;
+  public static readonly SINK_X = 152.5;
 
-  // TODO: MODEL_BOUNDS is used only as a culling boundary for photons and electrons. The current values are
-  //   overly generous and don't reflect the actual physics space (target at x=0–5, sink at x=150–155, plates
-  //   at y=±40). Consider replacing with more specific culling conditions per particle type — e.g. cull photons
-  //   that pass x=0 without hitting the target, and cull electrons that leave the inter-plate region — rather
-  //   than a single large rectangle. Discuss with team before changing. https://github.com/phetsims/photoelectric-effect/issues/1
+  // Overall model bounds for the play area.
   public static readonly MODEL_BOUNDS = new Bounds2( -200, -120, 200, 120 );
 
   // Photon emission origin, positioned above and to the right of the target.
@@ -94,19 +90,12 @@ export default class PhotoelectricEffectConstants {
   //--------------------------------------------------------------
 
   // Bounds of the target plate for rendering purposes only.
-  public static readonly TARGET_BOUNDS = new Bounds2( 0, 0, 5, 80 );
+  public static readonly TARGET_BOUNDS = new Bounds2( 0, -40, 5, 40 );
 
   // Bounds of the sink plate for rendering purposes only.
-  public static readonly SINK_BOUNDS = new Bounds2( 0, 0, 5, 80 );
+  public static readonly SINK_BOUNDS = new Bounds2( 150, -40, 155, 40 );
 
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
   public static readonly SCREEN_VIEW_Y_MARGIN = 15;
-
-  // Scale factor for the model-to-view transform, in view pixels per model unit.
-  public static readonly MODEL_VIEW_SCALE = 3;
-
-  // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
-  // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
-  public static readonly VIEW_ORIGIN_X = 150;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 }
