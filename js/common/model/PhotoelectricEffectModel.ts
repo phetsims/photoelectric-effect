@@ -158,16 +158,16 @@ export default class PhotoelectricEffectModel implements TModel {
     const wholePhotons = Math.floor( totalPhotons );
     this.photonEmissionAccumulator = totalPhotons - wholePhotons;
 
-    if ( wholePhotons > 0 ) {
-      for ( let i = 0; i < wholePhotons; i++ ) {
-        const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.copy();
-        const angle = ( dotRandom.nextDouble() - 0.5 ) * PhotoelectricEffectConstants.PHOTON_SOURCE_FANOUT_ANGLE;
-        const direction = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.rotated( angle );
-        const velocity = direction.timesScalar( PhotoelectricEffectConstants.PHOTON_SPEED );
-        const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
-        this.photons.push( photon );
-      }
-    }
+    // We now have the number of photons from the intensity and rate, set up initial kinematic values and
+    // create the photon.
+    _.times( wholePhotons, () => {
+      const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.copy();
+      const angle = ( dotRandom.nextDouble() - 0.5 ) * PhotoelectricEffectConstants.PHOTON_SOURCE_FANOUT_ANGLE;
+      const direction = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.rotated( angle );
+      const velocity = direction.timesScalar( PhotoelectricEffectConstants.PHOTON_SPEED );
+      const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
+      this.photons.push( photon );
+    } );
   }
 
   /**
@@ -176,8 +176,7 @@ export default class PhotoelectricEffectModel implements TModel {
   private stepPhotons( dt: number ): void {
     const nextPhotons: Photon[] = [];
 
-    for ( let i = 0; i < this.photons.length; i++ ) {
-      const photon = this.photons[ i ];
+    this.photons.forEach( photon => {
 
       // Advance photon kinematics first so collision checks use updated positions.
       photon.step( dt );
@@ -196,7 +195,7 @@ export default class PhotoelectricEffectModel implements TModel {
       if ( !hitTarget && inBounds ) {
         nextPhotons.push( photon );
       }
-    }
+    } );
 
     // Replace the active list to reflect collisions and out-of-bounds pruning this step.
     // Note, if performance becomes an issue, consider in-place compaction.
@@ -211,14 +210,14 @@ export default class PhotoelectricEffectModel implements TModel {
     const nextElectrons: Electron[] = [];
     const acceleration = this.getElectronAcceleration();
 
-    for ( let i = 0; i < this.electrons.length; i++ ) {
-      const electron = this.electrons[ i ];
+    this.electrons.forEach( electron => {
 
       // Update electron acceleration and advance kinematics for this time step.
       electron.setAcceleration( acceleration );
       electron.step( dt );
 
-      // Check for target collisions; only electrons that avoid the target can reach the sink.
+      // Check for target collisions; only electrons that avoid the target can reach the sink. If the electron
+      // hits the target, we do not need to handle it because it is going to be removed.
       const hitTarget = this.target.isHitByElectron( electron );
       if ( !hitTarget ) {
 
@@ -231,7 +230,7 @@ export default class PhotoelectricEffectModel implements TModel {
           nextElectrons.push( electron );
         }
       }
-    }
+    } );
 
     // Replace the active list to reflect collisions, absorption, and bounds pruning this step.
     this.electrons.length = 0;
@@ -253,8 +252,6 @@ export default class PhotoelectricEffectModel implements TModel {
    */
   private getCurrentForVoltage( voltage: number, intensity: number, wavelength: number, workFunction: number ): number {
     const photonsPerSecond = intensityToPhotonRate( intensity, wavelength );
-    let electronsPerSecondFromTarget = 0;
-    let electronsPerSecondToAnode = 0;
 
     // Compute how much photon energy exceeds the work function; this bounds emission likelihood.
     const photonEnergyBeyondWorkFunction = wavelengthToEnergy( wavelength ) - workFunction;
@@ -264,7 +261,7 @@ export default class PhotoelectricEffectModel implements TModel {
       photonEnergyBeyondWorkFunction / Material.TOTAL_ENERGY_DEPTH,
       1
     );
-    electronsPerSecondFromTarget = electronRateAsFractionOfPhotonRate * photonsPerSecond;
+    const electronsPerSecondFromTarget = electronRateAsFractionOfPhotonRate * photonsPerSecond;
 
     // Retarding voltage reduces the fraction of emitted electrons that reach the anode.
     const retardingVoltage = voltage < 0 ? -voltage : 0;
@@ -275,7 +272,8 @@ export default class PhotoelectricEffectModel implements TModel {
       Math.min( ( photonEnergyBeyondWorkFunction - retardingVoltage ) /
                 Material.TOTAL_ENERGY_DEPTH, 1 )
     );
-    electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
+
+    let electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
 
     // Implementation choice: treat sub-1 counts as zero to avoid tiny non-physical current readouts.
     if ( electronsPerSecondToAnode < 1 ) {

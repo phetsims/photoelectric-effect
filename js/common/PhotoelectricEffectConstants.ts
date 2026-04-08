@@ -19,6 +19,8 @@ export default class PhotoelectricEffectConstants {
   //--------------------------------------------------------------
   // MODEL CONSTANTS
   //--------------------------------------------------------------
+  // TODO: Consider moving constants here into classes that make more sense (like target/sink bounds could go in
+  //   respective files).
 
   // Bounds of the target plate in model coordinates.
   public static readonly TARGET_BOUNDS = new Bounds2( 0, -40, 5, 40 );
