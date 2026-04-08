@@ -8,10 +8,8 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import PreferencesModel from '../../../../joist/js/preferences/PreferencesModel.js';
-
-// eslint-disable-next-line phet/no-view-imported-from-model
-import PhotoelectricEffectPreferencesNode from '../view/PhotoelectricEffectPreferencesNode.js';
+import PreferencesModel from '../../../joist/js/preferences/PreferencesModel.js';
+import PhotoelectricEffectPreferencesNode from './view/PhotoelectricEffectPreferencesNode.js';
 
 export default class PhotoelectricEffectPreferencesModel extends PreferencesModel {
 

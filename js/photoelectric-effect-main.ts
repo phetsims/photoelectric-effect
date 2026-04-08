@@ -11,7 +11,7 @@ import Sim, { SimOptions } from '../../joist/js/Sim.js';
 import simLauncher from '../../joist/js/simLauncher.js';
 import Tandem from '../../tandem/js/Tandem.js';
 import PhotoelectricEffectMysteryMaterials from './common/model/PhotoelectricEffectMysteryMaterials.js';
-import PhotoelectricEffectPreferencesModel from './common/model/PhotoelectricEffectPreferencesModel.js';
+import PhotoelectricEffectPreferencesModel from './common/PhotoelectricEffectPreferencesModel.js';
 import IntroScreen from './intro/IntroScreen.js';
 import PhotoelectricEffectFluent from './PhotoelectricEffectFluent.js';
 import './common/PhotoelectricEffectQueryParameters.js';
