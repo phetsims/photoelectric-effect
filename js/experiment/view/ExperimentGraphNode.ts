@@ -18,7 +18,7 @@ import LinePlot from '../../../../bamboo/js/LinePlot.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
-import optionize from '../../../../phet-core/js/optionize.js';
+import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
 import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
@@ -26,11 +26,10 @@ import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import RectangularPushButton from '../../../../sun/js/buttons/RectangularPushButton.js';
+import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import photoelectricEffect from '../../photoelectricEffect.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type ZoomRangePair = {
@@ -146,21 +145,18 @@ export default class ExperimentGraphNode extends Node {
       spacing: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_SPACING,
       align: 'center',
       children: [
-        new RectangularPushButton( {
-          ...actionButtonOptions,
+        new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( actionButtonOptions, {
           tandem: options.tandem.createTandem( 'actionButton1' )
-        } ),
-        new RectangularPushButton( {
-          ...actionButtonOptions,
+        } ) ),
+        new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( actionButtonOptions, {
           tandem: options.tandem.createTandem( 'actionButton2' )
-        } ),
+        } ) ),
         new InfoButton( {
           tandem: options.tandem.createTandem( 'infoButton' )
         } ),
-        new RectangularPushButton( {
-          ...actionButtonOptions,
+        new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( actionButtonOptions, {
           tandem: options.tandem.createTandem( 'actionButton3' )
-        } )
+        } ) )
       ]
     } );
 
@@ -216,5 +212,3 @@ export default class ExperimentGraphNode extends Node {
     super.dispose();
   }
 }
-
-photoelectricEffect.register( 'ExperimentGraphNode', ExperimentGraphNode );

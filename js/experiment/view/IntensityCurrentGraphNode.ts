@@ -15,7 +15,6 @@ import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import photoelectricEffect from '../../photoelectricEffect.js';
 import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './ExperimentGraphNode.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -64,5 +63,3 @@ const createPlaceholderDataSet = ( rangePair: { xRange: Range; yRange: Range } )
     new Vector2( rangePair.xRange.max, rangePair.yRange.max )
   ];
 };
-
-photoelectricEffect.register( 'IntensityCurrentGraphNode', IntensityCurrentGraphNode );
