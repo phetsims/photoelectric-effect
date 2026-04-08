@@ -21,6 +21,11 @@
     "supportsOutputJS": true,
     "simFeatures": {
       "supportsDynamicLocale": true
-    }
+    },
+    "screenNameKeys": [
+      "PHOTOELECTRIC_EFFECT/screen.intro",
+      "PHOTOELECTRIC_EFFECT/screen.experiment",
+      "PHOTOELECTRIC_EFFECT/screen.energy"
+    ]
   }
 }

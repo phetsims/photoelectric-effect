@@ -2,37 +2,45 @@
   "photoelectric-effect.title": {
     "value": "Photoelectric Effect"
   },
-  "screen.name": {
-    "value": "Photoelectric Effect"
+  "screen": {
+    "intro": {
+      "value": "Intro"
+    },
+    "experiment": {
+      "value": "Experiment"
+    },
+    "energy": {
+      "value": "Energy"
+    }
   },
-  "introScreen.workFunction.label": {
+  "workFunction.label": {
     "value": "Work Function (eV)"
   },
-  "introScreen.intensity.label": {
+  "intensity.label": {
     "value": "Light Intensity"
   },
-  "introScreen.wavelength.label": {
+  "wavelength.label": {
     "value": "Wavelength (nm)"
   },
-  "introScreen.voltage.label": {
+  "voltage.label": {
     "value": "Voltage (V)"
   },
-  "introScreen.current.label": {
+  "current.label": {
     "value": "Current (A)"
   },
-  "introScreen.debugLegend.title": {
+  "debugLegend.title": {
     "value": "Legend:"
   },
-  "introScreen.debugLegend.photons": {
+  "debugLegend.photons": {
     "value": "Yellow = photons"
   },
-  "introScreen.debugLegend.electrons": {
+  "debugLegend.electrons": {
     "value": "Cyan = electrons"
   },
-  "introScreen.debugLegend.target": {
+  "debugLegend.target": {
     "value": "Red outline = target"
   },
-  "introScreen.debugLegend.sink": {
+  "debugLegend.sink": {
     "value": "Blue outline = sink"
   },
   "preferences.mysteryMaterialLabel": {

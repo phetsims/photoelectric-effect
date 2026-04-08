@@ -68,7 +68,7 @@ export default class IntroScreenView extends ScreenView {
       material => material.materialType === MaterialType.CUSTOM );
 
     const workFunctionControl = new NumberControl(
-      PhotoelectricEffectFluent.introScreen.workFunction.labelStringProperty,
+      PhotoelectricEffectFluent.workFunction.labelStringProperty,
       workFunctionProperty,
       new Range( 0, 10 ),
       {
@@ -82,7 +82,7 @@ export default class IntroScreenView extends ScreenView {
     );
 
     const intensityControl = new NumberControl(
-      PhotoelectricEffectFluent.introScreen.intensity.labelStringProperty,
+      PhotoelectricEffectFluent.intensity.labelStringProperty,
       model.photonSource.intensityProperty,
       new Range( 0, 1 ),
       {
@@ -95,7 +95,7 @@ export default class IntroScreenView extends ScreenView {
     );
 
     const wavelengthControl = new NumberControl(
-      PhotoelectricEffectFluent.introScreen.wavelength.labelStringProperty,
+      PhotoelectricEffectFluent.wavelength.labelStringProperty,
       model.photonSource.wavelengthProperty,
       new Range(
         PhotoelectricEffectConstants.MIN_WAVELENGTH,
@@ -111,7 +111,7 @@ export default class IntroScreenView extends ScreenView {
     );
 
     const voltageControl = new NumberControl(
-      PhotoelectricEffectFluent.introScreen.voltage.labelStringProperty,
+      PhotoelectricEffectFluent.voltage.labelStringProperty,
       model.voltageProperty,
       new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
       {
@@ -136,7 +136,7 @@ export default class IntroScreenView extends ScreenView {
       spacing: 10,
       align: 'center',
       children: [
-        new Text( PhotoelectricEffectFluent.introScreen.current.labelStringProperty ),
+        new Text( PhotoelectricEffectFluent.current.labelStringProperty ),
         currentDisplay
       ]
     } );
@@ -173,11 +173,11 @@ export default class IntroScreenView extends ScreenView {
       spacing: 2,
       align: 'left',
       children: [
-        new Text( PhotoelectricEffectFluent.introScreen.debugLegend.titleStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.introScreen.debugLegend.photonsStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.introScreen.debugLegend.electronsStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.introScreen.debugLegend.targetStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.introScreen.debugLegend.sinkStringProperty, { fontSize: 12 } )
+        new Text( PhotoelectricEffectFluent.debugLegend.titleStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.photonsStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.electronsStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.targetStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.sinkStringProperty, { fontSize: 12 } )
       ]
     } );
     debugLegend.right = this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;

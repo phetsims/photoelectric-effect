@@ -12,6 +12,8 @@ import simLauncher from '../../joist/js/simLauncher.js';
 import Tandem from '../../tandem/js/Tandem.js';
 import PhotoelectricEffectMysteryMaterials from './common/model/PhotoelectricEffectMysteryMaterials.js';
 import PhotoelectricEffectPreferencesModel from './common/PhotoelectricEffectPreferencesModel.js';
+import EnergyScreen from './energy/EnergyScreen.js';
+import ExperimentScreen from './experiment/ExperimentScreen.js';
 import IntroScreen from './intro/IntroScreen.js';
 import PhotoelectricEffectFluent from './PhotoelectricEffectFluent.js';
 import './common/PhotoelectricEffectQueryParameters.js';
@@ -25,7 +27,18 @@ simLauncher.launch( () => {
   const preferencesModel = new PhotoelectricEffectPreferencesModel();
 
   const screens = [
-    new IntroScreen( PhotoelectricEffectMysteryMaterials.ALL_MYSTERY_MATERIALS, { tandem: Tandem.ROOT.createTandem( 'photoelectricEffectScreen' ) } )
+    new IntroScreen(
+      PhotoelectricEffectMysteryMaterials.ALL_MYSTERY_MATERIALS,
+      { tandem: Tandem.ROOT.createTandem( 'introScreen' ) }
+    ),
+    new ExperimentScreen(
+      PhotoelectricEffectMysteryMaterials.ALL_MYSTERY_MATERIALS,
+      { tandem: Tandem.ROOT.createTandem( 'experimentScreen' ) }
+    ),
+    new EnergyScreen(
+      PhotoelectricEffectMysteryMaterials.ALL_MYSTERY_MATERIALS,
+      { tandem: Tandem.ROOT.createTandem( 'energyScreen' ) }
+    )
   ];
 
   const options: SimOptions = {

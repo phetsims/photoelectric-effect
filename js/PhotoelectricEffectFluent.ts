@@ -6,6 +6,7 @@
 /* @formatter:off */
 
 import FluentLibrary from '../../chipper/js/browser-and-node/FluentLibrary.js';
+import FluentComment from '../../chipper/js/browser/FluentComment.js';
 import FluentContainer from '../../chipper/js/browser/FluentContainer.js';
 import photoelectricEffect from './photoelectricEffect.js';
 import PhotoelectricEffectStrings from './PhotoelectricEffectStrings.js';
@@ -24,17 +25,19 @@ const addToMapIfDefined = ( key: string, path: string ) => {
 };
 
 addToMapIfDefined( 'photoelectric_effect_title', 'photoelectric-effect.titleStringProperty' );
-addToMapIfDefined( 'screen_name', 'screen.nameStringProperty' );
-addToMapIfDefined( 'introScreen_workFunction_label', 'introScreen.workFunction.labelStringProperty' );
-addToMapIfDefined( 'introScreen_intensity_label', 'introScreen.intensity.labelStringProperty' );
-addToMapIfDefined( 'introScreen_wavelength_label', 'introScreen.wavelength.labelStringProperty' );
-addToMapIfDefined( 'introScreen_voltage_label', 'introScreen.voltage.labelStringProperty' );
-addToMapIfDefined( 'introScreen_current_label', 'introScreen.current.labelStringProperty' );
-addToMapIfDefined( 'introScreen_debugLegend_title', 'introScreen.debugLegend.titleStringProperty' );
-addToMapIfDefined( 'introScreen_debugLegend_photons', 'introScreen.debugLegend.photonsStringProperty' );
-addToMapIfDefined( 'introScreen_debugLegend_electrons', 'introScreen.debugLegend.electronsStringProperty' );
-addToMapIfDefined( 'introScreen_debugLegend_target', 'introScreen.debugLegend.targetStringProperty' );
-addToMapIfDefined( 'introScreen_debugLegend_sink', 'introScreen.debugLegend.sinkStringProperty' );
+addToMapIfDefined( 'screen_intro', 'screen.introStringProperty' );
+addToMapIfDefined( 'screen_experiment', 'screen.experimentStringProperty' );
+addToMapIfDefined( 'screen_energy', 'screen.energyStringProperty' );
+addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
+addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
+addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
+addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
+addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
+addToMapIfDefined( 'debugLegend_title', 'debugLegend.titleStringProperty' );
+addToMapIfDefined( 'debugLegend_photons', 'debugLegend.photonsStringProperty' );
+addToMapIfDefined( 'debugLegend_electrons', 'debugLegend.electronsStringProperty' );
+addToMapIfDefined( 'debugLegend_target', 'debugLegend.targetStringProperty' );
+addToMapIfDefined( 'debugLegend_sink', 'debugLegend.sinkStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialLabel', 'preferences.mysteryMaterialLabelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialDescription', 'preferences.mysteryMaterialDescriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionLabel', 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' );
@@ -53,36 +56,40 @@ const fluentSupport = new FluentContainer( createFluentFile, Array.from(fluentKe
 
 const PhotoelectricEffectFluent = {
   "photoelectric-effect": {
+    _comment_0: new FluentComment( {"comment":"Title","associatedKey":"photoelectric-effect.title"} ),
     titleStringProperty: _.get( PhotoelectricEffectStrings, 'photoelectric-effect.titleStringProperty' )
   },
+  _comment_0: new FluentComment( {"comment":"Screens","associatedKey":"screen"} ),
   screen: {
-    nameStringProperty: _.get( PhotoelectricEffectStrings, 'screen.nameStringProperty' )
+    introStringProperty: _.get( PhotoelectricEffectStrings, 'screen.introStringProperty' ),
+    experimentStringProperty: _.get( PhotoelectricEffectStrings, 'screen.experimentStringProperty' ),
+    energyStringProperty: _.get( PhotoelectricEffectStrings, 'screen.energyStringProperty' )
   },
-  introScreen: {
-    workFunction: {
-      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.workFunction.labelStringProperty' )
-    },
-    intensity: {
-      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.intensity.labelStringProperty' )
-    },
-    wavelength: {
-      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.wavelength.labelStringProperty' )
-    },
-    voltage: {
-      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.voltage.labelStringProperty' )
-    },
-    current: {
-      labelStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.current.labelStringProperty' )
-    },
-    debugLegend: {
-      titleStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.titleStringProperty' ),
-      photonsStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.photonsStringProperty' ),
-      electronsStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.electronsStringProperty' ),
-      targetStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.targetStringProperty' ),
-      sinkStringProperty: _.get( PhotoelectricEffectStrings, 'introScreen.debugLegend.sinkStringProperty' )
-    }
+  workFunction: {
+    _comment_0: new FluentComment( {"comment":"FOR DEBUGGING","associatedKey":"workFunction.label"} ),
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'workFunction.labelStringProperty' )
+  },
+  intensity: {
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.labelStringProperty' )
+  },
+  wavelength: {
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' )
+  },
+  voltage: {
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.labelStringProperty' )
+  },
+  current: {
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' )
+  },
+  debugLegend: {
+    titleStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.titleStringProperty' ),
+    photonsStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.photonsStringProperty' ),
+    electronsStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.electronsStringProperty' ),
+    targetStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.targetStringProperty' ),
+    sinkStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.sinkStringProperty' )
   },
   preferences: {
+    _comment_0: new FluentComment( {"comment":"Preferences PLACEHOLDERS","associatedKey":"preferences.mysteryMaterialLabel"} ),
     mysteryMaterialLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialLabelStringProperty' ),
     mysteryMaterialDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialDescriptionStringProperty' ),
     mysteryMaterialWorkFunctionLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' ),

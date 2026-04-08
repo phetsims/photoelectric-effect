@@ -26,7 +26,7 @@ export default class IntroScreen extends Screen<IntroModel, IntroScreenView> {
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectScreenOptions ) {
 
     const options = optionize<PhotoelectricEffectScreenOptions, SelfOptions, ScreenOptions>()( {
-      name: PhotoelectricEffectFluent.screen.nameStringProperty,
+      name: PhotoelectricEffectFluent.screen.introStringProperty,
 
       //TODO add default values for optional SelfOptions here
 

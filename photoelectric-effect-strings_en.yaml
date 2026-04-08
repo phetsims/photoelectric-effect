@@ -1,15 +1,25 @@
+# Title
 photoelectric-effect.title: 'Photoelectric Effect'
-screen.name: 'Photoelectric Effect'
-introScreen.workFunction.label: 'Work Function (eV)'
-introScreen.intensity.label: 'Light Intensity'
-introScreen.wavelength.label: 'Wavelength (nm)'
-introScreen.voltage.label: 'Voltage (V)'
-introScreen.current.label: 'Current (A)'
-introScreen.debugLegend.title: 'Legend:'
-introScreen.debugLegend.photons: 'Yellow = photons'
-introScreen.debugLegend.electrons: 'Cyan = electrons'
-introScreen.debugLegend.target: 'Red outline = target'
-introScreen.debugLegend.sink: 'Blue outline = sink'
+
+# Screens
+screen:
+  intro: 'Intro'
+  experiment: 'Experiment'
+  energy: 'Energy'
+
+# FOR DEBUGGING
+workFunction.label: 'Work Function (eV)'
+intensity.label: 'Light Intensity'
+wavelength.label: 'Wavelength (nm)'
+voltage.label: 'Voltage (V)'
+current.label: 'Current (A)'
+debugLegend.title: 'Legend:'
+debugLegend.photons: 'Yellow = photons'
+debugLegend.electrons: 'Cyan = electrons'
+debugLegend.target: 'Red outline = target'
+debugLegend.sink: 'Blue outline = sink'
+
+# Preferences PLACEHOLDERS
 preferences.mysteryMaterialLabel: 'Mystery Material'
 preferences.mysteryMaterialDescription: 'When enabled, adds a mystery material with a configurable work function to the available materials.'
 preferences.mysteryMaterialWorkFunctionLabel: 'Work Function (eV)'

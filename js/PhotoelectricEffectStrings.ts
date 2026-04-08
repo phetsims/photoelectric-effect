@@ -16,31 +16,31 @@ type StringsType = {
     'titleStringProperty': LocalizedStringProperty;
   };
   'screen': {
-    'nameStringProperty': LocalizedStringProperty;
+    'introStringProperty': LocalizedStringProperty;
+    'experimentStringProperty': LocalizedStringProperty;
+    'energyStringProperty': LocalizedStringProperty;
   };
-  'introScreen': {
-    'workFunction': {
-      'labelStringProperty': LocalizedStringProperty;
-    };
-    'intensity': {
-      'labelStringProperty': LocalizedStringProperty;
-    };
-    'wavelength': {
-      'labelStringProperty': LocalizedStringProperty;
-    };
-    'voltage': {
-      'labelStringProperty': LocalizedStringProperty;
-    };
-    'current': {
-      'labelStringProperty': LocalizedStringProperty;
-    };
-    'debugLegend': {
-      'titleStringProperty': LocalizedStringProperty;
-      'photonsStringProperty': LocalizedStringProperty;
-      'electronsStringProperty': LocalizedStringProperty;
-      'targetStringProperty': LocalizedStringProperty;
-      'sinkStringProperty': LocalizedStringProperty;
-    }
+  'workFunction': {
+    'labelStringProperty': LocalizedStringProperty;
+  };
+  'intensity': {
+    'labelStringProperty': LocalizedStringProperty;
+  };
+  'wavelength': {
+    'labelStringProperty': LocalizedStringProperty;
+  };
+  'voltage': {
+    'labelStringProperty': LocalizedStringProperty;
+  };
+  'current': {
+    'labelStringProperty': LocalizedStringProperty;
+  };
+  'debugLegend': {
+    'titleStringProperty': LocalizedStringProperty;
+    'photonsStringProperty': LocalizedStringProperty;
+    'electronsStringProperty': LocalizedStringProperty;
+    'targetStringProperty': LocalizedStringProperty;
+    'sinkStringProperty': LocalizedStringProperty;
   };
   'preferences': {
     'mysteryMaterialLabelStringProperty': LocalizedStringProperty;
