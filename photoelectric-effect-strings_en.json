@@ -13,6 +13,22 @@
       "value": "Energy"
     }
   },
+  "experiment": {
+    "graph": {
+      "voltageCurrentTitle": {
+        "value": "Voltage vs Current"
+      },
+      "intensityCurrentTitle": {
+        "value": "Intensity vs Current"
+      },
+      "frequencyEnergyTitle": {
+        "value": "Frequency vs Energy"
+      },
+      "actionButton": {
+        "value": "Graph action"
+      }
+    }
+  },
   "workFunction.label": {
     "value": "Work Function (eV)"
   },

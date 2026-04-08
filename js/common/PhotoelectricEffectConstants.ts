@@ -98,4 +98,13 @@ export default class PhotoelectricEffectConstants {
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
   public static readonly SCREEN_VIEW_Y_MARGIN = 15;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
+  public static readonly EXPERIMENT_GRAPH_CHART_WIDTH = 220;
+  public static readonly EXPERIMENT_GRAPH_CHART_HEIGHT = 120;
+  public static readonly EXPERIMENT_GRAPH_SPACING = 12;
+  public static readonly EXPERIMENT_GRAPH_BUTTON_COLUMN_SPACING = 10;
+  public static readonly EXPERIMENT_GRAPH_BUTTON_SPACING = 8;
+  public static readonly EXPERIMENT_GRAPH_BUTTON_WIDTH = 28;
+  public static readonly EXPERIMENT_GRAPH_BUTTON_HEIGHT = 20;
+  public static readonly EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN = 3;
+  public static readonly EXPERIMENT_GRAPH_TITLE_MARGIN = 4;
 }

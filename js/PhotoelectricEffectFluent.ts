@@ -28,6 +28,10 @@ addToMapIfDefined( 'photoelectric_effect_title', 'photoelectric-effect.titleStri
 addToMapIfDefined( 'screen_intro', 'screen.introStringProperty' );
 addToMapIfDefined( 'screen_experiment', 'screen.experimentStringProperty' );
 addToMapIfDefined( 'screen_energy', 'screen.energyStringProperty' );
+addToMapIfDefined( 'experiment_graph_voltageCurrentTitle', 'experiment.graph.voltageCurrentTitleStringProperty' );
+addToMapIfDefined( 'experiment_graph_intensityCurrentTitle', 'experiment.graph.intensityCurrentTitleStringProperty' );
+addToMapIfDefined( 'experiment_graph_frequencyEnergyTitle', 'experiment.graph.frequencyEnergyTitleStringProperty' );
+addToMapIfDefined( 'experiment_graph_actionButton', 'experiment.graph.actionButtonStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
@@ -62,8 +66,18 @@ const PhotoelectricEffectFluent = {
   _comment_0: new FluentComment( {"comment":"Screens","associatedKey":"screen"} ),
   screen: {
     introStringProperty: _.get( PhotoelectricEffectStrings, 'screen.introStringProperty' ),
+    _comment_0: new FluentComment( {"comment":"Experiment graphs","associatedKey":"experiment"} ),
     experimentStringProperty: _.get( PhotoelectricEffectStrings, 'screen.experimentStringProperty' ),
     energyStringProperty: _.get( PhotoelectricEffectStrings, 'screen.energyStringProperty' )
+  },
+  _comment_1: new FluentComment( {"comment":"Experiment graphs","associatedKey":"experiment"} ),
+  experiment: {
+    graph: {
+      voltageCurrentTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.voltageCurrentTitleStringProperty' ),
+      intensityCurrentTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.intensityCurrentTitleStringProperty' ),
+      frequencyEnergyTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.frequencyEnergyTitleStringProperty' ),
+      actionButtonStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.actionButtonStringProperty' )
+    }
   },
   workFunction: {
     _comment_0: new FluentComment( {"comment":"FOR DEBUGGING","associatedKey":"workFunction.label"} ),

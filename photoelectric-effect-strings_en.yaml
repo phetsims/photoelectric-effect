@@ -7,6 +7,14 @@ screen:
   experiment: 'Experiment'
   energy: 'Energy'
 
+# Experiment graphs
+experiment:
+  graph:
+    voltageCurrentTitle: 'Voltage vs Current'
+    intensityCurrentTitle: 'Intensity vs Current'
+    frequencyEnergyTitle: 'Frequency vs Energy'
+    actionButton: 'Graph action'
+
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Light Intensity'
