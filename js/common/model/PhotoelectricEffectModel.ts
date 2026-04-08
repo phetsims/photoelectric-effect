@@ -21,7 +21,6 @@ import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
-import PhotoelectricEffectModelConfig from './PhotoelectricEffectModelConfig.js';
 import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon from './Photon.js';
 import PhotonSource from './PhotonSource.js';
@@ -161,10 +160,10 @@ export default class PhotoelectricEffectModel implements TModel {
 
     if ( wholePhotons > 0 ) {
       for ( let i = 0; i < wholePhotons; i++ ) {
-        const position = PhotoelectricEffectModelConfig.PHOTON_SOURCE_POSITION.copy();
-        const angle = ( dotRandom.nextDouble() - 0.5 ) * PhotoelectricEffectModelConfig.PHOTON_SOURCE_FANOUT_ANGLE;
-        const direction = PhotoelectricEffectModelConfig.PHOTON_SOURCE_DIRECTION.rotated( angle );
-        const velocity = direction.timesScalar( PhotoelectricEffectModelConfig.PHOTON_SPEED );
+        const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.copy();
+        const angle = ( dotRandom.nextDouble() - 0.5 ) * PhotoelectricEffectConstants.PHOTON_SOURCE_FANOUT_ANGLE;
+        const direction = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.rotated( angle );
+        const velocity = direction.timesScalar( PhotoelectricEffectConstants.PHOTON_SPEED );
         const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
         this.photons.push( photon );
       }
@@ -193,7 +192,7 @@ export default class PhotoelectricEffectModel implements TModel {
       }
 
       // Cull photons that have hit the target or left the model bounds to keep the simulation finite.
-      const inBounds = PhotoelectricEffectModelConfig.MODEL_BOUNDS.containsPoint( photon.getPosition() );
+      const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( photon.getPosition() );
       if ( !hitTarget && inBounds ) {
         nextPhotons.push( photon );
       }
@@ -225,7 +224,7 @@ export default class PhotoelectricEffectModel implements TModel {
 
         // Check whether the electron is absorbed by the sink (e.g. anode).
         const absorbed = this.handleElectronSinkCollision( electron );
-        const inBounds = PhotoelectricEffectModelConfig.MODEL_BOUNDS.containsPoint( electron.getPosition() );
+        const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( electron.getPosition() );
 
         // Keep only electrons that are neither absorbed nor out of bounds.
         if ( !absorbed && inBounds ) {
@@ -245,7 +244,7 @@ export default class PhotoelectricEffectModel implements TModel {
   private getElectronAcceleration(): Vector2 {
     const accelerationMagnitude = ( this.voltageProperty.value *
                                     PhotoelectricEffectConstants.ELECTRON_ACCELERATION_SCALE ) /
-                                  PhotoelectricEffectModelConfig.PLATE_SEPARATION;
+                                  PhotoelectricEffectConstants.PLATE_SEPARATION;
     return new Vector2( accelerationMagnitude, 0 );
   }
 

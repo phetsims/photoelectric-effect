@@ -7,6 +7,9 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import Bounds2 from '../../../dot/js/Bounds2.js';
+import Vector2 from '../../../dot/js/Vector2.js';
+
 export default class PhotoelectricEffectConstants {
 
   private constructor() {
@@ -16,6 +19,33 @@ export default class PhotoelectricEffectConstants {
   //--------------------------------------------------------------
   // MODEL CONSTANTS
   //--------------------------------------------------------------
+
+  // Bounds of the target plate in model coordinates.
+  public static readonly TARGET_BOUNDS = new Bounds2( 0, -40, 5, 40 );
+
+  // Bounds of the sink plate in model coordinates.
+  public static readonly SINK_BOUNDS = new Bounds2( 150, -40, 155, 40 );
+
+  // Overall model bounds for the play area.
+  public static readonly MODEL_BOUNDS = new Bounds2( -200, -120, 200, 120 );
+
+  // Photon emission origin, positioned above and to the right of the target.
+  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 120, 80 );
+
+  // Direction from the source toward the target center.
+  public static readonly PHOTON_SOURCE_DIRECTION = PhotoelectricEffectConstants.TARGET_BOUNDS.getCenter()
+    .minus( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION ).normalized();
+
+  // Half-angle fan-out (in radians) for emitted photon directions.
+  public static readonly PHOTON_SOURCE_FANOUT_ANGLE = 45 * Math.PI / 180;
+
+  // Photon speed in model units per second.
+  public static readonly PHOTON_SPEED = 200;
+
+  // Distance between plate centers, used for potential/field calculations.
+  public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.SINK_BOUNDS.getCenterX() -
+                                            PhotoelectricEffectConstants.TARGET_BOUNDS.getCenterX();
+
   // Factor to scale analytically reported current from photons-per-second.
   public static readonly CURRENT_JIMMY_FACTOR = 0.015;
 

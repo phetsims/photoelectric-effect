@@ -13,7 +13,7 @@ import Battery from '../../common/model/Battery.js';
 import Electron from '../../common/model/Electron.js';
 import Material from '../../common/model/Material.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
-import PhotoelectricEffectModelConfig from '../../common/model/PhotoelectricEffectModelConfig.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import Sink from '../../common/model/Sink.js';
 
 export default class IntroModel extends PhotoelectricEffectModel {
@@ -33,7 +33,7 @@ export default class IntroModel extends PhotoelectricEffectModel {
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
     super( mysteryMaterials, providedOptions );
 
-    this.sink = new Sink( PhotoelectricEffectModelConfig.SINK_BOUNDS, providedOptions.tandem.createTandem( 'sink' ) );
+    this.sink = new Sink( PhotoelectricEffectConstants.SINK_BOUNDS, providedOptions.tandem.createTandem( 'sink' ) );
     this.battery = new Battery( providedOptions.tandem );
   }
 

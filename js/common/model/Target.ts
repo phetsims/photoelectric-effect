@@ -19,7 +19,7 @@ import Tandem from '../../../../tandem/js/Tandem.js';
 import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
 import Particle from './Particle.js';
-import PhotoelectricEffectModelConfig from './PhotoelectricEffectModelConfig.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Photon from './Photon.js';
 
 export default class Target {
@@ -67,7 +67,7 @@ export default class Target {
       derive: 'workFunctionProperty'
     } );
 
-    this.bounds = PhotoelectricEffectModelConfig.TARGET_BOUNDS;
+    this.bounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
   }
 
   /**

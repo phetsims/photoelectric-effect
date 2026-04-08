@@ -14,9 +14,9 @@ import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
-import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
+import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Circle from '../../../../scenery/js/nodes/Circle.js';
@@ -24,14 +24,13 @@ import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import ComboBox from '../../../../sun/js/ComboBox.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
-import PhotoelectricEffectModelConfig from '../../common/model/PhotoelectricEffectModelConfig.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type SelfOptions = {
- //TODO add options that are specific to PhotoelectricEffectScreenView here
+  //TODO add options that are specific to PhotoelectricEffectScreenView here
 };
 
 type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
@@ -44,8 +43,7 @@ export default class IntroScreenView extends ScreenView {
 
   public constructor( model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
-    const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {
-    }, providedOptions );
+    const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
 
     super( options );
     this.model = model;
@@ -191,8 +189,8 @@ export default class IntroScreenView extends ScreenView {
     this.particleLayer = new Node();
     this.addChild( this.particleLayer );
 
-    const targetBounds = PhotoelectricEffectModelConfig.TARGET_BOUNDS;
-    const sinkBounds = PhotoelectricEffectModelConfig.SINK_BOUNDS;
+    const targetBounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
+    const sinkBounds = PhotoelectricEffectConstants.SINK_BOUNDS;
     this.particleLayer.addChild( this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' ) );
     this.particleLayer.addChild( this.createBoundsRectangle( sinkBounds, 'rgba(0,0,255,0.6)' ) );
   }
@@ -215,8 +213,8 @@ export default class IntroScreenView extends ScreenView {
   private updateParticleDebug( model: PhotoelectricEffectModel ): void {
     this.particleLayer.removeAllChildren();
 
-    const targetBounds = PhotoelectricEffectModelConfig.TARGET_BOUNDS;
-    const sinkBounds = PhotoelectricEffectModelConfig.SINK_BOUNDS;
+    const targetBounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
+    const sinkBounds = PhotoelectricEffectConstants.SINK_BOUNDS;
     this.particleLayer.addChild( this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' ) );
     this.particleLayer.addChild( this.createBoundsRectangle( sinkBounds, 'rgba(0,0,255,0.6)' ) );
 
