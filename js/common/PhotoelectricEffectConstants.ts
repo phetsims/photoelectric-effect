@@ -13,10 +13,9 @@ export default class PhotoelectricEffectConstants {
     // Not intended for instantiation.
   }
 
-  public static readonly SCREEN_VIEW_X_MARGIN = 15;
-  public static readonly SCREEN_VIEW_Y_MARGIN = 15;
-  public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
-
+  //--------------------------------------------------------------
+  // MODEL CONSTANTS
+  //--------------------------------------------------------------
   // Factor to scale analytically reported current from photons-per-second.
   public static readonly CURRENT_JIMMY_FACTOR = 0.015;
 
@@ -56,4 +55,11 @@ export default class PhotoelectricEffectConstants {
 
   // Acceleration scale from voltage to model units (model units per V*s^2).
   public static readonly ELECTRON_ACCELERATION_SCALE = 100.2865;
+
+  //--------------------------------------------------------------
+  // VIEW CONSTANTS
+  //--------------------------------------------------------------
+  public static readonly SCREEN_VIEW_X_MARGIN = 15;
+  public static readonly SCREEN_VIEW_Y_MARGIN = 15;
+  public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 }
