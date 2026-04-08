@@ -5,6 +5,7 @@
  * It wires sim-specific Preferences dialog content into the shared PreferencesModel.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import PreferencesModel from '../../../../joist/js/preferences/PreferencesModel.js';

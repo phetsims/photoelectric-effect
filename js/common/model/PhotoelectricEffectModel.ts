@@ -5,6 +5,7 @@
  * Owns the photon and electron collections and computes analytic current.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';

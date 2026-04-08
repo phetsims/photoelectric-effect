@@ -4,6 +4,7 @@
  * MysteryMaterialControl is a preferences control that toggles the mystery material on and off in the sim.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import PreferencesControl, { PreferencesControlOptions } from '../../../../joist/js/preferences/PreferencesControl.js';

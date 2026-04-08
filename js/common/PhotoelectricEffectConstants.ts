@@ -4,6 +4,7 @@
  * PhotoelectricEffectConstants is the set of constants used throughout the photoelectric effect simulation.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 export default class PhotoelectricEffectConstants {

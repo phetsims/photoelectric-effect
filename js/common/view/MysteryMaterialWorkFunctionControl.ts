@@ -5,6 +5,7 @@
  * of the mystery material via a NumberControl.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import PreferencesControl, { PreferencesControlOptions } from '../../../../joist/js/preferences/PreferencesControl.js';

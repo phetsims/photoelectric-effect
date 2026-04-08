@@ -5,6 +5,7 @@
  * Includes wavelength/energy conversions used across the model.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';

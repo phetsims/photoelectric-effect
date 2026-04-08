@@ -6,6 +6,7 @@
  * shared with the model so that Preferences UI updates propagate to all screens.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';

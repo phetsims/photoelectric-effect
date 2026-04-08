@@ -4,6 +4,7 @@
  * Main entry point for the sim.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import Sim, { SimOptions } from '../../joist/js/Sim.js';

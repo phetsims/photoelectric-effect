@@ -13,6 +13,7 @@
  * All mystery materials are passed down to the sim's screens via photoelectric-effect-main.ts.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import Tandem from '../../../../tandem/js/Tandem.js';

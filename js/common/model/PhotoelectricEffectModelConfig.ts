@@ -5,6 +5,7 @@
  * Values are placeholders until view-aligned geometry is finalized.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import Bounds2 from '../../../../dot/js/Bounds2.js';
