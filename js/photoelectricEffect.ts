@@ -3,7 +3,7 @@
 /**
  * Creates the namespace for this simulation.
  *
- * @author Marla A. Schulz
+ * @author Marla Schulz (PhET Interactive Simulations)
  */
 
 import Namespace from '../../phet-core/js/Namespace.js';

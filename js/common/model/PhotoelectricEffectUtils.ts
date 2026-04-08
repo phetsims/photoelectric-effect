@@ -4,7 +4,7 @@
  * Shared physics utilities for the photoelectric effect model.
  * Includes wavelength/energy conversions used across the model.
  *
- * @author Marla A. Schulz (PhET Interactive Simulations)
+ * @author Marla Schulz (PhET Interactive Simulations)
  */
 
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';

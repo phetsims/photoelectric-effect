@@ -4,7 +4,7 @@
  * Geometry and placement constants for the photoelectric effect model.
  * Values are placeholders until view-aligned geometry is finalized.
  *
- * @author Marla A. Schulz (PhET Interactive Simulations)
+ * @author Marla Schulz (PhET Interactive Simulations)
  */
 
 import Bounds2 from '../../../../dot/js/Bounds2.js';

@@ -4,7 +4,7 @@
  * Defines query parameters that are specific to this simulation.
  * Run with ?log to print query parameters and their values to the browser console at startup.
  *
- * @author Marla A. Schulz
+ * @author Marla Schulz (PhET Interactive Simulations)
  */
 
 import logGlobal from '../../../phet-core/js/logGlobal.js';

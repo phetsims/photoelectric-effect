@@ -3,7 +3,7 @@
 /**
  * TODO Describe this class and its responsibilities.
  *
- * @author Marla A. Schulz
+ * @author Marla Schulz (PhET Interactive Simulations)
  */
 
 import Screen, { ScreenOptions } from '../../../joist/js/Screen.js';

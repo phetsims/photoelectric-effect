@@ -4,7 +4,7 @@
  * Particle-based photoelectric effect model.
  * Owns the photon and electron collections and computes analytic current.
  *
- * @author Marla A. Schulz (PhET Interactive Simulations)
+ * @author Marla Schulz (PhET Interactive Simulations)
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
