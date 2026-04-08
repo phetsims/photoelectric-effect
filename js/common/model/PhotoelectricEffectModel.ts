@@ -36,44 +36,31 @@ export type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioO
 
 export default class PhotoelectricEffectModel implements TModel {
 
-  /**
-   * Active photons in the model.
-   */
+  // Active photons in the model.
   public readonly photons: Photon[] = [];
 
-  /**
-   * Active electrons in the model.
-   */
+  // Active electrons in the model.
   public readonly electrons: Electron[] = [];
 
-  /**
-   * Target plate that emits electrons.
-   */
+  // Target plate that emits electrons.
   public readonly target: Target;
 
-  /**
-   * Photon source that emits toward the target.
-   */
+  // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
 
-  /**
-   * Voltage across the plates in model units.
-   */
+  // Voltage across the plates in model units.
   public readonly voltageProperty: NumberProperty;
 
-  /**
-   * Wavelength of emitted photons in nanometers.
-   */
+  // Wavelength of emitted photons in nanometers.
   public readonly wavelengthProperty: NumberProperty;
 
-  /**
-   * Derived analytic current based on model settings.
-   */
+  // Derived analytic current based on model settings.
   public readonly currentProperty: TReadOnlyProperty<number>;
 
-  /**
-   * Accumulates fractional photon emissions between steps.
-   */
+  // Accumulates fractional photon emissions between steps.
+  // Physics-wise, the light intensity defines a continuous photon flux (photons/second), while the model
+  // emits discrete photons each step. The accumulator carries the fractional remainder so the time-integrated
+  // photon count matches the continuous flux and does not drift with the chosen time step.
   private photonEmissionAccumulator = 0;
 
   /**
@@ -106,7 +93,6 @@ export default class PhotoelectricEffectModel implements TModel {
     this.photonSource = new PhotonSource( {
       tandem: providedOptions.tandem.createTandem( 'photonSource' )
     } );
-
 
     this.voltageProperty = new NumberProperty( 0, {
       range: new Range( PhotoelectricEffectConstants.MIN_VOLTAGE,
@@ -193,8 +179,11 @@ export default class PhotoelectricEffectModel implements TModel {
 
     for ( let i = 0; i < this.photons.length; i++ ) {
       const photon = this.photons[ i ];
+
+      // Advance photon kinematics first so collision checks use updated positions.
       photon.step( dt );
 
+      // Check for target collisions, which may emit an electron and removes the photon from the beam.
       const hitTarget = this.target.isHitByPhoton( photon );
       if ( hitTarget ) {
         const electron = this.target.handlePhotonCollision( photon );
@@ -203,12 +192,15 @@ export default class PhotoelectricEffectModel implements TModel {
         }
       }
 
+      // Cull photons that have hit the target or left the model bounds to keep the simulation finite.
       const inBounds = PhotoelectricEffectModelConfig.MODEL_BOUNDS.containsPoint( photon.getPosition() );
       if ( !hitTarget && inBounds ) {
         nextPhotons.push( photon );
       }
     }
 
+    // Replace the active list to reflect collisions and out-of-bounds pruning this step.
+    // Note, if performance becomes an issue, consider in-place compaction.
     this.photons.length = 0;
     this.photons.push( ...nextPhotons );
   }
@@ -222,20 +214,27 @@ export default class PhotoelectricEffectModel implements TModel {
 
     for ( let i = 0; i < this.electrons.length; i++ ) {
       const electron = this.electrons[ i ];
+
+      // Update electron acceleration and advance kinematics for this time step.
       electron.setAcceleration( acceleration );
       electron.step( dt );
 
+      // Check for target collisions; only electrons that avoid the target can reach the sink.
       const hitTarget = this.target.isHitByElectron( electron );
       if ( !hitTarget ) {
+
+        // Check whether the electron is absorbed by the sink (e.g. anode).
         const absorbed = this.handleElectronSinkCollision( electron );
         const inBounds = PhotoelectricEffectModelConfig.MODEL_BOUNDS.containsPoint( electron.getPosition() );
 
+        // Keep only electrons that are neither absorbed nor out of bounds.
         if ( !absorbed && inBounds ) {
           nextElectrons.push( electron );
         }
       }
     }
 
+    // Replace the active list to reflect collisions, absorption, and bounds pruning this step.
     this.electrons.length = 0;
     this.electrons.push( ...nextElectrons );
   }
@@ -258,14 +257,20 @@ export default class PhotoelectricEffectModel implements TModel {
     let electronsPerSecondFromTarget = 0;
     let electronsPerSecondToAnode = 0;
 
+    // Compute how much photon energy exceeds the work function; this bounds emission likelihood.
     const photonEnergyBeyondWorkFunction = wavelengthToEnergy( wavelength ) - workFunction;
+
+    // Convert excess energy into a fraction of photons that can liberate electrons (capped at 1).
     const electronRateAsFractionOfPhotonRate = Math.min(
       photonEnergyBeyondWorkFunction / Material.TOTAL_ENERGY_DEPTH,
       1
     );
     electronsPerSecondFromTarget = electronRateAsFractionOfPhotonRate * photonsPerSecond;
 
+    // Retarding voltage reduces the fraction of emitted electrons that reach the anode.
     const retardingVoltage = voltage < 0 ? -voltage : 0;
+
+    // Only electrons with enough energy to overcome the retarding voltage contribute to current.
     const fractionMoreEnergeticThanRetardingVoltage = Math.max(
       0,
       Math.min( ( photonEnergyBeyondWorkFunction - retardingVoltage ) /
@@ -273,18 +278,12 @@ export default class PhotoelectricEffectModel implements TModel {
     );
     electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
 
+    // Implementation choice: treat sub-1 counts as zero to avoid tiny non-physical current readouts.
     if ( electronsPerSecondToAnode < 1 ) {
       electronsPerSecondToAnode = 0;
     }
 
+    // "Jimmy factor" scales model output to match the sim's calibrated current display.
     return electronsPerSecondToAnode * PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR;
-  }
-
-  /**
-   * Returns the stopping voltage for the given photon energy and work function.
-   */
-  private getStoppingVoltage( wavelength: number, workFunction: number ): number {
-    const photonEnergy = wavelengthToEnergy( wavelength );
-    return workFunction - photonEnergy;
   }
 }
