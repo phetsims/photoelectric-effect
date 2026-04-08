@@ -16,6 +16,7 @@ import PhotoelectricEffectMysteryMaterials from './PhotoelectricEffectMysteryMat
 // Range of valid work function values, in eV.
 const MYSTERY_MATERIAL_WORK_FUNCTION_RANGE = new Range( 1.5, 7.0 );
 
+// TODO: Convert to a class for accessibility modifiers.
 const PhotoelectricEffectPreferences = {
 
   // Whether the mystery material is available in the materials list.

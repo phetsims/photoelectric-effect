@@ -43,16 +43,10 @@ export class MaterialType extends EnumerationValue {
   public static readonly enumeration = new Enumeration( MaterialType );
 
   /**
-   * Initial work function value in eV for this material type.
-   */
-  public readonly workFunctionInitialValue: number;
-
-  /**
    * @param workFunctionInitialValue - initial work function value in eV for this material type
    */
-  public constructor( workFunctionInitialValue: number ) {
+  public constructor( public readonly workFunctionInitialValue: number ) {
     super();
-    this.workFunctionInitialValue = workFunctionInitialValue;
   }
 }
 

@@ -16,16 +16,12 @@ import Particle from './Particle.js';
 export default class Sink {
 
   /**
-   * Bounds of the sink plate in model coordinates.
-   * Used for collision detection with emitted electrons.
-   */
-  public readonly bounds: Bounds2;
-
-  /**
    * Creates a sink plate with fixed bounds.
+   *
+   * @param bounds - Bounds of the sink plate in model coordinates.
+   * @param _tandem (TODO, unused for now)
    */
-  public constructor( bounds: Bounds2, _tandem: Tandem ) {
-    this.bounds = bounds;
+  public constructor( public readonly bounds: Bounds2, _tandem: Tandem ) {
   }
 
   /**

@@ -14,37 +14,24 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 export default abstract class Particle {
 
   /**
-   * Current particle position in model coordinates.
-   */
-  protected position: Vector2;
-
-  /**
-   * Current particle velocity in model units per second.
-   */
-  protected velocity: Vector2;
-
-  /**
-   * Current particle acceleration in model units per second squared.
-   */
-  protected acceleration: Vector2;
-
-  /**
-   * Particle position from the previous step.
-   */
-  protected previousPosition: Vector2;
-
-  /**
    * Creates a particle with initial kinematics.
+   *
+   * @param position - Current particle position in model coordinates.
+   * @param velocity - Current particle velocity in model units per second.
+   * @param acceleration - Current particle acceleration in model units per second squared.
+   * @param previousPosition - Particle position from the previous step.
    */
-  protected constructor( position: Vector2, velocity: Vector2, acceleration: Vector2 ) {
-    this.position = position;
-    this.velocity = velocity;
-    this.acceleration = acceleration;
-    this.previousPosition = position;
+  protected constructor(
+    protected position: Vector2,
+    protected velocity: Vector2,
+    protected acceleration: Vector2,
+    protected previousPosition: Vector2 = position
+  ) {
   }
 
   /**
    * Returns the current particle position.
+   * TODO: Remove these?
    */
   public getPosition(): Vector2 {
     return this.position;

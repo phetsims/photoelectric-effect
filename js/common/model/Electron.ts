@@ -15,16 +15,20 @@ import Particle from './Particle.js';
 export default class Electron extends Particle {
 
   /**
-   * Energy of the electron in model units.
-   */
-  public readonly energy: number;
-
-  /**
    * Creates an electron with initial kinematics and energy.
+   *
+   * @param position - Initial position in model coordinates.
+   * @param velocity - Initial velocity in model coordinates.
+   * @param acceleration - Initial acceleration in model coordinates.
+   * @param energy - Energy of the electron in model units.
    */
-  public constructor( position: Vector2, velocity: Vector2, acceleration: Vector2, energy: number ) {
+  public constructor(
+    position: Vector2,
+    velocity: Vector2,
+    acceleration: Vector2,
+    public readonly energy: number
+  ) {
     super( position, velocity, acceleration );
-    this.energy = energy;
   }
 
   /**
@@ -34,7 +38,7 @@ export default class Electron extends Particle {
     this.acceleration = acceleration;
   }
 
-    /**
+  /**
    * Computes the electron speed from kinetic energy using a uniform mapping.
    * Uses the analytic kinetic-energy relationship and then applies a scale factor
    * so the resulting speed matches the tuned legacy behavior.

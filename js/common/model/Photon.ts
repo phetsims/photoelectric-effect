@@ -15,16 +15,20 @@ import { wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 export default class Photon extends Particle {
 
   /**
-   * Wavelength of the photon in nanometers.
-   */
-  public readonly wavelength: number;
-
-  /**
    * Creates a photon with initial kinematics and wavelength.
+   *
+   * @param position
+   * @param velocity
+   * @param acceleration
+   * @param wavelength - Wavelength of the photon in nanometers.
    */
-  public constructor( position: Vector2, velocity: Vector2, acceleration: Vector2, wavelength: number ) {
+  public constructor(
+    position: Vector2,
+    velocity: Vector2,
+    acceleration: Vector2,
+    public readonly wavelength: number
+  ) {
     super( position, velocity, acceleration );
-    this.wavelength = wavelength;
   }
 
   /**
