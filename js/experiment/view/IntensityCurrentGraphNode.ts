@@ -23,6 +23,9 @@ export type IntensityCurrentGraphNodeOptions = SelfOptions & NodeOptions;
 
 export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
 
+  /**
+   * @param providedOptions - Node options for layout and instrumentation.
+   */
   public constructor( providedOptions?: IntensityCurrentGraphNodeOptions ) {
 
     const zoomRangePairs = [
@@ -57,6 +60,11 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
   }
 }
 
+/**
+ * Creates a simple two-point line that spans the provided ranges.
+ *
+ * @param rangePair - Model ranges used to define the line endpoints.
+ */
 const createPlaceholderDataSet = ( rangePair: { xRange: Range; yRange: Range } ): Vector2[] => {
   return [
     new Vector2( rangePair.xRange.min, rangePair.yRange.min ),

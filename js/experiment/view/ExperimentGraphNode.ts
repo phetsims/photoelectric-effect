@@ -1,9 +1,10 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * ExperimentGraphNode renders a placeholder chart for the Experiment screen with an expandable frame
- * and a shared right-side button column. It owns the chart transform and a zoomLevelProperty so each
- * graph can predefine zoom presets even before any zoom UI is attached.
+ * ExperimentGraphNode renders a shared chart layout for Experiment screen graphs, including the
+ * expandable frame, grid lines, and the right-side action button column. It owns the chart transform
+ * and zoom level state so subclasses can define model ranges even before any zoom UI is attached.
+ * It also exposes a single entry point for updating the plotted data set.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -38,10 +39,20 @@ type ZoomRangePair = {
 };
 
 type SelfOptions = {
+
+  // Optional title displayed above the chart. Null hides the title node.
   titleStringProperty?: TReadOnlyProperty<string> | null;
+
+  // Initial data set for the line plot. Use null entries to break segments.
   dataSet?: ( Vector2 | null )[];
+
+  // Zoom presets mapped to the zoomLevelProperty (1-based).
   zoomRangePairs?: ZoomRangePair[];
+
+  // Horizontal grid spacing in model units.
   gridXSpacing?: number;
+
+  // Vertical grid spacing in model units.
   gridYSpacing?: number;
 };
 
@@ -52,11 +63,21 @@ export default class ExperimentGraphNode extends Node {
   // Zoom level that controls the chart's model ranges.
   public readonly zoomLevelProperty: NumberProperty;
 
+  // Whether the chart content row is visible.
   private readonly expandedProperty: BooleanProperty;
+
+  // Translates model coordinates to chart view coordinates.
   private readonly chartTransform: ChartTransform;
+
+  // Plot rendering for the current data set.
   private readonly linePlot: LinePlot;
+
+  // Disposes listeners and owned resources.
   private readonly disposeExperimentGraphNode: () => void;
 
+  /**
+   * @param providedOptions - Overrides for the graph layout, data, and instrumentation.
+   */
   public constructor( providedOptions?: ExperimentGraphNodeOptions ) {
 
     const options = optionize<ExperimentGraphNodeOptions, SelfOptions, NodeOptions>()( {
@@ -175,7 +196,9 @@ export default class ExperimentGraphNode extends Node {
     } ) : null;
 
     this.addChild( contentRow );
-    titleText && this.addChild( titleText );
+    if ( titleText ) {
+      this.addChild( titleText );
+    }
     this.addChild( expandCollapseButton );
 
     const expandedObserver = ( expanded: boolean ) => {
@@ -202,11 +225,16 @@ export default class ExperimentGraphNode extends Node {
 
   /**
    * Updates the line plot data set.
+   *
+   * @param dataSet - Model data points in chart coordinates. Use null entries to break segments.
    */
   public setDataSet( dataSet: ( Vector2 | null )[] ): void {
     this.linePlot.setDataSet( dataSet );
   }
 
+  /**
+   * Releases listeners and owned graph resources.
+   */
   public override dispose(): void {
     this.disposeExperimentGraphNode();
     super.dispose();
