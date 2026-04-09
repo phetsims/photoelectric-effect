@@ -24,15 +24,19 @@ import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
-import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
+import CameraButton from '../../../../scenery-phet/js/buttons/CameraButton.js';
+import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
+import SceneryPhetFluent from '../../../../scenery-phet/js/SceneryPhetFluent.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
+import infoCircleSolidShape from '../../../../sun/js/shapes/infoCircleSolidShape.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -319,29 +323,38 @@ export default class ExperimentGraphNode extends Node {
       tandem: options.tandem.createTandem( 'expandCollapseButton' )
     } );
 
+    const actionButtonSideLength = Math.max(
+      PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_WIDTH,
+      PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_HEIGHT
+    );
     const actionButtonOptions = {
-      size: new Dimension2(
-        PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_WIDTH,
-        PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_HEIGHT
-      ),
+      size: new Dimension2( actionButtonSideLength, actionButtonSideLength ),
+      baseColor: 'white',
       accessibleName: PhotoelectricEffectFluent.experiment.graph.actionButtonStringProperty
     };
+
+    const infoButton = new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
+      content: new Path( infoCircleSolidShape, {
+        fill: 'rgb( 41, 106, 163 )',
+        scale: 1.45
+      } ),
+      accessibleName: SceneryPhetFluent.a11y.infoStringProperty,
+      tandem: options.tandem.createTandem( 'infoButton' )
+    } ) );
+    infoButton.setPDOMAttribute( 'aria-haspopup', true );
 
     const buttonColumn = new VBox( {
       spacing: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_SPACING,
       align: 'center',
       children: [
-        new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( actionButtonOptions, {
+        new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
           tandem: options.tandem.createTandem( 'actionButton1' )
         } ) ),
-        new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( actionButtonOptions, {
+        new CameraButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
           tandem: options.tandem.createTandem( 'actionButton2' )
         } ) ),
-        new InfoButton( {
-          scale: 0.5,
-          tandem: options.tandem.createTandem( 'infoButton' )
-        } ),
-        new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( actionButtonOptions, {
+        infoButton,
+        new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
           tandem: options.tandem.createTandem( 'actionButton3' )
         } ) )
       ]
