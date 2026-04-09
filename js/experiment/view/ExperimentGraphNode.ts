@@ -15,31 +15,32 @@ import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
 import GridLineSet from '../../../../bamboo/js/GridLineSet.js';
 import LinePlot from '../../../../bamboo/js/LinePlot.js';
-import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
 import TickLabelSet from '../../../../bamboo/js/TickLabelSet.js';
+import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Range from '../../../../dot/js/Range.js';
 import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
-import CameraButton from '../../../../scenery-phet/js/buttons/CameraButton.js';
+import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
-import SceneryPhetFluent from '../../../../scenery-phet/js/SceneryPhetFluent.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
+import SceneryPhetFluent from '../../../../scenery-phet/js/SceneryPhetFluent.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
+import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import infoCircleSolidShape from '../../../../sun/js/shapes/infoCircleSolidShape.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type ZoomRangePair = {
   xRange: Range;
@@ -107,6 +108,9 @@ export default class ExperimentGraphNode extends Node {
       rangePaddingFraction: 0.05,
       tandem: Tandem.REQUIRED
     }, providedOptions );
+
+    affirm( options.tandem, 'Tandem is required for type checking.' );
+    const tandem = options.tandem;
 
     super( options );
 
@@ -327,10 +331,11 @@ export default class ExperimentGraphNode extends Node {
       PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_WIDTH,
       PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_HEIGHT
     );
-    const actionButtonOptions = {
+    const actionButtonOptions: RectangularPushButtonOptions = {
       size: new Dimension2( actionButtonSideLength, actionButtonSideLength ),
       baseColor: 'white',
-      accessibleName: PhotoelectricEffectFluent.experiment.graph.actionButtonStringProperty
+      xMargin: 6,
+      yMargin: 6
     };
 
     const infoButton = new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
@@ -348,10 +353,14 @@ export default class ExperimentGraphNode extends Node {
       align: 'center',
       children: [
         new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
+          content: new Path( expandSolidShape, {
+            fill: 'black',
+            scale: 0.7
+          } ),
           tandem: options.tandem.createTandem( 'actionButton1' )
         } ) ),
-        new CameraButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
-          tandem: options.tandem.createTandem( 'actionButton2' )
+        new CameraButton( combineOptions<CameraButtonOptions>( {}, actionButtonOptions, {
+          tandem: tandem.createTandem( 'actionButton2' )
         } ) ),
         infoButton,
         new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
