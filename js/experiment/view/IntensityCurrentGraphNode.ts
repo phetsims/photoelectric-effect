@@ -48,9 +48,10 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      titleStringProperty: PhotoelectricEffectFluent.experiment.graph.intensityCurrentTitleStringProperty,
       dataSet: createPlaceholderDataSet( zoomRangePairs[ 0 ] ),
       zoomRangePairs: zoomRangePairs,
+      xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.intensityAxisLabelStringProperty,
+      yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
       gridXSpacing: 0.25,
       gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
       tandem: options.tandem

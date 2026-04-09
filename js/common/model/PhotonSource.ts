@@ -16,7 +16,7 @@ import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 // Default intensity used at initialization.
-const INITIAL_INTENSITY = 1;
+const INITIAL_INTENSITY = 0;
 
 // Allowed intensity range (normalized 0-1).
 const INTENSITY_RANGE = new Range( 0, 1 );

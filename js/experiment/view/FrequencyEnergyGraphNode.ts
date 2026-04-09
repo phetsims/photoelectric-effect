@@ -47,9 +47,10 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      titleStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyEnergyTitleStringProperty,
       dataSet: createPlaceholderDataSet( zoomRangePairs[ 0 ] ),
       zoomRangePairs: zoomRangePairs,
+      xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
+      yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
       gridXSpacing: 0.25,
       gridYSpacing: 0.25,
       tandem: options.tandem

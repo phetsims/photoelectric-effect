@@ -48,9 +48,10 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      titleStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageCurrentTitleStringProperty,
       dataSet: createPlaceholderDataSet( zoomRangePairs[ 0 ] ),
       zoomRangePairs: zoomRangePairs,
+      xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
+      yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
       gridXSpacing: 2,
       gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
       tandem: options.tandem

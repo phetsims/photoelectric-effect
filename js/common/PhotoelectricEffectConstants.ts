@@ -106,5 +106,6 @@ export default class PhotoelectricEffectConstants {
   public static readonly EXPERIMENT_GRAPH_BUTTON_WIDTH = 28;
   public static readonly EXPERIMENT_GRAPH_BUTTON_HEIGHT = 20;
   public static readonly EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN = 3;
+  public static readonly EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET = 6;
   public static readonly EXPERIMENT_GRAPH_TITLE_MARGIN = 4;
 }

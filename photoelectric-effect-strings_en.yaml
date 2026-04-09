@@ -14,6 +14,11 @@ experiment:
     intensityCurrentTitle: 'Intensity vs Current'
     frequencyEnergyTitle: 'Frequency vs Energy'
     actionButton: 'Graph action'
+    voltageAxisLabel: 'Voltage (V)'
+    currentAxisLabel: 'Current (uA)'
+    intensityAxisLabel: 'Intensity (%)'
+    frequencyAxisLabel: 'Frequency (x10^15 Hz)'
+    energyAxisLabel: 'Energy (eV)'
 
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'

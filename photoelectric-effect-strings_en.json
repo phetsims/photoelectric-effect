@@ -26,6 +26,21 @@
       },
       "actionButton": {
         "value": "Graph action"
+      },
+      "voltageAxisLabel": {
+        "value": "Voltage (V)"
+      },
+      "currentAxisLabel": {
+        "value": "Current (uA)"
+      },
+      "intensityAxisLabel": {
+        "value": "Intensity (%)"
+      },
+      "frequencyAxisLabel": {
+        "value": "Frequency (x10^15 Hz)"
+      },
+      "energyAxisLabel": {
+        "value": "Energy (eV)"
       }
     }
   },

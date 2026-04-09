@@ -36,14 +36,14 @@ export default class ExperimentScreenView extends IntroScreenView {
       spacing: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_SPACING,
       align: 'right',
       children: [
-        new VoltageCurrentGraphNode( {
-          tandem: options.tandem.createTandem( 'voltageCurrentGraphNode' )
-        } ),
         new IntensityCurrentGraphNode( {
           tandem: options.tandem.createTandem( 'intensityCurrentGraphNode' )
         } ),
         new FrequencyEnergyGraphNode( {
           tandem: options.tandem.createTandem( 'frequencyEnergyGraphNode' )
+        } ),
+        new VoltageCurrentGraphNode( {
+          tandem: options.tandem.createTandem( 'voltageCurrentGraphNode' )
         } )
       ]
     } );

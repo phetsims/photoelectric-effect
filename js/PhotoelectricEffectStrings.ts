@@ -26,6 +26,11 @@ type StringsType = {
       'intensityCurrentTitleStringProperty': LocalizedStringProperty;
       'frequencyEnergyTitleStringProperty': LocalizedStringProperty;
       'actionButtonStringProperty': LocalizedStringProperty;
+      'voltageAxisLabelStringProperty': LocalizedStringProperty;
+      'currentAxisLabelStringProperty': LocalizedStringProperty;
+      'intensityAxisLabelStringProperty': LocalizedStringProperty;
+      'frequencyAxisLabelStringProperty': LocalizedStringProperty;
+      'energyAxisLabelStringProperty': LocalizedStringProperty;
     }
   };
   'workFunction': {

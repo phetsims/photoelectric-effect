@@ -12,12 +12,15 @@
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import ChartRectangle from '../../../../bamboo/js/ChartRectangle.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
 import GridLineSet from '../../../../bamboo/js/GridLineSet.js';
 import LinePlot from '../../../../bamboo/js/LinePlot.js';
+import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
+import TickLabelSet from '../../../../bamboo/js/TickLabelSet.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Range from '../../../../dot/js/Range.js';
+import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
+import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
@@ -26,6 +29,7 @@ import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
+import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
@@ -40,20 +44,26 @@ type ZoomRangePair = {
 
 type SelfOptions = {
 
-  // Optional title displayed above the chart. Null hides the title node.
-  titleStringProperty?: TReadOnlyProperty<string> | null;
-
   // Initial data set for the line plot. Use null entries to break segments.
   dataSet?: ( Vector2 | null )[];
 
   // Zoom presets mapped to the zoomLevelProperty (1-based).
   zoomRangePairs?: ZoomRangePair[];
 
+  // Optional X-axis label centered beneath the chart. Null hides the label.
+  xAxisLabelStringProperty?: TReadOnlyProperty<string> | null;
+
+  // Optional Y-axis label rotated along the left side of the chart. Null hides the label.
+  yAxisLabelStringProperty?: TReadOnlyProperty<string> | null;
+
   // Horizontal grid spacing in model units.
   gridXSpacing?: number;
 
   // Vertical grid spacing in model units.
   gridYSpacing?: number;
+
+  // Base fractional padding applied to model ranges to create visual inset.
+  rangePaddingFraction?: number;
 };
 
 export type ExperimentGraphNodeOptions = SelfOptions & NodeOptions;
@@ -81,14 +91,16 @@ export default class ExperimentGraphNode extends Node {
   public constructor( providedOptions?: ExperimentGraphNodeOptions ) {
 
     const options = optionize<ExperimentGraphNodeOptions, SelfOptions, NodeOptions>()( {
-      titleStringProperty: null,
       dataSet: [],
       zoomRangePairs: [ {
         xRange: new Range( 0, 1 ),
         yRange: new Range( 0, 1 )
       } ],
+      xAxisLabelStringProperty: null,
+      yAxisLabelStringProperty: null,
       gridXSpacing: 0.2,
       gridYSpacing: 0.2,
+      rangePaddingFraction: 0.05,
       tandem: Tandem.REQUIRED
     }, providedOptions );
 
@@ -104,26 +116,45 @@ export default class ExperimentGraphNode extends Node {
       tandem: options.tandem.createTandem( 'zoomLevelProperty' )
     } );
 
-    this.chartTransform = new ChartTransform( {
-      viewWidth: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_CHART_WIDTH,
-      viewHeight: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_CHART_HEIGHT,
-      modelXRange: zoomRangePairs[ 0 ].xRange,
-      modelYRange: zoomRangePairs[ 0 ].yRange
-    } );
+    const chartWidth = PhotoelectricEffectConstants.EXPERIMENT_GRAPH_CHART_WIDTH;
+    const chartHeight = PhotoelectricEffectConstants.EXPERIMENT_GRAPH_CHART_HEIGHT;
 
-    const chartRectangle = new ChartRectangle( this.chartTransform, {
-      fill: 'white',
+    const baseRangePaddingFraction = options.rangePaddingFraction;
+    const rangePaddingFractionX = baseRangePaddingFraction * chartHeight / chartWidth;
+    const rangePaddingFractionY = baseRangePaddingFraction;
+
+    const getPaddedRange = ( range: Range, paddingFraction: number ): Range => {
+      const padding = range.getLength() * paddingFraction;
+      return new Range( range.min - padding, range.max + padding );
+    };
+
+    const chartTransform = new ChartTransform( {
+      viewWidth: chartWidth,
+      viewHeight: chartHeight,
+      modelXRange: getPaddedRange( zoomRangePairs[ 0 ].xRange, rangePaddingFractionX ),
+      modelYRange: getPaddedRange( zoomRangePairs[ 0 ].yRange, rangePaddingFractionY )
+    } );
+    this.chartTransform = chartTransform;
+
+    const chartRectangle = new Rectangle( 0, 0, chartWidth, chartHeight, {
       stroke: 'black',
-      cornerXRadius: 4,
-      cornerYRadius: 4
+      cornerXRadius: 0,
+      cornerYRadius: 0
+    } );
+    const tickMaskRectangle = new Rectangle( 0, 0, chartWidth, chartHeight, {
+      fill: 'white'
     } );
 
-    const gridLineOptions = { stroke: 'rgb( 220, 220, 220 )' };
+    const gridLineOptions = {
+      stroke: 'rgb( 220, 220, 220 )',
+      lineDash: [ 4, 4 ]
+    };
+    const chartContentClipArea = chartRectangle.getShape();
     const gridLineSet = new Node( {
-      clipArea: chartRectangle.getShape(),
+      clipArea: chartContentClipArea,
       children: [
-        new GridLineSet( this.chartTransform, Orientation.HORIZONTAL, options.gridYSpacing, gridLineOptions ),
-        new GridLineSet( this.chartTransform, Orientation.VERTICAL, options.gridXSpacing, gridLineOptions )
+        new GridLineSet( this.chartTransform, Orientation.VERTICAL, options.gridYSpacing, gridLineOptions ),
+        new GridLineSet( this.chartTransform, Orientation.HORIZONTAL, options.gridXSpacing, gridLineOptions )
       ]
     } );
 
@@ -133,23 +164,157 @@ export default class ExperimentGraphNode extends Node {
     } );
 
     const plotLayer = new Node( {
-      clipArea: chartRectangle.getShape(),
-      children: [
-        this.linePlot
-      ]
+      clipArea: chartContentClipArea,
+      children: [ this.linePlot ]
     } );
 
-    const chartNode = new Node( {
+    const axisLabelFont = new PhetFont( 12 );
+    const axisLabelMargin = 6;
+    const tickLabelFont = new PhetFont( 10 );
+
+    const createTickLabel = ( value: number ): Text => {
+      const isInteger = Math.abs( value - roundSymmetric( value ) ) < 1e-6;
+      return new Text( toFixed( value, isInteger ? 0 : 2 ), {
+        font: tickLabelFont
+      } );
+    };
+
+    const xAxisLabelText = options.xAxisLabelStringProperty ? new Text( options.xAxisLabelStringProperty, {
+      font: axisLabelFont
+    } ) : null;
+
+    const yAxisLabelText = options.yAxisLabelStringProperty ? new Text( options.yAxisLabelStringProperty, {
+      font: axisLabelFont,
+      rotation: -Math.PI / 2
+    } ) : null;
+
+    const createTickSpacing = ( range: Range ): number => {
+      return range.getLength() / 10;
+    };
+
+    const createEdgeLabel = ( range: Range ) => {
+      const min = range.min;
+      const max = range.max;
+      const mid = range.getCenter();
+      const tolerance = Math.max( range.getLength() * 1e-6, 1e-9 );
+
+      return ( value: number ): Text | null => {
+        const isEdge = Math.abs( value - min ) <= tolerance ||
+                       Math.abs( value - mid ) <= tolerance ||
+                       Math.abs( value - max ) <= tolerance;
+        return isEdge ? createTickLabel( value ) : null;
+      };
+    };
+
+    const tickMarkExtent = 8;
+    const tickMarkLineWidth = 3;
+
+    type TickSetGroup = {
+      xTickLabelSet: TickLabelSet;
+      yTickLabelSet: TickLabelSet;
+      xTickMarkSet: TickMarkSet;
+      yTickMarkSet: TickMarkSet;
+    };
+
+    let tickSets: TickSetGroup;
+
+    const createTickSets = ( rangePair: ZoomRangePair ): TickSetGroup => {
+      const xSpacing = createTickSpacing( rangePair.xRange );
+      const ySpacing = createTickSpacing( rangePair.yRange );
+
+      const xTickLabelSet = new TickLabelSet( this.chartTransform, Orientation.HORIZONTAL, xSpacing, {
+        edge: 'min',
+        origin: rangePair.xRange.min,
+        createLabel: createEdgeLabel( rangePair.xRange )
+      } );
+
+      const yTickLabelSet = new TickLabelSet( this.chartTransform, Orientation.VERTICAL, ySpacing, {
+        edge: 'min',
+        origin: rangePair.yRange.min,
+        createLabel: createEdgeLabel( rangePair.yRange )
+      } );
+
+      const xTickMarkSet = new TickMarkSet( this.chartTransform, Orientation.HORIZONTAL, xSpacing, {
+        edge: 'min',
+        origin: rangePair.xRange.min,
+        extent: tickMarkExtent,
+        lineWidth: tickMarkLineWidth
+      } );
+
+      const yTickMarkSet = new TickMarkSet( this.chartTransform, Orientation.VERTICAL, ySpacing, {
+        edge: 'min',
+        origin: rangePair.yRange.min,
+        extent: tickMarkExtent,
+        lineWidth: tickMarkLineWidth
+      } );
+
+      return {
+        xTickLabelSet: xTickLabelSet,
+        yTickLabelSet: yTickLabelSet,
+        xTickMarkSet: xTickMarkSet,
+        yTickMarkSet: yTickMarkSet
+      };
+    };
+
+    const updateAxisLabelPositions = ( activeTickSets: TickSetGroup ) => {
+      const xTickLabelOffset = activeTickSets.xTickLabelSet.bounds.bottom - chartHeight;
+      const yTickLabelOffset = -activeTickSets.yTickLabelSet.bounds.left;
+      if ( xAxisLabelText ) {
+        xAxisLabelText.centerTop = chartRectangle.centerBottom.plusXY( 0, axisLabelMargin + xTickLabelOffset );
+      }
+      if ( yAxisLabelText ) {
+        yAxisLabelText.rightCenter = chartRectangle.leftCenter.minusXY( axisLabelMargin + yTickLabelOffset, 0 );
+      }
+    };
+
+    tickSets = createTickSets( zoomRangePairs[ 0 ] );
+    updateAxisLabelPositions( tickSets );
+
+    const chartContentNode = new Node( {
+      clipArea: chartContentClipArea,
       children: [
-        chartRectangle,
         gridLineSet,
         plotLayer
       ]
     } );
 
+    const tickMarkNode = new Node( {
+      children: [
+        tickSets.xTickMarkSet,
+        tickSets.yTickMarkSet
+      ]
+    } );
+
+    const tickLabelNode = new Node( {
+      children: [
+        tickSets.xTickLabelSet,
+        tickSets.yTickLabelSet
+      ]
+    } );
+
+    const chartChildren = [
+      tickMarkNode,
+      tickMaskRectangle,
+      chartContentNode,
+      chartRectangle,
+      tickLabelNode
+    ];
+    if ( xAxisLabelText ) {
+      chartChildren.push( xAxisLabelText );
+    }
+    if ( yAxisLabelText ) {
+      chartChildren.push( yAxisLabelText );
+    }
+
+    const chartNode = new Node( {
+      children: chartChildren
+    } );
+
     const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
       sideLength: 18,
-      left: chartRectangle.left + PhotoelectricEffectConstants.EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN,
+      left: chartRectangle.left +
+            PhotoelectricEffectConstants.EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN -
+            PhotoelectricEffectConstants.EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET,
       top: chartRectangle.top + PhotoelectricEffectConstants.EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN,
       tandem: options.tandem.createTandem( 'expandCollapseButton' )
     } );
@@ -173,6 +338,7 @@ export default class ExperimentGraphNode extends Node {
           tandem: options.tandem.createTandem( 'actionButton2' )
         } ) ),
         new InfoButton( {
+          scale: 0.5,
           tandem: options.tandem.createTandem( 'infoButton' )
         } ),
         new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( actionButtonOptions, {
@@ -189,16 +355,7 @@ export default class ExperimentGraphNode extends Node {
         buttonColumn
       ]
     } );
-    const titleText = options.titleStringProperty ? new Text( options.titleStringProperty, {
-      font: new PhetFont( 12 ),
-      centerX: chartRectangle.centerX,
-      bottom: chartRectangle.top - PhotoelectricEffectConstants.EXPERIMENT_GRAPH_TITLE_MARGIN
-    } ) : null;
-
     this.addChild( contentRow );
-    if ( titleText ) {
-      this.addChild( titleText );
-    }
     this.addChild( expandCollapseButton );
 
     const expandedObserver = ( expanded: boolean ) => {
@@ -209,8 +366,21 @@ export default class ExperimentGraphNode extends Node {
     const zoomLevelObserver = ( zoomLevel: number ) => {
       const index = Math.min( Math.max( zoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
       const rangePair = zoomRangePairs[ index ];
-      this.chartTransform.setModelXRange( rangePair.xRange );
-      this.chartTransform.setModelYRange( rangePair.yRange );
+      this.chartTransform.setModelXRange( getPaddedRange( rangePair.xRange, rangePaddingFractionX ) );
+      this.chartTransform.setModelYRange( getPaddedRange( rangePair.yRange, rangePaddingFractionY ) );
+
+      const previousTickSets = tickSets;
+
+      tickSets = createTickSets( rangePair );
+      chartContentNode.children = [ gridLineSet, plotLayer ];
+      tickMarkNode.children = [ tickSets.xTickMarkSet, tickSets.yTickMarkSet ];
+      tickLabelNode.children = [ tickSets.xTickLabelSet, tickSets.yTickLabelSet ];
+      updateAxisLabelPositions( tickSets );
+
+      previousTickSets.xTickLabelSet.dispose();
+      previousTickSets.yTickLabelSet.dispose();
+      previousTickSets.xTickMarkSet.dispose();
+      previousTickSets.yTickMarkSet.dispose();
     };
     this.zoomLevelProperty.link( zoomLevelObserver );
 
