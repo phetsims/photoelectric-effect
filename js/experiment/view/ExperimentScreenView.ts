@@ -14,6 +14,7 @@ import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import IntroScreenView from '../../intro/view/IntroScreenView.js';
 import ExperimentModel from '../model/ExperimentModel.js';
+import ExperimentGraphNode from './ExperimentGraphNode.js';
 import FrequencyEnergyGraphNode from './FrequencyEnergyGraphNode.js';
 import IntensityCurrentGraphNode from './IntensityCurrentGraphNode.js';
 import VoltageCurrentGraphNode from './VoltageCurrentGraphNode.js';
@@ -33,7 +34,7 @@ export default class ExperimentScreenView extends IntroScreenView {
     super( model, options );
 
     const graphsVBox = new VBox( {
-      spacing: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_SPACING,
+      spacing: ExperimentGraphNode.EXPERIMENT_GRAPH_SPACING,
       align: 'right',
       children: [
         new IntensityCurrentGraphNode( {

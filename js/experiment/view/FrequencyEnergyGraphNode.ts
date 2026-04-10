@@ -51,6 +51,10 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
       zoomRangePairs: zoomRangePairs,
       xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
       yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
+
+      // TODO: This option is a little strange. We needed it so that the label did not overlap with the
+      //   ExpandCollapseButton. Check in with design to see how the layout should ideally be done.
+      yAxisLabelYOffset: 10,
       gridXSpacing: 0.25,
       gridYSpacing: 0.25,
       tandem: options.tandem

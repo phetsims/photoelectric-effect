@@ -37,10 +37,10 @@
         "value": "Intensity (%)"
       },
       "frequencyAxisLabel": {
-        "value": "Frequency (x10^15 Hz)"
+        "value": "Frequency (x10<sup>15</sup> Hz)"
       },
       "energyAxisLabel": {
-        "value": "Energy (eV)"
+        "value": "Electron KE<sub>max</sub> (ev)"
       }
     }
   },

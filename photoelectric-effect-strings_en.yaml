@@ -17,8 +17,8 @@ experiment:
     voltageAxisLabel: 'Voltage (V)'
     currentAxisLabel: 'Current (uA)'
     intensityAxisLabel: 'Intensity (%)'
-    frequencyAxisLabel: 'Frequency (x10^15 Hz)'
-    energyAxisLabel: 'Energy (eV)'
+    frequencyAxisLabel: 'Frequency (x10<sup>15</sup> Hz)'
+    energyAxisLabel: 'Electron KE<sub>max</sub> (ev)'
 
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'

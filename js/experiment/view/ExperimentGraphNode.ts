@@ -28,19 +28,18 @@ import Orientation from '../../../../phet-core/js/Orientation.js';
 import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
-import SceneryPhetFluent from '../../../../scenery-phet/js/SceneryPhetFluent.js';
+import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
+import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
-import infoCircleSolidShape from '../../../../sun/js/shapes/infoCircleSolidShape.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
 type ZoomRangePair = {
   xRange: Range;
@@ -61,6 +60,9 @@ type SelfOptions = {
   // Optional Y-axis label rotated along the left side of the chart. Null hides the label.
   yAxisLabelStringProperty?: TReadOnlyProperty<string> | null;
 
+  // Additional vertical offset applied to the Y-axis label (view coordinates).
+  yAxisLabelYOffset?: number;
+
   // Horizontal grid spacing in model units.
   gridXSpacing?: number;
 
@@ -74,6 +76,17 @@ type SelfOptions = {
 export type ExperimentGraphNodeOptions = SelfOptions & NodeOptions;
 
 export default class ExperimentGraphNode extends Node {
+
+  // Chart layout constants for Experiment graphs.
+  public static readonly EXPERIMENT_GRAPH_CHART_WIDTH = 220;
+  public static readonly EXPERIMENT_GRAPH_CHART_HEIGHT = 136;
+  public static readonly EXPERIMENT_GRAPH_SPACING = 12;
+  public static readonly EXPERIMENT_GRAPH_BUTTON_COLUMN_SPACING = 10;
+  public static readonly EXPERIMENT_GRAPH_BUTTON_SPACING = 8;
+  public static readonly EXPERIMENT_GRAPH_BUTTON_WIDTH = 28;
+  public static readonly EXPERIMENT_GRAPH_BUTTON_HEIGHT = 20;
+  public static readonly EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN = 3;
+  public static readonly EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET = 6;
 
   // Zoom level that controls the chart's model ranges.
   public readonly zoomLevelProperty: NumberProperty;
@@ -103,6 +116,7 @@ export default class ExperimentGraphNode extends Node {
       } ],
       xAxisLabelStringProperty: null,
       yAxisLabelStringProperty: null,
+      yAxisLabelYOffset: 0,
       gridXSpacing: 0.2,
       gridYSpacing: 0.2,
       rangePaddingFraction: 0.05,
@@ -124,8 +138,8 @@ export default class ExperimentGraphNode extends Node {
       tandem: options.tandem.createTandem( 'zoomLevelProperty' )
     } );
 
-    const chartWidth = PhotoelectricEffectConstants.EXPERIMENT_GRAPH_CHART_WIDTH;
-    const chartHeight = PhotoelectricEffectConstants.EXPERIMENT_GRAPH_CHART_HEIGHT;
+    const chartWidth = ExperimentGraphNode.EXPERIMENT_GRAPH_CHART_WIDTH;
+    const chartHeight = ExperimentGraphNode.EXPERIMENT_GRAPH_CHART_HEIGHT;
 
     const baseRangePaddingFraction = options.rangePaddingFraction;
     const rangePaddingFractionX = baseRangePaddingFraction * chartHeight / chartWidth;
@@ -187,11 +201,11 @@ export default class ExperimentGraphNode extends Node {
       } );
     };
 
-    const xAxisLabelText = options.xAxisLabelStringProperty ? new Text( options.xAxisLabelStringProperty, {
+    const xAxisLabelText = options.xAxisLabelStringProperty ? new RichText( options.xAxisLabelStringProperty, {
       font: axisLabelFont
     } ) : null;
 
-    const yAxisLabelText = options.yAxisLabelStringProperty ? new Text( options.yAxisLabelStringProperty, {
+    const yAxisLabelText = options.yAxisLabelStringProperty ? new RichText( options.yAxisLabelStringProperty, {
       font: axisLabelFont,
       rotation: -Math.PI / 2
     } ) : null;
@@ -271,7 +285,9 @@ export default class ExperimentGraphNode extends Node {
         xAxisLabelText.centerTop = chartRectangle.centerBottom.plusXY( 0, axisLabelMargin + xTickLabelOffset );
       }
       if ( yAxisLabelText ) {
-        yAxisLabelText.rightCenter = chartRectangle.leftCenter.minusXY( axisLabelMargin + yTickLabelOffset, 0 );
+        yAxisLabelText.rightCenter = chartRectangle.leftCenter
+          .minusXY( axisLabelMargin + yTickLabelOffset, 0 )
+          .plusXY( 0, options.yAxisLabelYOffset );
       }
     };
 
@@ -321,15 +337,15 @@ export default class ExperimentGraphNode extends Node {
     const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
       sideLength: 18,
       left: chartRectangle.left +
-            PhotoelectricEffectConstants.EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN -
-            PhotoelectricEffectConstants.EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET,
-      top: chartRectangle.top + PhotoelectricEffectConstants.EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN,
+            ExperimentGraphNode.EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN -
+            ExperimentGraphNode.EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET,
+      top: chartRectangle.top + ExperimentGraphNode.EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN,
       tandem: options.tandem.createTandem( 'expandCollapseButton' )
     } );
 
     const actionButtonSideLength = Math.max(
-      PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_WIDTH,
-      PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_HEIGHT
+      ExperimentGraphNode.EXPERIMENT_GRAPH_BUTTON_WIDTH,
+      ExperimentGraphNode.EXPERIMENT_GRAPH_BUTTON_HEIGHT
     );
     const actionButtonOptions: RectangularPushButtonOptions = {
       size: new Dimension2( actionButtonSideLength, actionButtonSideLength ),
@@ -338,18 +354,16 @@ export default class ExperimentGraphNode extends Node {
       yMargin: 6
     };
 
-    const infoButton = new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
-      content: new Path( infoCircleSolidShape, {
-        fill: 'rgb( 41, 106, 163 )',
-        scale: 1.45
-      } ),
-      accessibleName: SceneryPhetFluent.a11y.infoStringProperty,
+    const infoButton = new InfoButton( {
+      radius: actionButtonSideLength / 2,
+      baseColor: 'white',
+      xMargin: actionButtonOptions.xMargin,
+      yMargin: actionButtonOptions.yMargin,
       tandem: options.tandem.createTandem( 'infoButton' )
-    } ) );
-    infoButton.setPDOMAttribute( 'aria-haspopup', true );
+    } );
 
     const buttonColumn = new VBox( {
-      spacing: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_SPACING,
+      spacing: ExperimentGraphNode.EXPERIMENT_GRAPH_BUTTON_SPACING,
       align: 'center',
       children: [
         new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
@@ -370,7 +384,7 @@ export default class ExperimentGraphNode extends Node {
     } );
 
     const contentRow = new HBox( {
-      spacing: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_BUTTON_COLUMN_SPACING,
+      spacing: ExperimentGraphNode.EXPERIMENT_GRAPH_BUTTON_COLUMN_SPACING,
       align: 'top',
       children: [
         chartNode,
