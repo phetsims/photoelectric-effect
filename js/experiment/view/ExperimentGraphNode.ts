@@ -69,6 +69,12 @@ type SelfOptions = {
   // Vertical grid spacing in model units.
   gridYSpacing?: number;
 
+  // Optional formatter for x-axis tick labels.
+  xTickLabelFormatter?: ( value: number ) => string;
+
+  // Optional formatter for y-axis tick labels.
+  yTickLabelFormatter?: ( value: number ) => string;
+
   // Base fractional padding applied to model ranges to create visual inset.
   rangePaddingFraction?: number;
 };
@@ -119,6 +125,8 @@ export default class ExperimentGraphNode extends Node {
       yAxisLabelYOffset: 0,
       gridXSpacing: 0.2,
       gridYSpacing: 0.2,
+      xTickLabelFormatter: null,
+      yTickLabelFormatter: null,
       rangePaddingFraction: 0.05,
       tandem: Tandem.REQUIRED
     }, providedOptions );
@@ -194,9 +202,10 @@ export default class ExperimentGraphNode extends Node {
     const axisLabelMargin = 6;
     const tickLabelFont = new PhetFont( 10 );
 
-    const createTickLabel = ( value: number ): Text => {
+    const createTickLabel = ( value: number, formatter: ( ( value: number ) => string ) | null ): Text => {
       const isInteger = Math.abs( value - roundSymmetric( value ) ) < 1e-6;
-      return new Text( toFixed( value, isInteger ? 0 : 2 ), {
+      const label = formatter ? formatter( value ) : toFixed( value, isInteger ? 0 : 2 );
+      return new Text( label, {
         font: tickLabelFont
       } );
     };
@@ -214,7 +223,7 @@ export default class ExperimentGraphNode extends Node {
       return range.getLength() / 10;
     };
 
-    const createEdgeLabel = ( range: Range ) => {
+    const createEdgeLabel = ( range: Range, formatter: ( ( value: number ) => string ) | null ) => {
       const min = range.min;
       const max = range.max;
       const mid = range.getCenter();
@@ -224,7 +233,7 @@ export default class ExperimentGraphNode extends Node {
         const isEdge = Math.abs( value - min ) <= tolerance ||
                        Math.abs( value - mid ) <= tolerance ||
                        Math.abs( value - max ) <= tolerance;
-        return isEdge ? createTickLabel( value ) : null;
+        return isEdge ? createTickLabel( value, formatter ) : null;
       };
     };
 
@@ -247,13 +256,13 @@ export default class ExperimentGraphNode extends Node {
       const xTickLabelSet = new TickLabelSet( this.chartTransform, Orientation.HORIZONTAL, xSpacing, {
         edge: 'min',
         origin: rangePair.xRange.min,
-        createLabel: createEdgeLabel( rangePair.xRange )
+        createLabel: createEdgeLabel( rangePair.xRange, options.xTickLabelFormatter )
       } );
 
       const yTickLabelSet = new TickLabelSet( this.chartTransform, Orientation.VERTICAL, ySpacing, {
         edge: 'min',
         origin: rangePair.yRange.min,
-        createLabel: createEdgeLabel( rangePair.yRange )
+        createLabel: createEdgeLabel( rangePair.yRange, options.yTickLabelFormatter )
       } );
 
       const xTickMarkSet = new TickMarkSet( this.chartTransform, Orientation.HORIZONTAL, xSpacing, {

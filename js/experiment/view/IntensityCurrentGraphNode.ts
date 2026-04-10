@@ -10,9 +10,12 @@
 
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
+import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import optionize, { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import PhotonSource from '../../common/model/PhotonSource.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './ExperimentGraphNode.js';
@@ -30,15 +33,15 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
 
     const zoomRangePairs = [
       {
-        xRange: new Range( 0, 1 ),
+        xRange: PhotonSource.INTENSITY_RANGE,
         yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT )
       },
       {
-        xRange: new Range( 0, 0.5 ),
+        xRange: PhotonSource.INTENSITY_RANGE,
         yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.6 )
       },
       {
-        xRange: new Range( 0, 0.25 ),
+        xRange: PhotonSource.INTENSITY_RANGE,
         yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.3 )
       }
     ];
@@ -54,6 +57,11 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
       yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
       gridXSpacing: 0.25,
       gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
+      xTickLabelFormatter: value => {
+        const scaledValue = value * 100;
+        const isInteger = Math.abs( scaledValue - roundSymmetric( scaledValue ) ) < 1e-6;
+        return toFixed( scaledValue, isInteger ? 0 : 2 );
+      },
       tandem: options.tandem
     };
 
