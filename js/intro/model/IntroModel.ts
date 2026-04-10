@@ -33,7 +33,7 @@ export default class IntroModel extends PhotoelectricEffectModel {
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
     super( mysteryMaterials, providedOptions );
 
-    this.sink = new Sink( PhotoelectricEffectConstants.SINK_BOUNDS, providedOptions.tandem.createTandem( 'sink' ) );
+    this.sink = new Sink( PhotoelectricEffectConstants.SINK_X, providedOptions.tandem.createTandem( 'sink' ) );
     this.battery = new Battery( providedOptions.tandem );
   }
 

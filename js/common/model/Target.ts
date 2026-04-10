@@ -11,9 +11,7 @@
 
 import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Property from '../../../../axon/js/Property.js';
-import Bounds2 from '../../../../dot/js/Bounds2.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
-import { lineSegmentIntersection } from '../../../../dot/js/util/lineSegmentIntersection.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import Electron from './Electron.js';
@@ -42,10 +40,10 @@ export default class Target {
   public readonly workFunctionProperty: DynamicProperty<number, number, Material>;
 
   /**
-   * Bounds of the target plate in model coordinates.
+   * X position of the target plate center in model coordinates.
    * Used for collision detection with incoming photons and emitted electrons.
    */
-  public readonly bounds: Bounds2;
+  public readonly x: number;
 
   /**
    * Creates a target plate with a selectable set of materials.
@@ -67,7 +65,7 @@ export default class Target {
       derive: 'workFunctionProperty'
     } );
 
-    this.bounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
+    this.x = PhotoelectricEffectConstants.TARGET_X;
   }
 
   /**
@@ -81,23 +79,17 @@ export default class Target {
   }
 
   /**
-   * Determines whether a photon intersects the target bounds.
+   * Determines whether a photon has reached or crossed the target x position.
    */
   public isHitByPhoton( photon: Photon ): boolean {
-    const intersections = this.getPhotonBoundaryIntersections( photon );
-    const photonPosition = photon.getPosition();
-    const photonPreviousPosition = photon.getPreviousPosition();
-    return intersections.length > 0 ||
-           this.bounds.containsPoint( photonPosition ) ||
-           this.bounds.containsPoint( photonPreviousPosition );
+    return photon.position.x <= this.x || photon.getPreviousPosition().x <= this.x;
   }
 
   /**
-   * Returns true when an electron intersects the target bounds.
+   * Returns true when an electron has reached or crossed back to the target x position.
    */
   public isHitByElectron( electron: Electron ): boolean {
-    return this.bounds.containsPoint( electron.getPosition() ) ||
-           this.bounds.containsPoint( electron.getPreviousPosition() );
+    return electron.position.x <= this.x || electron.getPreviousPosition().x <= this.x;
   }
 
   /**
@@ -118,17 +110,8 @@ export default class Target {
       }
 
       const velocity = new Vector2( speed * Math.cos( angle ), speed * Math.sin( angle ) );
-      const intersections = this.getPhotonBoundaryIntersections( photon );
-
-      let emissionPosition: Vector2;
-      if ( intersections.length > 0 ) {
-        const intersectionPoint = intersections[ 0 ];
-        emissionPosition = new Vector2( intersectionPoint.x + Target.EMISSION_OFFSET, intersectionPoint.y );
-      }
-      else {
-        emissionPosition = new Vector2( this.bounds.maxX + Target.EMISSION_OFFSET, this.bounds.minY + dotRandom.nextDouble() * this.bounds.height );
-      }
-
+      const emissionY = this.getPhotonTargetCrossingY( photon );
+      const emissionPosition = new Vector2( this.x + Target.EMISSION_OFFSET, emissionY );
       electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), energyAfterCollision );
     }
 
@@ -136,25 +119,21 @@ export default class Target {
   }
 
   /**
-   * Returns the intersection points where a photon path crosses the target bounds.
+   * Interpolates the y coordinate where the photon crossed the target x position.
+   * Falls back to the photon's current y if no clean crossing is detected.
    */
-  private getPhotonBoundaryIntersections( photon: Photon ): Vector2[] {
-    const photonPosition = photon.getPosition();
-    const photonPreviousPosition = photon.getPreviousPosition();
-    const minX = this.bounds.minX;
-    const maxX = this.bounds.maxX;
-    const minY = this.bounds.minY;
-    const maxY = this.bounds.maxY;
-    return [
-      lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
-        minX, minY, maxX, minY ),
-      lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
-        maxX, minY, maxX, maxY ),
-      lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
-        maxX, maxY, minX, maxY ),
-      lineSegmentIntersection( photonPreviousPosition.x, photonPreviousPosition.y, photonPosition.x, photonPosition.y,
-        minX, maxY, minX, minY )
-    ].filter( intersection => intersection !== null );
+  private getPhotonTargetCrossingY( photon: Photon ): number {
+    const currentPosition = photon.position;
+    const previousPosition = photon.getPreviousPosition();
+
+    // If the photon crossed the target x this step (moved from right to left across this.x), linearly interpolate
+    // to find the y coordinate at the exact crossing point. interpolationFraction is the fraction of the step at
+    // which the crossing occurred, ranging from 0 (start of step) to 1 (end of step).
+    if ( previousPosition.x > this.x && currentPosition.x <= this.x ) {
+      const interpolationFraction = ( this.x - previousPosition.x ) / ( currentPosition.x - previousPosition.x );
+      return previousPosition.y + interpolationFraction * ( currentPosition.y - previousPosition.y );
+    }
+    return currentPosition.y;
   }
 
   /**

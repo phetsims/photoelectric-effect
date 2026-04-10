@@ -36,7 +36,7 @@ export default class PhotonCanvasNode extends CanvasNode {
     const halfHeight = this.photonImage.height / 2;
 
     this.model.photons.forEach( photon => {
-      const position = photon.getPosition();
+      const position = photon.position;
       const x = this.modelViewTransform.modelToViewX( position.x );
       const y = this.modelViewTransform.modelToViewY( position.y );
       context.drawImage( this.photonImage, x - halfWidth, y - halfHeight );
