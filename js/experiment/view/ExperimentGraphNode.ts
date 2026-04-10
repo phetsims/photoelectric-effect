@@ -11,10 +11,11 @@
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
+import type { TReadOnlyEmitter } from '../../../../axon/js/TEmitter.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
 import GridLineSet from '../../../../bamboo/js/GridLineSet.js';
-import LinePlot from '../../../../bamboo/js/LinePlot.js';
+import LinePlot, { type LinePlotOptions } from '../../../../bamboo/js/LinePlot.js';
 import TickLabelSet from '../../../../bamboo/js/TickLabelSet.js';
 import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
@@ -26,9 +27,9 @@ import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
 import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
+import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
-import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
@@ -48,8 +49,8 @@ type ZoomRangePair = {
 
 type SelfOptions = {
 
-  // Initial data set for the line plot. Use null entries to break segments.
-  dataSet?: ( Vector2 | null )[];
+  // Initial data set for the line plot.
+  dataSet?: Vector2[];
 
   // Zoom presets mapped to the zoomLevelProperty (1-based).
   zoomRangePairs?: ZoomRangePair[];
@@ -70,13 +71,16 @@ type SelfOptions = {
   gridYSpacing?: number;
 
   // Optional formatter for x-axis tick labels.
-  xTickLabelFormatter?: ( value: number ) => string;
+  xTickLabelFormatter?: null | ( ( value: number ) => string );
 
   // Optional formatter for y-axis tick labels.
-  yTickLabelFormatter?: ( value: number ) => string;
+  yTickLabelFormatter?: null | ( ( value: number ) => string );
 
   // Base fractional padding applied to model ranges to create visual inset.
   rangePaddingFraction?: number;
+
+  // Line plot styling overrides.
+  linePlotOptions?: LinePlotOptions;
 };
 
 export type ExperimentGraphNodeOptions = SelfOptions & NodeOptions;
@@ -109,10 +113,7 @@ export default class ExperimentGraphNode extends Node {
   // Disposes listeners and owned resources.
   private readonly disposeExperimentGraphNode: () => void;
 
-  /**
-   * @param providedOptions - Overrides for the graph layout, data, and instrumentation.
-   */
-  public constructor( providedOptions?: ExperimentGraphNodeOptions ) {
+  public constructor( resetEmitter: TReadOnlyEmitter, providedOptions?: ExperimentGraphNodeOptions ) {
 
     const options = optionize<ExperimentGraphNodeOptions, SelfOptions, NodeOptions>()( {
       dataSet: [],
@@ -128,6 +129,10 @@ export default class ExperimentGraphNode extends Node {
       xTickLabelFormatter: null,
       yTickLabelFormatter: null,
       rangePaddingFraction: 0.05,
+      linePlotOptions: {
+        lineWidth: 6,
+        lineCap: 'round'
+      },
       tandem: Tandem.REQUIRED
     }, providedOptions );
 
@@ -188,10 +193,10 @@ export default class ExperimentGraphNode extends Node {
       ]
     } );
 
-    this.linePlot = new LinePlot( this.chartTransform, options.dataSet, {
+    this.linePlot = new LinePlot( this.chartTransform, options.dataSet, combineOptions<LinePlotOptions>( {
       stroke: 'black',
       lineWidth: 2
-    } );
+    }, options.linePlotOptions ) );
 
     const plotLayer = new Node( {
       clipArea: chartContentClipArea,
@@ -371,6 +376,11 @@ export default class ExperimentGraphNode extends Node {
       tandem: options.tandem.createTandem( 'infoButton' )
     } );
 
+    const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
+      listener: () => this.clearDataSet(),
+      tandem: options.tandem.createTandem( 'actionButton3' )
+    } ) );
+
     const buttonColumn = new VBox( {
       spacing: ExperimentGraphNode.EXPERIMENT_GRAPH_BUTTON_SPACING,
       align: 'center',
@@ -386,9 +396,7 @@ export default class ExperimentGraphNode extends Node {
           tandem: tandem.createTandem( 'actionButton2' )
         } ) ),
         infoButton,
-        new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
-          tandem: options.tandem.createTandem( 'actionButton3' )
-        } ) )
+        trashButton
       ]
     } );
 
@@ -429,22 +437,41 @@ export default class ExperimentGraphNode extends Node {
     };
     this.zoomLevelProperty.link( zoomLevelObserver );
 
+    const clearListener = this.clearDataSet.bind( this );
+    resetEmitter.addListener( clearListener );
+
     this.disposeExperimentGraphNode = () => {
       this.expandedProperty.unlink( expandedObserver );
       this.zoomLevelProperty.unlink( zoomLevelObserver );
       this.zoomLevelProperty.dispose();
       this.expandedProperty.dispose();
       this.chartTransform.dispose();
+
+      if ( resetEmitter ) {
+        resetEmitter.removeListener( clearListener );
+      }
     };
   }
 
   /**
    * Updates the line plot data set.
    *
-   * @param dataSet - Model data points in chart coordinates. Use null entries to break segments.
+   * Sorting by x ensures line joins/caps render consistently even when the data is captured in
+   * interaction order rather than model order.
+   *
+   * @param dataSet - Model data points in chart coordinates.
    */
-  public setDataSet( dataSet: ( Vector2 | null )[] ): void {
-    this.linePlot.setDataSet( dataSet );
+  public setDataSet( dataSet: Vector2[] ): void {
+    const sortedDataSet = dataSet.slice().sort( ( a, b ) => a.x - b.x );
+
+    this.linePlot.setDataSet( sortedDataSet );
+  }
+
+  /**
+   * Clears the plotted data so the graph resets visually.
+   */
+  protected clearDataSet(): void {
+    this.setDataSet( [] );
   }
 
   /**

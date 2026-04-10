@@ -1,18 +1,21 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * FrequencyEnergyGraphNode configures an ExperimentGraphNode for a frequency/energy plot with
- * placeholder data and zoom ranges. The graph is a simple line placeholder that can be replaced
- * with real computed data later.
+ * FrequencyEnergyGraphNode configures an ExperimentGraphNode for a frequency/energy plot and
+ * appends data points whenever the photon wavelength changes. It clears plotted data when
+ * non-wavelength inputs change to keep the curve consistent.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import Multilink from '../../../../axon/js/Multilink.js';
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
+import { wavelengthToEnergy } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './ExperimentGraphNode.js';
 
@@ -22,10 +25,17 @@ export type FrequencyEnergyGraphNodeOptions = SelfOptions & NodeOptions;
 
 export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
 
+  // Disposes listeners for data updates.
+  private readonly disposeFrequencyEnergyGraphNode: () => void;
+
+  // Stores the plotted frequency/energy points in model coordinates.
+  private readonly dataSet: Vector2[] = [];
+
   /**
+   * @param model - Provides the photon wavelength and work function inputs.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( providedOptions?: FrequencyEnergyGraphNodeOptions ) {
+  public constructor( model: PhotoelectricEffectModel, providedOptions?: FrequencyEnergyGraphNodeOptions ) {
 
     const zoomRangePairs = [
       {
@@ -47,7 +57,7 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      dataSet: createPlaceholderDataSet( zoomRangePairs[ 0 ] ),
+      dataSet: [],
       zoomRangePairs: zoomRangePairs,
       xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
       yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
@@ -57,21 +67,60 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
       yAxisLabelYOffset: 10,
       gridXSpacing: 0.25,
       gridYSpacing: 0.25,
+      linePlotOptions: {
+        stroke: '#7090F5'
+      },
       tandem: options.tandem
     };
 
-    super( graphOptions );
+    super( model.resetEmitter, graphOptions );
+
+    const wavelengthObserver = ( wavelength: number ) => {
+      const frequency = wavelengthToFrequency( wavelength );
+      const energy = Math.max( 0, wavelengthToEnergy( wavelength ) - model.target.workFunctionProperty.value );
+      this.dataSet.push( new Vector2( frequency, energy ) );
+      this.setDataSet( this.dataSet );
+    };
+    const resetObserver = () => this.clearDataSet();
+    const resetMultilink = Multilink.lazyMultilinkAny( [
+      model.photonSource.intensityProperty,
+      model.voltageProperty,
+      model.target.materialProperty,
+      model.target.workFunctionProperty
+    ], resetObserver );
+
+    model.photonSource.wavelengthProperty.lazyLink( wavelengthObserver );
+
+    this.disposeFrequencyEnergyGraphNode = () => {
+      model.photonSource.wavelengthProperty.unlink( wavelengthObserver );
+      Multilink.unmultilink( resetMultilink );
+    };
+  }
+
+  /**
+   * Releases listeners tied to the graph data set.
+   */
+  public override dispose(): void {
+    this.disposeFrequencyEnergyGraphNode();
+    super.dispose();
+  }
+
+  /**
+   * Clears the plotted frequency/energy data.
+   */
+  protected override clearDataSet(): void {
+    this.dataSet.length = 0;
+    super.clearDataSet();
   }
 }
 
 /**
- * Creates a simple two-point line that spans the provided ranges.
- *
- * @param rangePair - Model ranges used to define the line endpoints.
+ * Computes photon frequency in units of 10^15 Hz from wavelength in nm.
  */
-const createPlaceholderDataSet = ( rangePair: { xRange: Range; yRange: Range } ): Vector2[] => {
-  return [
-    new Vector2( rangePair.xRange.min, rangePair.yRange.min ),
-    new Vector2( rangePair.xRange.max, rangePair.yRange.max )
-  ];
+const wavelengthToFrequency = ( wavelength: number ): number => {
+  let frequency = 0;
+  if ( wavelength > 0 ) {
+    frequency = 299792458 / ( wavelength * 1e-9 ) / 1e15;
+  }
+  return frequency;
 };

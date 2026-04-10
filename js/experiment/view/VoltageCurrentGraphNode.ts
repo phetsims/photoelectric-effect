@@ -1,18 +1,20 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * VoltageCurrentGraphNode configures an ExperimentGraphNode for a voltage/current plot with
- * placeholder data and zoom ranges. It uses bamboo line plotting with a simple diagonal line
- * to establish layout before wiring real data.
+ * VoltageCurrentGraphNode configures an ExperimentGraphNode for a voltage/current plot and
+ * appends data points whenever the plate voltage changes. It clears plotted data when other
+ * inputs change so the curve stays consistent.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import Multilink from '../../../../axon/js/Multilink.js';
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './ExperimentGraphNode.js';
@@ -23,10 +25,17 @@ export type VoltageCurrentGraphNodeOptions = SelfOptions & NodeOptions;
 
 export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
 
+  // Disposes listeners for data updates.
+  private readonly disposeVoltageCurrentGraphNode: () => void;
+
+  // Stores the plotted voltage/current points in model coordinates.
+  private readonly dataSet: Vector2[] = [];
+
   /**
+   * @param model - Provides the voltage and analytic current inputs.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( providedOptions?: VoltageCurrentGraphNodeOptions ) {
+  public constructor( model: PhotoelectricEffectModel, providedOptions?: VoltageCurrentGraphNodeOptions ) {
 
     const zoomRangePairs = [
       {
@@ -48,27 +57,53 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      dataSet: createPlaceholderDataSet( zoomRangePairs[ 0 ] ),
+      dataSet: [],
       zoomRangePairs: zoomRangePairs,
       xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
       yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
       gridXSpacing: 2,
       gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
+      linePlotOptions: {
+        stroke: '#E03722'
+      },
       tandem: options.tandem
     };
 
-    super( graphOptions );
+    super( model.resetEmitter, graphOptions );
+
+    const voltageObserver = ( voltage: number ) => {
+      this.dataSet.push( new Vector2( voltage, model.currentProperty.value ) );
+      this.setDataSet( this.dataSet );
+    };
+    const resetObserver = () => this.clearDataSet();
+    const resetMultilink = Multilink.lazyMultilinkAny( [
+      model.photonSource.intensityProperty,
+      model.wavelengthProperty,
+      model.target.materialProperty,
+      model.target.workFunctionProperty
+    ], resetObserver );
+
+    model.voltageProperty.lazyLink( voltageObserver );
+
+    this.disposeVoltageCurrentGraphNode = () => {
+      model.voltageProperty.unlink( voltageObserver );
+      Multilink.unmultilink( resetMultilink );
+    };
+  }
+
+  /**
+   * Releases listeners tied to the graph data set.
+   */
+  public override dispose(): void {
+    this.disposeVoltageCurrentGraphNode();
+    super.dispose();
+  }
+
+  /**
+   * Clears the plotted voltage/current data.
+   */
+  protected override clearDataSet(): void {
+    this.dataSet.length = 0;
+    super.clearDataSet();
   }
 }
-
-/**
- * Creates a simple two-point line that spans the provided ranges.
- *
- * @param rangePair - Model ranges used to define the line endpoints.
- */
-const createPlaceholderDataSet = ( rangePair: { xRange: Range; yRange: Range } ): Vector2[] => {
-  return [
-    new Vector2( rangePair.xRange.min, rangePair.yRange.min ),
-    new Vector2( rangePair.xRange.max, rangePair.yRange.max )
-  ];
-};

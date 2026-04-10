@@ -37,13 +37,13 @@ export default class ExperimentScreenView extends IntroScreenView {
       spacing: ExperimentGraphNode.EXPERIMENT_GRAPH_SPACING,
       align: 'right',
       children: [
-        new IntensityCurrentGraphNode( {
+        new IntensityCurrentGraphNode( model, {
           tandem: options.tandem.createTandem( 'intensityCurrentGraphNode' )
         } ),
-        new FrequencyEnergyGraphNode( {
+        new FrequencyEnergyGraphNode( model, {
           tandem: options.tandem.createTandem( 'frequencyEnergyGraphNode' )
         } ),
-        new VoltageCurrentGraphNode( {
+        new VoltageCurrentGraphNode( model, {
           tandem: options.tandem.createTandem( 'voltageCurrentGraphNode' )
         } )
       ]

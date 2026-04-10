@@ -9,6 +9,7 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import Emitter from '../../../../axon/js/Emitter.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
@@ -55,6 +56,9 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Derived analytic current based on model settings.
   public readonly currentProperty: TReadOnlyProperty<number>;
+
+  // Emits when the model has been reset to its default state.
+  public readonly resetEmitter = new Emitter();
 
   // Accumulates fractional photon emissions between steps.
   // Physics-wise, the light intensity defines a continuous photon flux (photons/second), while the model
@@ -124,6 +128,7 @@ export default class PhotoelectricEffectModel implements TModel {
     this.electrons.length = 0;
     this.photonEmissionAccumulator = 0;
 
+    this.resetEmitter.emit();
   }
 
   /**
