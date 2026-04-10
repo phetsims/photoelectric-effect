@@ -16,7 +16,10 @@ import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 // Default intensity used at initialization.
-const INITIAL_INTENSITY = 0;
+const INITIAL_INTENSITY = 1;
+
+// Allowed intensity range (normalized 0-1).
+const INTENSITY_RANGE = new Range( 0, 1 );
 
 // Default wavelength in nanometers used at initialization.
 const INITIAL_WAVELENGTH = 400;
@@ -28,9 +31,6 @@ const WAVELENGTH_RANGE = new Range( PhotoelectricEffectConstants.MIN_WAVELENGTH,
 type PhotonSourceOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
 
 export default class PhotonSource {
-
-  // Allowed intensity range (normalized 0-1).
-  public static readonly INTENSITY_RANGE = new Range( 0, 1 );
 
   /**
    * Controls photon emission rate as a normalized value.
@@ -51,7 +51,7 @@ export default class PhotonSource {
     const tandem = providedOptions.tandem;
 
     this.intensityProperty = new NumberProperty( INITIAL_INTENSITY, {
-      range: PhotonSource.INTENSITY_RANGE,
+      range: INTENSITY_RANGE,
       tandem: tandem.createTandem( 'intensityProperty' )
     } );
 

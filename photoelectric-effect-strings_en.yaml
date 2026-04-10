@@ -7,19 +7,6 @@ screen:
   experiment: 'Experiment'
   energy: 'Energy'
 
-# Experiment graphs
-experiment:
-  graph:
-    voltageCurrentTitle: 'Voltage vs Current'
-    intensityCurrentTitle: 'Intensity vs Current'
-    frequencyEnergyTitle: 'Frequency vs Energy'
-    actionButton: 'Graph action'
-    voltageAxisLabel: 'Voltage (V)'
-    currentAxisLabel: 'Current (uA)'
-    intensityAxisLabel: 'Intensity (%)'
-    frequencyAxisLabel: 'Frequency (x10<sup>15</sup> Hz)'
-    energyAxisLabel: 'Electron KE<sub>max</sub> (ev)'
-
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Light Intensity'

@@ -12,6 +12,7 @@ import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
@@ -25,6 +26,7 @@ import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import ComboBox from '../../../../sun/js/ComboBox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
+import PhotonCanvasNode from './PhotonCanvasNode.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -37,6 +39,7 @@ type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class IntroScreenView extends ScreenView {
 
+  private readonly photonCanvasNode: PhotonCanvasNode;
   private readonly particleLayer: Node;
   private readonly modelOrigin: Vector2;
   private readonly model: PhotoelectricEffectModel;
@@ -141,18 +144,6 @@ export default class IntroScreenView extends ScreenView {
       ]
     } );
 
-    const debugLegend = new VBox( {
-      spacing: 2,
-      align: 'left',
-      children: [
-        new Text( PhotoelectricEffectFluent.debugLegend.titleStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.photonsStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.electronsStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.targetStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.sinkStringProperty, { fontSize: 12 } )
-      ]
-    } );
-
     const controlsVBox = new VBox( {
       spacing: 15,
       align: 'left',
@@ -163,8 +154,7 @@ export default class IntroScreenView extends ScreenView {
         intensityControl,
         wavelengthControl,
         voltageControl,
-        currentReadout,
-        debugLegend
+        currentReadout
       ]
     } );
     controlsVBox.left = this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
@@ -181,6 +171,29 @@ export default class IntroScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'resetAllButton' )
     } );
     this.addChild( resetAllButton );
+
+    const debugLegend = new VBox( {
+      spacing: 2,
+      align: 'left',
+      children: [
+        new Text( PhotoelectricEffectFluent.debugLegend.titleStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.photonsStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.electronsStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.targetStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.sinkStringProperty, { fontSize: 12 } )
+      ]
+    } );
+    debugLegend.right = this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
+    debugLegend.top = this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
+    this.addChild( debugLegend );
+
+    const modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
+      new Vector2( 0, 0 ),
+      new Vector2( PhotoelectricEffectConstants.MODEL_ORIGIN_VIEW_X, this.layoutBounds.centerY ),
+      PhotoelectricEffectConstants.MODEL_VIEW_SCALE
+    );
+    this.photonCanvasNode = new PhotonCanvasNode( model, modelViewTransform, this.layoutBounds );
+    this.addChild( this.photonCanvasNode );
 
     // Debug visualization for particles and collision bounds.
     this.modelOrigin = new Vector2( this.layoutBounds.centerX, this.layoutBounds.centerY );
@@ -205,6 +218,7 @@ export default class IntroScreenView extends ScreenView {
    * @param dt - time step, in seconds
    */
   public override step( dt: number ): void {
+    this.photonCanvasNode.step( dt );
     this.updateParticleDebug( this.model );
   }
 
@@ -216,17 +230,9 @@ export default class IntroScreenView extends ScreenView {
     this.particleLayer.addChild( this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' ) );
     this.particleLayer.addChild( this.createBoundsRectangle( sinkBounds, 'rgba(0,0,255,0.6)' ) );
 
-    model.photons.forEach( photon => {
-      const node = new Circle( 3, { fill: 'yellow', stroke: 'black', lineWidth: 0.5 } );
-      const position = photon.position;
-      node.centerX = this.modelOrigin.x + position.x;
-      node.centerY = this.modelOrigin.y - position.y;
-      this.particleLayer.addChild( node );
-    } );
-
     model.electrons.forEach( electron => {
       const node = new Circle( 2.5, { fill: 'cyan', stroke: 'black', lineWidth: 0.5 } );
-      const position = electron.position;
+      const position = electron.getPosition();
       node.centerX = this.modelOrigin.x + position.x;
       node.centerY = this.modelOrigin.y - position.y;
       this.particleLayer.addChild( node );

@@ -9,7 +9,6 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import Emitter from '../../../../axon/js/Emitter.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
@@ -56,9 +55,6 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Derived analytic current based on model settings.
   public readonly currentProperty: TReadOnlyProperty<number>;
-
-  // Emits when the model has been reset to its default state.
-  public readonly resetEmitter = new Emitter();
 
   // Accumulates fractional photon emissions between steps.
   // Physics-wise, the light intensity defines a continuous photon flux (photons/second), while the model
@@ -128,7 +124,6 @@ export default class PhotoelectricEffectModel implements TModel {
     this.electrons.length = 0;
     this.photonEmissionAccumulator = 0;
 
-    this.resetEmitter.emit();
   }
 
   /**
@@ -196,7 +191,9 @@ export default class PhotoelectricEffectModel implements TModel {
       }
 
       // Cull photons that have hit the target or left the model bounds to keep the simulation finite.
-      const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( photon.position );
+      // TODO: MODEL_BOUNDS is an oversized placeholder — replace with targeted culling (e.g. cull when photon
+      //   passes x=0 without hitting target). See PhotoelectricEffectConstants.MODEL_BOUNDS.
+      const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( photon.getPosition() );
       if ( !hitTarget && inBounds ) {
         nextPhotons.push( photon );
       }
@@ -228,7 +225,9 @@ export default class PhotoelectricEffectModel implements TModel {
 
         // Check whether the electron is absorbed by the sink (e.g. anode).
         const absorbed = this.handleElectronSinkCollision( electron );
-        const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( electron.position );
+        // TODO: MODEL_BOUNDS is an oversized placeholder — replace with targeted culling for electrons
+        //   (e.g. cull when reversed past target or escaped inter-plate region). See PhotoelectricEffectConstants.MODEL_BOUNDS.
+        const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( electron.getPosition() );
 
         // Keep only electrons that are neither absorbed nor out of bounds.
         if ( !absorbed && inBounds ) {
