@@ -220,7 +220,7 @@ export default class IntroScreenView extends ScreenView {
 
     model.photons.forEach( photon => {
       const node = new Circle( 3, { fill: 'yellow', stroke: 'black', lineWidth: 0.5 } );
-      const position = photon.getPosition();
+      const position = photon.position;
       node.centerX = this.modelOrigin.x + position.x;
       node.centerY = this.modelOrigin.y - position.y;
       this.particleLayer.addChild( node );
@@ -228,7 +228,7 @@ export default class IntroScreenView extends ScreenView {
 
     model.electrons.forEach( electron => {
       const node = new Circle( 2.5, { fill: 'cyan', stroke: 'black', lineWidth: 0.5 } );
-      const position = electron.getPosition();
+      const position = electron.position;
       node.centerX = this.modelOrigin.x + position.x;
       node.centerY = this.modelOrigin.y - position.y;
       this.particleLayer.addChild( node );

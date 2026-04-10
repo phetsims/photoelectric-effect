@@ -19,14 +19,12 @@ export default class PhotoelectricEffectConstants {
   //--------------------------------------------------------------
   // MODEL CONSTANTS
   //--------------------------------------------------------------
-  // TODO: Consider moving constants here into classes that make more sense (like target/sink bounds could go in
-  //   respective files).
 
-  // Bounds of the target plate in model coordinates.
-  public static readonly TARGET_BOUNDS = new Bounds2( 0, -40, 5, 40 );
+  // X position of the target plate center in model coordinates.
+  public static readonly TARGET_X = 2.5;
 
-  // Bounds of the sink plate in model coordinates.
-  public static readonly SINK_BOUNDS = new Bounds2( 150, -40, 155, 40 );
+  // X position of the sink plate center in model coordinates.
+  public static readonly SINK_X = 152.5;
 
   // Overall model bounds for the play area.
   public static readonly MODEL_BOUNDS = new Bounds2( -200, -120, 200, 120 );
@@ -35,7 +33,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly PHOTON_SOURCE_POSITION = new Vector2( 120, 80 );
 
   // Direction from the source toward the target center.
-  public static readonly PHOTON_SOURCE_DIRECTION = PhotoelectricEffectConstants.TARGET_BOUNDS.getCenter()
+  public static readonly PHOTON_SOURCE_DIRECTION = new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 )
     .minus( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION ).normalized();
 
   // Half-angle fan-out (in radians) for emitted photon directions.
@@ -45,8 +43,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly PHOTON_SPEED = 200;
 
   // Distance between plate centers, used for potential/field calculations.
-  public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.SINK_BOUNDS.getCenterX() -
-                                            PhotoelectricEffectConstants.TARGET_BOUNDS.getCenterX();
+  public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.SINK_X - PhotoelectricEffectConstants.TARGET_X;
 
   // Factor to scale analytically reported current from photons-per-second.
   public static readonly CURRENT_JIMMY_FACTOR = 0.015;
@@ -91,6 +88,13 @@ export default class PhotoelectricEffectConstants {
   //--------------------------------------------------------------
   // VIEW CONSTANTS
   //--------------------------------------------------------------
+
+  // Bounds of the target plate for rendering purposes only.
+  public static readonly TARGET_BOUNDS = new Bounds2( 0, -40, 5, 40 );
+
+  // Bounds of the sink plate for rendering purposes only.
+  public static readonly SINK_BOUNDS = new Bounds2( 150, -40, 155, 40 );
+
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
   public static readonly SCREEN_VIEW_Y_MARGIN = 15;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;

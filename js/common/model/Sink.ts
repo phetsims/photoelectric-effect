@@ -8,7 +8,6 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import Electron from './Electron.js';
 import Particle from './Particle.js';
@@ -16,17 +15,17 @@ import Particle from './Particle.js';
 export default class Sink {
 
   /**
-   * Creates a sink plate with fixed bounds.
+   * Creates a sink plate at the given x position.
    *
-   * @param bounds - Bounds of the sink plate in model coordinates.
+   * @param x - X position of the sink plate center in model coordinates.
    * @param _tandem (TODO, unused for now)
    */
-  public constructor( public readonly bounds: Bounds2, _tandem: Tandem ) {
+  public constructor( public readonly x: number, _tandem: Tandem ) {
   }
 
   /**
    * Handles a particle collision with the sink.
-   * Called when a particle intersects the sink bounds.
+   * Called when a particle intersects the sink x position.
    */
   public particleCollisions( _particle: Particle ): void {
 
@@ -34,11 +33,9 @@ export default class Sink {
   }
 
   /**
-   * Returns true when the electron intersects the sink bounds.
+   * Returns true when the electron has reached or crossed the sink x position.
    */
   public isHitByElectron( electron: Electron ): boolean {
-
-    // TODO: Consider segment intersection against sink bounds to avoid tunneling at larger dt.
-    return this.bounds.containsPoint( electron.getPosition() );
+    return electron.position.x >= this.x;
   }
 }
