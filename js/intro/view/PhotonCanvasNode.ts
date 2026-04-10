@@ -15,6 +15,7 @@ import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectMode
 
 const PHOTON_RADIUS = 3;
 
+// TODO: Render electrons here.
 export default class PhotonCanvasNode extends CanvasNode {
 
   private readonly model: PhotoelectricEffectModel;
@@ -27,6 +28,7 @@ export default class PhotonCanvasNode extends CanvasNode {
     this.model = model;
     this.modelViewTransform = modelViewTransform;
 
+    // TODO: Keep an eye out for pixelation. In that case we may want to draw using Canvas functions.
     const photonNode = new Circle( PHOTON_RADIUS, { fill: 'yellow', stroke: 'black', lineWidth: 0.5 } );
     this.photonImage = rasterizeNode( photonNode, { useCanvas: true, wrap: false } ).image;
   }
