@@ -22,19 +22,11 @@ export default abstract class Particle {
    * @param previousPosition - Particle position from the previous step.
    */
   protected constructor(
-    protected position: Vector2,
+    public position: Vector2,
     protected velocity: Vector2,
     protected acceleration: Vector2,
     protected previousPosition: Vector2 = position
   ) {
-  }
-
-  /**
-   * Returns the current particle position.
-   * TODO: Remove these?
-   */
-  public getPosition(): Vector2 {
-    return this.position;
   }
 
   /**
