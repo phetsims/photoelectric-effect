@@ -10,6 +10,8 @@
  * the plot interior white: tick marks render first, then a mask rectangle, then clipped plot content, then the
  * chart border and tick labels.
  *
+ * This plot is not disposable, we expect it to live for the life of the simulation.
+ *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
@@ -134,11 +136,8 @@ export default class ExperimentGraphNode extends Node {
   // Stores plotted data points in model coordinates.
   private readonly dataSet: Vector2[] = [];
 
-  private readonly disposeExperimentGraphNode: () => void;
-
   /**
-   * @param resetEmitter - Clears graph data when the model emits a reset. This listener is also
-   *                       removed during disposal.
+   * @param resetEmitter - Clears graph data when the model emits a reset.
    * @param providedOptions - Configuration for axis ranges, labels, styling, and instrumentation.
    */
   public constructor( resetEmitter: TReadOnlyEmitter, providedOptions?: ExperimentGraphNodeOptions ) {
@@ -160,7 +159,10 @@ export default class ExperimentGraphNode extends Node {
         lineWidth: 6,
         lineCap: 'round'
       },
-      tandem: Tandem.REQUIRED
+      tandem: Tandem.REQUIRED,
+
+      // We expect these plots to exist for the life of the simulation.
+      isDisposable: false
     }, providedOptions );
 
     affirm( options.tandem, 'Tandem is required for type checking.' );
@@ -387,16 +389,6 @@ export default class ExperimentGraphNode extends Node {
 
     const clearListener = this.clearDataSet.bind( this );
     resetEmitter.addListener( clearListener );
-
-    this.disposeExperimentGraphNode = () => {
-      this.expandedProperty.unlink( expandedObserver );
-      this.zoomLevelProperty.unlink( zoomLevelObserver );
-      this.zoomLevelProperty.dispose();
-      this.expandedProperty.dispose();
-      this.chartTransform.dispose();
-
-      resetEmitter.removeListener( clearListener );
-    };
   }
 
   /**
@@ -427,14 +419,6 @@ export default class ExperimentGraphNode extends Node {
   protected clearDataSet(): void {
     this.dataSet.length = 0;
     this.setDataSet( [] );
-  }
-
-  /**
-   * Releases listeners and owned graph resources.
-   */
-  public override dispose(): void {
-    this.disposeExperimentGraphNode();
-    super.dispose();
   }
 
   /**

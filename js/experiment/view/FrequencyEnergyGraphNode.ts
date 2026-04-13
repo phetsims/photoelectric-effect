@@ -25,9 +25,6 @@ export type FrequencyEnergyGraphNodeOptions = SelfOptions & WithRequired<NodeOpt
 
 export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
 
-  // Disposes listeners for data updates.
-  private readonly disposeFrequencyEnergyGraphNode: () => void;
-
   /**
    * @param model - Provides the photon wavelength and work function inputs.
    * @param providedOptions - Node options for layout and instrumentation.
@@ -76,7 +73,7 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
       this.addDataPoint( new Vector2( frequency, energy ) );
     };
     const resetObserver = () => this.clearDataSet();
-    const resetMultilink = Multilink.lazyMultilinkAny( [
+    Multilink.lazyMultilinkAny( [
       model.photonSource.intensityProperty,
       model.voltageProperty,
       model.target.materialProperty,
@@ -84,21 +81,7 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
     ], resetObserver );
 
     model.photonSource.wavelengthProperty.lazyLink( wavelengthObserver );
-
-    this.disposeFrequencyEnergyGraphNode = () => {
-      model.photonSource.wavelengthProperty.unlink( wavelengthObserver );
-      Multilink.unmultilink( resetMultilink );
-    };
   }
-
-  /**
-   * Releases listeners tied to the graph data set.
-   */
-  public override dispose(): void {
-    this.disposeFrequencyEnergyGraphNode();
-    super.dispose();
-  }
-
 }
 
 /**

@@ -25,9 +25,6 @@ export type VoltageCurrentGraphNodeOptions = SelfOptions & NodeOptions;
 
 export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
 
-  // Disposes listeners for data updates.
-  private readonly disposeVoltageCurrentGraphNode: () => void;
-
   /**
    * @param model - Provides the voltage and analytic current inputs.
    * @param providedOptions - Node options for layout and instrumentation.
@@ -71,7 +68,7 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
       this.addDataPoint( new Vector2( voltage, model.currentProperty.value ) );
     };
     const resetObserver = () => this.clearDataSet();
-    const resetMultilink = Multilink.lazyMultilinkAny( [
+    Multilink.lazyMultilinkAny( [
       model.photonSource.intensityProperty,
       model.wavelengthProperty,
       model.target.materialProperty,
@@ -79,19 +76,5 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
     ], resetObserver );
 
     model.voltageProperty.lazyLink( voltageObserver );
-
-    this.disposeVoltageCurrentGraphNode = () => {
-      model.voltageProperty.unlink( voltageObserver );
-      Multilink.unmultilink( resetMultilink );
-    };
   }
-
-  /**
-   * Releases listeners tied to the graph data set.
-   */
-  public override dispose(): void {
-    this.disposeVoltageCurrentGraphNode();
-    super.dispose();
-  }
-
 }

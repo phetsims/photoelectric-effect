@@ -28,9 +28,6 @@ export type IntensityCurrentGraphNodeOptions = SelfOptions & NodeOptions;
 
 export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
 
-  // Disposes listeners for data updates.
-  private readonly disposeIntensityCurrentGraphNode: () => void;
-
   /**
    * @param model - Provides the photon source intensity and analytic current.
    * @param providedOptions - Node options for layout and instrumentation.
@@ -79,7 +76,7 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
       this.addDataPoint( new Vector2( intensity, model.currentProperty.value ) );
     };
     const resetObserver = () => this.clearDataSet();
-    const resetMultilink = Multilink.lazyMultilinkAny( [
+    Multilink.lazyMultilinkAny( [
       model.voltageProperty,
       model.wavelengthProperty,
       model.target.materialProperty,
@@ -87,19 +84,5 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
     ], resetObserver );
 
     model.photonSource.intensityProperty.lazyLink( intensityObserver );
-
-    this.disposeIntensityCurrentGraphNode = () => {
-      model.photonSource.intensityProperty.unlink( intensityObserver );
-      Multilink.unmultilink( resetMultilink );
-    };
   }
-
-  /**
-   * Releases listeners tied to the graph data set.
-   */
-  public override dispose(): void {
-    this.disposeIntensityCurrentGraphNode();
-    super.dispose();
-  }
-
 }
