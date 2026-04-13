@@ -14,7 +14,6 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import { wavelengthToEnergy } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
