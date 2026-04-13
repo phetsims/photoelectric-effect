@@ -10,9 +10,9 @@
 import Range from '../../../../dot/js/Range.js';
 import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
-import optionize, { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotonSource from '../../common/model/PhotonSource.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -21,7 +21,7 @@ import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './Experime
 
 type SelfOptions = EmptySelfOptions;
 
-export type IntensityCurrentGraphNodeOptions = SelfOptions & NodeOptions;
+export type IntensityCurrentGraphNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
 export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
 
@@ -29,7 +29,7 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
    * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: ExperimentModel, providedOptions?: IntensityCurrentGraphNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions: IntensityCurrentGraphNodeOptions ) {
 
     const zoomRangePairs = [
       {
@@ -46,10 +46,6 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
       }
     ];
 
-    const options = optionize<IntensityCurrentGraphNodeOptions, SelfOptions, NodeOptions>()( {
-      tandem: Tandem.REQUIRED
-    }, providedOptions );
-
     const graphOptions: ExperimentGraphNodeOptions = {
       zoomRangePairs: zoomRangePairs,
       xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.intensityAxisLabelStringProperty,
@@ -64,7 +60,7 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
       linePlotOptions: {
         stroke: '#4B853E'
       },
-      tandem: options.tandem
+      tandem: providedOptions.tandem
     };
 
     super( model.intensityCurrentGraphData, graphOptions );

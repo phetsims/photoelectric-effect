@@ -28,8 +28,8 @@ import Range from '../../../../dot/js/Range.js';
 import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
-import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
 import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
 import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
@@ -45,7 +45,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
 import type GraphData from '../model/GraphData.js';
 
 // constants
@@ -114,7 +113,7 @@ type SelfOptions = {
   linePlotOptions?: LinePlotOptions;
 };
 
-export type ExperimentGraphNodeOptions = SelfOptions & NodeOptions;
+export type ExperimentGraphNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
 export default class ExperimentGraphNode extends Node {
 
@@ -137,7 +136,7 @@ export default class ExperimentGraphNode extends Node {
    * @param graphData - Model-owned samples; this node redraws when dataChangedEmitter fires.
    * @param providedOptions - Configuration for axis ranges, labels, styling, and instrumentation.
    */
-  public constructor( graphData: GraphData, providedOptions?: ExperimentGraphNodeOptions ) {
+  public constructor( graphData: GraphData, providedOptions: ExperimentGraphNodeOptions ) {
 
     const options = optionize<ExperimentGraphNodeOptions, SelfOptions, NodeOptions>()( {
       zoomRangePairs: [ {
@@ -156,13 +155,11 @@ export default class ExperimentGraphNode extends Node {
         lineWidth: 6,
         lineCap: 'round'
       },
-      tandem: Tandem.REQUIRED,
 
       // We expect these plots to exist for the life of the simulation.
       isDisposable: false
     }, providedOptions );
 
-    affirm( options.tandem, 'Tandem is required for type checking.' );
     const tandem = options.tandem;
 
     super( options );
