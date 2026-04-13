@@ -29,8 +29,8 @@ import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
-import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
 import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
@@ -46,6 +46,7 @@ import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidSha
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import type GraphData from '../model/GraphData.js';
+import ExperimentGraphInfoDialog from './ExperimentGraphInfoDialog.js';
 
 // constants
 type ZoomRangePair = {
@@ -299,11 +300,16 @@ export default class ExperimentGraphNode extends Node {
       yMargin: 6
     };
 
+    // TODO: Each subclass will likely have custom content for this dialog. But need to wait
+    //   until we see designs to implement more.
+    const infoDialog = new ExperimentGraphInfoDialog( tandem.createTandem( 'infoDialog' ) );
+
     const infoButton = new InfoButton( {
       radius: actionButtonSideLength / 2,
       baseColor: 'white',
       xMargin: actionButtonOptions.xMargin,
       yMargin: actionButtonOptions.yMargin,
+      listener: () => infoDialog.show(),
       tandem: options.tandem.createTandem( 'infoButton' )
     } );
 

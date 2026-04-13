@@ -37,6 +37,8 @@ addToMapIfDefined( 'experiment_graph_currentAxisLabel', 'experiment.graph.curren
 addToMapIfDefined( 'experiment_graph_intensityAxisLabel', 'experiment.graph.intensityAxisLabelStringProperty' );
 addToMapIfDefined( 'experiment_graph_frequencyAxisLabel', 'experiment.graph.frequencyAxisLabelStringProperty' );
 addToMapIfDefined( 'experiment_graph_energyAxisLabel', 'experiment.graph.energyAxisLabelStringProperty' );
+addToMapIfDefined( 'experiment_graph_infoDialogTitle', 'experiment.graph.infoDialogTitleStringProperty' );
+addToMapIfDefined( 'experiment_graph_infoDialogPlaceholder', 'experiment.graph.infoDialogPlaceholderStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
@@ -86,7 +88,10 @@ const PhotoelectricEffectFluent = {
       currentAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.currentAxisLabelStringProperty' ),
       intensityAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.intensityAxisLabelStringProperty' ),
       frequencyAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.frequencyAxisLabelStringProperty' ),
-      energyAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.energyAxisLabelStringProperty' )
+      energyAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.energyAxisLabelStringProperty' ),
+      _comment_0: new FluentComment( {"comment":"Just placeholders","associatedKey":"infoDialogTitle"} ),
+      infoDialogTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.infoDialogTitleStringProperty' ),
+      infoDialogPlaceholderStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.infoDialogPlaceholderStringProperty' )
     }
   },
   workFunction: {

@@ -41,6 +41,12 @@
       },
       "energyAxisLabel": {
         "value": "Electron KE<sub>max</sub> (ev)"
+      },
+      "infoDialogTitle": {
+        "value": "Information"
+      },
+      "infoDialogPlaceholder": {
+        "value": "This is the information dialog and content will go here..."
       }
     }
   },

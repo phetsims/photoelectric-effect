@@ -20,6 +20,10 @@ experiment:
     frequencyAxisLabel: 'Frequency (x10<sup>15</sup> Hz)'
     energyAxisLabel: 'Electron KE<sub>max</sub> (ev)'
 
+    # Just placeholders
+    infoDialogTitle: 'Information'
+    infoDialogPlaceholder: 'This is the information dialog and content will go here...'
+
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Light Intensity'

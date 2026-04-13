@@ -31,6 +31,8 @@ type StringsType = {
       'intensityAxisLabelStringProperty': LocalizedStringProperty;
       'frequencyAxisLabelStringProperty': LocalizedStringProperty;
       'energyAxisLabelStringProperty': LocalizedStringProperty;
+      'infoDialogTitleStringProperty': LocalizedStringProperty;
+      'infoDialogPlaceholderStringProperty': LocalizedStringProperty;
     }
   };
   'workFunction': {
