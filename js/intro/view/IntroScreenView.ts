@@ -145,6 +145,18 @@ export default class IntroScreenView extends ScreenView {
       ]
     } );
 
+    const debugLegend = new VBox( {
+      spacing: 2,
+      align: 'left',
+      children: [
+        new Text( PhotoelectricEffectFluent.debugLegend.titleStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.photonsStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.electronsStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.targetStringProperty, { fontSize: 12 } ),
+        new Text( PhotoelectricEffectFluent.debugLegend.sinkStringProperty, { fontSize: 12 } )
+      ]
+    } );
+
     const controlsVBox = new VBox( {
       spacing: 15,
       align: 'left',
@@ -155,7 +167,8 @@ export default class IntroScreenView extends ScreenView {
         intensityControl,
         wavelengthControl,
         voltageControl,
-        currentReadout
+        currentReadout,
+        debugLegend
       ]
     } );
     controlsVBox.left = this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
@@ -172,22 +185,6 @@ export default class IntroScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'resetAllButton' )
     } );
     this.addChild( resetAllButton );
-
-    const debugLegend = new VBox( {
-      spacing: 2,
-      align: 'left',
-      children: [
-        new Text( PhotoelectricEffectFluent.debugLegend.titleStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.photonsStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.electronsStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.targetStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.sinkStringProperty, { fontSize: 12 } )
-      ]
-    } );
-    debugLegend.right = this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
-    debugLegend.top = this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
-    this.addChild( debugLegend );
-
 
     /**
      * Create canvas that renders the particles.

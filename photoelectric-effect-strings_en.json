@@ -13,6 +13,37 @@
       "value": "Energy"
     }
   },
+  "experiment": {
+    "graph": {
+      "voltageCurrentTitle": {
+        "value": "Voltage vs Current"
+      },
+      "intensityCurrentTitle": {
+        "value": "Intensity vs Current"
+      },
+      "frequencyEnergyTitle": {
+        "value": "Frequency vs Energy"
+      },
+      "actionButton": {
+        "value": "Graph action"
+      },
+      "voltageAxisLabel": {
+        "value": "Voltage (V)"
+      },
+      "currentAxisLabel": {
+        "value": "Current (uA)"
+      },
+      "intensityAxisLabel": {
+        "value": "Intensity (%)"
+      },
+      "frequencyAxisLabel": {
+        "value": "Frequency (x10<sup>15</sup> Hz)"
+      },
+      "energyAxisLabel": {
+        "value": "Electron KE<sub>max</sub> (ev)"
+      }
+    }
+  },
   "workFunction.label": {
     "value": "Work Function (eV)"
   },

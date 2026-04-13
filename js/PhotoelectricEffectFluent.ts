@@ -28,6 +28,15 @@ addToMapIfDefined( 'photoelectric_effect_title', 'photoelectric-effect.titleStri
 addToMapIfDefined( 'screen_intro', 'screen.introStringProperty' );
 addToMapIfDefined( 'screen_experiment', 'screen.experimentStringProperty' );
 addToMapIfDefined( 'screen_energy', 'screen.energyStringProperty' );
+addToMapIfDefined( 'experiment_graph_voltageCurrentTitle', 'experiment.graph.voltageCurrentTitleStringProperty' );
+addToMapIfDefined( 'experiment_graph_intensityCurrentTitle', 'experiment.graph.intensityCurrentTitleStringProperty' );
+addToMapIfDefined( 'experiment_graph_frequencyEnergyTitle', 'experiment.graph.frequencyEnergyTitleStringProperty' );
+addToMapIfDefined( 'experiment_graph_actionButton', 'experiment.graph.actionButtonStringProperty' );
+addToMapIfDefined( 'experiment_graph_voltageAxisLabel', 'experiment.graph.voltageAxisLabelStringProperty' );
+addToMapIfDefined( 'experiment_graph_currentAxisLabel', 'experiment.graph.currentAxisLabelStringProperty' );
+addToMapIfDefined( 'experiment_graph_intensityAxisLabel', 'experiment.graph.intensityAxisLabelStringProperty' );
+addToMapIfDefined( 'experiment_graph_frequencyAxisLabel', 'experiment.graph.frequencyAxisLabelStringProperty' );
+addToMapIfDefined( 'experiment_graph_energyAxisLabel', 'experiment.graph.energyAxisLabelStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
@@ -62,8 +71,23 @@ const PhotoelectricEffectFluent = {
   _comment_0: new FluentComment( {"comment":"Screens","associatedKey":"screen"} ),
   screen: {
     introStringProperty: _.get( PhotoelectricEffectStrings, 'screen.introStringProperty' ),
+    _comment_0: new FluentComment( {"comment":"Experiment graphs","associatedKey":"experiment"} ),
     experimentStringProperty: _.get( PhotoelectricEffectStrings, 'screen.experimentStringProperty' ),
     energyStringProperty: _.get( PhotoelectricEffectStrings, 'screen.energyStringProperty' )
+  },
+  _comment_1: new FluentComment( {"comment":"Experiment graphs","associatedKey":"experiment"} ),
+  experiment: {
+    graph: {
+      voltageCurrentTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.voltageCurrentTitleStringProperty' ),
+      intensityCurrentTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.intensityCurrentTitleStringProperty' ),
+      frequencyEnergyTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.frequencyEnergyTitleStringProperty' ),
+      actionButtonStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.actionButtonStringProperty' ),
+      voltageAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.voltageAxisLabelStringProperty' ),
+      currentAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.currentAxisLabelStringProperty' ),
+      intensityAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.intensityAxisLabelStringProperty' ),
+      frequencyAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.frequencyAxisLabelStringProperty' ),
+      energyAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.energyAxisLabelStringProperty' )
+    }
   },
   workFunction: {
     _comment_0: new FluentComment( {"comment":"FOR DEBUGGING","associatedKey":"workFunction.label"} ),

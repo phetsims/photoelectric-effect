@@ -20,6 +20,19 @@ type StringsType = {
     'experimentStringProperty': LocalizedStringProperty;
     'energyStringProperty': LocalizedStringProperty;
   };
+  'experiment': {
+    'graph': {
+      'voltageCurrentTitleStringProperty': LocalizedStringProperty;
+      'intensityCurrentTitleStringProperty': LocalizedStringProperty;
+      'frequencyEnergyTitleStringProperty': LocalizedStringProperty;
+      'actionButtonStringProperty': LocalizedStringProperty;
+      'voltageAxisLabelStringProperty': LocalizedStringProperty;
+      'currentAxisLabelStringProperty': LocalizedStringProperty;
+      'intensityAxisLabelStringProperty': LocalizedStringProperty;
+      'frequencyAxisLabelStringProperty': LocalizedStringProperty;
+      'energyAxisLabelStringProperty': LocalizedStringProperty;
+    }
+  };
   'workFunction': {
     'labelStringProperty': LocalizedStringProperty;
   };

@@ -11,6 +11,9 @@
   },
   "phet": {
     "requirejsNamespace": "PHOTOELECTRIC_EFFECT",
+    "phetLibs": [
+      "bamboo"
+    ],
     "simulation": true,
     "runnable": true,
     "supportedBrands": [
