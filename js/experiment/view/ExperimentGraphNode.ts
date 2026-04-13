@@ -17,7 +17,6 @@
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
-import type { TReadOnlyEmitter } from '../../../../axon/js/TEmitter.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
 import GridLineSet from '../../../../bamboo/js/GridLineSet.js';
@@ -47,6 +46,7 @@ import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidSha
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import type GraphData from '../model/GraphData.js';
 
 // constants
 type ZoomRangePair = {
@@ -133,14 +133,11 @@ export default class ExperimentGraphNode extends Node {
   // Plot rendering for the data set.
   private readonly linePlot: LinePlot;
 
-  // Stores plotted data points in model coordinates.
-  private readonly dataSet: Vector2[] = [];
-
   /**
-   * @param resetEmitter - Clears graph data when the model emits a reset.
+   * @param graphData - Model-owned samples; this node redraws when dataChangedEmitter fires.
    * @param providedOptions - Configuration for axis ranges, labels, styling, and instrumentation.
    */
-  public constructor( resetEmitter: TReadOnlyEmitter, providedOptions?: ExperimentGraphNodeOptions ) {
+  public constructor( graphData: GraphData, providedOptions?: ExperimentGraphNodeOptions ) {
 
     const options = optionize<ExperimentGraphNodeOptions, SelfOptions, NodeOptions>()( {
       zoomRangePairs: [ {
@@ -314,7 +311,7 @@ export default class ExperimentGraphNode extends Node {
     } );
 
     const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
-      listener: () => this.clearDataSet(),
+      listener: () => graphData.clear(),
       tandem: options.tandem.createTandem( 'actionButton3' )
     } ) );
 
@@ -387,8 +384,11 @@ export default class ExperimentGraphNode extends Node {
     };
     this.zoomLevelProperty.link( zoomLevelObserver );
 
-    const clearListener = this.clearDataSet.bind( this );
-    resetEmitter.addListener( clearListener );
+    const syncLinePlot = () => {
+      this.setDataSet( [ ...graphData.getDataPoints() ] );
+    };
+    graphData.dataChangedEmitter.addListener( syncLinePlot );
+    syncLinePlot();
   }
 
   /**
@@ -403,22 +403,6 @@ export default class ExperimentGraphNode extends Node {
     const sortedDataSet = dataSet.slice().sort( ( a, b ) => a.x - b.x );
 
     this.linePlot.setDataSet( sortedDataSet );
-  }
-
-  /**
-   * Appends a point to the stored data set and refreshes the plot.
-   */
-  protected addDataPoint( point: Vector2 ): void {
-    this.dataSet.push( point );
-    this.setDataSet( this.dataSet );
-  }
-
-  /**
-   * Clears the plotted data so the graph resets visually.
-   */
-  protected clearDataSet(): void {
-    this.dataSet.length = 0;
-    this.setDataSet( [] );
   }
 
   /**

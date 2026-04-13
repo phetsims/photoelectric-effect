@@ -1,22 +1,19 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * VoltageCurrentGraphNode configures an ExperimentGraphNode for a voltage/current plot and
- * appends data points whenever the plate voltage changes. It clears plotted data when other
- * inputs change so the curve stays consistent.
+ * VoltageCurrentGraphNode configures an ExperimentGraphNode for a voltage/current plot.
+ * Sample data is owned by ExperimentModel.voltageCurrentGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Multilink from '../../../../axon/js/Multilink.js';
 import Range from '../../../../dot/js/Range.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import ExperimentModel from '../model/ExperimentModel.js';
 import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './ExperimentGraphNode.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -26,10 +23,10 @@ export type VoltageCurrentGraphNodeOptions = SelfOptions & NodeOptions;
 export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
 
   /**
-   * @param model - Provides the voltage and analytic current inputs.
+   * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: PhotoelectricEffectModel, providedOptions?: VoltageCurrentGraphNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions?: VoltageCurrentGraphNodeOptions ) {
 
     const zoomRangePairs = [
       {
@@ -62,19 +59,6 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
       tandem: options.tandem
     };
 
-    super( model.resetEmitter, graphOptions );
-
-    const voltageObserver = ( voltage: number ) => {
-      this.addDataPoint( new Vector2( voltage, model.currentProperty.value ) );
-    };
-    const resetObserver = () => this.clearDataSet();
-    Multilink.lazyMultilinkAny( [
-      model.photonSource.intensityProperty,
-      model.wavelengthProperty,
-      model.target.materialProperty,
-      model.target.workFunctionProperty
-    ], resetObserver );
-
-    model.voltageProperty.lazyLink( voltageObserver );
+    super( model.voltageCurrentGraphData, graphOptions );
   }
 }
