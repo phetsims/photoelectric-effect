@@ -28,9 +28,6 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
   // Disposes listeners for data updates.
   private readonly disposeFrequencyEnergyGraphNode: () => void;
 
-  // Stores the plotted frequency/energy points in model coordinates.
-  private readonly dataSet: Vector2[] = [];
-
   /**
    * @param model - Provides the photon wavelength and work function inputs.
    * @param providedOptions - Node options for layout and instrumentation.
@@ -57,7 +54,6 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      dataSet: [],
       zoomRangePairs: zoomRangePairs,
       xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
       yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
@@ -78,8 +74,7 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
     const wavelengthObserver = ( wavelength: number ) => {
       const frequency = wavelengthToFrequency( wavelength );
       const energy = Math.max( 0, wavelengthToEnergy( wavelength ) - model.target.workFunctionProperty.value );
-      this.dataSet.push( new Vector2( frequency, energy ) );
-      this.setDataSet( this.dataSet );
+      this.addDataPoint( new Vector2( frequency, energy ) );
     };
     const resetObserver = () => this.clearDataSet();
     const resetMultilink = Multilink.lazyMultilinkAny( [
@@ -105,13 +100,6 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
     super.dispose();
   }
 
-  /**
-   * Clears the plotted frequency/energy data.
-   */
-  protected override clearDataSet(): void {
-    this.dataSet.length = 0;
-    super.clearDataSet();
-  }
 }
 
 /**

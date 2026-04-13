@@ -28,9 +28,6 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
   // Disposes listeners for data updates.
   private readonly disposeVoltageCurrentGraphNode: () => void;
 
-  // Stores the plotted voltage/current points in model coordinates.
-  private readonly dataSet: Vector2[] = [];
-
   /**
    * @param model - Provides the voltage and analytic current inputs.
    * @param providedOptions - Node options for layout and instrumentation.
@@ -57,7 +54,6 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      dataSet: [],
       zoomRangePairs: zoomRangePairs,
       xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
       yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
@@ -72,8 +68,7 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
     super( model.resetEmitter, graphOptions );
 
     const voltageObserver = ( voltage: number ) => {
-      this.dataSet.push( new Vector2( voltage, model.currentProperty.value ) );
-      this.setDataSet( this.dataSet );
+      this.addDataPoint( new Vector2( voltage, model.currentProperty.value ) );
     };
     const resetObserver = () => this.clearDataSet();
     const resetMultilink = Multilink.lazyMultilinkAny( [
@@ -99,11 +94,4 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
     super.dispose();
   }
 
-  /**
-   * Clears the plotted voltage/current data.
-   */
-  protected override clearDataSet(): void {
-    this.dataSet.length = 0;
-    super.clearDataSet();
-  }
 }

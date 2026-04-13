@@ -31,9 +31,6 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
   // Disposes listeners for data updates.
   private readonly disposeIntensityCurrentGraphNode: () => void;
 
-  // Stores the plotted intensity/current points in model coordinates.
-  private readonly dataSet: Vector2[] = [];
-
   /**
    * @param model - Provides the photon source intensity and analytic current.
    * @param providedOptions - Node options for layout and instrumentation.
@@ -60,7 +57,6 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      dataSet: [],
       zoomRangePairs: zoomRangePairs,
       xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.intensityAxisLabelStringProperty,
       yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
@@ -80,8 +76,7 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
     super( model.resetEmitter, graphOptions );
 
     const intensityObserver = ( intensity: number ) => {
-      this.dataSet.push( new Vector2( intensity, model.currentProperty.value ) );
-      this.setDataSet( this.dataSet );
+      this.addDataPoint( new Vector2( intensity, model.currentProperty.value ) );
     };
     const resetObserver = () => this.clearDataSet();
     const resetMultilink = Multilink.lazyMultilinkAny( [
@@ -107,11 +102,4 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
     super.dispose();
   }
 
-  /**
-   * Clears the plotted intensity/current data.
-   */
-  protected override clearDataSet(): void {
-    this.dataSet.length = 0;
-    super.clearDataSet();
-  }
 }
