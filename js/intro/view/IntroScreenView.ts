@@ -188,12 +188,17 @@ export default class IntroScreenView extends ScreenView {
     debugLegend.top = this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
     this.addChild( debugLegend );
 
+
+    /**
+     * Create canvas that renders the particles.
+     */
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
-      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ), // view point
-      PhotoelectricEffectConstants.MODEL_VIEW_SCALE // scale
-    );
-    this.photonCanvasNode = new PhotonCanvasNode( model, this.modelViewTransform, this.layoutBounds );
+      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
+      PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
+
+    // TODO: Rename to ParticleCanvasNode.
+    this.photonCanvasNode = new PhotonCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
     this.addChild( this.photonCanvasNode );
 
     // Debug visualization for particles and collision bounds.
