@@ -12,6 +12,7 @@ import Multilink from '../../../../axon/js/Multilink.js';
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
@@ -21,7 +22,7 @@ import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './Experime
 
 type SelfOptions = EmptySelfOptions;
 
-export type FrequencyEnergyGraphNodeOptions = SelfOptions & NodeOptions;
+export type FrequencyEnergyGraphNodeOptions = SelfOptions & WithRequired<NodeOptions, 'tandem'>;
 
 export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
 
@@ -50,7 +51,6 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
     ];
 
     const options = optionize<FrequencyEnergyGraphNodeOptions, SelfOptions, NodeOptions>()( {
-      tandem: Tandem.REQUIRED
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
