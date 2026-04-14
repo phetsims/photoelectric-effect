@@ -20,8 +20,6 @@ import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
-import Circle from '../../../../scenery/js/nodes/Circle.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import ComboBox from '../../../../sun/js/ComboBox.js';
@@ -40,8 +38,6 @@ type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 export default class PhotoelectricEffectScreenView extends ScreenView {
 
   private readonly particleCanvasNode: ParticleCanvasNode;
-  private readonly particleLayer: Node;
-  private readonly modelOrigin: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
@@ -223,19 +219,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
    */
   public override step( dt: number ): void {
     this.particleCanvasNode.step( dt );
-    this.updateParticleDebug( this.model );
-  }
-
-  private updateParticleDebug( model: PhotoelectricEffectModel ): void {
-    this.particleLayer.removeAllChildren();
-
-    model.electrons.forEach( electron => {
-      const node = new Circle( 2.5, { fill: 'cyan', stroke: 'black', lineWidth: 0.5 } );
-      const position = electron.position;
-      node.centerX = this.modelOrigin.x + position.x;
-      node.centerY = this.modelOrigin.y - position.y;
-      this.particleLayer.addChild( node );
-    } );
   }
 
   private createBoundsRectangle( bounds: Bounds2, stroke: string ): Rectangle {

@@ -23,11 +23,4 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     super( model, options );
 
   }
-
-  /**
-   * Resets the view.
-   */
-  public reset(): void {
-    //TODO
-  }
 }
