@@ -26,7 +26,7 @@ import ComboBox from '../../../../sun/js/ComboBox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import ParticleCanvasNode from '../../intro/view/ParticleCanvasNode.js';
+import ParticleCanvasNode from './ParticleCanvasNode.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type SelfOptions = {

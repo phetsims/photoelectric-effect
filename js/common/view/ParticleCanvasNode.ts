@@ -11,8 +11,8 @@ import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import CanvasNode, { CanvasNodeOptions } from '../../../../scenery/js/nodes/CanvasNode.js';
 import Color from '../../../../scenery/js/util/Color.js';
-import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectModel from '../model/PhotoelectricEffectModel.js';
+import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 
 const PHOTON_RADIUS = 3.5;
 const ELECTRON_RADIUS = 2.5;
