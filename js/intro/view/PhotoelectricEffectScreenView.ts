@@ -36,6 +36,9 @@ type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
 };
 
+// Do something similar to the model:
+// Create PhotoelectricEffectScreenView
+
 type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class IntroScreenView extends ScreenView {
