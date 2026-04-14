@@ -26,7 +26,7 @@ import Material, { MaterialType } from './Material.js';
 import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon from './Photon.js';
 import PhotonSource from './PhotonSource.js';
-import Collector from './Collector.js';
+import Sink from './Sink.js';
 import Target from './Target.js';
 
 type SelfOptions = {
@@ -49,7 +49,7 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Collector plate that receives emitted electrons.
   // Used to determine current flow in the intro screen.
-  public readonly collector: Collector;
+  public readonly sink: Sink;
 
   // Battery that sets the potential difference between plates.
   // Controls the electric field that accelerates or decelerates electrons.
@@ -113,7 +113,7 @@ export default class PhotoelectricEffectModel implements TModel {
     } );
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
-    this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X, providedOptions.tandem.createTandem( 'collector' ) );
+    this.sink = new Sink( PhotoelectricEffectConstants.SINK_X, providedOptions.tandem.createTandem( 'sink' ) );
     this.battery = new Battery( providedOptions.tandem );
 
     this.currentProperty = new DerivedProperty(
@@ -158,11 +158,11 @@ export default class PhotoelectricEffectModel implements TModel {
   }
 
   /**
-   * Handles collisions between emitted electrons and the collector.
-   * Returns true when the electron is absorbed by the collector.
+   * Handles collisions between emitted electrons and the sink.
+   * Returns true when the electron is absorbed by the sink.
    */
-  protected handleElectronCollectorCollision( electron: Electron ): boolean {
-    const absorbed = this.collector.isHitByElectron( electron );
+  protected handleElectronSinkCollision( electron: Electron ): boolean {
+    const absorbed = this.sink.isHitByElectron( electron );
     if ( absorbed ) {
       console.log( 'HIT DETECTED!' );
     }
@@ -184,15 +184,10 @@ export default class PhotoelectricEffectModel implements TModel {
     // We now have the number of photons from the intensity and rate, set up initial kinematic values and
     // create the photon.
     _.times( wholePhotons, () => {
-
-      // Spread the origin randomly along the perpendicular line segment centered at PHOTON_SOURCE_POSITION.
-      const offset = ( dotRandom.nextDouble() * 2 - 1 ) * PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH;
-
-      // Calculate the initial position and velocity of the photon.
-      const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus( Photon.TRAVEL_DIRECTION.timesScalar( offset ) );
-      const velocity = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar( PhotoelectricEffectConstants.PHOTON_SPEED );
-
-      // Create an add photon to array.
+      const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.copy();
+      const angle = ( dotRandom.nextDouble() - 0.5 ) * PhotoelectricEffectConstants.PHOTON_SOURCE_FANOUT_ANGLE;
+      const direction = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.rotated( angle );
+      const velocity = direction.timesScalar( PhotoelectricEffectConstants.PHOTON_SPEED );
       const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
       this.photons.push( photon );
     } );
@@ -218,8 +213,8 @@ export default class PhotoelectricEffectModel implements TModel {
         }
       }
 
-      // Cull photons that have hit the target or passed it without a collision.
-      const inBounds = photon.position.x > PhotoelectricEffectConstants.TARGET_X;
+      // Cull photons that have hit the target or left the model bounds to keep the simulation finite.
+      const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( photon.position );
       if ( !hitTarget && inBounds ) {
         nextPhotons.push( photon );
       }
@@ -232,7 +227,7 @@ export default class PhotoelectricEffectModel implements TModel {
   }
 
   /**
-   * Advances electrons and handles collisions with the target or collector.
+   * Advances electrons and handles collisions with the target or sink.
    */
   private stepElectrons( dt: number ): void {
     const nextElectrons: Electron[] = [];
@@ -244,17 +239,14 @@ export default class PhotoelectricEffectModel implements TModel {
       electron.setAcceleration( acceleration );
       electron.step( dt );
 
-      // Check for target collisions; only electrons that avoid the target can reach the collector. If the electron
+      // Check for target collisions; only electrons that avoid the target can reach the sink. If the electron
       // hits the target, we do not need to handle it because it is going to be removed.
       const hitTarget = this.target.isHitByElectron( electron );
       if ( !hitTarget ) {
 
-        // Check whether the electron is absorbed by the collector (e.g. anode).
-        const absorbed = this.handleElectronCollectorCollision( electron );
-
-        // Cull electrons that leave the inter-plate region (bounced back past the target or past the collector).
-        const inBounds = electron.position.x > PhotoelectricEffectConstants.TARGET_X &&
-                         electron.position.x < PhotoelectricEffectConstants.COLLECTOR_X;
+        // Check whether the electron is absorbed by the sink (e.g. anode).
+        const absorbed = this.handleElectronSinkCollision( electron );
+        const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( electron.position );
 
         // Keep only electrons that are neither absorbed nor out of bounds.
         if ( !absorbed && inBounds ) {

@@ -10,11 +10,11 @@
 import Bounds2 from '../../../dot/js/Bounds2.js';
 import Vector2 from '../../../dot/js/Vector2.js';
 
-// Width of the lamp opening which will emit our photons.
-// Defined here so that our model constant can derive the length of the line along which photons will emit.
-const PHOTON_SOURCE_WIDTH = 40;
-
 export default class PhotoelectricEffectConstants {
+
+  private constructor() {
+    // Not intended for instantiation.
+  }
 
   //--------------------------------------------------------------
   // MODEL CONSTANTS
@@ -23,33 +23,31 @@ export default class PhotoelectricEffectConstants {
   // X position of the target plate center in model coordinates.
   public static readonly TARGET_X = 0;
 
-  // X position of the collector plate center in model coordinates.
-  public static readonly COLLECTOR_X = 100;
+  // X position of the sink plate center in model coordinates.
+  public static readonly SINK_X = 100;
+
+  // TODO: MODEL_BOUNDS is used only as a culling boundary for photons and electrons. The current values are
+  //   overly generous and don't reflect the actual physics space (target at x=0–5, sink at x=150–155, plates
+  //   at y=±40). Consider replacing with more specific culling conditions per particle type — e.g. cull photons
+  //   that pass x=0 without hitting the target, and cull electrons that leave the inter-plate region — rather
+  //   than a single large rectangle. Discuss with team before changing. https://github.com/phetsims/photoelectric-effect/issues/1
+  public static readonly MODEL_BOUNDS = new Bounds2( -200, -120, 200, 120 );
 
   // Photon emission origin, positioned above and to the right of the target.
   public static readonly PHOTON_SOURCE_POSITION = new Vector2( 120, 80 );
 
-  // Angle of the photon beam direction, in radians, counter-clockwise from the positive x-axis.
-  // Adjust this single value to pixel-polish the beam direction (e.g. change to -2.3 to tilt slightly up).
-  // Defaults to pointing from PHOTON_SOURCE_POSITION directly toward the target center (x=0, y=0).
-  public static readonly PHOTON_SOURCE_DIRECTION_ANGLE = Math.atan2(
-    -PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.y,
-    -PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.x
-  );
+  // Direction from the source toward the target center.
+  public static readonly PHOTON_SOURCE_DIRECTION = new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 )
+    .minus( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION ).normalized();
 
-  // Direction unit vector for emitted photons, derived from PHOTON_SOURCE_DIRECTION_ANGLE.
-  public static readonly PHOTON_SOURCE_DIRECTION = Vector2.createPolar( 1, PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE );
-
-  // Half-length of the photon source line segment, in model units (approximately 5 view pixels at MODEL_VIEW_SCALE = 3).
-  // Photons originate from random positions along this line, centered at PHOTON_SOURCE_POSITION and perpendicular
-  // to PHOTON_SOURCE_DIRECTION, so the beam appears to come from a line rather than a single point.
-  public static readonly PHOTON_SOURCE_LINE_HALF_LENGTH = ( PHOTON_SOURCE_WIDTH / 2 ) / 3;
+  // Half-angle fan-out (in radians) for emitted photon directions.
+  public static readonly PHOTON_SOURCE_FANOUT_ANGLE = 45 * Math.PI / 180;
 
   // Photon speed in model units per second.
-  public static readonly PHOTON_SPEED = 80;
+  public static readonly PHOTON_SPEED = 200;
 
   // Distance between plate centers, used for potential/field calculations.
-  public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.COLLECTOR_X - PhotoelectricEffectConstants.TARGET_X;
+  public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.SINK_X - PhotoelectricEffectConstants.TARGET_X;
 
   // Factor to scale analytically reported current from photons-per-second.
   public static readonly CURRENT_JIMMY_FACTOR = 0.015;
@@ -83,11 +81,10 @@ export default class PhotoelectricEffectConstants {
   public static readonly ELECTRON_MASS = 9.11e-31;
 
   // Scale factor applied to computed electron speeds for model tuning.
-  public static readonly ELECTRON_SPEED_SCALE_FACTOR = 1.6e-14;
+  public static readonly ELECTRON_SPEED_SCALE_FACTOR = 5e-16;
 
-  // Minimum energy (in eV) for an emitted electron to be tracked and rendered.
-  // Electrons below this threshold are discarded rather than shown hanging near the target.
-  public static readonly MINIMUM_ELECTRON_ENERGY = 0.05;
+  // Minimum electron speed for randomized emission (model units per second).
+  public static readonly MINIMUM_ELECTRON_SPEED = 0.1;
 
   // Acceleration scale from voltage to model units (model units per V*s^2).
   public static readonly ELECTRON_ACCELERATION_SCALE = 100.2865;
@@ -99,11 +96,8 @@ export default class PhotoelectricEffectConstants {
   // Bounds of the target plate for rendering purposes only.
   public static readonly TARGET_BOUNDS = new Bounds2( 0, 0, 5, 80 );
 
-  // Bounds of the collector plate for rendering purposes only.
-  public static readonly COLLECTOR_BOUNDS = new Bounds2( 0, 0, 5, 80 );
-
-  // Width of the lamp opening which will emit our photons.
-  public static readonly PHOTON_SOURCE_WIDTH = PHOTON_SOURCE_WIDTH;
+  // Bounds of the sink plate for rendering purposes only.
+  public static readonly SINK_BOUNDS = new Bounds2( 0, 0, 5, 80 );
 
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
   public static readonly SCREEN_VIEW_Y_MARGIN = 15;
@@ -113,6 +107,6 @@ export default class PhotoelectricEffectConstants {
 
   // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
   // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
-  public static readonly VIEW_ORIGIN_X = 400;
+  public static readonly VIEW_ORIGIN_X = 150;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 }

@@ -34,7 +34,7 @@ debugLegend.title: 'Legend:'
 debugLegend.photons: 'Yellow = photons'
 debugLegend.electrons: 'Cyan = electrons'
 debugLegend.target: 'Red outline = target'
-debugLegend.collector: 'Blue outline = collector'
+debugLegend.sink: 'Blue outline = sink'
 
 # Preferences PLACEHOLDERS
 preferences.mysteryMaterialLabel: 'Mystery Material'
