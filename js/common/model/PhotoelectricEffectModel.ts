@@ -20,11 +20,13 @@ import optionize from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
+import Battery from './Battery.js';
 import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
 import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon from './Photon.js';
 import PhotonSource from './PhotonSource.js';
+import Sink from './Sink.js';
 import Target from './Target.js';
 
 type SelfOptions = {
@@ -44,6 +46,14 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Target plate that emits electrons.
   public readonly target: Target;
+
+  // Collector plate that receives emitted electrons.
+  // Used to determine current flow in the intro screen.
+  public readonly sink: Sink;
+
+  // Battery that sets the potential difference between plates.
+  // Controls the electric field that accelerates or decelerates electrons.
+  public readonly battery: Battery;
 
   // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
@@ -103,6 +113,9 @@ export default class PhotoelectricEffectModel implements TModel {
     } );
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
+    this.sink = new Sink( PhotoelectricEffectConstants.SINK_X, providedOptions.tandem.createTandem( 'sink' ) );
+    this.battery = new Battery( providedOptions.tandem );
+
     this.currentProperty = new DerivedProperty(
       [
         this.voltageProperty,
@@ -121,6 +134,7 @@ export default class PhotoelectricEffectModel implements TModel {
    */
   public reset(): void {
     this.target.reset();
+    this.battery.reset();
     this.photonSource.reset();
     this.voltageProperty.reset();
 
@@ -147,8 +161,12 @@ export default class PhotoelectricEffectModel implements TModel {
    * Handles collisions between emitted electrons and the sink.
    * Returns true when the electron is absorbed by the sink.
    */
-  protected handleElectronSinkCollision( _electron: Electron ): boolean {
-    return false;
+  protected handleElectronSinkCollision( electron: Electron ): boolean {
+    const absorbed = this.sink.isHitByElectron( electron );
+    if ( absorbed ) {
+      console.log( 'HIT DETECTED!' );
+    }
+    return absorbed;
   }
 
   /**

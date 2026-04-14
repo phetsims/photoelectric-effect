@@ -9,44 +9,11 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Battery from '../../common/model/Battery.js';
-import Electron from '../../common/model/Electron.js';
 import Material from '../../common/model/Material.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import Sink from '../../common/model/Sink.js';
 
 export default class IntroModel extends PhotoelectricEffectModel {
-
-  /**
-   * Collector plate that receives emitted electrons.
-   * Used to determine current flow in the intro screen.
-   */
-  public readonly sink: Sink;
-
-  /**
-   * Battery that sets the potential difference between plates.
-   * Controls the electric field that accelerates or decelerates electrons.
-   */
-  public readonly battery: Battery;
-
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
     super( mysteryMaterials, providedOptions );
-
-    this.sink = new Sink( PhotoelectricEffectConstants.SINK_X, providedOptions.tandem.createTandem( 'sink' ) );
-    this.battery = new Battery( providedOptions.tandem );
-  }
-
-  public override reset(): void {
-    super.reset();
-    this.battery.reset();
-  }
-
-  protected override handleElectronSinkCollision( electron: Electron ): boolean {
-    const absorbed = this.sink.isHitByElectron( electron );
-    if ( absorbed ) {
-      console.log( 'HIT DETECTED!' );
-    }
-    return absorbed;
   }
 }

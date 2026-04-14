@@ -8,13 +8,12 @@
  */
 
 import Material from '../../common/model/Material.js';
-import { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
-import IntroModel from '../../intro/model/IntroModel.js';
+import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 import FrequencyEnergyGraphData from './FrequencyEnergyGraphData.js';
 import IntensityCurrentGraphData from './IntensityCurrentGraphData.js';
 import VoltageCurrentGraphData from './VoltageCurrentGraphData.js';
 
-export default class ExperimentModel extends IntroModel {
+export default class ExperimentModel extends PhotoelectricEffectModel {
 
   // Model components containing data points for the plots in this screen.
   public readonly intensityCurrentGraphData: IntensityCurrentGraphData;
