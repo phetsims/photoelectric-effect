@@ -28,8 +28,8 @@ import ComboBox from '../../../../sun/js/ComboBox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import ParticleCanvasNode from '../../intro/view/ParticleCanvasNode.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import PhotonCanvasNode from '../../intro/view/PhotonCanvasNode.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -39,7 +39,7 @@ type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class PhotoelectricEffectScreenView extends ScreenView {
 
-  private readonly photonCanvasNode: PhotonCanvasNode;
+  private readonly particleCanvasNode: ParticleCanvasNode;
   private readonly particleLayer: Node;
   private readonly modelOrigin: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
@@ -51,7 +51,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     super( options );
     this.model = model;
 
-    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see https://github.com/phetsims/photoelectric-effect/issues/5
+    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
+    // https://github.com/phetsims/photoelectric-effect/issues/5
     const comboBoxItems = model.target.materials.map( ( material, i ) => {
       return {
         value: material,
@@ -193,15 +194,10 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
-    // TODO: Rename to ParticleCanvasNode.
-    this.photonCanvasNode = new PhotonCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
-    this.addChild( this.photonCanvasNode );
+    this.particleCanvasNode = new ParticleCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
+    this.addChild( this.particleCanvasNode );
 
-    // Debug visualization for particles and collision bounds.
-    this.modelOrigin = new Vector2( this.layoutBounds.centerX, this.layoutBounds.centerY );
-    this.particleLayer = new Node();
-    this.addChild( this.particleLayer );
-
+    // Debug visualization for collision bounds.
     const targetBounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
     const sinkBounds = PhotoelectricEffectConstants.SINK_BOUNDS;
     const targetRectangle = this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' );
@@ -226,7 +222,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
    * @param dt - time step, in seconds
    */
   public override step( dt: number ): void {
-    this.photonCanvasNode.step( dt );
+    this.particleCanvasNode.step( dt );
     this.updateParticleDebug( this.model );
   }
 
