@@ -21,6 +21,7 @@ type SelfOptions = EmptySelfOptions;
 type PhotonCanvasNodeOptions = SelfOptions & WithRequired<CanvasNodeOptions, 'canvasBounds'>;
 
 // TODO: Render electrons here as well.
+// TODO: Move this file into the common directory now.
 export default class PhotonCanvasNode extends CanvasNode {
 
   private readonly photonImage: HTMLImageElement | HTMLCanvasElement;

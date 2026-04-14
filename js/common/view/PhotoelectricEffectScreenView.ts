@@ -29,15 +29,11 @@ import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import IntroModel from '../model/IntroModel.js';
-import PhotonCanvasNode from './PhotonCanvasNode.js';
+import PhotonCanvasNode from '../../intro/view/PhotonCanvasNode.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
 };
-
-// Do something similar to the model:
-// Create PhotoelectricEffectScreenView
 
 type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
@@ -48,7 +44,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
   private readonly modelOrigin: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
 
-  public constructor( private readonly model: IntroModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
+  public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
     const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
 

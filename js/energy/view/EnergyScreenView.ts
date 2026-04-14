@@ -9,7 +9,7 @@
  */
 
 import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
-import PhotoelectricEffectScreenView from '../../intro/view/PhotoelectricEffectScreenView.js';
+import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
 import EnergyModel from '../model/EnergyModel.js';
 
 type SelfOptions = {

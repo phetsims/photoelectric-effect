@@ -13,7 +13,9 @@ import Material from '../common/model/Material.js';
 import PhotoelectricEffectColors from '../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../PhotoelectricEffectFluent.js';
 import IntroModel from './model/IntroModel.js';
-import PhotoelectricEffectScreenView from './view/PhotoelectricEffectScreenView.js';
+
+// TODO: Replace with a new IntroScreenView.
+import PhotoelectricEffectScreenView from '../common/view/PhotoelectricEffectScreenView.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreen here
