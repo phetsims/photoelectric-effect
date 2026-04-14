@@ -2,9 +2,9 @@
 
 /**
  * View for the Experiment screen of the photoelectric effect simulation.
- * Extends the Intro screen view and adds a right-aligned column of graph placeholders
- * to establish layout for the Experiment-specific plotting features.
+ * Includes graphs of model data and a battery to drive the circuit potential.
  *
+ * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
