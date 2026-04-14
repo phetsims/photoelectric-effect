@@ -9,7 +9,7 @@
  */
 
 import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
-import IntroScreenView from '../../intro/view/IntroScreenView.js';
+import PhotoelectricEffectScreenView from '../../intro/view/PhotoelectricEffectScreenView.js';
 import EnergyModel from '../model/EnergyModel.js';
 
 type SelfOptions = {
@@ -18,7 +18,7 @@ type SelfOptions = {
 
 type EnergyScreenViewOptions = SelfOptions & ScreenViewOptions;
 
-export default class EnergyScreenView extends IntroScreenView {
+export default class EnergyScreenView extends PhotoelectricEffectScreenView {
 
   public constructor( model: EnergyModel, providedOptions: EnergyScreenViewOptions ) {
     super( model, providedOptions );

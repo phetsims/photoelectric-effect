@@ -41,7 +41,7 @@ type SelfOptions = {
 
 type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
-export default class IntroScreenView extends ScreenView {
+export default class PhotoelectricEffectScreenView extends ScreenView {
 
   private readonly photonCanvasNode: PhotonCanvasNode;
   private readonly particleLayer: Node;

@@ -12,7 +12,7 @@ import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import IntroScreenView from '../../intro/view/IntroScreenView.js';
+import PhotoelectricEffectScreenView from '../../intro/view/PhotoelectricEffectScreenView.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import ExperimentGraphNode from './ExperimentGraphNode.js';
 import FrequencyEnergyGraphNode from './FrequencyEnergyGraphNode.js';
@@ -25,7 +25,7 @@ type SelfOptions = {
 
 type ExperimentScreenViewOptions = SelfOptions & ScreenViewOptions;
 
-export default class ExperimentScreenView extends IntroScreenView {
+export default class ExperimentScreenView extends PhotoelectricEffectScreenView {
 
   public constructor( model: ExperimentModel, providedOptions: ExperimentScreenViewOptions ) {
 
