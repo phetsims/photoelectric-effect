@@ -21,7 +21,6 @@ type SelfOptions = EmptySelfOptions;
 
 type ParticleCanvasNodeOptions = SelfOptions & WithRequired<CanvasNodeOptions, 'canvasBounds'>;
 
-// TODO: Move this file into the common directory now.
 export default class ParticleCanvasNode extends CanvasNode {
 
   public constructor(
