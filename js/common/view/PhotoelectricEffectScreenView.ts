@@ -20,14 +20,16 @@ import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import Circle from '../../../../scenery/js/nodes/Circle.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import ComboBox from '../../../../sun/js/ComboBox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import ParticleCanvasNode from './ParticleCanvasNode.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import PhotonCanvasNode from '../../intro/view/PhotonCanvasNode.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -37,7 +39,9 @@ type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class PhotoelectricEffectScreenView extends ScreenView {
 
-  private readonly particleCanvasNode: ParticleCanvasNode;
+  private readonly photonCanvasNode: PhotonCanvasNode;
+  private readonly particleLayer: Node;
+  private readonly modelOrigin: Vector2;
   private readonly modelViewTransform: ModelViewTransform2;
 
   public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
@@ -47,8 +51,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     super( options );
     this.model = model;
 
-    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
-    // https://github.com/phetsims/photoelectric-effect/issues/5
+    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see https://github.com/phetsims/photoelectric-effect/issues/5
     const comboBoxItems = model.target.materials.map( ( material, i ) => {
       return {
         value: material,
@@ -190,10 +193,15 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
-    this.particleCanvasNode = new ParticleCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
-    this.addChild( this.particleCanvasNode );
+    // TODO: Rename to ParticleCanvasNode.
+    this.photonCanvasNode = new PhotonCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
+    this.addChild( this.photonCanvasNode );
 
-    // Debug visualization for collision bounds.
+    // Debug visualization for particles and collision bounds.
+    this.modelOrigin = new Vector2( this.layoutBounds.centerX, this.layoutBounds.centerY );
+    this.particleLayer = new Node();
+    this.addChild( this.particleLayer );
+
     const targetBounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
     const sinkBounds = PhotoelectricEffectConstants.SINK_BOUNDS;
     const targetRectangle = this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' );
@@ -218,7 +226,20 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
    * @param dt - time step, in seconds
    */
   public override step( dt: number ): void {
-    this.particleCanvasNode.step( dt );
+    this.photonCanvasNode.step( dt );
+    this.updateParticleDebug( this.model );
+  }
+
+  private updateParticleDebug( model: PhotoelectricEffectModel ): void {
+    this.particleLayer.removeAllChildren();
+
+    model.electrons.forEach( electron => {
+      const node = new Circle( 2.5, { fill: 'cyan', stroke: 'black', lineWidth: 0.5 } );
+      const position = electron.position;
+      node.centerX = this.modelOrigin.x + position.x;
+      node.centerY = this.modelOrigin.y - position.y;
+      this.particleLayer.addChild( node );
+    } );
   }
 
   private createBoundsRectangle( bounds: Bounds2, stroke: string ): Rectangle {

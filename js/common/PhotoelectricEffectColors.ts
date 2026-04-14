@@ -25,14 +25,6 @@ export default class PhotoelectricEffectColors {
 
   public static readonly screenBackgroundColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'screenBackgroundColor', {
-      default: 'white'
-    } );
-
-  public static readonly photonColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonColor', {
-      default: 'purple'
-    } );
-
-  public static readonly electronColorProperty = new ProfileColorProperty( photoelectricEffect, 'electronColor', {
-    default: 'cyan'
+    default: 'white'
   } );
 }

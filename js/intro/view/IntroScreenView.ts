@@ -21,6 +21,5 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
   public constructor( model: IntroModel, providedOptions: IntroScreenViewOptions ) {
     const options = optionize<IntroScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
     super( model, options );
-
   }
 }

@@ -16,6 +16,7 @@
  */
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
+import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
@@ -45,7 +46,7 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
-import type GraphData from '../model/GraphData.js';
+import GraphData from '../model/GraphData.js';
 import ExperimentGraphInfoDialog from './ExperimentGraphInfoDialog.js';
 
 // constants
@@ -80,6 +81,7 @@ const EXPERIMENT_GRAPH_BUTTON_WIDTH = 28;
 const EXPERIMENT_GRAPH_BUTTON_HEIGHT = 20;
 const EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN = 3;
 const EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET = 6;
+const SNAPSHOT_READOUT_MARGIN = 4;
 
 type SelfOptions = {
 
@@ -262,12 +264,22 @@ export default class ExperimentGraphNode extends Node {
       ]
     } );
 
+    const snapshotCountReadoutText = new Text(
+      new DerivedProperty( [ graphData.snapshotsCountProperty ], count => `${count}/${GraphData.MAX_SNAPSHOTS}` ),
+      { font: new PhetFont( { size: 18 } ) }
+    );
+    snapshotCountReadoutText.stringProperty.link( () => {
+      snapshotCountReadoutText.right = chartRectangle.right - SNAPSHOT_READOUT_MARGIN;
+      snapshotCountReadoutText.top = chartRectangle.top + SNAPSHOT_READOUT_MARGIN;
+    } );
+
     const chartChildren = [
       tickMarkNode,
       tickMaskRectangle,
       chartContentNode,
       chartRectangle,
-      tickLabelNode
+      tickLabelNode,
+      snapshotCountReadoutText
     ];
     if ( xAxisLabelText ) {
       chartChildren.push( xAxisLabelText );
@@ -314,7 +326,7 @@ export default class ExperimentGraphNode extends Node {
     } );
 
     const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
-      listener: () => graphData.clear(),
+      listener: () => graphData.clearSnapshots(),
       tandem: options.tandem.createTandem( 'actionButton3' )
     } ) );
 
@@ -330,6 +342,10 @@ export default class ExperimentGraphNode extends Node {
           tandem: options.tandem.createTandem( 'actionButton1' )
         } ) ),
         new CameraButton( combineOptions<CameraButtonOptions>( {}, actionButtonOptions, {
+          listener: () => graphData.captureSnapshot(),
+          enabledProperty: new DerivedProperty( [ graphData.snapshotsCountProperty ], count => {
+            return count < GraphData.MAX_SNAPSHOTS;
+          } ),
           tandem: tandem.createTandem( 'actionButton2' )
         } ) ),
         infoButton,
