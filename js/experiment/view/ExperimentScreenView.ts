@@ -34,7 +34,7 @@ export default class ExperimentScreenView extends PhotoelectricEffectScreenView 
     super( model, options );
 
     const graphsVBox = new VBox( {
-      spacing: GraphAssemblyNode.EXPERIMENT_GRAPH_ASSEMBLY_SPACING,
+      spacing: GraphAssemblyNode.GRAPH_ASSEMBLY_SPACING,
       align: 'right',
       children: [
         new IntensityCurrentGraphAssemblyNode( model, {

@@ -1,8 +1,12 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Renders the experiment graph plot area only: grid, masked line plot, ticks, axis labels, and border. Used in
- * various components to plot data, or get decorated with other UI.
+ * GraphPlotAreaNode renders the reusable chart region for the experiment graph.
+ * It manages chart transform updates from zoom changes, including tick mark and tick label regeneration for each
+ * configured zoom range pair.
+ *
+ * The node focuses on plotting concerns only (grid, masked line plot, ticks, axis labels, and border) so parent
+ * components can layer controls and readouts around it.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -20,6 +24,7 @@ import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
+import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
@@ -39,14 +44,22 @@ type TickSetGroup = {
   yTickMarkSet: TickMarkSet;
 };
 
+// Shared visual style for chart grid lines.
 const GRID_LINE_OPTIONS = {
   stroke: 'rgb( 220, 220, 220 )',
   lineDash: [ 4, 4 ]
 };
+
 const AXIS_LABEL_FONT = new PhetFont( 12 );
-const AXIS_LABEL_MARGIN = 6;
 const TICK_LABEL_FONT = new PhetFont( 10 );
+
+// Gap between the chart/ticks and axis labels.
+const AXIS_LABEL_MARGIN = 6;
+
+// Tick mark length extending away from chart edges.
 const TICK_MARK_EXTENT = 8;
+
+// Tick mark stroke width.
 const TICK_MARK_LINE_WIDTH = 3;
 
 // Default chart size in view coordinates (experiment screen graphs).
@@ -93,7 +106,7 @@ type GraphPlotAreaSelfOptions = {
   linePlotOptions?: LinePlotOptions;
 };
 
-export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions & NodeOptions;
+export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions & StrictOmit<NodeOptions, 'isDisposable'>;
 
 export default class GraphPlotAreaNode extends Node {
 
@@ -109,10 +122,10 @@ export default class GraphPlotAreaNode extends Node {
   // Chart border; exposed for outer layout (expand button alignment).
   public readonly plotRectangle: Rectangle;
 
-  // Tick/label groups for the active zoom level; disposed when zoom changes or this node is disposed.
+  // Tick/label groups for the active zoom level; replaced and disposed when zoom changes.
   private tickSets: TickSetGroup;
 
-  // Unlinks zoomLevelProperty listener on dispose.
+  // Updates chart ranges and recreated tick sets when zoom level changes.
   private readonly zoomLevelObserver: ( zoomLevel: number ) => void;
 
   public constructor( providedOptions: GraphPlotAreaNodeOptions ) {
@@ -152,6 +165,7 @@ export default class GraphPlotAreaNode extends Node {
     const initialRangeIndex = Math.min( Math.max( initialZoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
     const initialRangePair = zoomRangePairs[ initialRangeIndex ];
 
+    // Uses axis-specific padding to preserve visual margin with non-square chart aspect ratios.
     const baseRangePaddingFraction = options.rangePaddingFraction;
     const rangePaddingFractionX = baseRangePaddingFraction * chartViewHeight / chartViewWidth;
     const rangePaddingFractionY = baseRangePaddingFraction;
@@ -238,6 +252,7 @@ export default class GraphPlotAreaNode extends Node {
       ]
     } );
 
+    // Layer order keeps ticks outside the clipped chart while data and grid stay within the plot rectangle.
     const chartChildren = [
       tickMarkNode,
       tickMaskRectangle,
@@ -268,6 +283,7 @@ export default class GraphPlotAreaNode extends Node {
       this.chartTransform.setModelXRange( GraphPlotAreaNode.getPaddedRange( rangePair.xRange, rangePaddingFractionX ) );
       this.chartTransform.setModelYRange( GraphPlotAreaNode.getPaddedRange( rangePair.yRange, rangePaddingFractionY ) );
 
+      // Dispose previous sets after swapping to avoid detached scenery/bamboo nodes lingering in memory.
       const previousTickSets = this.tickSets;
 
       this.tickSets = GraphPlotAreaNode.createTickSets(
@@ -308,24 +324,6 @@ export default class GraphPlotAreaNode extends Node {
     const sortedDataSet = dataSet.slice().sort( ( a, b ) => a.x - b.x );
 
     this.linePlot.setDataSet( sortedDataSet );
-  }
-
-  public override dispose(): void {
-    if ( this.isDisposed ) {
-      return;
-    }
-
-    this.zoomLevelProperty.unlink( this.zoomLevelObserver );
-    this.zoomLevelProperty.dispose();
-
-    // Detached below so bamboo/scenery nodes (LinePlot, tick sets, RichText, etc.) dispose fully.
-    const detachedChildren = this.getChildren();
-
-    super.dispose();
-
-    for ( let i = 0; i < detachedChildren.length; i++ ) {
-      detachedChildren[ i ].disposeSubtree();
-    }
   }
 
   /**
