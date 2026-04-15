@@ -37,7 +37,7 @@ export type WavelengthSliderWithReadoutOptions = SelfOptions & PickRequired<Node
 
 const DEFAULT_TRACK_SIZE = new Dimension2( 240, 20 );
 
-const NUMBER_DISPLAY_BASE: NumberDisplayOptions = {
+const DEFAULT_NUMBER_DISPLAY_OPTIONS: NumberDisplayOptions = {
   decimalPlaces: 0,
   cornerRadius: 4,
   backgroundFill: 'white',
@@ -84,7 +84,7 @@ export default class WavelengthSliderWithReadout extends Node {
 
     const wavelengthReadout = new NumberDisplay( photonSource.wavelengthProperty, photonSource.wavelengthProperty.range, combineOptions<NumberDisplayOptions>(
       {},
-      NUMBER_DISPLAY_BASE,
+      DEFAULT_NUMBER_DISPLAY_OPTIONS,
       {
         valuePattern: PhotoelectricEffectFluent.wavelength.valueReadoutPatternStringProperty,
         textOptions: {
