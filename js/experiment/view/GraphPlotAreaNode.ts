@@ -31,7 +31,6 @@ import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
 export type ZoomRangePair = {
   xRange: Range;
@@ -50,6 +49,9 @@ const GRID_LINE_OPTIONS = {
   stroke: 'rgb( 220, 220, 220 )',
   lineDash: [ 4, 4 ]
 };
+
+const AXIS_LABEL_FONT = new PhetFont( 12 );
+const TICK_LABEL_FONT = new PhetFont( 10 );
 
 // Gap between the chart/ticks and axis labels.
 const AXIS_LABEL_MARGIN = 6;
@@ -207,11 +209,11 @@ export default class GraphPlotAreaNode extends Node {
     } );
 
     const xAxisLabelText = options.xAxisLabelStringProperty ? new RichText( options.xAxisLabelStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT
+      font: AXIS_LABEL_FONT
     } ) : null;
 
     const yAxisLabelText = options.yAxisLabelStringProperty ? new RichText( options.yAxisLabelStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT,
+      font: AXIS_LABEL_FONT,
       rotation: -Math.PI / 2
     } ) : null;
 
@@ -344,7 +346,7 @@ export default class GraphPlotAreaNode extends Node {
     const isInteger = Math.abs( value - roundSymmetric( value ) ) < 1e-6;
     const label = formatter ? formatter( value ) : toFixed( value, isInteger ? 0 : 2 );
     return new Text( label, {
-      font: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_TICK_LABEL_FONT
+      font: TICK_LABEL_FONT
     } );
   }
 

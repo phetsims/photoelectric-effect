@@ -129,16 +129,4 @@ export default class PhotoelectricEffectConstants {
   // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
   public static readonly VIEW_ORIGIN_X = 400;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
-
-  // Font for numeric readouts (NumberDisplay) and experiment graph axis titles (shared 12 pt instance).
-  public static readonly READOUT_FONT = new PhetFont( 12 );
-
-  // Font for subsection titles in control panels (e.g. photon source intensity label).
-  public static readonly PANEL_TITLE_FONT = new PhetFont( 16 );
-
-  // Font for UV / IR labels on the wavelength spectrum track.
-  public static readonly SPECTRUM_BAND_LABEL_FONT = new PhetFont( 11 );
-
-  // Font for numeric tick labels on experiment graphs.
-  public static readonly EXPERIMENT_GRAPH_TICK_LABEL_FONT = new PhetFont( 10 );
 }

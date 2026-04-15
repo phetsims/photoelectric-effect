@@ -9,29 +9,27 @@
 import Multilink from '../../../../axon/js/Multilink.js';
 import type TProperty from '../../../../axon/js/TProperty.js';
 import Range from '../../../../dot/js/Range.js';
-import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import SpectrumSliderTrack, { SpectrumSliderTrackOptions } from '../../../../scenery-phet/js/SpectrumSliderTrack.js';
 import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
+import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
+
+// Font for UV and IR band labels on the spectrum track.
+const SPECTRUM_BAND_LABEL_FONT = new PhetFont( 11 );
 
 export default class LabeledSpectrumSliderTrack extends SpectrumSliderTrack {
 
   public constructor( property: TProperty<number>, range: Range, providedOptions?: SpectrumSliderTrackOptions ) {
 
-    super( property, range, combineOptions<SpectrumSliderTrackOptions>( {}, providedOptions, {
-      isDisposable: false
-    } ) );
+    super( property, range, providedOptions );
 
     const uvText = new Text( PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty, {
-      font: PhotoelectricEffectConstants.SPECTRUM_BAND_LABEL_FONT,
-      maxWidth: 50
+      font: SPECTRUM_BAND_LABEL_FONT
     } );
 
     const irText = new Text( PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty, {
-      font: PhotoelectricEffectConstants.SPECTRUM_BAND_LABEL_FONT,
-      maxWidth: 50
+      font: SPECTRUM_BAND_LABEL_FONT
     } );
 
     this.addChild( uvText );
@@ -48,17 +46,24 @@ export default class LabeledSpectrumSliderTrack extends SpectrumSliderTrack {
       uvText.visible = rangeValue.min < VisibleColor.MIN_WAVELENGTH;
       irText.visible = rangeValue.max > VisibleColor.MAX_WAVELENGTH;
 
-      uvText.centerX = valueToPosition.evaluate( uvCenterWavelength );
-      uvText.centerY = size.height / 2;
+      if ( uvText.visible ) {
+        uvText.centerX = valueToPosition.evaluate( uvCenterWavelength );
+        uvText.centerY = size.height / 2;
+      }
 
-      irText.centerX = valueToPosition.evaluate( irCenterWavelength );
-      irText.centerY = size.height / 2;
+      if ( irText.visible ) {
+        irText.centerX = valueToPosition.evaluate( irCenterWavelength );
+        irText.centerY = size.height / 2;
+      }
     };
 
-    // For dynamic locales
     Multilink.multilink(
-      [ uvText.boundsProperty, irText.boundsProperty ],
+      [
+        PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty,
+        PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty
+      ],
       updateLabelLayout
     );
+    updateLabelLayout();
   }
 }
