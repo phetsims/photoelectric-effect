@@ -15,7 +15,6 @@ import { clamp } from '../../../../dot/js/util/clamp.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberDisplay, { NumberDisplayOptions } from '../../../../scenery-phet/js/NumberDisplay.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import SpectrumSliderThumb from '../../../../scenery-phet/js/SpectrumSliderThumb.js';
 import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import HSlider from '../../../../sun/js/HSlider.js';
@@ -23,6 +22,7 @@ import Slider from '../../../../sun/js/Slider.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import PhotonSource from '../model/PhotonSource.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import LabeledSpectrumSliderTrack from './LabeledSpectrumSliderTrack.js';
 
 type SelfOptions = {
@@ -36,8 +36,6 @@ type SelfOptions = {
 export type WavelengthSliderWithReadoutOptions = SelfOptions & PickRequired<NodeOptions, 'tandem'>;
 
 const DEFAULT_TRACK_SIZE = new Dimension2( 240, 20 );
-
-const READOUT_FONT = new PhetFont( 12 );
 
 const NUMBER_DISPLAY_BASE: NumberDisplayOptions = {
   decimalPlaces: 0,
@@ -90,7 +88,7 @@ export default class WavelengthSliderWithReadout extends Node {
       {
         valuePattern: PhotoelectricEffectFluent.wavelength.valueReadoutPatternStringProperty,
         textOptions: {
-          font: READOUT_FONT,
+          font: PhotoelectricEffectConstants.READOUT_FONT,
           maxWidth: options.readoutMaxWidth
         },
         tandem: options.tandem.createTandem( 'wavelengthReadout' )
