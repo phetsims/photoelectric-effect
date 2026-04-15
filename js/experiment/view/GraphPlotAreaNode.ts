@@ -1,8 +1,8 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Renders the experiment chart only: grid, masked line plot, ticks, axis labels, and border. Used inside
- * ExperimentGraphNode and in snapshot dialogs. Owns ChartTransform and zoomLevelProperty for model range presets.
+ * Renders the experiment graph plot area only: grid, masked line plot, ticks, axis labels, and border. Used in
+ * various components to plot data, or get decorated with other UI.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -50,10 +50,10 @@ const TICK_MARK_EXTENT = 8;
 const TICK_MARK_LINE_WIDTH = 3;
 
 // Default chart size in view coordinates (experiment screen graphs).
-export const EXPERIMENT_CHART_DEFAULT_VIEW_WIDTH = 220;
-export const EXPERIMENT_CHART_DEFAULT_VIEW_HEIGHT = 136;
+export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH = 220;
+export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT = 136;
 
-type ExperimentChartPlotSelfOptions = {
+type GraphPlotAreaSelfOptions = {
 
   // View size of the plot area in scenery coordinates.
   chartViewWidth?: number;
@@ -93,9 +93,9 @@ type ExperimentChartPlotSelfOptions = {
   linePlotOptions?: LinePlotOptions;
 };
 
-export type ExperimentChartPlotNodeOptions = ExperimentChartPlotSelfOptions & NodeOptions;
+export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions & NodeOptions;
 
-export default class ExperimentChartPlotNode extends Node {
+export default class GraphPlotAreaNode extends Node {
 
   // Zoom level that controls the chart's model ranges.
   public readonly zoomLevelProperty: NumberProperty;
@@ -107,7 +107,7 @@ export default class ExperimentChartPlotNode extends Node {
   private readonly linePlot: LinePlot;
 
   // Chart border; exposed for outer layout (expand button alignment).
-  public readonly chartRectangle: Rectangle;
+  public readonly plotRectangle: Rectangle;
 
   // Tick/label groups for the active zoom level; disposed when zoom changes or this node is disposed.
   private tickSets: TickSetGroup;
@@ -115,11 +115,11 @@ export default class ExperimentChartPlotNode extends Node {
   // Unlinks zoomLevelProperty listener on dispose.
   private readonly zoomLevelObserver: ( zoomLevel: number ) => void;
 
-  public constructor( providedOptions: ExperimentChartPlotNodeOptions ) {
+  public constructor( providedOptions: GraphPlotAreaNodeOptions ) {
 
-    const options = optionize<ExperimentChartPlotNodeOptions, ExperimentChartPlotSelfOptions, NodeOptions>()( {
-      chartViewWidth: EXPERIMENT_CHART_DEFAULT_VIEW_WIDTH,
-      chartViewHeight: EXPERIMENT_CHART_DEFAULT_VIEW_HEIGHT,
+    const options = optionize<GraphPlotAreaNodeOptions, GraphPlotAreaSelfOptions, NodeOptions>()( {
+      chartViewWidth: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH,
+      chartViewHeight: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT,
       initialZoomLevel: 1,
       zoomRangePairs: [ {
         xRange: new Range( 0, 1 ),
@@ -159,11 +159,11 @@ export default class ExperimentChartPlotNode extends Node {
     this.chartTransform = new ChartTransform( {
       viewWidth: chartViewWidth,
       viewHeight: chartViewHeight,
-      modelXRange: ExperimentChartPlotNode.getPaddedRange( initialRangePair.xRange, rangePaddingFractionX ),
-      modelYRange: ExperimentChartPlotNode.getPaddedRange( initialRangePair.yRange, rangePaddingFractionY )
+      modelXRange: GraphPlotAreaNode.getPaddedRange( initialRangePair.xRange, rangePaddingFractionX ),
+      modelYRange: GraphPlotAreaNode.getPaddedRange( initialRangePair.yRange, rangePaddingFractionY )
     } );
 
-    this.chartRectangle = new Rectangle( 0, 0, chartViewWidth, chartViewHeight, {
+    this.plotRectangle = new Rectangle( 0, 0, chartViewWidth, chartViewHeight, {
       stroke: 'black',
       cornerXRadius: 0,
       cornerYRadius: 0
@@ -173,7 +173,7 @@ export default class ExperimentChartPlotNode extends Node {
     const tickMaskRectangle = new Rectangle( 0, 0, chartViewWidth, chartViewHeight, {
       fill: 'white'
     } );
-    const chartContentClipArea = this.chartRectangle.getShape();
+    const chartContentClipArea = this.plotRectangle.getShape();
     const gridLineSet = new Node( {
       clipArea: chartContentClipArea,
       children: [
@@ -201,14 +201,14 @@ export default class ExperimentChartPlotNode extends Node {
       rotation: -Math.PI / 2
     } ) : null;
 
-    this.tickSets = ExperimentChartPlotNode.createTickSets(
+    this.tickSets = GraphPlotAreaNode.createTickSets(
       this.chartTransform,
       initialRangePair,
       options.xTickLabelFormatter,
       options.yTickLabelFormatter
     );
-    ExperimentChartPlotNode.updateAxisLabelPositions(
-      this.chartRectangle,
+    GraphPlotAreaNode.updateAxisLabelPositions(
+      this.plotRectangle,
       chartViewHeight,
       options.yAxisLabelYOffset,
       xAxisLabelText,
@@ -242,7 +242,7 @@ export default class ExperimentChartPlotNode extends Node {
       tickMarkNode,
       tickMaskRectangle,
       chartContentNode,
-      this.chartRectangle,
+      this.plotRectangle,
       tickLabelNode
     ];
     if ( xAxisLabelText ) {
@@ -265,12 +265,12 @@ export default class ExperimentChartPlotNode extends Node {
     this.zoomLevelObserver = ( zoomLevel: number ) => {
       const index = Math.min( Math.max( zoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
       const rangePair = zoomRangePairs[ index ];
-      this.chartTransform.setModelXRange( ExperimentChartPlotNode.getPaddedRange( rangePair.xRange, rangePaddingFractionX ) );
-      this.chartTransform.setModelYRange( ExperimentChartPlotNode.getPaddedRange( rangePair.yRange, rangePaddingFractionY ) );
+      this.chartTransform.setModelXRange( GraphPlotAreaNode.getPaddedRange( rangePair.xRange, rangePaddingFractionX ) );
+      this.chartTransform.setModelYRange( GraphPlotAreaNode.getPaddedRange( rangePair.yRange, rangePaddingFractionY ) );
 
       const previousTickSets = this.tickSets;
 
-      this.tickSets = ExperimentChartPlotNode.createTickSets(
+      this.tickSets = GraphPlotAreaNode.createTickSets(
         this.chartTransform,
         rangePair,
         options.xTickLabelFormatter,
@@ -279,8 +279,8 @@ export default class ExperimentChartPlotNode extends Node {
       chartContentNode.children = [ gridLineSet, plotLayer ];
       tickMarkNode.children = [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ];
       tickLabelNode.children = [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ];
-      ExperimentChartPlotNode.updateAxisLabelPositions(
-        this.chartRectangle,
+      GraphPlotAreaNode.updateAxisLabelPositions(
+        this.plotRectangle,
         chartViewHeight,
         options.yAxisLabelYOffset,
         xAxisLabelText,
@@ -372,7 +372,7 @@ export default class ExperimentChartPlotNode extends Node {
       const isEdge = Math.abs( value - min ) <= tolerance ||
                      Math.abs( value - mid ) <= tolerance ||
                      Math.abs( value - max ) <= tolerance;
-      return isEdge ? ExperimentChartPlotNode.createTickLabel( value, formatter ) : null;
+      return isEdge ? GraphPlotAreaNode.createTickLabel( value, formatter ) : null;
     };
   }
 
@@ -385,19 +385,19 @@ export default class ExperimentChartPlotNode extends Node {
     xTickLabelFormatter: ( ( value: number ) => string ) | null,
     yTickLabelFormatter: ( ( value: number ) => string ) | null
   ): TickSetGroup {
-    const xSpacing = ExperimentChartPlotNode.createTickSpacing( rangePair.xRange );
-    const ySpacing = ExperimentChartPlotNode.createTickSpacing( rangePair.yRange );
+    const xSpacing = GraphPlotAreaNode.createTickSpacing( rangePair.xRange );
+    const ySpacing = GraphPlotAreaNode.createTickSpacing( rangePair.yRange );
 
     const xTickLabelSet = new TickLabelSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
       edge: 'min',
       origin: rangePair.xRange.min,
-      createLabel: ExperimentChartPlotNode.createEdgeLabel( rangePair.xRange, xTickLabelFormatter )
+      createLabel: GraphPlotAreaNode.createEdgeLabel( rangePair.xRange, xTickLabelFormatter )
     } );
 
     const yTickLabelSet = new TickLabelSet( chartTransform, Orientation.VERTICAL, ySpacing, {
       edge: 'min',
       origin: rangePair.yRange.min,
-      createLabel: ExperimentChartPlotNode.createEdgeLabel( rangePair.yRange, yTickLabelFormatter )
+      createLabel: GraphPlotAreaNode.createEdgeLabel( rangePair.yRange, yTickLabelFormatter )
     } );
 
     const xTickMarkSet = new TickMarkSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {

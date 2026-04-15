@@ -1,9 +1,8 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * ExperimentGraphNode composes ExperimentChartPlotNode with the expandable frame, snapshot readout, and the
- * right-side action button column. It wires live GraphData to the chart while keeping chart-specific options nested
- * and forwarded to ExperimentChartPlotNode.
+ * GraphAssemblyNode composes GraphPlotAreaNode with expand/collapse functionality, snapshot readout, and the
+ * right-side action button column.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -30,48 +29,48 @@ import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
-import ExperimentChartPlotNode, { type ExperimentChartPlotNodeOptions } from './ExperimentChartPlotNode.js';
-import ExperimentGraphInfoDialog from './ExperimentGraphInfoDialog.js';
-import ExperimentGraphSnapshotsDialog from './ExperimentGraphSnapshotsDialog.js';
+import GraphInfoDialog from './GraphInfoDialog.js';
+import GraphSnapshotsDialog from './GraphSnapshotsDialog.js';
+import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 
-const EXPERIMENT_GRAPH_BUTTON_COLUMN_SPACING = 10;
-const EXPERIMENT_GRAPH_BUTTON_SPACING = 8;
-const EXPERIMENT_GRAPH_BUTTON_WIDTH = 28;
-const EXPERIMENT_GRAPH_BUTTON_HEIGHT = 20;
-const EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN = 3;
-const EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET = 6;
+const EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 10;
+const EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_SPACING = 8;
+const EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_WIDTH = 28;
+const EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_HEIGHT = 20;
+const EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN = 3;
+const EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET = 6;
 const SNAPSHOT_READOUT_MARGIN = 4;
 
 type SelfOptions = {
 
-  // Nested options forwarded to ExperimentChartPlotNode.
-  experimentChartPlotNodeOptions?: ExperimentChartPlotNodeOptions;
+  // Nested options forwarded to GraphPlotAreaNode.
+  graphPlotAreaNodeOptions?: GraphPlotAreaNodeOptions;
 };
 
-export type ExperimentGraphNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
+export type GraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
-export default class ExperimentGraphNode extends Node {
+export default class GraphAssemblyNode extends Node {
 
-  public static readonly EXPERIMENT_GRAPH_SPACING = 12;
+  public static readonly EXPERIMENT_GRAPH_ASSEMBLY_SPACING = 12;
 
   // Whether the chart content row is visible.
   private readonly expandedProperty: BooleanProperty;
 
   // Chart only (grid, plot, ticks, axis labels).
-  private readonly chartPlot: ExperimentChartPlotNode;
+  private readonly graphPlotAreaNode: GraphPlotAreaNode;
 
   /**
    * @param graphData - Model-owned samples; this node redraws when dataChangedEmitter fires.
    * @param providedOptions
    */
-  public constructor( graphData: GraphData, providedOptions: ExperimentGraphNodeOptions ) {
+  public constructor( graphData: GraphData, providedOptions: GraphAssemblyNodeOptions ) {
 
-    const options = optionize<ExperimentGraphNodeOptions, StrictOmit<SelfOptions, 'experimentChartPlotNodeOptions'>, NodeOptions>()( {
+    const options = optionize<GraphAssemblyNodeOptions, StrictOmit<SelfOptions, 'graphPlotAreaNodeOptions'>, NodeOptions>()( {
       isDisposable: false
     }, providedOptions );
 
     const tandem = options.tandem;
-    const experimentChartPlotNodeOptions = options.experimentChartPlotNodeOptions ?? {};
+    const graphPlotAreaNodeOptions = options.graphPlotAreaNodeOptions ?? {};
 
     super( options );
 
@@ -79,8 +78,8 @@ export default class ExperimentGraphNode extends Node {
       tandem: tandem.createTandem( 'expandedProperty' )
     } );
 
-    this.chartPlot = new ExperimentChartPlotNode( combineOptions<ExperimentChartPlotNodeOptions>( {},
-      experimentChartPlotNodeOptions,
+    this.graphPlotAreaNode = new GraphPlotAreaNode( combineOptions<GraphPlotAreaNodeOptions>( {},
+      graphPlotAreaNodeOptions,
       {
         initialZoomLevel: 1,
         tandem: Tandem.OPT_OUT,
@@ -88,36 +87,38 @@ export default class ExperimentGraphNode extends Node {
       }
     ) );
 
-    const chartRectangle = this.chartPlot.chartRectangle;
+    // Layout for UI components will be relative to this chart rectangle area.
+    const plotRectangle = this.graphPlotAreaNode.plotRectangle;
 
+    // A readout for the number of snapshots taken and remaining.
     const snapshotCountReadoutText = new Text(
       new DerivedProperty( [ graphData.snapshotsCountProperty ], count => `${count}/${GraphData.MAX_SNAPSHOTS}` ),
       { font: new PhetFont( { size: 18 } ) }
     );
     snapshotCountReadoutText.stringProperty.link( () => {
-      snapshotCountReadoutText.right = chartRectangle.right - SNAPSHOT_READOUT_MARGIN;
-      snapshotCountReadoutText.top = chartRectangle.top + SNAPSHOT_READOUT_MARGIN;
+      snapshotCountReadoutText.right = plotRectangle.right - SNAPSHOT_READOUT_MARGIN;
+      snapshotCountReadoutText.top = plotRectangle.top + SNAPSHOT_READOUT_MARGIN;
     } );
 
-    const chartChromeNode = new Node( {
+    const plotContentNode = new Node( {
       children: [
-        this.chartPlot,
+        this.graphPlotAreaNode,
         snapshotCountReadoutText
       ]
     } );
 
     const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
       sideLength: 18,
-      left: chartRectangle.left +
-            EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN -
-            EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET,
-      top: chartRectangle.top + EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN,
+      left: plotRectangle.left +
+            EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN -
+            EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET,
+      top: plotRectangle.top + EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN,
       tandem: tandem.createTandem( 'expandCollapseButton' )
     } );
 
     const actionButtonSideLength = Math.max(
-      EXPERIMENT_GRAPH_BUTTON_WIDTH,
-      EXPERIMENT_GRAPH_BUTTON_HEIGHT
+      EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_WIDTH,
+      EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_HEIGHT
     );
     const actionButtonOptions: RectangularPushButtonOptions = {
       size: new Dimension2( actionButtonSideLength, actionButtonSideLength ),
@@ -126,12 +127,12 @@ export default class ExperimentGraphNode extends Node {
       yMargin: 6
     };
 
-    const infoDialog = new ExperimentGraphInfoDialog( tandem.createTandem( 'infoDialog' ) );
-    const snapshotsDialog = new ExperimentGraphSnapshotsDialog(
+    const infoDialog = new GraphInfoDialog( tandem.createTandem( 'infoDialog' ) );
+    const snapshotsDialog = new GraphSnapshotsDialog(
       tandem.createTandem( 'snapshotsDialog' ),
       graphData,
-      this.chartPlot.zoomLevelProperty,
-      experimentChartPlotNodeOptions
+      this.graphPlotAreaNode.zoomLevelProperty,
+      graphPlotAreaNodeOptions
     );
 
     const infoButton = new InfoButton( {
@@ -166,7 +167,7 @@ export default class ExperimentGraphNode extends Node {
     } ) );
 
     const buttonColumn = new VBox( {
-      spacing: EXPERIMENT_GRAPH_BUTTON_SPACING,
+      spacing: EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_SPACING,
       align: 'center',
       children: [
         snapshotsGalleryButton,
@@ -183,10 +184,10 @@ export default class ExperimentGraphNode extends Node {
     } );
 
     const contentRow = new HBox( {
-      spacing: EXPERIMENT_GRAPH_BUTTON_COLUMN_SPACING,
+      spacing: EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING,
       align: 'top',
       children: [
-        chartChromeNode,
+        plotContentNode,
         buttonColumn
       ]
     } );
@@ -214,6 +215,6 @@ export default class ExperimentGraphNode extends Node {
    * @param dataSet - Model data points in chart coordinates.
    */
   public setDataSet( dataSet: Vector2[] ): void {
-    this.chartPlot.setDataSet( dataSet );
+    this.graphPlotAreaNode.setDataSet( dataSet );
   }
 }

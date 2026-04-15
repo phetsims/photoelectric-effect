@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * IntensityCurrentGraphNode configures an ExperimentGraphNode for an intensity/current plot.
+ * IntensityCurrentGraphAssemblyNode configures a GraphAssemblyNode for an intensity/current plot.
  * Sample data is owned by ExperimentModel.intensityCurrentGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -17,19 +17,19 @@ import PhotonSource from '../../common/model/PhotonSource.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './ExperimentGraphNode.js';
+import GraphAssemblyNode, { type GraphAssemblyNodeOptions } from './GraphAssemblyNode.js';
 
 type SelfOptions = EmptySelfOptions;
 
-export type IntensityCurrentGraphNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
+export type IntensityCurrentGraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
-export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
+export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode {
 
   /**
    * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: ExperimentModel, providedOptions: IntensityCurrentGraphNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions: IntensityCurrentGraphAssemblyNodeOptions ) {
 
     const zoomRangePairs = [
       {
@@ -46,8 +46,8 @@ export default class IntensityCurrentGraphNode extends ExperimentGraphNode {
       }
     ];
 
-    const graphOptions: ExperimentGraphNodeOptions = {
-      experimentChartPlotNodeOptions: {
+    const graphOptions: GraphAssemblyNodeOptions = {
+      graphPlotAreaNodeOptions: {
         zoomRangePairs: zoomRangePairs,
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.intensityAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,

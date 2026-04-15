@@ -8,7 +8,7 @@
  *
  * Plot nodes are created once and reused so open/close cycles avoid repeated node allocation and disposal.
  * The VBox always lists all snapshot slots; unused slots stay hidden via visibility. Snapshot charts share the
- * same ExperimentChartPlotNode options as the parent graph (ranges, labels, grid, line styling).
+ * same GraphPlotAreaNode options as the parent graph (ranges, labels, grid, line styling).
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -22,31 +22,31 @@ import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
-import ExperimentChartPlotNode, { type ExperimentChartPlotNodeOptions } from './ExperimentChartPlotNode.js';
+import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 
-export default class ExperimentGraphSnapshotsDialog extends Dialog {
+export default class GraphSnapshotsDialog extends Dialog {
 
   /**
    * @param tandem
    * @param graphData - Model that owns live samples and immutable snapshot copies for this dialog.
    * @param parentZoomLevelProperty - 1-based zoom index from the parent graph's chart; its current value whenever the
    *                                  dialog is shown sets the initial zoom level for charts in this dialog.
-   * @param experimentChartPlotNodeOptions -
+   * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
    */
   public constructor(
     tandem: Tandem,
     graphData: GraphData,
     parentZoomLevelProperty: TReadOnlyProperty<number>,
-    experimentChartPlotNodeOptions: ExperimentChartPlotNodeOptions
+    graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions
   ) {
 
-    const snapshotPlotNodes: ExperimentChartPlotNode[] = [];
+    const snapshotPlotNodes: GraphPlotAreaNode[] = [];
     const initialZoomLevel = parentZoomLevelProperty.value;
 
     for ( let i = 0; i < GraphData.MAX_SNAPSHOTS; i++ ) {
-      snapshotPlotNodes.push( new ExperimentChartPlotNode( combineOptions<ExperimentChartPlotNodeOptions>(
+      snapshotPlotNodes.push( new GraphPlotAreaNode( combineOptions<GraphPlotAreaNodeOptions>(
         {},
-        experimentChartPlotNodeOptions,
+        graphPlotAreaNodeOptions,
         { initialZoomLevel: initialZoomLevel }
       ) ) );
     }

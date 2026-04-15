@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * FrequencyEnergyGraphNode configures an ExperimentGraphNode for a frequency/energy plot.
+ * FrequencyEnergyGraphAssemblyNode configures a GraphAssemblyNode for a frequency/energy plot.
  * Sample data is owned by ExperimentModel.frequencyEnergyGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -13,19 +13,19 @@ import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './ExperimentGraphNode.js';
+import GraphAssemblyNode, { type GraphAssemblyNodeOptions } from './GraphAssemblyNode.js';
 
 type SelfOptions = EmptySelfOptions;
 
-export type FrequencyEnergyGraphNodeOptions = SelfOptions & WithRequired<NodeOptions, 'tandem'>;
+export type FrequencyEnergyGraphAssemblyNodeOptions = SelfOptions & WithRequired<NodeOptions, 'tandem'>;
 
-export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
+export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode {
 
   /**
    * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: ExperimentModel, providedOptions?: FrequencyEnergyGraphNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions?: FrequencyEnergyGraphAssemblyNodeOptions ) {
 
     const zoomRangePairs = [
       {
@@ -42,11 +42,11 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
       }
     ];
 
-    const options = optionize<FrequencyEnergyGraphNodeOptions, SelfOptions, NodeOptions>()( {
+    const options = optionize<FrequencyEnergyGraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {
     }, providedOptions );
 
-    const graphOptions: ExperimentGraphNodeOptions = {
-      experimentChartPlotNodeOptions: {
+    const graphOptions: GraphAssemblyNodeOptions = {
+      graphPlotAreaNodeOptions: {
         zoomRangePairs: zoomRangePairs,
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,

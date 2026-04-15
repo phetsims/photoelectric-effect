@@ -101,7 +101,7 @@ export default class Target {
     const energyAfterCollision = Material.energyAfterPhotonCollision( photonEnergy, workFunction );
 
     let electron: Electron | null = null;
-    if ( energyAfterCollision > 0 ) {
+    if ( energyAfterCollision > PhotoelectricEffectConstants.MINIMUM_ELECTRON_ENERGY ) {
       const speed = Electron.determineNewElectronSpeed( energyAfterCollision );
       let angle = 0;
       if ( Target.ELECTRON_DISPERSION_ANGLE !== 0 ) {

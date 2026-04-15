@@ -45,7 +45,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly PHOTON_SOURCE_FANOUT_ANGLE = 45 * Math.PI / 180;
 
   // Photon speed in model units per second.
-  public static readonly PHOTON_SPEED = 200;
+  public static readonly PHOTON_SPEED = 80;
 
   // Distance between plate centers, used for potential/field calculations.
   public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.SINK_X - PhotoelectricEffectConstants.TARGET_X;
@@ -82,10 +82,11 @@ export default class PhotoelectricEffectConstants {
   public static readonly ELECTRON_MASS = 9.11e-31;
 
   // Scale factor applied to computed electron speeds for model tuning.
-  public static readonly ELECTRON_SPEED_SCALE_FACTOR = 5e-16;
+  public static readonly ELECTRON_SPEED_SCALE_FACTOR = 1.6e-14;
 
-  // Minimum electron speed for randomized emission (model units per second).
-  public static readonly MINIMUM_ELECTRON_SPEED = 0.1;
+  // Minimum energy (in eV) for an emitted electron to be tracked and rendered.
+  // Electrons below this threshold are discarded rather than shown hanging near the target.
+  public static readonly MINIMUM_ELECTRON_ENERGY = 0.05;
 
   // Acceleration scale from voltage to model units (model units per V*s^2).
   public static readonly ELECTRON_ACCELERATION_SCALE = 100.2865;
@@ -126,6 +127,6 @@ export default class PhotoelectricEffectConstants {
 
   // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
   // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
-  public static readonly VIEW_ORIGIN_X = 150;
+  public static readonly VIEW_ORIGIN_X = 400;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 }
