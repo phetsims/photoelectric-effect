@@ -96,8 +96,16 @@ export default class GraphData {
   /**
    * Points in model/chart coordinates, most recently appended last. Do not mutate; use clear() to empty.
    */
-  public getDataPoints(): readonly Vector2[] {
+  public getDataPoints(): ReadonlyArray<Vector2> {
     return this.dataPoints;
+  }
+
+  /**
+   * Immutable snapshot series in capture order. Do not mutate the returned arrays or points; the model treats each
+   * snapshot as read-only after it is stored.
+   */
+  public getSnapshots(): ReadonlyArray<ReadonlyArray<Vector2>> {
+    return this.snapshots;
   }
 
   /**
