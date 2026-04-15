@@ -108,7 +108,6 @@ export default class GradientBackplateIntensitySlider extends Node {
     Multilink.multilink(
       [
         photonSource.wavelengthProperty,
-        intensitySlider.boundsProperty,
         intensityLabel.stringProperty
       ],
       () => {
@@ -121,14 +120,6 @@ export default class GradientBackplateIntensitySlider extends Node {
           intensityReadout
         );
       }
-    );
-    GradientBackplateIntensitySlider.updateGradientAndReadoutLayout(
-      this,
-      photonSource,
-      intensityLabel,
-      intensityGradientRectangle,
-      intensitySlider,
-      intensityReadout
     );
   }
 

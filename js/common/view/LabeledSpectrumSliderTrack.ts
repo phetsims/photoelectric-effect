@@ -66,6 +66,5 @@ export default class LabeledSpectrumSliderTrack extends SpectrumSliderTrack {
       ],
       updateLabelLayout
     );
-    updateLabelLayout();
   }
 }
