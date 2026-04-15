@@ -47,15 +47,6 @@
       },
       "infoDialogPlaceholder": {
         "value": "This is the information dialog and content will go here..."
-      },
-      "snapshotsDialogTitle": {
-        "value": "Saved snapshots"
-      },
-      "snapshotsGalleryButtonAccessibleName": {
-        "value": "View saved snapshots"
-      },
-      "snapshotsGalleryButtonAccessibleHelpText": {
-        "value": "Opens a dialog with a plot of each saved snapshot."
       }
     }
   },
@@ -63,22 +54,10 @@
     "value": "Work Function (eV)"
   },
   "intensity.label": {
-    "value": "Intensity"
-  },
-  "intensity.percentReadoutPattern": {
-    "value": "{{value}} %"
+    "value": "Light Intensity"
   },
   "wavelength.label": {
     "value": "Wavelength (nm)"
-  },
-  "wavelength.valueReadoutPattern": {
-    "value": "{{value}} nm"
-  },
-  "spectrumTrack.uvLabel": {
-    "value": "UV"
-  },
-  "spectrumTrack.irLabel": {
-    "value": "IR"
   },
   "voltage.label": {
     "value": "Voltage (V)"

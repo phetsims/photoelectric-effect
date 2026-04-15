@@ -14,10 +14,10 @@ import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyNode from './GraphAssemblyNode.js';
-import FrequencyEnergyGraphAssemblyNode from './FrequencyEnergyGraphAssemblyNode.js';
-import IntensityCurrentGraphAssemblyNode from './IntensityCurrentGraphAssemblyNode.js';
-import VoltageCurrentGraphAssemblyNode from './VoltageCurrentGraphAssemblyNode.js';
+import ExperimentGraphNode from './ExperimentGraphNode.js';
+import FrequencyEnergyGraphNode from './FrequencyEnergyGraphNode.js';
+import IntensityCurrentGraphNode from './IntensityCurrentGraphNode.js';
+import VoltageCurrentGraphNode from './VoltageCurrentGraphNode.js';
 
 type SelfOptions = {
   //TODO add options that are specific to ExperimentScreenView here
@@ -34,16 +34,16 @@ export default class ExperimentScreenView extends PhotoelectricEffectScreenView 
     super( model, options );
 
     const graphsVBox = new VBox( {
-      spacing: GraphAssemblyNode.GRAPH_ASSEMBLY_SPACING,
+      spacing: ExperimentGraphNode.EXPERIMENT_GRAPH_SPACING,
       align: 'right',
       children: [
-        new IntensityCurrentGraphAssemblyNode( model, {
+        new IntensityCurrentGraphNode( model, {
           tandem: options.tandem.createTandem( 'intensityCurrentGraphNode' )
         } ),
-        new FrequencyEnergyGraphAssemblyNode( model, {
+        new FrequencyEnergyGraphNode( model, {
           tandem: options.tandem.createTandem( 'frequencyEnergyGraphNode' )
         } ),
-        new VoltageCurrentGraphAssemblyNode( model, {
+        new VoltageCurrentGraphNode( model, {
           tandem: options.tandem.createTandem( 'voltageCurrentGraphNode' )
         } )
       ]
