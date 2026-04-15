@@ -24,10 +24,6 @@ experiment:
     infoDialogTitle: 'Information'
     infoDialogPlaceholder: 'This is the information dialog and content will go here...'
 
-    snapshotsDialogTitle: 'Saved snapshots'
-    snapshotsGalleryButtonAccessibleName: 'View saved snapshots'
-    snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
-
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Light Intensity'

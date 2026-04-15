@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * VoltageCurrentGraphAssemblyNode configures a GraphAssemblyNode for a voltage/current plot.
+ * VoltageCurrentGraphNode configures an ExperimentGraphNode for a voltage/current plot.
  * Sample data is owned by ExperimentModel.voltageCurrentGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -14,19 +14,19 @@ import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyNode, { type GraphAssemblyNodeOptions } from './GraphAssemblyNode.js';
+import ExperimentGraphNode, { type ExperimentGraphNodeOptions } from './ExperimentGraphNode.js';
 
 type SelfOptions = EmptySelfOptions;
 
-export type VoltageCurrentGraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
+export type VoltageCurrentGraphNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
-export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
+export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
 
   /**
    * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: ExperimentModel, providedOptions: VoltageCurrentGraphAssemblyNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions: VoltageCurrentGraphNodeOptions ) {
 
     const zoomRangePairs = [
       {
@@ -43,16 +43,14 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
       }
     ];
 
-    const graphOptions: GraphAssemblyNodeOptions = {
-      graphPlotAreaNodeOptions: {
-        zoomRangePairs: zoomRangePairs,
-        xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
-        yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
-        gridXSpacing: 2,
-        gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
-        linePlotOptions: {
-          stroke: '#E03722'
-        }
+    const graphOptions: ExperimentGraphNodeOptions = {
+      zoomRangePairs: zoomRangePairs,
+      xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
+      yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
+      gridXSpacing: 2,
+      gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
+      linePlotOptions: {
+        stroke: '#E03722'
       },
       tandem: providedOptions.tandem
     };

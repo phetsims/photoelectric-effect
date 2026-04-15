@@ -33,9 +33,6 @@ type StringsType = {
       'energyAxisLabelStringProperty': LocalizedStringProperty;
       'infoDialogTitleStringProperty': LocalizedStringProperty;
       'infoDialogPlaceholderStringProperty': LocalizedStringProperty;
-      'snapshotsDialogTitleStringProperty': LocalizedStringProperty;
-      'snapshotsGalleryButtonAccessibleNameStringProperty': LocalizedStringProperty;
-      'snapshotsGalleryButtonAccessibleHelpTextStringProperty': LocalizedStringProperty;
     }
   };
   'workFunction': {

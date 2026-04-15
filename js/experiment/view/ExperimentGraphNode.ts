@@ -1,16 +1,21 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * GraphPlotAreaNode renders the reusable chart region for the experiment graph.
- * It manages chart transform updates from zoom changes, including tick mark and tick label regeneration for each
- * configured zoom range pair.
+ * ExperimentGraphNode renders a shared chart layout for Experiment screen graphs, including the
+ * expandable frame, grid lines, and the right-side action button column. It owns the chart transform
+ * and zoom level state so subclasses can define model ranges even before any zoom UI is attached.
+ * It also exposes a single entry point for updating the plotted data set.
  *
- * The node focuses on plotting concerns only (grid, masked line plot, ticks, axis labels, and border) so parent
- * components can layer controls and readouts around it.
+ * Layering is intentionally split so the chart frame and ticks can render outside the plot region while a mask keeps
+ * the plot interior white: tick marks render first, then a mask rectangle, then clipped plot content, then the
+ * chart border and tick labels.
+ *
+ * This plot is not disposable, we expect it to live for the life of the simulation.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
@@ -18,21 +23,33 @@ import GridLineSet from '../../../../bamboo/js/GridLineSet.js';
 import LinePlot, { type LinePlotOptions } from '../../../../bamboo/js/LinePlot.js';
 import TickLabelSet from '../../../../bamboo/js/TickLabelSet.js';
 import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
+import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Range from '../../../../dot/js/Range.js';
 import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
-import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
+import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
+import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
+import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
+import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
+import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
+import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
+import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
+import type GraphData from '../model/GraphData.js';
+import ExperimentGraphInfoDialog from './ExperimentGraphInfoDialog.js';
 
-export type ZoomRangePair = {
+// constants
+type ZoomRangePair = {
   xRange: Range;
   yRange: Range;
 };
@@ -44,38 +61,29 @@ type TickSetGroup = {
   yTickMarkSet: TickMarkSet;
 };
 
-// Shared visual style for chart grid lines.
 const GRID_LINE_OPTIONS = {
   stroke: 'rgb( 220, 220, 220 )',
   lineDash: [ 4, 4 ]
 };
-
 const AXIS_LABEL_FONT = new PhetFont( 12 );
-const TICK_LABEL_FONT = new PhetFont( 10 );
-
-// Gap between the chart/ticks and axis labels.
 const AXIS_LABEL_MARGIN = 6;
-
-// Tick mark length extending away from chart edges.
+const TICK_LABEL_FONT = new PhetFont( 10 );
 const TICK_MARK_EXTENT = 8;
-
-// Tick mark stroke width.
 const TICK_MARK_LINE_WIDTH = 3;
 
-// Default chart size in view coordinates (experiment screen graphs).
-export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH = 220;
-export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT = 136;
+// Chart layout constants for Experiment graphs.
+const EXPERIMENT_GRAPH_CHART_WIDTH = 220;
+const EXPERIMENT_GRAPH_CHART_HEIGHT = 136;
+const EXPERIMENT_GRAPH_BUTTON_COLUMN_SPACING = 10;
+const EXPERIMENT_GRAPH_BUTTON_SPACING = 8;
+const EXPERIMENT_GRAPH_BUTTON_WIDTH = 28;
+const EXPERIMENT_GRAPH_BUTTON_HEIGHT = 20;
+const EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN = 3;
+const EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET = 6;
 
-type GraphPlotAreaSelfOptions = {
+type SelfOptions = {
 
-  // View size of the plot area in scenery coordinates.
-  chartViewWidth?: number;
-  chartViewHeight?: number;
-
-  // 1-based index into zoomRangePairs for the initial model ranges.
-  initialZoomLevel?: number;
-
-  // Zoom presets mapped to zoomLevelProperty (1-based).
+  // Zoom presets mapped to the zoomLevelProperty (1-based).
   zoomRangePairs?: ZoomRangePair[];
 
   // Optional X-axis label centered beneath the chart. Null hides the label.
@@ -106,12 +114,18 @@ type GraphPlotAreaSelfOptions = {
   linePlotOptions?: LinePlotOptions;
 };
 
-export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions & StrictOmit<NodeOptions, 'isDisposable'>;
+export type ExperimentGraphNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
-export default class GraphPlotAreaNode extends Node {
+export default class ExperimentGraphNode extends Node {
+
+  public static readonly EXPERIMENT_GRAPH_SPACING = 12;
 
   // Zoom level that controls the chart's model ranges.
+  // TODO: Zoom is not implemented yet, see https://github.com/phetsims/photoelectric-effect/issues/12
   public readonly zoomLevelProperty: NumberProperty;
+
+  // Whether the chart content row is visible.
+  private readonly expandedProperty: BooleanProperty;
 
   // Translates model coordinates to chart view coordinates.
   private readonly chartTransform: ChartTransform;
@@ -119,21 +133,13 @@ export default class GraphPlotAreaNode extends Node {
   // Plot rendering for the data set.
   private readonly linePlot: LinePlot;
 
-  // Chart border; exposed for outer layout (expand button alignment).
-  public readonly plotRectangle: Rectangle;
+  /**
+   * @param graphData - Model-owned samples; this node redraws when dataChangedEmitter fires.
+   * @param providedOptions - Configuration for axis ranges, labels, styling, and instrumentation.
+   */
+  public constructor( graphData: GraphData, providedOptions: ExperimentGraphNodeOptions ) {
 
-  // Tick/label groups for the active zoom level; replaced and disposed when zoom changes.
-  private tickSets: TickSetGroup;
-
-  // Updates chart ranges and recreated tick sets when zoom level changes.
-  private readonly zoomLevelObserver: ( zoomLevel: number ) => void;
-
-  public constructor( providedOptions: GraphPlotAreaNodeOptions ) {
-
-    const options = optionize<GraphPlotAreaNodeOptions, GraphPlotAreaSelfOptions, NodeOptions>()( {
-      chartViewWidth: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH,
-      chartViewHeight: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT,
-      initialZoomLevel: 1,
+    const options = optionize<ExperimentGraphNodeOptions, SelfOptions, NodeOptions>()( {
       zoomRangePairs: [ {
         xRange: new Range( 0, 1 ),
         yRange: new Range( 0, 1 )
@@ -150,44 +156,46 @@ export default class GraphPlotAreaNode extends Node {
         lineWidth: 6,
         lineCap: 'round'
       },
-      tandem: Tandem.OPT_OUT,
+
+      // We expect these plots to exist for the life of the simulation.
       isDisposable: false
     }, providedOptions );
 
-    super( combineOptions<NodeOptions>( {}, options, {
-      tandem: Tandem.OPT_OUT
-    } ) );
+    const tandem = options.tandem;
 
-    const chartViewWidth = options.chartViewWidth;
-    const chartViewHeight = options.chartViewHeight;
+    super( options );
+
     const zoomRangePairs = options.zoomRangePairs;
-    const initialZoomLevel = options.initialZoomLevel;
-    const initialRangeIndex = Math.min( Math.max( initialZoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
-    const initialRangePair = zoomRangePairs[ initialRangeIndex ];
+    this.expandedProperty = new BooleanProperty( true, {
+      tandem: options.tandem.createTandem( 'expandedProperty' )
+    } );
+    this.zoomLevelProperty = new NumberProperty( 1, {
+      range: new Range( 1, zoomRangePairs.length ),
+      numberType: 'Integer',
+      tandem: options.tandem.createTandem( 'zoomLevelProperty' )
+    } );
 
-    // Uses axis-specific padding to preserve visual margin with non-square chart aspect ratios.
     const baseRangePaddingFraction = options.rangePaddingFraction;
-    const rangePaddingFractionX = baseRangePaddingFraction * chartViewHeight / chartViewWidth;
+    const rangePaddingFractionX = baseRangePaddingFraction * EXPERIMENT_GRAPH_CHART_HEIGHT / EXPERIMENT_GRAPH_CHART_WIDTH;
     const rangePaddingFractionY = baseRangePaddingFraction;
 
     this.chartTransform = new ChartTransform( {
-      viewWidth: chartViewWidth,
-      viewHeight: chartViewHeight,
-      modelXRange: GraphPlotAreaNode.getPaddedRange( initialRangePair.xRange, rangePaddingFractionX ),
-      modelYRange: GraphPlotAreaNode.getPaddedRange( initialRangePair.yRange, rangePaddingFractionY )
+      viewWidth: EXPERIMENT_GRAPH_CHART_WIDTH,
+      viewHeight: EXPERIMENT_GRAPH_CHART_HEIGHT,
+      modelXRange: ExperimentGraphNode.getPaddedRange( zoomRangePairs[ 0 ].xRange, rangePaddingFractionX ),
+      modelYRange: ExperimentGraphNode.getPaddedRange( zoomRangePairs[ 0 ].yRange, rangePaddingFractionY )
     } );
 
-    this.plotRectangle = new Rectangle( 0, 0, chartViewWidth, chartViewHeight, {
+    const chartRectangle = new Rectangle( 0, 0, EXPERIMENT_GRAPH_CHART_WIDTH, EXPERIMENT_GRAPH_CHART_HEIGHT, {
       stroke: 'black',
       cornerXRadius: 0,
       cornerYRadius: 0
     } );
-
     // Masks the chart interior so ticks remain visible outside while plot layers render on a white background.
-    const tickMaskRectangle = new Rectangle( 0, 0, chartViewWidth, chartViewHeight, {
+    const tickMaskRectangle = new Rectangle( 0, 0, EXPERIMENT_GRAPH_CHART_WIDTH, EXPERIMENT_GRAPH_CHART_HEIGHT, {
       fill: 'white'
     } );
-    const chartContentClipArea = this.plotRectangle.getShape();
+    const chartContentClipArea = chartRectangle.getShape();
     const gridLineSet = new Node( {
       clipArea: chartContentClipArea,
       children: [
@@ -215,19 +223,21 @@ export default class GraphPlotAreaNode extends Node {
       rotation: -Math.PI / 2
     } ) : null;
 
-    this.tickSets = GraphPlotAreaNode.createTickSets(
+    let tickSets: TickSetGroup;
+
+    tickSets = ExperimentGraphNode.createTickSets(
       this.chartTransform,
-      initialRangePair,
+      zoomRangePairs[ 0 ],
       options.xTickLabelFormatter,
       options.yTickLabelFormatter
     );
-    GraphPlotAreaNode.updateAxisLabelPositions(
-      this.plotRectangle,
-      chartViewHeight,
+    ExperimentGraphNode.updateAxisLabelPositions(
+      chartRectangle,
+      EXPERIMENT_GRAPH_CHART_HEIGHT,
       options.yAxisLabelYOffset,
       xAxisLabelText,
       yAxisLabelText,
-      this.tickSets
+      tickSets
     );
 
     const chartContentNode = new Node( {
@@ -240,24 +250,23 @@ export default class GraphPlotAreaNode extends Node {
 
     const tickMarkNode = new Node( {
       children: [
-        this.tickSets.xTickMarkSet,
-        this.tickSets.yTickMarkSet
+        tickSets.xTickMarkSet,
+        tickSets.yTickMarkSet
       ]
     } );
 
     const tickLabelNode = new Node( {
       children: [
-        this.tickSets.xTickLabelSet,
-        this.tickSets.yTickLabelSet
+        tickSets.xTickLabelSet,
+        tickSets.yTickLabelSet
       ]
     } );
 
-    // Layer order keeps ticks outside the clipped chart while data and grid stay within the plot rectangle.
     const chartChildren = [
       tickMarkNode,
       tickMaskRectangle,
       chartContentNode,
-      this.plotRectangle,
+      chartRectangle,
       tickLabelNode
     ];
     if ( xAxisLabelText ) {
@@ -267,41 +276,108 @@ export default class GraphPlotAreaNode extends Node {
       chartChildren.push( yAxisLabelText );
     }
 
-    this.addChild( new Node( {
+    const chartNode = new Node( {
       children: chartChildren
-    } ) );
-
-    this.zoomLevelProperty = new NumberProperty( initialZoomLevel, {
-      range: new Range( 1, zoomRangePairs.length ),
-      numberType: 'Integer',
-      tandem: options.tandem.createTandem( 'zoomLevelProperty' )
     } );
 
-    this.zoomLevelObserver = ( zoomLevel: number ) => {
+    const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
+      sideLength: 18,
+      left: chartRectangle.left +
+            EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN -
+            EXPERIMENT_GRAPH_EXPAND_BUTTON_LEFT_OFFSET,
+      top: chartRectangle.top + EXPERIMENT_GRAPH_EXPAND_BUTTON_MARGIN,
+      tandem: options.tandem.createTandem( 'expandCollapseButton' )
+    } );
+
+    const actionButtonSideLength = Math.max(
+      EXPERIMENT_GRAPH_BUTTON_WIDTH,
+      EXPERIMENT_GRAPH_BUTTON_HEIGHT
+    );
+    const actionButtonOptions: RectangularPushButtonOptions = {
+      size: new Dimension2( actionButtonSideLength, actionButtonSideLength ),
+      baseColor: 'white',
+      xMargin: 6,
+      yMargin: 6
+    };
+
+    // TODO: Each subclass will likely have custom content for this dialog. But need to wait
+    //   until we see designs to implement more.
+    const infoDialog = new ExperimentGraphInfoDialog( tandem.createTandem( 'infoDialog' ) );
+
+    const infoButton = new InfoButton( {
+      radius: actionButtonSideLength / 2,
+      baseColor: 'white',
+      xMargin: actionButtonOptions.xMargin,
+      yMargin: actionButtonOptions.yMargin,
+      listener: () => infoDialog.show(),
+      tandem: options.tandem.createTandem( 'infoButton' )
+    } );
+
+    const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
+      listener: () => graphData.clear(),
+      tandem: options.tandem.createTandem( 'actionButton3' )
+    } ) );
+
+    const buttonColumn = new VBox( {
+      spacing: EXPERIMENT_GRAPH_BUTTON_SPACING,
+      align: 'center',
+      children: [
+        new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
+          content: new Path( expandSolidShape, {
+            fill: 'black',
+            scale: 0.7
+          } ),
+          tandem: options.tandem.createTandem( 'actionButton1' )
+        } ) ),
+        new CameraButton( combineOptions<CameraButtonOptions>( {}, actionButtonOptions, {
+          tandem: tandem.createTandem( 'actionButton2' )
+        } ) ),
+        infoButton,
+        trashButton
+      ]
+    } );
+
+    const contentRow = new HBox( {
+      spacing: EXPERIMENT_GRAPH_BUTTON_COLUMN_SPACING,
+      align: 'top',
+      children: [
+        chartNode,
+        buttonColumn
+      ]
+    } );
+    this.addChild( contentRow );
+    this.addChild( expandCollapseButton );
+
+    const expandedObserver = ( expanded: boolean ) => {
+      contentRow.visible = expanded;
+    };
+    this.expandedProperty.link( expandedObserver );
+
+    // TODO: Untested, see https://github.com/phetsims/photoelectric-effect/issues/12
+    const zoomLevelObserver = ( zoomLevel: number ) => {
       const index = Math.min( Math.max( zoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
       const rangePair = zoomRangePairs[ index ];
-      this.chartTransform.setModelXRange( GraphPlotAreaNode.getPaddedRange( rangePair.xRange, rangePaddingFractionX ) );
-      this.chartTransform.setModelYRange( GraphPlotAreaNode.getPaddedRange( rangePair.yRange, rangePaddingFractionY ) );
+      this.chartTransform.setModelXRange( ExperimentGraphNode.getPaddedRange( rangePair.xRange, rangePaddingFractionX ) );
+      this.chartTransform.setModelYRange( ExperimentGraphNode.getPaddedRange( rangePair.yRange, rangePaddingFractionY ) );
 
-      // Dispose previous sets after swapping to avoid detached scenery/bamboo nodes lingering in memory.
-      const previousTickSets = this.tickSets;
+      const previousTickSets = tickSets;
 
-      this.tickSets = GraphPlotAreaNode.createTickSets(
+      tickSets = ExperimentGraphNode.createTickSets(
         this.chartTransform,
         rangePair,
         options.xTickLabelFormatter,
         options.yTickLabelFormatter
       );
       chartContentNode.children = [ gridLineSet, plotLayer ];
-      tickMarkNode.children = [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ];
-      tickLabelNode.children = [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ];
-      GraphPlotAreaNode.updateAxisLabelPositions(
-        this.plotRectangle,
-        chartViewHeight,
+      tickMarkNode.children = [ tickSets.xTickMarkSet, tickSets.yTickMarkSet ];
+      tickLabelNode.children = [ tickSets.xTickLabelSet, tickSets.yTickLabelSet ];
+      ExperimentGraphNode.updateAxisLabelPositions(
+        chartRectangle,
+        EXPERIMENT_GRAPH_CHART_HEIGHT,
         options.yAxisLabelYOffset,
         xAxisLabelText,
         yAxisLabelText,
-        this.tickSets
+        tickSets
       );
 
       previousTickSets.xTickLabelSet.dispose();
@@ -309,7 +385,13 @@ export default class GraphPlotAreaNode extends Node {
       previousTickSets.xTickMarkSet.dispose();
       previousTickSets.yTickMarkSet.dispose();
     };
-    this.zoomLevelProperty.lazyLink( this.zoomLevelObserver );
+    this.zoomLevelProperty.link( zoomLevelObserver );
+
+    const syncLinePlot = () => {
+      this.setDataSet( [ ...graphData.getDataPoints() ] );
+    };
+    graphData.dataChangedEmitter.addListener( syncLinePlot );
+    syncLinePlot();
   }
 
   /**
@@ -337,6 +419,12 @@ export default class GraphPlotAreaNode extends Node {
 
   /**
    * Creates one tick label node for a numeric axis value.
+   *
+   * Uses integer formatting when the value is sufficiently close to an integer to avoid noisy labels
+   * from floating-point arithmetic.
+   *
+   * @param value - Tick value in model units.
+   * @param formatter - Optional custom label formatter. Null uses built-in numeric formatting.
    */
   private static createTickLabel( value: number, formatter: ( ( value: number ) => string ) | null ): Text {
 
@@ -350,6 +438,9 @@ export default class GraphPlotAreaNode extends Node {
 
   /**
    * Creates evenly spaced major tick intervals for a displayed range.
+   *
+   * @param range - Displayed model range for an axis.
+   * @returns Spacing in model units between adjacent ticks.
    */
   private static createTickSpacing( range: Range ): number {
     return range.getLength() / 10;
@@ -357,6 +448,12 @@ export default class GraphPlotAreaNode extends Node {
 
   /**
    * Creates a label factory that only labels the min, midpoint, and max ticks of a range.
+   *
+   * This keeps the chart readable while still showing key reference values.
+   *
+   * @param range - Displayed model range for the axis being labeled.
+   * @param formatter - Optional custom label formatter. Null uses built-in numeric formatting.
+   * @returns Callback used by TickLabelSet to create labels or suppress intermediate ticks.
    */
   private static createEdgeLabel( range: Range, formatter: ( ( value: number ) => string ) | null ): ( value: number ) => Text | null {
     const min = range.min;
@@ -370,12 +467,18 @@ export default class GraphPlotAreaNode extends Node {
       const isEdge = Math.abs( value - min ) <= tolerance ||
                      Math.abs( value - mid ) <= tolerance ||
                      Math.abs( value - max ) <= tolerance;
-      return isEdge ? GraphPlotAreaNode.createTickLabel( value, formatter ) : null;
+      return isEdge ? ExperimentGraphNode.createTickLabel( value, formatter ) : null;
     };
   }
 
   /**
    * Creates tick marks and labels for both chart axes for one zoom range pair.
+   *
+   * @param chartTransform - Shared chart transform mapping model/view coordinates.
+   * @param rangePair - Active model ranges for x and y axes.
+   * @param xTickLabelFormatter - Optional x-axis label formatter.
+   * @param yTickLabelFormatter - Optional y-axis label formatter.
+   * @returns Group containing all tick nodes for the active zoom level.
    */
   private static createTickSets(
     chartTransform: ChartTransform,
@@ -383,19 +486,19 @@ export default class GraphPlotAreaNode extends Node {
     xTickLabelFormatter: ( ( value: number ) => string ) | null,
     yTickLabelFormatter: ( ( value: number ) => string ) | null
   ): TickSetGroup {
-    const xSpacing = GraphPlotAreaNode.createTickSpacing( rangePair.xRange );
-    const ySpacing = GraphPlotAreaNode.createTickSpacing( rangePair.yRange );
+    const xSpacing = ExperimentGraphNode.createTickSpacing( rangePair.xRange );
+    const ySpacing = ExperimentGraphNode.createTickSpacing( rangePair.yRange );
 
     const xTickLabelSet = new TickLabelSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
       edge: 'min',
       origin: rangePair.xRange.min,
-      createLabel: GraphPlotAreaNode.createEdgeLabel( rangePair.xRange, xTickLabelFormatter )
+      createLabel: ExperimentGraphNode.createEdgeLabel( rangePair.xRange, xTickLabelFormatter )
     } );
 
     const yTickLabelSet = new TickLabelSet( chartTransform, Orientation.VERTICAL, ySpacing, {
       edge: 'min',
       origin: rangePair.yRange.min,
-      createLabel: GraphPlotAreaNode.createEdgeLabel( rangePair.yRange, yTickLabelFormatter )
+      createLabel: ExperimentGraphNode.createEdgeLabel( rangePair.yRange, yTickLabelFormatter )
     } );
 
     const xTickMarkSet = new TickMarkSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
@@ -422,6 +525,13 @@ export default class GraphPlotAreaNode extends Node {
 
   /**
    * Positions optional axis labels so they sit outside ticks and track the current tick label bounds.
+   *
+   * @param chartRectangle - Chart border rectangle used as the anchoring reference.
+   * @param chartHeight - Chart height in view coordinates.
+   * @param yAxisLabelYOffset - Additional vertical offset for y-axis label fine tuning.
+   * @param xAxisLabelText - Optional x-axis label node.
+   * @param yAxisLabelText - Optional y-axis label node.
+   * @param activeTickSets - Tick nodes for the active zoom level.
    */
   private static updateAxisLabelPositions(
     chartRectangle: Rectangle,

@@ -9,7 +9,6 @@
 
 import Bounds2 from '../../../dot/js/Bounds2.js';
 import Vector2 from '../../../dot/js/Vector2.js';
-import PhetFont from '../../../scenery-phet/js/PhetFont.js';
 
 export default class PhotoelectricEffectConstants {
 
@@ -91,6 +90,9 @@ export default class PhotoelectricEffectConstants {
   // Acceleration scale from voltage to model units (model units per V*s^2).
   public static readonly ELECTRON_ACCELERATION_SCALE = 100.2865;
 
+  // Fixed time step for the step-forward button while paused, in seconds (one nominal animation frame).
+  public static readonly MANUAL_STEP_DT = 1 / 60;
+
   //--------------------------------------------------------------
   // VIEW CONSTANTS
   //--------------------------------------------------------------
@@ -103,24 +105,6 @@ export default class PhotoelectricEffectConstants {
 
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
   public static readonly SCREEN_VIEW_Y_MARGIN = 15;
-
-  // Maximum text width used by dialogs for readable line lengths.
-  public static readonly DIALOG_MAX_CONTENT_WIDTH = 480;
-
-  // Title font shared by dialogs.
-  public static readonly DIALOG_TITLE_FONT = new PhetFont( {
-    size: 18,
-    weight: 'bold'
-  } );
-
-  // Body text font shared by dialogs.
-  public static readonly DIALOG_CONTENT_FONT = new PhetFont( 14 );
-
-  // Common horizontal and vertical spacing used by dialogs.
-  public static readonly DIALOG_SPACING = 30;
-
-  // Corner radius for dialogs.
-  public static readonly DIALOG_CORNER_RADIUS = 10;
 
   // Scale factor for the model-to-view transform, in view pixels per model unit.
   public static readonly MODEL_VIEW_SCALE = 3;

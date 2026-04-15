@@ -4,12 +4,10 @@
  * Owns a simple array of chart samples for one experiment graph, and wires axon listeners so points
  * append when a driving NumberProperty changes, clear when any dependency changes, and clear on model reset.
  *
- * Also stores a small number of immutable snapshot copies of the live series for later plotting.
- *
  * The view syncs from dataChangedEmitter; points are not wrapped in Property or ObservableArray.
  *
  * clearDependencies should list every other model input that changes the physical meaning of the curve (or the
- * mapping in createDataPoint) so the plot does not mix samples from incompatible settings of the simulation.
+ * mapping in createDataPoint) so the plot does not mix samples from incompatible settings of the apparatus.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -19,9 +17,8 @@ import Multilink from '../../../../axon/js/Multilink.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyEmitter } from '../../../../axon/js/TEmitter.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import Range from '../../../../dot/js/Range.js';
-import { equalsEpsilon } from '../../../../dot/js/util/equalsEpsilon.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import { equalsEpsilon } from '../../../../dot/js/util/equalsEpsilon.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
 // Maximum number of chart samples retained per series; oldest points are dropped when appending past this size.
@@ -32,24 +29,13 @@ const X_DUPLICATE_EPSILON = 1e-10;
 
 export default class GraphData {
 
-  // Upper bound on snapshots; captureSnapshot asserts the stored count stays below this before adding another.
-  public static readonly MAX_SNAPSHOTS = 4;
-
   // Accumulated chart samples in model coordinates (at most one point per x, newest wins). Only this class appends or
   // clears entries when the driving NumberProperty changes, clear dependencies change, or reset runs.
   private readonly dataPoints: Vector2[] = [];
 
-  // Deep-copied point arrays captured via captureSnapshot(); each inner array is not mutated after it is stored.
-  private readonly snapshots: Vector2[][] = [];
-
   // Fires after a new sample is appended or after clear() removes samples, so views can read
   // getDataPoints() and update the plot.
   public readonly dataChangedEmitter = new Emitter();
-
-  // Number of stored snapshots.
-  public readonly snapshotsCountProperty = new NumberProperty( 0, {
-    range: new Range( 0, GraphData.MAX_SNAPSHOTS )
-  } );
 
   /**
    * @param drivingProperty - New values trigger one appended sample.
@@ -58,7 +44,7 @@ export default class GraphData {
    *   model input that affects the interpretation of the axes except the drivingProperty itself, otherwise old points\
    *   would stay on screen and imply a single curve even though the underlying relationship or experimental
    *   conditions have changed.
-   * @param resetEmitter - Model reset clears live samples and all snapshots.
+   * @param resetEmitter - Model reset clears all samples.
    */
   public constructor(
     drivingProperty: NumberProperty,
@@ -83,29 +69,16 @@ export default class GraphData {
       this.dataChangedEmitter.emit();
     } );
 
-    Multilink.lazyMultilinkAny( clearDependencies, () => {
-      this.clear();
-    } );
-
-    resetEmitter.addListener( () => {
-      this.clearSnapshots();
-      this.clear();
-    } );
+    const clearObserver = this.clear.bind( this );
+    Multilink.lazyMultilinkAny( clearDependencies, clearObserver );
+    resetEmitter.addListener( clearObserver );
   }
 
   /**
    * Points in model/chart coordinates, most recently appended last. Do not mutate; use clear() to empty.
    */
-  public getDataPoints(): ReadonlyArray<Vector2> {
+  public getDataPoints(): readonly Vector2[] {
     return this.dataPoints;
-  }
-
-  /**
-   * Immutable snapshot series in capture order. Do not mutate the returned arrays or points; the model treats each
-   * snapshot as read-only after it is stored.
-   */
-  public getSnapshots(): ReadonlyArray<ReadonlyArray<Vector2>> {
-    return this.snapshots;
   }
 
   /**
@@ -116,33 +89,5 @@ export default class GraphData {
       this.dataPoints.length = 0;
       this.dataChangedEmitter.emit();
     }
-  }
-
-  /**
-   * Stores a deep copy of the current live series as a new snapshot. Asserts that fewer than GraphData.MAX_SNAPSHOTS
-   * are already stored (clear snapshots before capturing more).
-   */
-  public captureSnapshot(): void {
-    assert && assert( this.snapshots.length < GraphData.MAX_SNAPSHOTS, 'snapshot storage is full' );
-    const snapshot = this.dataPoints.map( point => new Vector2( point.x, point.y ) );
-    this.snapshots.push( snapshot );
-    this.syncSnapshotsCountProperty();
-  }
-
-  /**
-   * Removes all snapshots and updates snapshotsCountProperty. Does not change the live series.
-   */
-  public clearSnapshots(): void {
-    if ( this.snapshots.length > 0 ) {
-      this.snapshots.length = 0;
-      this.syncSnapshotsCountProperty();
-    }
-  }
-
-  /**
-   * Sets snapshotsCountProperty from the current snapshot list length.
-   */
-  private syncSnapshotsCountProperty(): void {
-    this.snapshotsCountProperty.value = this.snapshots.length;
   }
 }

@@ -7,31 +7,37 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
-export default class GraphInfoDialog extends Dialog {
+// Determined empirically for readable line lengths in the dialog body.
+const MAX_CONTENT_WIDTH = 480;
+
+const DIALOG_TITLE_FONT = new PhetFont( { size: 18, weight: 'bold' } );
+const DIALOG_CONTENT_FONT = new PhetFont( 14 );
+
+export default class ExperimentGraphInfoDialog extends Dialog {
 
   public constructor( tandem: Tandem ) {
 
     const titleText = new Text( PhotoelectricEffectFluent.experiment.graph.infoDialogTitleStringProperty, {
-      font: PhotoelectricEffectConstants.DIALOG_TITLE_FONT,
-      maxWidth: PhotoelectricEffectConstants.DIALOG_MAX_CONTENT_WIDTH
+      font: DIALOG_TITLE_FONT,
+      maxWidth: MAX_CONTENT_WIDTH
     } );
 
     const placeholderText = new Text( PhotoelectricEffectFluent.experiment.graph.infoDialogPlaceholderStringProperty, {
-      font: PhotoelectricEffectConstants.DIALOG_CONTENT_FONT,
-      maxWidth: PhotoelectricEffectConstants.DIALOG_MAX_CONTENT_WIDTH
+      font: DIALOG_CONTENT_FONT,
+      maxWidth: MAX_CONTENT_WIDTH
     } );
 
     super( placeholderText, {
       title: titleText,
-      xSpacing: PhotoelectricEffectConstants.DIALOG_SPACING,
-      cornerRadius: PhotoelectricEffectConstants.DIALOG_CORNER_RADIUS,
-      ySpacing: PhotoelectricEffectConstants.DIALOG_SPACING,
+      xSpacing: 30,
+      cornerRadius: 10,
+      ySpacing: 30,
       isDisposable: false,
       tandem: tandem,
       phetioReadOnly: true
