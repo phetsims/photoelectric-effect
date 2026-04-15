@@ -15,7 +15,6 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
-import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
@@ -29,7 +28,6 @@ import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectMode
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -83,9 +81,34 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     );
 
-    const photonSourcePanel = new IntensityAndWavelengthControl( model.photonSource, {
-      tandem: options.tandem.createTandem( 'photonSourcePanel' )
-    } );
+    const intensityControl = new NumberControl(
+      PhotoelectricEffectFluent.intensity.labelStringProperty,
+      model.photonSource.intensityProperty,
+      new Range( 0, 1 ),
+      {
+        delta: 0.05,
+        numberDisplayOptions: {
+          decimalPlaces: 2
+        },
+        tandem: options.tandem.createTandem( 'intensityControl' )
+      }
+    );
+
+    const wavelengthControl = new NumberControl(
+      PhotoelectricEffectFluent.wavelength.labelStringProperty,
+      model.photonSource.wavelengthProperty,
+      new Range(
+        PhotoelectricEffectConstants.MIN_WAVELENGTH,
+        PhotoelectricEffectConstants.MAX_WAVELENGTH_UI
+      ),
+      {
+        delta: 5,
+        numberDisplayOptions: {
+          decimalPlaces: 0
+        },
+        tandem: options.tandem.createTandem( 'wavelengthControl' )
+      }
+    );
 
     const voltageControl = new NumberControl(
       PhotoelectricEffectFluent.voltage.labelStringProperty,
@@ -130,35 +153,23 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       ]
     } );
 
-    const debugControlsVBox = new VBox( {
+    const controlsVBox = new VBox( {
       spacing: 15,
       align: 'left',
       excludeInvisible: true,
       children: [
         materialsComboBox,
         workFunctionControl,
+        intensityControl,
+        wavelengthControl,
         voltageControl,
         currentReadout,
         debugLegend
       ]
     } );
-
-    /**
-     * Shared transform for model coordinates to this ScreenView (same as particle canvas and target overlay).
-     */
-    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
-      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
-      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
-      PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
-
-    // Right-align the photon control with the target plate's x in view space (targetRectangle uses the same anchor).
-    photonSourcePanel.right = this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x;
-    photonSourcePanel.top = this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
-    this.addChild( photonSourcePanel );
-
-    debugControlsVBox.left = this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
-    debugControlsVBox.bottom = this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
-    this.addChild( debugControlsVBox );
+    controlsVBox.left = this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
+    controlsVBox.top = this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
+    this.addChild( controlsVBox );
 
     const resetAllButton = new ResetAllButton( {
       listener: () => {
@@ -171,17 +182,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     } );
     this.addChild( resetAllButton );
 
-    const playPauseStepButtonGroup = new PlayPauseStepButtonGroup( model.isPlayingProperty, {
-      tandem: options.tandem.createTandem( 'playPauseStepButtonGroup' ),
-      stepForwardButtonOptions: {
-        listener: () => {
-          model.stepForwardInTime( PhotoelectricEffectConstants.MANUAL_STEP_DT );
-        }
-      },
-      centerBottom: this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
-    } );
-    this.addChild( playPauseStepButtonGroup );
-
     /**
      * Create canvas that renders the particles.
      */
@@ -189,10 +189,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
       new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
-    
-    // Canvas that renders photons and electrons using the same model-view transform as the play area.
-    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, this.modelViewTransform,
-      { canvasBounds: this.layoutBounds } );
+
+    this.particleCanvasNode = new ParticleCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
 
     // Debug visualization for collision bounds.

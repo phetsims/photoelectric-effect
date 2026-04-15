@@ -9,13 +9,12 @@
 
 import Bounds2 from '../../../dot/js/Bounds2.js';
 import Vector2 from '../../../dot/js/Vector2.js';
-import PhetFont from '../../../scenery-phet/js/PhetFont.js';
+
+// Width of the lamp opening which will emit our photons.
+// Defined here so that our model constant can derive the length of the line along which photons will emit.
+const PHOTON_SOURCE_WIDTH = 40;
 
 export default class PhotoelectricEffectConstants {
-
-  private constructor() {
-    // Not intended for instantiation.
-  }
 
   //--------------------------------------------------------------
   // MODEL CONSTANTS
@@ -37,12 +36,21 @@ export default class PhotoelectricEffectConstants {
   // Photon emission origin, positioned above and to the right of the target.
   public static readonly PHOTON_SOURCE_POSITION = new Vector2( 120, 80 );
 
-  // Direction from the source toward the target center.
-  public static readonly PHOTON_SOURCE_DIRECTION = new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 )
-    .minus( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION ).normalized();
+  // Angle of the photon beam direction, in radians, counter-clockwise from the positive x-axis.
+  // Adjust this single value to pixel-polish the beam direction (e.g. change to -2.3 to tilt slightly up).
+  // Defaults to pointing from PHOTON_SOURCE_POSITION directly toward the target center (x=0, y=0).
+  public static readonly PHOTON_SOURCE_DIRECTION_ANGLE = Math.atan2(
+    -PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.y,
+    -PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.x
+  );
 
-  // Half-angle fan-out (in radians) for emitted photon directions.
-  public static readonly PHOTON_SOURCE_FANOUT_ANGLE = 45 * Math.PI / 180;
+  // Direction unit vector for emitted photons, derived from PHOTON_SOURCE_DIRECTION_ANGLE.
+  public static readonly PHOTON_SOURCE_DIRECTION = Vector2.createPolar( 1, PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE );
+
+  // Half-length of the photon source line segment, in model units (approximately 5 view pixels at MODEL_VIEW_SCALE = 3).
+  // Photons originate from random positions along this line, centered at PHOTON_SOURCE_POSITION and perpendicular
+  // to PHOTON_SOURCE_DIRECTION, so the beam appears to come from a line rather than a single point.
+  public static readonly PHOTON_SOURCE_LINE_HALF_LENGTH = ( PHOTON_SOURCE_WIDTH / 2 ) / 3;
 
   // Photon speed in model units per second.
   public static readonly PHOTON_SPEED = 80;
@@ -91,9 +99,6 @@ export default class PhotoelectricEffectConstants {
   // Acceleration scale from voltage to model units (model units per V*s^2).
   public static readonly ELECTRON_ACCELERATION_SCALE = 100.2865;
 
-  // Fixed time step for the step-forward button while paused, in seconds (one nominal animation frame).
-  public static readonly MANUAL_STEP_DT = 1 / 60;
-
   //--------------------------------------------------------------
   // VIEW CONSTANTS
   //--------------------------------------------------------------
@@ -104,26 +109,11 @@ export default class PhotoelectricEffectConstants {
   // Bounds of the sink plate for rendering purposes only.
   public static readonly SINK_BOUNDS = new Bounds2( 0, 0, 5, 80 );
 
+  // Width of the lamp opening which will emit our photons.
+  public static readonly PHOTON_SOURCE_WIDTH = PHOTON_SOURCE_WIDTH;
+
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
   public static readonly SCREEN_VIEW_Y_MARGIN = 15;
-
-  // Maximum text width used by dialogs for readable line lengths.
-  public static readonly DIALOG_MAX_CONTENT_WIDTH = 480;
-
-  // Title font shared by dialogs.
-  public static readonly DIALOG_TITLE_FONT = new PhetFont( {
-    size: 18,
-    weight: 'bold'
-  } );
-
-  // Body text font shared by dialogs.
-  public static readonly DIALOG_CONTENT_FONT = new PhetFont( 14 );
-
-  // Common horizontal and vertical spacing used by dialogs.
-  public static readonly DIALOG_SPACING = 30;
-
-  // Corner radius for dialogs.
-  public static readonly DIALOG_CORNER_RADIUS = 10;
 
   // Scale factor for the model-to-view transform, in view pixels per model unit.
   public static readonly MODEL_VIEW_SCALE = 3;
@@ -132,16 +122,4 @@ export default class PhotoelectricEffectConstants {
   // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
   public static readonly VIEW_ORIGIN_X = 400;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
-
-  // Font for numeric readouts (NumberDisplay) and experiment graph axis titles (shared 12 pt instance).
-  public static readonly READOUT_FONT = new PhetFont( 12 );
-
-  // Font for subsection titles in control panels (e.g. photon source intensity label).
-  public static readonly PANEL_TITLE_FONT = new PhetFont( 16 );
-
-  // Font for UV / IR labels on the wavelength spectrum track.
-  public static readonly SPECTRUM_BAND_LABEL_FONT = new PhetFont( 11 );
-
-  // Font for numeric tick labels on experiment graphs.
-  public static readonly EXPERIMENT_GRAPH_TICK_LABEL_FONT = new PhetFont( 10 );
 }
