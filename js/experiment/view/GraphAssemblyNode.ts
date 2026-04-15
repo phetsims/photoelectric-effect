@@ -1,8 +1,11 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * GraphAssemblyNode composes GraphPlotAreaNode with expand/collapse functionality, snapshot readout, and the
- * right-side action button column.
+ * GraphAssemblyNode composes GraphPlotAreaNode with experiment-specific controls and readouts.
+ * It owns the expand/collapse state, snapshot count readout, and the right-side action buttons
+ * for opening graph info, viewing snapshot history, capturing snapshots, and clearing snapshots.
+ * This wrapper keeps screen-level graph interactions coordinated with GraphData while leaving plot rendering to
+ * GraphPlotAreaNode.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -33,12 +36,21 @@ import GraphInfoDialog from './GraphInfoDialog.js';
 import GraphSnapshotsDialog from './GraphSnapshotsDialog.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 
-const EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 10;
-const EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_SPACING = 8;
-const EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_WIDTH = 28;
-const EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_HEIGHT = 20;
-const EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN = 3;
-const EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET = 6;
+// Horizontal spacing between the chart content and the right-side button column.
+const GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 10;
+
+// Vertical spacing between action buttons in the right-side column.
+const GRAPH_ASSEMBLY_BUTTON_SPACING = 8;
+
+// Minimum dimensions used to normalize action button sizing.
+const GRAPH_ASSEMBLY_BUTTON_WIDTH = 28;
+const GRAPH_ASSEMBLY_BUTTON_HEIGHT = 20;
+
+// Insets and offset used to anchor the expand/collapse button near the chart corner.
+const GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN = 3;
+const GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET = 6;
+
+// Padding from the chart border for the snapshot count readout.
 const SNAPSHOT_READOUT_MARGIN = 4;
 
 type SelfOptions = {
@@ -51,7 +63,8 @@ export type GraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<
 
 export default class GraphAssemblyNode extends Node {
 
-  public static readonly EXPERIMENT_GRAPH_ASSEMBLY_SPACING = 12;
+  // Vertical spacing between stacked graph assemblies in the experiment screen layout.
+  public static readonly GRAPH_ASSEMBLY_SPACING = 12;
 
   // Whether the chart content row is visible.
   private readonly expandedProperty: BooleanProperty;
@@ -64,7 +77,6 @@ export default class GraphAssemblyNode extends Node {
    * @param providedOptions
    */
   public constructor( graphData: GraphData, providedOptions: GraphAssemblyNodeOptions ) {
-
     const options = optionize<GraphAssemblyNodeOptions, StrictOmit<SelfOptions, 'graphPlotAreaNodeOptions'>, NodeOptions>()( {
       isDisposable: false
     }, providedOptions );
@@ -82,8 +94,7 @@ export default class GraphAssemblyNode extends Node {
       graphPlotAreaNodeOptions,
       {
         initialZoomLevel: 1,
-        tandem: Tandem.OPT_OUT,
-        isDisposable: false
+        tandem: Tandem.OPT_OUT
       }
     ) );
 
@@ -110,15 +121,16 @@ export default class GraphAssemblyNode extends Node {
     const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
       sideLength: 18,
       left: plotRectangle.left +
-            EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN -
-            EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET,
-      top: plotRectangle.top + EXPERIMENT_GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN,
+            GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN -
+            GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET,
+      top: plotRectangle.top + GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN,
       tandem: tandem.createTandem( 'expandCollapseButton' )
     } );
 
+    // Uses a square size so mixed button implementations share a consistent visual footprint.
     const actionButtonSideLength = Math.max(
-      EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_WIDTH,
-      EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_HEIGHT
+      GRAPH_ASSEMBLY_BUTTON_WIDTH,
+      GRAPH_ASSEMBLY_BUTTON_HEIGHT
     );
     const actionButtonOptions: RectangularPushButtonOptions = {
       size: new Dimension2( actionButtonSideLength, actionButtonSideLength ),
@@ -149,6 +161,7 @@ export default class GraphAssemblyNode extends Node {
       tandem: tandem.createTandem( 'actionButton3' )
     } ) );
 
+    // Snapshot gallery only opens when at least one snapshot exists.
     const snapshotsGalleryEnabledProperty = new DerivedProperty(
       [ graphData.snapshotsCountProperty ],
       count => count > 0
@@ -167,7 +180,7 @@ export default class GraphAssemblyNode extends Node {
     } ) );
 
     const buttonColumn = new VBox( {
-      spacing: EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_SPACING,
+      spacing: GRAPH_ASSEMBLY_BUTTON_SPACING,
       align: 'center',
       children: [
         snapshotsGalleryButton,
@@ -184,7 +197,7 @@ export default class GraphAssemblyNode extends Node {
     } );
 
     const contentRow = new HBox( {
-      spacing: EXPERIMENT_GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING,
+      spacing: GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING,
       align: 'top',
       children: [
         plotContentNode,
