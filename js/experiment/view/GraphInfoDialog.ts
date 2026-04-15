@@ -13,7 +13,7 @@ import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
-export default class ExperimentGraphInfoDialog extends Dialog {
+export default class GraphInfoDialog extends Dialog {
 
   public constructor( tandem: Tandem ) {
 
