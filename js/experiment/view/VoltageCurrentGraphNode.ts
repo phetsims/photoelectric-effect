@@ -44,13 +44,15 @@ export default class VoltageCurrentGraphNode extends ExperimentGraphNode {
     ];
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      zoomRangePairs: zoomRangePairs,
-      xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
-      yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
-      gridXSpacing: 2,
-      gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
-      linePlotOptions: {
-        stroke: '#E03722'
+      experimentChartPlotNodeOptions: {
+        zoomRangePairs: zoomRangePairs,
+        xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
+        yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
+        gridXSpacing: 2,
+        gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
+        linePlotOptions: {
+          stroke: '#E03722'
+        }
       },
       tandem: providedOptions.tandem
     };

@@ -47,6 +47,15 @@
       },
       "infoDialogPlaceholder": {
         "value": "This is the information dialog and content will go here..."
+      },
+      "snapshotsDialogTitle": {
+        "value": "Saved snapshots"
+      },
+      "snapshotsGalleryButtonAccessibleName": {
+        "value": "View saved snapshots"
+      },
+      "snapshotsGalleryButtonAccessibleHelpText": {
+        "value": "Opens a dialog with a plot of each saved snapshot."
       }
     }
   },

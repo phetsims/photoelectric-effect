@@ -46,17 +46,19 @@ export default class FrequencyEnergyGraphNode extends ExperimentGraphNode {
     }, providedOptions );
 
     const graphOptions: ExperimentGraphNodeOptions = {
-      zoomRangePairs: zoomRangePairs,
-      xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
-      yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
+      experimentChartPlotNodeOptions: {
+        zoomRangePairs: zoomRangePairs,
+        xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
+        yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
 
-      // TODO: This option is a little strange. We needed it so that the label did not overlap with the
-      //   ExpandCollapseButton. Check in with design to see how the layout should ideally be done.
-      yAxisLabelYOffset: 10,
-      gridXSpacing: 0.25,
-      gridYSpacing: 0.25,
-      linePlotOptions: {
-        stroke: '#7090F5'
+        // TODO: This option is a little strange. We needed it so that the label did not overlap with the
+        //   ExpandCollapseButton. Check in with design to see how the layout should ideally be done.
+        yAxisLabelYOffset: 10,
+        gridXSpacing: 0.25,
+        gridYSpacing: 0.25,
+        linePlotOptions: {
+          stroke: '#7090F5'
+        }
       },
       tandem: options.tandem
     };
