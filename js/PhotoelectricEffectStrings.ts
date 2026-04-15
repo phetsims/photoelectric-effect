@@ -43,9 +43,15 @@ type StringsType = {
   };
   'intensity': {
     'labelStringProperty': LocalizedStringProperty;
+    'percentReadoutPatternStringProperty': LocalizedStringProperty;
   };
   'wavelength': {
     'labelStringProperty': LocalizedStringProperty;
+    'valueReadoutPatternStringProperty': LocalizedStringProperty;
+  };
+  'spectrumTrack': {
+    'uvLabelStringProperty': LocalizedStringProperty;
+    'irLabelStringProperty': LocalizedStringProperty;
   };
   'voltage': {
     'labelStringProperty': LocalizedStringProperty;

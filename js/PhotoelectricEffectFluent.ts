@@ -45,6 +45,8 @@ addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
+addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
+addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
 addToMapIfDefined( 'debugLegend_title', 'debugLegend.titleStringProperty' );
@@ -105,10 +107,16 @@ const PhotoelectricEffectFluent = {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'workFunction.labelStringProperty' )
   },
   intensity: {
-    labelStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.labelStringProperty' )
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.labelStringProperty' ),
+    percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.percentReadoutPatternStringProperty' )
   },
   wavelength: {
-    labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' )
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' ),
+    valueReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.valueReadoutPatternStringProperty' )
+  },
+  spectrumTrack: {
+    uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
+    irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )
   },
   voltage: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.labelStringProperty' )

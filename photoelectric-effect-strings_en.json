@@ -63,10 +63,22 @@
     "value": "Work Function (eV)"
   },
   "intensity.label": {
-    "value": "Light Intensity"
+    "value": "Intensity"
+  },
+  "intensity.percentReadoutPattern": {
+    "value": "{{value}} %"
   },
   "wavelength.label": {
     "value": "Wavelength (nm)"
+  },
+  "wavelength.valueReadoutPattern": {
+    "value": "{{value}} nm"
+  },
+  "spectrumTrack.uvLabel": {
+    "value": "UV"
+  },
+  "spectrumTrack.irLabel": {
+    "value": "IR"
   },
   "voltage.label": {
     "value": "Voltage (V)"
