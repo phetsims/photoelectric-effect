@@ -8,6 +8,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
@@ -66,6 +67,9 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Derived analytic current based on model settings.
   public readonly currentProperty: TReadOnlyProperty<number>;
+
+  // When false, continuous time stepping is paused; the step-forward control advances the model.
+  public readonly isPlayingProperty: BooleanProperty;
 
   // Emits when the model has been reset to its default state.
   public readonly resetEmitter = new Emitter();
@@ -127,6 +131,11 @@ export default class PhotoelectricEffectModel implements TModel {
         return this.getCurrentForVoltage( voltage, intensity, wavelength, workFunction );
       }
     );
+
+    this.isPlayingProperty = new BooleanProperty( true, {
+      tandem: options.tandem.createTandem( 'isPlayingProperty' ),
+      phetioFeatured: true
+    } );
   }
 
   /**
@@ -137,6 +146,7 @@ export default class PhotoelectricEffectModel implements TModel {
     this.battery.reset();
     this.photonSource.reset();
     this.voltageProperty.reset();
+    this.isPlayingProperty.reset();
 
     this.photons.length = 0;
     this.electrons.length = 0;
@@ -146,10 +156,28 @@ export default class PhotoelectricEffectModel implements TModel {
   }
 
   /**
-   * Steps the model.
+   * Steps the model during continuous play (animation frames). Does nothing when paused.
    * @param dt - time step, in seconds
    */
   public step( dt: number ): void {
+    if ( this.isPlayingProperty.value ) {
+      this.stepModel( dt );
+    }
+  }
+
+  /**
+   * Advances the model by one time step, used by the step-forward button while paused.
+   * @param dt - time step, in seconds
+   */
+  public stepForwardInTime( dt: number ): void {
+    this.stepModel( dt );
+  }
+
+  /**
+   * Single integration step for photon emission and particle motion.
+   * @param dt - time step, in seconds
+   */
+  private stepModel( dt: number ): void {
     if ( dt > 0 ) {
       this.emitPhotons( dt );
       this.stepPhotons( dt );
