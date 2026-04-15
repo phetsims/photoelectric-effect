@@ -11,9 +11,7 @@ import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import CanvasNode, { CanvasNodeOptions } from '../../../../scenery/js/nodes/CanvasNode.js';
 import Color from '../../../../scenery/js/util/Color.js';
-import Electron from '../model/Electron.js';
-import Particle from '../model/Particle.js';
-import Photon from '../model/Photon.js';
+import PhotoelectricEffectModel from '../model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 
 const PHOTON_RADIUS = 3.5;
@@ -26,19 +24,18 @@ type ParticleCanvasNodeOptions = SelfOptions & WithRequired<CanvasNodeOptions, '
 export default class ParticleCanvasNode extends CanvasNode {
 
   public constructor(
-    private readonly photons: Photon[],
-    private readonly electrons: Electron[],
+    private readonly model: PhotoelectricEffectModel,
     private readonly modelViewTransform: ModelViewTransform2,
     providedOptions: ParticleCanvasNodeOptions ) {
     super( providedOptions );
   }
 
   public override paintCanvas( context: CanvasRenderingContext2D ): void {
-    this.drawParticles( context, this.photons, PHOTON_RADIUS, PhotoelectricEffectColors.photonColorProperty.value );
-    this.drawParticles( context, this.electrons, ELECTRON_RADIUS, PhotoelectricEffectColors.electronColorProperty.value );
+    this.drawParticles( context, this.model.photons, PHOTON_RADIUS, PhotoelectricEffectColors.photonColorProperty.value );
+    this.drawParticles( context, this.model.electrons, ELECTRON_RADIUS, PhotoelectricEffectColors.electronColorProperty.value );
   }
 
-  private drawParticles( context: CanvasRenderingContext2D, particles: Particle[],
+  private drawParticles( context: CanvasRenderingContext2D, particles: { position: { x: number; y: number } }[],
                          radius: number, fill: Color ): void {
     context.fillStyle = fill.toCSS();
     context.strokeStyle = 'black';
