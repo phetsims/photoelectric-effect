@@ -10,8 +10,8 @@
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
 export default class GraphInfoDialog extends Dialog {
 
