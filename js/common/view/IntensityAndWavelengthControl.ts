@@ -10,11 +10,8 @@
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import GradientBackplateIntensitySlider from './GradientBackplateIntensitySlider.js';
@@ -48,17 +45,7 @@ export default class IntensityAndWavelengthControl extends Panel {
       spacing: 12,
       align: 'center',
       children: [
-        new VBox( {
-          spacing: 5,
-          align: 'center',
-          children: [
-            new Text( PhotoelectricEffectFluent.intensity.labelStringProperty, {
-              font: new PhetFont( 16 ),
-              maxWidth: 200
-            } ),
-            intensitySlider
-          ]
-        } ),
+        intensitySlider,
         wavelengthSlider
       ]
     } );
