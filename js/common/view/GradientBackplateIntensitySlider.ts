@@ -1,10 +1,10 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Horizontal intensity slider with a full-width gradient backplate (black to the current wavelength color)
- * and a percent NumberDisplay to the right of the slider. Local bounds are overridden to the slider-plus-gradient
- * region only so parent layout (e.g. VBox) does not treat the readout as part of this control's box. This makes
- * centering relative to the gradient rectangle simple.
+ * Intensity control: localized title, horizontal slider with a full-width gradient backplate (black to the current
+ * wavelength color), and a percent NumberDisplay to the right of the slider. Local bounds are overridden to the
+ * title plus slider-plus-gradient region only so parent layout (e.g. VBox) does not treat the readout as part of this
+ * control's box. This keeps centering relative to the gradient rectangle simple.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -16,15 +16,16 @@ import Range from '../../../../dot/js/Range.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberDisplay, { NumberDisplayOptions } from '../../../../scenery-phet/js/NumberDisplay.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import LinearGradient from '../../../../scenery/js/util/LinearGradient.js';
 import HSlider from '../../../../sun/js/HSlider.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToIntensityGradientEndColor } from '../model/PhotoelectricEffectUtils.js';
 import PhotonSource from '../model/PhotonSource.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = {
   trackSize?: Dimension2;
@@ -37,7 +38,10 @@ export type GradientBackplateIntensitySliderOptions = SelfOptions & PickRequired
 // Horizontal gap between the gradient rectangle and the percent readout.
 const READOUT_SPACING = 6;
 
-const READOUT_FONT = new PhetFont( 12 );
+// Vertical gap between the intensity title and the slider track (matches former IntensityAndWavelengthControl layout).
+const LABEL_SLIDER_SPACING = 5;
+
+const INTENSITY_LABEL_MAX_WIDTH = 200;
 
 const NUMBER_DISPLAY_BASE: NumberDisplayOptions = {
   decimalPlaces: 0,
@@ -62,6 +66,11 @@ export default class GradientBackplateIntensitySlider extends Node {
 
     super();
 
+    const intensityLabel = new Text( PhotoelectricEffectFluent.intensity.labelStringProperty, {
+      font: PhotoelectricEffectConstants.PANEL_TITLE_FONT,
+      maxWidth: INTENSITY_LABEL_MAX_WIDTH
+    } );
+
     const intensityGradientRectangle = new Rectangle( 0, 0, 1, 1, {
       stroke: 'black',
       lineWidth: 1
@@ -82,13 +91,14 @@ export default class GradientBackplateIntensitySlider extends Node {
       {
         valuePattern: PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty,
         textOptions: {
-          font: READOUT_FONT,
+          font: PhotoelectricEffectConstants.READOUT_FONT,
           maxWidth: options.readoutMaxWidth
         },
         tandem: options.tandem.createTandem( 'intensityReadout' )
       }
     ) );
 
+    this.addChild( intensityLabel );
     this.addChild( intensityGradientRectangle );
     this.addChild( intensitySlider );
     this.addChild( intensityReadout );
@@ -96,11 +106,16 @@ export default class GradientBackplateIntensitySlider extends Node {
     this.mutate( options );
 
     Multilink.multilink(
-      [ photonSource.wavelengthProperty, intensitySlider.boundsProperty ],
+      [
+        photonSource.wavelengthProperty,
+        intensitySlider.boundsProperty,
+        intensityLabel.stringProperty
+      ],
       () => {
         GradientBackplateIntensitySlider.updateGradientAndReadoutLayout(
           this,
           photonSource,
+          intensityLabel,
           intensityGradientRectangle,
           intensitySlider,
           intensityReadout
@@ -110,6 +125,7 @@ export default class GradientBackplateIntensitySlider extends Node {
     GradientBackplateIntensitySlider.updateGradientAndReadoutLayout(
       this,
       photonSource,
+      intensityLabel,
       intensityGradientRectangle,
       intensitySlider,
       intensityReadout
@@ -117,16 +133,21 @@ export default class GradientBackplateIntensitySlider extends Node {
   }
 
   /**
-   * Sizes and positions the gradient under the slider and aligns the percent readout.
-   * Updates localBounds to the slider and gradient only (readout excluded) for parent layout.
+   * Sizes and positions the title, gradient under the slider, and percent readout.
+   * Updates localBounds to the title, slider, and gradient only (readout excluded) for parent layout.
    */
   private static updateGradientAndReadoutLayout(
     sliderContainer: GradientBackplateIntensitySlider,
     photonSource: PhotonSource,
+    intensityLabel: Text,
     intensityGradientRectangle: Rectangle,
     intensitySlider: HSlider,
     intensityReadout: NumberDisplay
   ): void {
+    intensityLabel.top = 0;
+    intensityLabel.left = 0;
+    intensitySlider.top = intensityLabel.bottom + LABEL_SLIDER_SPACING;
+
     const w = Math.max( intensitySlider.width, 1 );
     const h = Math.max( intensitySlider.height, 1 );
     intensityGradientRectangle.setRect( 0, 0, w, h );
@@ -141,10 +162,13 @@ export default class GradientBackplateIntensitySlider extends Node {
     intensityReadout.left = intensityGradientRectangle.right + READOUT_SPACING;
     intensityReadout.centerY = intensityGradientRectangle.centerY;
 
-    const sliderAndGradientBoundsLocal = intensitySlider.bounds.union( intensityGradientRectangle.bounds );
+    intensityLabel.centerX = intensityGradientRectangle.centerX;
 
-    if ( sliderAndGradientBoundsLocal.isValid() ) {
-      sliderContainer.setLocalBounds( sliderAndGradientBoundsLocal );
+    const sliderAndGradientBoundsLocal = intensitySlider.bounds.union( intensityGradientRectangle.bounds );
+    const layoutBoundsLocal = intensityLabel.bounds.union( sliderAndGradientBoundsLocal );
+
+    if ( layoutBoundsLocal.isValid() ) {
+      sliderContainer.setLocalBounds( layoutBoundsLocal );
     }
     else {
 

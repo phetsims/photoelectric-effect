@@ -12,12 +12,9 @@ import Range from '../../../../dot/js/Range.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import SpectrumSliderTrack, { SpectrumSliderTrackOptions } from '../../../../scenery-phet/js/SpectrumSliderTrack.js';
 import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-
-// Font for UV and IR band labels on the spectrum track.
-const SPECTRUM_BAND_LABEL_FONT = new PhetFont( 11 );
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 export default class LabeledSpectrumSliderTrack extends SpectrumSliderTrack {
 
@@ -28,12 +25,12 @@ export default class LabeledSpectrumSliderTrack extends SpectrumSliderTrack {
     } ) );
 
     const uvText = new Text( PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty, {
-      font: SPECTRUM_BAND_LABEL_FONT,
+      font: PhotoelectricEffectConstants.SPECTRUM_BAND_LABEL_FONT,
       maxWidth: 50
     } );
 
     const irText = new Text( PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty, {
-      font: SPECTRUM_BAND_LABEL_FONT,
+      font: PhotoelectricEffectConstants.SPECTRUM_BAND_LABEL_FONT,
       maxWidth: 50
     } );
 
