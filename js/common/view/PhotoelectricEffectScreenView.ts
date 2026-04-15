@@ -15,7 +15,6 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
-import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
@@ -182,17 +181,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'resetAllButton' )
     } );
     this.addChild( resetAllButton );
-
-    const playPauseStepButtonGroup = new PlayPauseStepButtonGroup( model.isPlayingProperty, {
-      tandem: options.tandem.createTandem( 'playPauseStepButtonGroup' ),
-      stepForwardButtonOptions: {
-        listener: () => {
-          model.stepForwardInTime( PhotoelectricEffectConstants.MANUAL_STEP_DT );
-        }
-      },
-      centerBottom: this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
-    } );
-    this.addChild( playPauseStepButtonGroup );
 
     /**
      * Create canvas that renders the particles.
