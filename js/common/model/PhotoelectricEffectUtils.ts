@@ -1,13 +1,15 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Shared physics utilities for the photoelectric effect model.
- * Includes wavelength, energy, and frequency conversions used across the model.
+ * Shared utilities for the photoelectric effect sim: physics conversions (model) and visible-spectrum color
+ * mapping (view), kept in one module for reuse across model and view code.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
+import Color from '../../../../scenery/js/util/Color.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 // hc constant in eV*nm for wavelength-energy conversions.
@@ -50,4 +52,27 @@ export const intensityToPhotonRate = ( intensity: number, wavelength: number ): 
   const clampedIntensity = Math.max( 0, Math.min( intensity, 1 ) );
   const wavelengthScale = wavelength / PhotoelectricEffectConstants.MAX_WAVELENGTH_UI;
   return clampedIntensity * PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND * wavelengthScale;
+};
+
+/**
+ * Maps wavelength in nm to a display color for spectrum sliders (thumb and track).
+ * UV and IR bands use white, consistent across photon-source controls.
+ */
+export const wavelengthToColor = ( wavelength: number ): Color => {
+  return VisibleColor.wavelengthToColor( wavelength, {
+    uvColor: Color.WHITE,
+    irColor: Color.WHITE
+  } );
+};
+
+/**
+ * Color at the high-intensity end of the intensity backplate gradient for the selected wavelength.
+ * Same UV/IR treatment as wavelengthToColor, without reducing intensity at spectral extrema.
+ */
+export const wavelengthToIntensityGradientEndColor = ( wavelength: number ): Color => {
+  return VisibleColor.wavelengthToColor( wavelength, {
+    uvColor: Color.WHITE,
+    irColor: Color.WHITE,
+    reduceIntensityAtExtrema: false
+  } );
 };
