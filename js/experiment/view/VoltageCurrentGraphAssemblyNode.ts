@@ -51,6 +51,8 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
         gridXSpacing: 2,
         gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
         linePlotOptions: {
+
+          // TODO: Move this to PhotoelectricEffectColors.ts
           stroke: '#E03722'
         }
       },

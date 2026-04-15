@@ -25,7 +25,7 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
    * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: ExperimentModel, providedOptions?: FrequencyEnergyGraphAssemblyNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions: FrequencyEnergyGraphAssemblyNodeOptions ) {
 
     const zoomRangePairs = [
       {
@@ -57,6 +57,8 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
         gridXSpacing: 0.25,
         gridYSpacing: 0.25,
         linePlotOptions: {
+
+          // TODO: Move this to PhotoelectricEffectColors.ts
           stroke: '#7090F5'
         }
       },

@@ -14,7 +14,6 @@
  */
 
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Dialog from '../../../../sun/js/Dialog.js';
@@ -41,15 +40,9 @@ export default class GraphSnapshotsDialog extends Dialog {
   ) {
 
     const snapshotPlotNodes: GraphPlotAreaNode[] = [];
-    const initialZoomLevel = parentZoomLevelProperty.value;
-
-    for ( let i = 0; i < GraphData.MAX_SNAPSHOTS; i++ ) {
-      snapshotPlotNodes.push( new GraphPlotAreaNode( combineOptions<GraphPlotAreaNodeOptions>(
-        {},
-        graphPlotAreaNodeOptions,
-        { initialZoomLevel: initialZoomLevel }
-      ) ) );
-    }
+    _.times( GraphData.MAX_SNAPSHOTS, () => {
+      snapshotPlotNodes.push( new GraphPlotAreaNode( graphPlotAreaNodeOptions ) );
+    } );
 
     const plotsVBox = new VBox( {
       spacing: 16,
@@ -67,8 +60,7 @@ export default class GraphSnapshotsDialog extends Dialog {
       const zoomLevel = parentZoomLevelProperty.value;
       const snapshots = graphData.getSnapshots();
 
-      for ( let i = 0; i < snapshotPlotNodes.length; i++ ) {
-        const plotNode = snapshotPlotNodes[ i ];
+      snapshotPlotNodes.forEach( ( plotNode, i ) => {
         plotNode.zoomLevelProperty.value = zoomLevel;
 
         const hasSnapshot = i < snapshots.length;
@@ -80,7 +72,7 @@ export default class GraphSnapshotsDialog extends Dialog {
         else {
           plotNode.setDataSet( [] );
         }
-      }
+      } );
     };
 
     updateSnapshotPlots();

@@ -106,7 +106,8 @@ type GraphPlotAreaSelfOptions = {
   linePlotOptions?: LinePlotOptions;
 };
 
-export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions & StrictOmit<NodeOptions, 'isDisposable'>;
+export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions &
+  StrictOmit<NodeOptions, 'isDisposable' | 'tandem'>;
 
 export default class GraphPlotAreaNode extends Node {
 
@@ -150,13 +151,14 @@ export default class GraphPlotAreaNode extends Node {
         lineWidth: 6,
         lineCap: 'round'
       },
+
+      // TODO: Consider tandems, but instinct is to opt out because this is a purely visual rendering of the
+      //   plotted area (no buttons, no state, no data).
       tandem: Tandem.OPT_OUT,
       isDisposable: false
     }, providedOptions );
 
-    super( combineOptions<NodeOptions>( {}, options, {
-      tandem: Tandem.OPT_OUT
-    } ) );
+    super( options );
 
     const chartViewWidth = options.chartViewWidth;
     const chartViewHeight = options.chartViewHeight;

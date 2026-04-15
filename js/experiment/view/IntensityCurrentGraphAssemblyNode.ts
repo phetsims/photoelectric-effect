@@ -59,6 +59,8 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
           return toFixed( scaledValue, isInteger ? 0 : 2 );
         },
         linePlotOptions: {
+
+          // TODO: Move this to PhotoelectricEffectColors.ts
           stroke: '#4B853E'
         }
       },

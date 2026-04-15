@@ -21,6 +21,7 @@ import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/b
 import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
+import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
@@ -29,12 +30,11 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
 import GraphInfoDialog from './GraphInfoDialog.js';
-import GraphSnapshotsDialog from './GraphSnapshotsDialog.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
+import GraphSnapshotsDialog from './GraphSnapshotsDialog.js';
 
 // Horizontal spacing between the chart content and the right-side button column.
 const GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 10;
@@ -90,13 +90,7 @@ export default class GraphAssemblyNode extends Node {
       tandem: tandem.createTandem( 'expandedProperty' )
     } );
 
-    this.graphPlotAreaNode = new GraphPlotAreaNode( combineOptions<GraphPlotAreaNodeOptions>( {},
-      graphPlotAreaNodeOptions,
-      {
-        initialZoomLevel: 1,
-        tandem: Tandem.OPT_OUT
-      }
-    ) );
+    this.graphPlotAreaNode = new GraphPlotAreaNode( graphPlotAreaNodeOptions );
 
     // Layout for UI components will be relative to this chart rectangle area.
     const plotRectangle = this.graphPlotAreaNode.plotRectangle;
@@ -106,16 +100,18 @@ export default class GraphAssemblyNode extends Node {
       new DerivedProperty( [ graphData.snapshotsCountProperty ], count => `${count}/${GraphData.MAX_SNAPSHOTS}` ),
       { font: new PhetFont( { size: 18 } ) }
     );
-    snapshotCountReadoutText.stringProperty.link( () => {
-      snapshotCountReadoutText.right = plotRectangle.right - SNAPSHOT_READOUT_MARGIN;
-      snapshotCountReadoutText.top = plotRectangle.top + SNAPSHOT_READOUT_MARGIN;
-    } );
 
     const plotContentNode = new Node( {
       children: [
         this.graphPlotAreaNode,
         snapshotCountReadoutText
       ]
+    } );
+
+    // A manual constraint keeps the readout text in the same place, as the string changes.
+    ManualConstraint.create( plotContentNode, [ snapshotCountReadoutText, plotRectangle ], ( readout, rect ) => {
+      readout.right = rect.right - SNAPSHOT_READOUT_MARGIN;
+      readout.top = rect.top + SNAPSHOT_READOUT_MARGIN;
     } );
 
     const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
@@ -158,14 +154,8 @@ export default class GraphAssemblyNode extends Node {
 
     const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
       listener: () => graphData.clearSnapshots(),
-      tandem: tandem.createTandem( 'actionButton3' )
+      tandem: tandem.createTandem( 'trashButton' )
     } ) );
-
-    // Snapshot gallery only opens when at least one snapshot exists.
-    const snapshotsGalleryEnabledProperty = new DerivedProperty(
-      [ graphData.snapshotsCountProperty ],
-      count => count > 0
-    );
 
     const snapshotsGalleryButton = new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
       content: new Path( expandSolidShape, {
@@ -173,10 +163,13 @@ export default class GraphAssemblyNode extends Node {
         scale: 0.7
       } ),
       listener: () => { snapshotsDialog.show(); },
-      enabledProperty: snapshotsGalleryEnabledProperty,
+      enabledProperty: new DerivedProperty(
+        [ graphData.snapshotsCountProperty ],
+        count => count > 0
+      ),
       accessibleName: PhotoelectricEffectFluent.experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty,
       accessibleHelpText: PhotoelectricEffectFluent.experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty,
-      tandem: tandem.createTandem( 'actionButton1' )
+      tandem: tandem.createTandem( 'snapshotsGalleryButton' )
     } ) );
 
     const buttonColumn = new VBox( {
@@ -189,7 +182,7 @@ export default class GraphAssemblyNode extends Node {
           enabledProperty: new DerivedProperty( [ graphData.snapshotsCountProperty ], count => {
             return count < GraphData.MAX_SNAPSHOTS;
           } ),
-          tandem: tandem.createTandem( 'actionButton2' )
+          tandem: tandem.createTandem( 'cameraButton' )
         } ) ),
         infoButton,
         trashButton
@@ -207,10 +200,9 @@ export default class GraphAssemblyNode extends Node {
     this.addChild( contentRow );
     this.addChild( expandCollapseButton );
 
-    const expandedObserver = ( expanded: boolean ) => {
+    this.expandedProperty.link( expanded => {
       contentRow.visible = expanded;
-    };
-    this.expandedProperty.link( expandedObserver );
+    } );
 
     const syncLinePlot = () => {
       this.setDataSet( [ ...graphData.getDataPoints() ] );
