@@ -10,6 +10,8 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import NumberProperty from '../../../../axon/js/NumberProperty.js';
+import { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Range from '../../../../dot/js/Range.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
@@ -24,7 +26,6 @@ import LinearGradient from '../../../../scenery/js/util/LinearGradient.js';
 import HSlider from '../../../../sun/js/HSlider.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToIntensityGradientEndColor } from '../model/PhotoelectricEffectUtils.js';
-import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = {
@@ -55,7 +56,18 @@ const NUMBER_DISPLAY_BASE: NumberDisplayOptions = {
 
 export default class GradientBackplateIntensitySlider extends Node {
 
-  public constructor( photonSource: PhotonSource, providedOptions: GradientBackplateIntensitySliderOptions ) {
+  /**
+   * @param intensityProperty - normalized model intensity
+   * @param intensityPercentProperty - intensity reported as a percentage for display
+   * @param wavelengthProperty - wavelength of emitted photons
+   * @param providedOptions
+   */
+  public constructor(
+    intensityProperty: NumberProperty,
+    intensityPercentProperty: TReadOnlyProperty<number>,
+    wavelengthProperty: TReadOnlyProperty<number>,
+    providedOptions: GradientBackplateIntensitySliderOptions
+  ) {
 
     const options = optionize<GradientBackplateIntensitySliderOptions, SelfOptions, NodeOptions>()( {
       trackSize: new Dimension2( 125, 5 ),
@@ -71,7 +83,7 @@ export default class GradientBackplateIntensitySlider extends Node {
       maxWidth: INTENSITY_LABEL_MAX_WIDTH
     } );
 
-    const intensitySlider = new HSlider( photonSource.intensityProperty, photonSource.intensityProperty.range, {
+    const intensitySlider = new HSlider( intensityProperty, intensityProperty.range, {
       tandem: options.tandem,
       trackSize: options.trackSize,
       thumbSize: options.thumbSize
@@ -82,9 +94,9 @@ export default class GradientBackplateIntensitySlider extends Node {
       lineWidth: 1
     } );
 
-    const intensityReadout = new NumberDisplay( photonSource.intensityPercentProperty, new Range(
-      photonSource.intensityProperty.range.min * 100,
-      photonSource.intensityProperty.range.max * 100
+    const intensityReadout = new NumberDisplay( intensityPercentProperty, new Range(
+      intensityProperty.range.min * 100,
+      intensityProperty.range.max * 100
     ), combineOptions<NumberDisplayOptions>(
       {},
       NUMBER_DISPLAY_BASE,
@@ -112,10 +124,10 @@ export default class GradientBackplateIntensitySlider extends Node {
     intensityReadout.left = intensityGradientRectangle.right + READOUT_SPACING;
     intensityReadout.centerY = intensityGradientRectangle.centerY;
 
-    // update gradient for the backblate when selected wavelength changes
-    photonSource.wavelengthProperty.link( () => {
+    // update gradient for the backplate when selected wavelength changes
+    wavelengthProperty.link( wavelength => {
       const gradientWidth = intensityGradientRectangle.rectWidth;
-      const endColor = wavelengthToIntensityGradientEndColor( photonSource.wavelengthProperty.value );
+      const endColor = wavelengthToIntensityGradientEndColor( wavelength );
       intensityGradientRectangle.fill = new LinearGradient( 0, 0, gradientWidth, 0 )
         .addColorStop( 0, Color.BLACK )
         .addColorStop( 1, endColor );
