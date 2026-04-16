@@ -48,22 +48,16 @@ export default class LabeledSpectrumSliderTrack extends SpectrumSliderTrack {
       uvText.visible = rangeValue.min < VisibleColor.MIN_WAVELENGTH;
       irText.visible = rangeValue.max > VisibleColor.MAX_WAVELENGTH;
 
-      if ( uvText.visible ) {
-        uvText.centerX = valueToPosition.evaluate( uvCenterWavelength );
-        uvText.centerY = size.height / 2;
-      }
+      uvText.centerX = valueToPosition.evaluate( uvCenterWavelength );
+      uvText.centerY = size.height / 2;
 
-      if ( irText.visible ) {
-        irText.centerX = valueToPosition.evaluate( irCenterWavelength );
-        irText.centerY = size.height / 2;
-      }
+      irText.centerX = valueToPosition.evaluate( irCenterWavelength );
+      irText.centerY = size.height / 2;
     };
 
+    // For dynamic locales
     Multilink.multilink(
-      [
-        PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty,
-        PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty
-      ],
+      [ uvText.boundsProperty, irText.boundsProperty ],
       updateLabelLayout
     );
   }
