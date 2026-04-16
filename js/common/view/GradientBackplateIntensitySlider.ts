@@ -1,18 +1,18 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Intensity control: localized title, horizontal slider with a full-width gradient backplate (black to the current
- * wavelength color), and a percent NumberDisplay to the right of the slider. Local bounds are overridden to the
- * title plus slider-plus-gradient region only so parent layout (e.g. VBox) does not treat the readout as part of this
- * control's box. This keeps centering relative to the gradient rectangle simple.
+ * Intensity control for a photon source with title, horizontal slider, and a percent readout. The track
+ * sits on a gradient backplate from black to the color for the source's current wavelength. Parent layout uses
+ * `localBounds` that include the title and slider region but not the readout, so alignment treats the readout as
+ * outside the main control bounds.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Multilink from '../../../../axon/js/Multilink.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Range from '../../../../dot/js/Range.js';
+import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberDisplay, { NumberDisplayOptions } from '../../../../scenery-phet/js/NumberDisplay.js';
@@ -71,15 +71,15 @@ export default class GradientBackplateIntensitySlider extends Node {
       maxWidth: INTENSITY_LABEL_MAX_WIDTH
     } );
 
-    const intensityGradientRectangle = new Rectangle( 0, 0, 1, 1, {
-      stroke: 'black',
-      lineWidth: 1
-    } );
-
     const intensitySlider = new HSlider( photonSource.intensityProperty, photonSource.intensityProperty.range, {
       tandem: options.tandem,
       trackSize: options.trackSize,
       thumbSize: options.thumbSize
+    } );
+
+    const intensityGradientRectangle = new Rectangle( intensitySlider.localBounds, {
+      stroke: 'black',
+      lineWidth: 1
     } );
 
     const intensityReadout = new NumberDisplay( photonSource.intensityPercentProperty, new Range(
@@ -105,66 +105,31 @@ export default class GradientBackplateIntensitySlider extends Node {
 
     this.mutate( options );
 
-    Multilink.multilink(
-      [
-        photonSource.wavelengthProperty,
-        intensityLabel.stringProperty
-      ],
-      () => {
-        GradientBackplateIntensitySlider.updateGradientAndReadoutLayout(
-          this,
-          photonSource,
-          intensityLabel,
-          intensityGradientRectangle,
-          intensitySlider,
-          intensityReadout
-        );
-      }
-    );
-  }
-
-  /**
-   * Sizes and positions the title, gradient under the slider, and percent readout.
-   * Updates localBounds to the title, slider, and gradient only (readout excluded) for parent layout.
-   */
-  private static updateGradientAndReadoutLayout(
-    sliderContainer: GradientBackplateIntensitySlider,
-    photonSource: PhotonSource,
-    intensityLabel: Text,
-    intensityGradientRectangle: Rectangle,
-    intensitySlider: HSlider,
-    intensityReadout: NumberDisplay
-  ): void {
-    intensityLabel.top = 0;
-    intensityLabel.left = 0;
-    intensitySlider.top = intensityLabel.bottom + LABEL_SLIDER_SPACING;
-
-    const w = Math.max( intensitySlider.width, 1 );
-    const h = Math.max( intensitySlider.height, 1 );
-    intensityGradientRectangle.setRect( 0, 0, w, h );
-    intensityGradientRectangle.left = intensitySlider.left;
-    intensityGradientRectangle.top = intensitySlider.top;
-
-    const endColor = wavelengthToIntensityGradientEndColor( photonSource.wavelengthProperty.value );
-    intensityGradientRectangle.fill = new LinearGradient( 0, 0, w, 0 )
-      .addColorStop( 0, Color.BLACK )
-      .addColorStop( 1, endColor );
-
+    // static layout - slider and gradient are at the origin, intensity label centered above, with
+    // intensity readout centered to the right
+    intensityLabel.centerX = intensityGradientRectangle.centerX;
+    intensityLabel.bottom = intensityGradientRectangle.top - LABEL_SLIDER_SPACING;
     intensityReadout.left = intensityGradientRectangle.right + READOUT_SPACING;
     intensityReadout.centerY = intensityGradientRectangle.centerY;
 
-    intensityLabel.centerX = intensityGradientRectangle.centerX;
+    // update gradient for the backblate when selected wavelength changes
+    photonSource.wavelengthProperty.link( () => {
+      const gradientWidth = intensityGradientRectangle.rectWidth;
+      const endColor = wavelengthToIntensityGradientEndColor( photonSource.wavelengthProperty.value );
+      intensityGradientRectangle.fill = new LinearGradient( 0, 0, gradientWidth, 0 )
+        .addColorStop( 0, Color.BLACK )
+        .addColorStop( 1, endColor );
+    } );
 
-    const sliderAndGradientBoundsLocal = intensitySlider.bounds.union( intensityGradientRectangle.bounds );
-    const layoutBoundsLocal = intensityLabel.bounds.union( sliderAndGradientBoundsLocal );
+    // Override local bounds for this component when the intensity string changes (likely from
+    // dynamic locales). The logical bounds includes the backplate rectangle, and the intensity label,
+    // but EXCLUDES the intensity readout for layout purposes when used in panels.
+    const backplateBounds = intensityGradientRectangle.bounds;
+    intensityLabel.boundsProperty.link( intensityLabelBounds => {
+      const layoutBoundsLocal = intensityLabelBounds.union( backplateBounds );
 
-    if ( layoutBoundsLocal.isValid() ) {
-      sliderContainer.setLocalBounds( layoutBoundsLocal );
-    }
-    else {
-
-      // Fall back to automatic bounds until the slider has valid geometry.
-      sliderContainer.setLocalBounds( null );
-    }
+      affirm( layoutBoundsLocal.isValid(), 'Bounds should be valid before overriding local bounds' );
+      this.setLocalBounds( layoutBoundsLocal );
+    } );
   }
 }
