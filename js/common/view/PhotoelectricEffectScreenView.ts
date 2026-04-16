@@ -190,6 +190,24 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
+    // Placeholder lamp rectangle aligned with the photon source line.
+    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
+
+    // Negate the model angle to convert to view space (the MVT inverts the y-axis).
+    const lampAngle = -PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE;
+    const lampFaceLength = PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH;
+    const lampBodyDepth = 20;
+    const lampRectangle = new Rectangle( -lampBodyDepth / 2, -lampFaceLength / 2, lampBodyDepth, lampFaceLength, {
+      fill: 'gray',
+      stroke: 'black',
+      rotation: lampAngle,
+
+      // TODO: The lamp needs to end at the beam start and currently it's centered at the beam start... awk.
+      centerX: beamStartCenter.x,
+      centerY: beamStartCenter.y
+    } );
+    this.addChild( lampRectangle );
+
     this.particleCanvasNode = new ParticleCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
 

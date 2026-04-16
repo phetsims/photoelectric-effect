@@ -26,13 +26,6 @@ export default class PhotoelectricEffectConstants {
   // X position of the sink plate center in model coordinates.
   public static readonly SINK_X = 100;
 
-  // TODO: MODEL_BOUNDS is used only as a culling boundary for photons and electrons. The current values are
-  //   overly generous and don't reflect the actual physics space (target at x=0–5, sink at x=150–155, plates
-  //   at y=±40). Consider replacing with more specific culling conditions per particle type — e.g. cull photons
-  //   that pass x=0 without hitting the target, and cull electrons that leave the inter-plate region — rather
-  //   than a single large rectangle. Discuss with team before changing. https://github.com/phetsims/photoelectric-effect/issues/1
-  public static readonly MODEL_BOUNDS = new Bounds2( -200, -120, 200, 120 );
-
   // Photon emission origin, positioned above and to the right of the target.
   public static readonly PHOTON_SOURCE_POSITION = new Vector2( 120, 80 );
 

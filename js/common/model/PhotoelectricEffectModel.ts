@@ -218,8 +218,8 @@ export default class PhotoelectricEffectModel implements TModel {
         }
       }
 
-      // Cull photons that have hit the target or left the model bounds to keep the simulation finite.
-      const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( photon.position );
+      // Cull photons that have hit the target or passed it without a collision.
+      const inBounds = photon.position.x > PhotoelectricEffectConstants.TARGET_X;
       if ( !hitTarget && inBounds ) {
         nextPhotons.push( photon );
       }
@@ -251,7 +251,10 @@ export default class PhotoelectricEffectModel implements TModel {
 
         // Check whether the electron is absorbed by the sink (e.g. anode).
         const absorbed = this.handleElectronSinkCollision( electron );
-        const inBounds = PhotoelectricEffectConstants.MODEL_BOUNDS.containsPoint( electron.position );
+
+        // Cull electrons that leave the inter-plate region (bounced back past the target or past the sink).
+        const inBounds = electron.position.x > PhotoelectricEffectConstants.TARGET_X &&
+                         electron.position.x < PhotoelectricEffectConstants.SINK_X;
 
         // Keep only electrons that are neither absorbed nor out of bounds.
         if ( !absorbed && inBounds ) {
