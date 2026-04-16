@@ -33,9 +33,14 @@ export default class IntensityAndWavelengthControl extends Panel {
       isDisposable: false
     }, providedOptions );
 
-    const intensitySlider = new GradientBackplateIntensitySlider( photonSource, {
-      tandem: options.tandem.createTandem( 'intensitySlider' )
-    } );
+    const intensitySlider = new GradientBackplateIntensitySlider(
+      photonSource.intensityProperty,
+      photonSource.intensityPercentProperty,
+      photonSource.wavelengthProperty,
+      {
+        tandem: options.tandem.createTandem( 'intensitySlider' )
+      }
+    );
 
     const wavelengthSlider = new WavelengthSliderWithReadout( photonSource, {
       tandem: options.tandem.createTandem( 'wavelengthSlider' )
