@@ -9,6 +9,7 @@
  */
 
 import Multilink from '../../../../axon/js/Multilink.js';
+import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import { clamp } from '../../../../dot/js/util/clamp.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
@@ -21,7 +22,6 @@ import HSlider from '../../../../sun/js/HSlider.js';
 import Slider from '../../../../sun/js/Slider.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
-import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import LabeledSpectrumSliderTrack from './LabeledSpectrumSliderTrack.js';
 
@@ -49,7 +49,7 @@ const DEFAULT_NUMBER_DISPLAY_OPTIONS: NumberDisplayOptions = {
 
 export default class WavelengthSliderWithReadout extends Node {
 
-  public constructor( photonSource: PhotonSource, providedOptions: WavelengthSliderWithReadoutOptions ) {
+  public constructor( wavelengthProperty: NumberProperty, providedOptions: WavelengthSliderWithReadoutOptions ) {
 
     const options = optionize<WavelengthSliderWithReadoutOptions, SelfOptions, NodeOptions>()( {
       trackSize: DEFAULT_TRACK_SIZE,
@@ -62,7 +62,7 @@ export default class WavelengthSliderWithReadout extends Node {
 
     super();
 
-    const wavelengthThumbNode = new SpectrumSliderThumb( photonSource.wavelengthProperty, {
+    const wavelengthThumbNode = new SpectrumSliderThumb( wavelengthProperty, {
       valueToColor: wavelengthToColor,
       width: options.thumbWidth,
       height: options.thumbHeight,
@@ -70,19 +70,19 @@ export default class WavelengthSliderWithReadout extends Node {
       tandem: options.tandem.createTandem( Slider.THUMB_NODE_TANDEM_NAME )
     } );
 
-    const wavelengthTrackNode = new LabeledSpectrumSliderTrack( photonSource.wavelengthProperty, photonSource.wavelengthProperty.range, {
+    const wavelengthTrackNode = new LabeledSpectrumSliderTrack( wavelengthProperty, wavelengthProperty.range, {
       valueToColor: wavelengthToColor,
       size: options.trackSize,
       tandem: options.tandem.createTandem( Slider.TRACK_NODE_TANDEM_NAME )
     } );
 
-    const wavelengthSlider = new HSlider( photonSource.wavelengthProperty, photonSource.wavelengthProperty.range, {
+    const wavelengthSlider = new HSlider( wavelengthProperty, wavelengthProperty.range, {
       tandem: options.tandem,
       trackNode: wavelengthTrackNode,
       thumbNode: wavelengthThumbNode
     } );
 
-    const wavelengthReadout = new NumberDisplay( photonSource.wavelengthProperty, photonSource.wavelengthProperty.range, combineOptions<NumberDisplayOptions>(
+    const wavelengthReadout = new NumberDisplay( wavelengthProperty, wavelengthProperty.range, combineOptions<NumberDisplayOptions>(
       {},
       DEFAULT_NUMBER_DISPLAY_OPTIONS,
       {
@@ -102,12 +102,12 @@ export default class WavelengthSliderWithReadout extends Node {
 
     Multilink.multilink(
       [
-        photonSource.wavelengthProperty,
+        wavelengthProperty,
         wavelengthReadout.boundsProperty
       ],
       () => {
         WavelengthSliderWithReadout.updateReadoutLayout(
-          photonSource,
+          wavelengthProperty,
           this,
           wavelengthSlider,
           wavelengthThumbNode,
@@ -123,7 +123,7 @@ export default class WavelengthSliderWithReadout extends Node {
    * Keeps the readout centered above the thumb while clamping its center to the visible track span.
    * It is factored out into a static method to reduce complexity within the constructor.
    *
-   * @param photonSource - provides current wavelength
+   * @param wavelengthProperty
    * @param sliderWithReadout - the entire WavelengthSliderWithReadout, needed for coordinate frame transformations
    * @param wavelengthSlider - for layout relative to the slider
    * @param wavelengthThumbNode - the readout is x aligned with the thumb
@@ -132,7 +132,7 @@ export default class WavelengthSliderWithReadout extends Node {
    * @param readoutAboveSliderSpacing - spacing between the slider track and the value readout
    */
   private static updateReadoutLayout(
-    photonSource: PhotonSource,
+    wavelengthProperty: NumberProperty,
     sliderWithReadout: Node,
     wavelengthSlider: HSlider,
     wavelengthThumbNode: SpectrumSliderThumb,
@@ -146,7 +146,7 @@ export default class WavelengthSliderWithReadout extends Node {
       const thumbCenterInRow = sliderWithReadout.globalToLocalPoint( thumbCenterGlobal );
 
       const valueToPosition = wavelengthTrackNode.valueToPositionProperty.value;
-      const wavelengthRange = photonSource.wavelengthProperty.range;
+      const wavelengthRange = wavelengthProperty.range;
       const trackLeftInRow = sliderWithReadout.globalToLocalPoint(
         wavelengthTrackNode.localToGlobalPoint( new Vector2( valueToPosition.evaluate( wavelengthRange.min ), 0 ) )
       ).x;
