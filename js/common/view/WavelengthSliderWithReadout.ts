@@ -10,8 +10,8 @@
 
 import Multilink from '../../../../axon/js/Multilink.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
 import { clamp } from '../../../../dot/js/util/clamp.js';
+import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberDisplay, { NumberDisplayOptions } from '../../../../scenery-phet/js/NumberDisplay.js';
@@ -103,13 +103,7 @@ export default class WavelengthSliderWithReadout extends Node {
     Multilink.multilink(
       [
         photonSource.wavelengthProperty,
-        photonSource.wavelengthProperty.rangeProperty,
-        this.boundsProperty,
-        wavelengthSlider.boundsProperty,
-        wavelengthThumbNode.boundsProperty,
-        wavelengthReadout.boundsProperty,
-        wavelengthTrackNode.boundsProperty,
-        wavelengthTrackNode.valueToPositionProperty
+        wavelengthReadout.boundsProperty
       ],
       () => {
         WavelengthSliderWithReadout.updateReadoutLayout(
@@ -123,40 +117,40 @@ export default class WavelengthSliderWithReadout extends Node {
         );
       }
     );
-    WavelengthSliderWithReadout.updateReadoutLayout(
-      photonSource,
-      this,
-      wavelengthSlider,
-      wavelengthThumbNode,
-      wavelengthReadout,
-      wavelengthTrackNode,
-      options.readoutAboveSliderSpacing
-    );
   }
 
   /**
    * Keeps the readout centered above the thumb while clamping its center to the visible track span.
+   * It is factored out into a static method to reduce complexity within the constructor.
+   *
+   * @param photonSource - provides current wavelength
+   * @param sliderWithReadout - the entire WavelengthSliderWithReadout, needed for coordinate frame transformations
+   * @param wavelengthSlider - for layout relative to the slider
+   * @param wavelengthThumbNode - the readout is x aligned with the thumb
+   * @param wavelengthReadout - the readout will be repositioned
+   * @param wavelengthTrackNode - the track exposes a valueToPosition, and also is used for coordinate frame transforms
+   * @param readoutAboveSliderSpacing - spacing between the slider track and the value readout
    */
   private static updateReadoutLayout(
     photonSource: PhotonSource,
-    rowNode: Node,
+    sliderWithReadout: Node,
     wavelengthSlider: HSlider,
     wavelengthThumbNode: SpectrumSliderThumb,
     wavelengthReadout: NumberDisplay,
     wavelengthTrackNode: LabeledSpectrumSliderTrack,
     readoutAboveSliderSpacing: number
   ): void {
-    if ( rowNode.bounds.isValid() && wavelengthThumbNode.bounds.isValid() && wavelengthReadout.bounds.isValid() ) {
+    if ( sliderWithReadout.bounds.isValid() && wavelengthThumbNode.bounds.isValid() && wavelengthReadout.bounds.isValid() ) {
       const thumbCenterLocal = wavelengthThumbNode.localBounds.center;
       const thumbCenterGlobal = wavelengthThumbNode.localToGlobalPoint( thumbCenterLocal );
-      const thumbCenterInRow = rowNode.globalToLocalPoint( thumbCenterGlobal );
+      const thumbCenterInRow = sliderWithReadout.globalToLocalPoint( thumbCenterGlobal );
 
       const valueToPosition = wavelengthTrackNode.valueToPositionProperty.value;
       const wavelengthRange = photonSource.wavelengthProperty.range;
-      const trackLeftInRow = rowNode.globalToLocalPoint(
+      const trackLeftInRow = sliderWithReadout.globalToLocalPoint(
         wavelengthTrackNode.localToGlobalPoint( new Vector2( valueToPosition.evaluate( wavelengthRange.min ), 0 ) )
       ).x;
-      const trackRightInRow = rowNode.globalToLocalPoint(
+      const trackRightInRow = sliderWithReadout.globalToLocalPoint(
         wavelengthTrackNode.localToGlobalPoint( new Vector2( valueToPosition.evaluate( wavelengthRange.max ), 0 ) )
       ).x;
 
