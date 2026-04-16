@@ -42,7 +42,7 @@ export default class IntensityAndWavelengthControl extends Panel {
       }
     );
 
-    const wavelengthSlider = new WavelengthSliderWithReadout( photonSource, {
+    const wavelengthSlider = new WavelengthSliderWithReadout( photonSource.wavelengthProperty, {
       tandem: options.tandem.createTandem( 'wavelengthSlider' )
     } );
 
