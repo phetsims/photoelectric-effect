@@ -171,7 +171,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( resetAllButton );
 
     // Canvas that renders photons and electrons using the same model-view transform as the play area.
-    this.particleCanvasNode = new ParticleCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
+    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, this.modelViewTransform,
+      { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
 
     // Debug visualization for collision bounds.
