@@ -36,9 +36,10 @@ export default class FrequencyEnergyGraphData extends GraphData {
       model.photonSource.wavelengthProperty,
       createFrequencyEnergyPointAtFrequency,
       [
-        model.photonSource.intensityProperty,
-        model.voltageProperty,
         model.target.materialProperty,
+
+        // TODO: Should the work function clear the frequency/energy data? Its efectively like changing the
+        //   material, so I wasn't sure.
         model.target.workFunctionProperty
       ],
       model.resetEmitter,

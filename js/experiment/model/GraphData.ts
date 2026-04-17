@@ -129,12 +129,15 @@ export default class GraphData {
     assert && assert( span >= 0, 'xDomain must be a valid range' );
     this.binCount = Math.max( 1, Math.floor( span / this.xResolution ) + 1 );
 
-    this.deterministicBins = _.times( this.binCount, index => new Vector2( this.binIndexToChartX( index ), 0 ) );
-    this.revealedBins = _.times( this.binCount, () => false );
-    this.recomputeDeterministicBins( createDataPointAtChartX );
-
     const initialChartX = options.drivingValueToChartX( drivingProperty.value );
     this.currentPointProperty = new Property( createDataPointAtChartX( initialChartX ) );
+
+    this.deterministicBins = _.times( this.binCount, index => new Vector2( this.binIndexToChartX( index ), 0 ) );
+    this.revealedBins = _.times( this.binCount, () => false );
+    this.recomputeDeterministicBinsAndCurrentPoint(
+      createDataPointAtChartX,
+      options.drivingValueToChartX( drivingProperty.value )
+    );
 
     drivingProperty.lazyLink( ( drivingValue: number ) => {
       const chartX = options.drivingValueToChartX( drivingValue );
@@ -153,7 +156,11 @@ export default class GraphData {
 
       // Deterministic bins cache y-values for one physical configuration.
       // Any clear dependency change means the curve definition changed.
-      this.recomputeDeterministicBins( createDataPointAtChartX );
+      this.recomputeDeterministicBinsAndCurrentPoint(
+        createDataPointAtChartX,
+        options.drivingValueToChartX( drivingProperty.value )
+      );
+
       this.clear();
     } );
 
@@ -244,12 +251,19 @@ export default class GraphData {
   /**
    * Recomputes deterministic bin y-values for the current model state.
    */
-  private recomputeDeterministicBins( createDataPointAtChartX: ( chartX: number ) => Vector2 ): void {
+  private recomputeDeterministicBinsAndCurrentPoint(
+    createDataPointAtChartX: ( chartX: number ) => Vector2,
+    drivingValueInChartX: number
+  ): void {
     _.times( this.binCount, i => {
       const canonicalX = this.binIndexToChartX( i );
       const point = createDataPointAtChartX( canonicalX );
       this.deterministicBins[ i ] = new Vector2( canonicalX, point.y );
     } );
+
+    // When a dependency changes that should clear the plot, it changed the physical state for the system,
+    // so recompute the current point.
+    this.currentPointProperty.value = createDataPointAtChartX( drivingValueInChartX );
   }
 
   /**
