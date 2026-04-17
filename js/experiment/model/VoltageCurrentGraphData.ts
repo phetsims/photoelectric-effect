@@ -24,8 +24,7 @@ export default class VoltageCurrentGraphData extends GraphData {
         model.target.materialProperty,
         model.target.workFunctionProperty
       ],
-      model.resetEmitter,
-      0.01
+      model.resetEmitter
     );
   }
 }

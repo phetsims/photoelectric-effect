@@ -43,6 +43,9 @@ type SelfOptions = {
   // directly (voltage/current, intensity/current), and a transform when chart x differs (wavelength-driven
   // frequency/energy graph maps wavelength -> frequency).
   drivingValueToChartX?: ( drivingValue: number ) => number;
+
+  // Model-units spacing between adjacent x bins. Reduce this value to increase the number of bins.
+  xResolution?: number;
 };
 
 export type GraphDataOptions = SelfOptions;
@@ -99,7 +102,6 @@ export default class GraphData {
    *   would stay on screen and imply a single curve even though the underlying relationship or experimental
    *   conditions have changed.
    * @param resetEmitter - Model reset clears live samples and all snapshots.
-   * @param xResolution - model-units spacing between adjacent x bins.
    * @param providedOptions - Optional chart x-domain override and optional driving value -> chart-x mapper. The mapper
    *   is identity when chart x-axis uses the driving value directly (voltage/current, intensity/current), and a
    *   transform when chart x differs (wavelength-driven frequency/energy graph maps wavelength -> frequency).
@@ -109,17 +111,18 @@ export default class GraphData {
     createDataPointAtChartX: ( chartX: number ) => Vector2,
     clearDependencies: Readonly<TReadOnlyProperty<IntentionalAny>[]>,
     resetEmitter: TReadOnlyEmitter,
-    xResolution: number,
     providedOptions?: GraphDataOptions
   ) {
-    assert && assert( xResolution > 0, 'xResolution must be positive' );
 
     const options = optionize<GraphDataOptions, SelfOptions>()( {
       xDomain: drivingProperty.range,
+      xResolution: 0.01,
       drivingValueToChartX: drivingValue => drivingValue
     }, providedOptions );
 
-    this.xResolution = xResolution;
+    assert && assert( options.xResolution > 0, 'xResolution must be positive' );
+
+    this.xResolution = options.xResolution;
     this.xDomain = options.xDomain;
 
     const span = this.xDomain.getLength();

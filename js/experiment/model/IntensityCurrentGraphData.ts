@@ -24,8 +24,7 @@ export default class IntensityCurrentGraphData extends GraphData {
         model.target.materialProperty,
         model.target.workFunctionProperty
       ],
-      model.resetEmitter,
-      0.001
+      model.resetEmitter
     );
   }
 }

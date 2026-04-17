@@ -42,7 +42,6 @@ export default class FrequencyEnergyGraphData extends GraphData {
         model.target.workFunctionProperty
       ],
       model.resetEmitter,
-      0.01,
       {
         // The user controls wavelength. But we plot with frequency.
         xDomain: frequencyXDomain,
