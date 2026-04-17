@@ -1,8 +1,12 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Owns a simple array of chart samples for one experiment graph, and wires axon listeners so points
- * append when a driving NumberProperty changes, clear when any dependency changes, and clear on model reset.
+ * Owns deterministic binned chart samples for one experiment graph, and wires axon listeners so reveal state updates
+ * when a driving NumberProperty changes, clear when any dependency changes, and clear on model reset.
+ *
+ * Samples are stored in fixed x-axis bins derived from xDomain (defaults to drivingProperty.range) and
+ * xResolution so memory stays bounded while sweeping the control. Bin y-values are deterministic for the current
+ * model state, and a reveal mask tracks which bins have been swept by the driving control.
  *
  * Also stores a small number of immutable snapshot copies of the live series for later plotting.
  *
@@ -11,7 +15,7 @@
  * changes (independent of line clears).
  *
  * clearDependencies should list every other model input that changes the physical meaning of the curve (or the
- * mapping in createDataPoint) so the plot does not mix samples from incompatible settings of the simulation.
+ * mapping in createDataPointAtChartX) so the plot does not mix samples from incompatible settings of the simulation.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -23,29 +27,56 @@ import Property from '../../../../axon/js/Property.js';
 import type { TReadOnlyEmitter } from '../../../../axon/js/TEmitter.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Range from '../../../../dot/js/Range.js';
-import { equalsEpsilon } from '../../../../dot/js/util/equalsEpsilon.js';
+import { clamp } from '../../../../dot/js/util/clamp.js';
+import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import optionize from '../../../../phet-core/js/optionize.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
-// Maximum number of chart samples retained per series; oldest points are dropped when appending past this size.
-const MAX_DATA_POINTS = 100;
+type SelfOptions = {
 
-// Two chart x values closer than this are treated as the same abscissa so the newer sample replaces the older.
-const X_DUPLICATE_EPSILON = 1e-10;
+  // Optional chart x domain override when chart x differs from the driving NumberProperty.
+  xDomain?: Range;
+
+  // Optional mapping from driving-property value domain to chart-x domain. This keeps reveal and marker updates in
+  // the same coordinate system as deterministic bins. Identity by default for plots where the driving value is chart x
+  // directly (voltage/current, intensity/current), and a transform when chart x differs (wavelength-driven
+  // frequency/energy graph maps wavelength -> frequency).
+  drivingValueToChartX?: ( drivingValue: number ) => number;
+};
+
+export type GraphDataOptions = SelfOptions;
 
 export default class GraphData {
 
   // Upper bound on snapshots; captureSnapshot asserts the stored count stays below this before adding another.
   public static readonly MAX_SNAPSHOTS = 4;
 
-  // Accumulated chart samples in model coordinates (at most one point per x, newest wins). Only this class appends or
-  // clears entries when the driving NumberProperty changes, clear dependencies change, or reset runs.
-  private readonly dataPoints: Vector2[] = [];
+  // Bin width in chart x model units.
+  private readonly xResolution: number;
+
+  // Inclusive span used for bin indices; when omitted at construction, matches drivingProperty.range.
+  private readonly xDomain: Range;
+
+  // Number of bins = floor( span / xResolution ) + 1.
+  private readonly binCount: number;
+
+  // Deterministic data point for each chart-x bin center.
+  private readonly deterministicBins: Vector2[];
+
+  // Whether each bin has been revealed by sweeping the driving control.
+  private readonly revealedBins: boolean[];
+
+  // Count of revealed bins for fast clear() checks.
+  private revealedBinCount = 0;
+
+  // Most recent driving bin index, used to reveal all bins between previous and current positions.
+  private previousDrivingBinIndex: number | null = null;
 
   // Deep-copied point arrays captured via captureSnapshot(); each inner array is not mutated after it is stored.
   private readonly snapshots: Vector2[][] = [];
 
-  // Fires after a new sample is appended or after clear() removes samples, so views can read
+  // Fires after reveal state changes or after clear() removes revealed samples, so views can read
   // getDataPoints() and update plots.
   public readonly dataChangedEmitter = new Emitter();
 
@@ -58,40 +89,68 @@ export default class GraphData {
   } );
 
   /**
-   * @param drivingProperty - New values trigger one appended sample.
-   * @param createDataPoint - Maps the new driving value to model coordinates for the chart.
+   * @param drivingProperty - New values reveal bins along the sweep path.
+   * @param createDataPointAtChartX - Deterministically evaluates the curve at a chart-x value. GraphData uses this
+   *   for every canonical bin center during recomputation, and also for currentPointProperty after applying
+   *   the driving-value -> chart-x mapping. Keeping this callback in chart-x coordinates ensures one consistent
+   *   curve definition for both deterministic bins and the latest-point marker.
    * @param clearDependencies - Properties to watch so that changing any of them clears the series. Provide every
    *   model input that affects the interpretation of the axes except the drivingProperty itself, otherwise old points\
    *   would stay on screen and imply a single curve even though the underlying relationship or experimental
    *   conditions have changed.
    * @param resetEmitter - Model reset clears live samples and all snapshots.
+   * @param xResolution - model-units spacing between adjacent x bins.
+   * @param providedOptions - Optional chart x-domain override and optional driving value -> chart-x mapper. The mapper
+   *   is identity when chart x-axis uses the driving value directly (voltage/current, intensity/current), and a
+   *   transform when chart x differs (wavelength-driven frequency/energy graph maps wavelength -> frequency).
    */
   public constructor(
     drivingProperty: NumberProperty,
-    createDataPoint: ( drivingValue: number ) => Vector2,
+    createDataPointAtChartX: ( chartX: number ) => Vector2,
     clearDependencies: Readonly<TReadOnlyProperty<IntentionalAny>[]>,
-    resetEmitter: TReadOnlyEmitter
+    resetEmitter: TReadOnlyEmitter,
+    xResolution: number,
+    providedOptions?: GraphDataOptions
   ) {
-    this.currentPointProperty = new Property( createDataPoint( drivingProperty.value ) );
+    assert && assert( xResolution > 0, 'xResolution must be positive' );
+
+    const options = optionize<GraphDataOptions, SelfOptions>()( {
+      xDomain: drivingProperty.range,
+      drivingValueToChartX: drivingValue => drivingValue
+    }, providedOptions );
+
+    this.xResolution = xResolution;
+    this.xDomain = options.xDomain;
+
+    const span = this.xDomain.getLength();
+    assert && assert( span >= 0, 'xDomain must be a valid range' );
+    this.binCount = Math.max( 1, Math.floor( span / this.xResolution ) + 1 );
+
+    this.deterministicBins = _.times( this.binCount, index => new Vector2( this.binIndexToChartX( index ), 0 ) );
+    this.revealedBins = _.times( this.binCount, () => false );
+    this.recomputeDeterministicBins( createDataPointAtChartX );
+
+    const initialChartX = options.drivingValueToChartX( drivingProperty.value );
+    this.currentPointProperty = new Property( createDataPointAtChartX( initialChartX ) );
 
     drivingProperty.lazyLink( ( drivingValue: number ) => {
-      const newPoint = createDataPoint( drivingValue );
+      const chartX = options.drivingValueToChartX( drivingValue );
+      this.currentPointProperty.value = createDataPointAtChartX( chartX );
 
-      // Remove same-x samples: iterate backward so splice index shifts do not skip the next element.
-      for ( let i = this.dataPoints.length - 1; i >= 0; i-- ) {
-        if ( equalsEpsilon( this.dataPoints[ i ].x, newPoint.x, X_DUPLICATE_EPSILON ) ) {
-          this.dataPoints.splice( i, 1 );
-        }
+      const currentBinIndex = this.chartXToBinIndex( chartX );
+      const revealChanged = this.revealBinRange( this.previousDrivingBinIndex, currentBinIndex );
+      this.previousDrivingBinIndex = currentBinIndex;
+
+      if ( revealChanged ) {
+        this.dataChangedEmitter.emit();
       }
-      this.dataPoints.push( newPoint );
-      while ( this.dataPoints.length > MAX_DATA_POINTS ) {
-        this.dataPoints.shift();
-      }
-      this.dataChangedEmitter.emit();
-      this.currentPointProperty.value = newPoint;
     } );
 
     Multilink.lazyMultilinkAny( clearDependencies, () => {
+
+      // Deterministic bins cache y-values for one physical configuration.
+      // Any clear dependency change means the curve definition changed.
+      this.recomputeDeterministicBins( createDataPointAtChartX );
       this.clear();
     } );
 
@@ -102,10 +161,16 @@ export default class GraphData {
   }
 
   /**
-   * Points in model/chart coordinates, most recently appended last. Do not mutate; use clear() to empty.
+   * Points in model/chart coordinates in ascending chart x (revealed bins only). Do not mutate; use clear() to empty.
    */
   public getDataPoints(): ReadonlyArray<Vector2> {
-    return this.dataPoints;
+    const dataPoints: Vector2[] = [];
+    this.revealedBins.forEach( ( isRevealed, index ) => {
+      if ( isRevealed ) {
+        dataPoints.push( this.deterministicBins[ index ] );
+      }
+    } );
+    return dataPoints;
   }
 
   /**
@@ -117,11 +182,15 @@ export default class GraphData {
   }
 
   /**
-   * Removes all samples and notifies listeners.
+   * Removes all revealed samples and notifies listeners.
    */
   public clear(): void {
-    if ( this.dataPoints.length > 0 ) {
-      this.dataPoints.length = 0;
+    this.previousDrivingBinIndex = null;
+    if ( this.revealedBinCount > 0 ) {
+      for ( let i = 0; i < this.revealedBins.length; i++ ) {
+        this.revealedBins[ i ] = false;
+      }
+      this.revealedBinCount = 0;
       this.dataChangedEmitter.emit();
     }
   }
@@ -132,7 +201,7 @@ export default class GraphData {
    */
   public captureSnapshot(): void {
     assert && assert( this.snapshots.length < GraphData.MAX_SNAPSHOTS, 'snapshot storage is full' );
-    const snapshot = this.dataPoints.map( point => new Vector2( point.x, point.y ) );
+    const snapshot = this.getDataPoints().map( point => new Vector2( point.x, point.y ) );
     this.snapshots.push( snapshot );
     this.syncSnapshotsCountProperty();
   }
@@ -152,5 +221,66 @@ export default class GraphData {
    */
   private syncSnapshotsCountProperty(): void {
     this.snapshotsCountProperty.value = this.snapshots.length;
+  }
+
+  /**
+   * Maps chart x to a bin index in [0, binCount - 1].
+   */
+  private chartXToBinIndex( chartX: number ): number {
+    const rawIndex = roundSymmetric( ( chartX - this.xDomain.min ) / this.xResolution );
+    return clamp( rawIndex, 0, this.binCount - 1 );
+  }
+
+  /**
+   * Canonical chart x for a bin index.
+   */
+  private binIndexToChartX( binIndex: number ): number {
+    return this.xDomain.min + binIndex * this.xResolution;
+  }
+
+  /**
+   * Recomputes deterministic bin y-values for the current model state.
+   */
+  private recomputeDeterministicBins( createDataPointAtChartX: ( chartX: number ) => Vector2 ): void {
+    _.times( this.binCount, i => {
+      const canonicalX = this.binIndexToChartX( i );
+      const point = createDataPointAtChartX( canonicalX );
+      this.deterministicBins[ i ] = new Vector2( canonicalX, point.y );
+    } );
+  }
+
+  /**
+   * Reveals one bin or a contiguous range between previous and current bin indices.
+   */
+  private revealBinRange( previousBinIndex: number | null, currentBinIndex: number ): boolean {
+    let changed = false;
+
+    if ( previousBinIndex === null ) {
+      changed = this.revealSingleBin( currentBinIndex );
+    }
+    else {
+      const startIndex = Math.min( previousBinIndex, currentBinIndex );
+      const endIndex = Math.max( previousBinIndex, currentBinIndex );
+      for ( let i = startIndex; i <= endIndex; i++ ) {
+        changed = this.revealSingleBin( i ) || changed;
+      }
+    }
+
+    return changed;
+  }
+
+  /**
+   * Reveals one bin if not already revealed.
+   */
+  private revealSingleBin( binIndex: number ): boolean {
+    let changed = false;
+
+    if ( !this.revealedBins[ binIndex ] ) {
+      this.revealedBins[ binIndex ] = true;
+      this.revealedBinCount++;
+      changed = true;
+    }
+
+    return changed;
   }
 }

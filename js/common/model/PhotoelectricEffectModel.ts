@@ -127,8 +127,8 @@ export default class PhotoelectricEffectModel implements TModel {
         this.photonSource.wavelengthProperty,
         this.target.workFunctionProperty
       ],
-      ( voltage, intensity, wavelength, workFunction ) => {
-        return this.getCurrentForVoltage( voltage, intensity, wavelength, workFunction );
+      voltage => {
+        return this.getCurrentForVoltage( voltage );
       }
     );
 
@@ -301,7 +301,11 @@ export default class PhotoelectricEffectModel implements TModel {
   /**
    * Computes the analytic current expected for the given conditions.
    */
-  private getCurrentForVoltage( voltage: number, intensity: number, wavelength: number, workFunction: number ): number {
+  public getCurrentForVoltage( voltage: number ): number {
+    const intensity = this.photonSource.intensityProperty.value;
+    const wavelength = this.photonSource.wavelengthProperty.value;
+    const workFunction = this.target.workFunctionProperty.value;
+
     const photonsPerSecond = intensityToPhotonRate( intensity, wavelength );
 
     // Compute how much photon energy exceeds the work function; this bounds emission likelihood.

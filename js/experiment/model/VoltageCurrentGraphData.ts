@@ -12,17 +12,20 @@ import GraphData from './GraphData.js';
 
 export default class VoltageCurrentGraphData extends GraphData {
 
-  public constructor( model: PhotoelectricEffectModel ) {
+  public constructor(
+    model: PhotoelectricEffectModel
+  ) {
     super(
       model.voltageProperty,
-      voltage => new Vector2( voltage, model.currentProperty.value ),
+      voltage => new Vector2( voltage, model.getCurrentForVoltage( voltage ) ),
       [
         model.photonSource.intensityProperty,
         model.wavelengthProperty,
         model.target.materialProperty,
         model.target.workFunctionProperty
       ],
-      model.resetEmitter
+      model.resetEmitter,
+      0.01
     );
   }
 }

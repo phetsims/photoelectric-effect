@@ -44,6 +44,19 @@ export const wavelengthToFrequency = ( wavelength: number ): number => {
 };
 
 /**
+ * Photon wavelength in nm from frequency in units of 10^15 Hz.
+ * Inverse of wavelengthToFrequency for positive finite frequencies.
+ */
+export const frequencyToWavelength = ( frequency: number ): number => {
+  let wavelength = 0;
+  if ( frequency > 0 ) {
+    const frequencyHertz = frequency * 1e15;
+    wavelength = SPEED_OF_LIGHT_METERS_PER_SECOND / frequencyHertz * 1e9;
+  }
+  return wavelength;
+};
+
+/**
  * Converts normalized intensity to photons-per-second.
  * Matches legacy behavior by scaling with wavelength.
  * Clamps intensity to [0, 1] before applying the scale.
