@@ -34,6 +34,7 @@ type StringsType = {
       'infoDialogTitleStringProperty': LocalizedStringProperty;
       'infoDialogPlaceholderStringProperty': LocalizedStringProperty;
       'snapshotsDialogTitleStringProperty': LocalizedStringProperty;
+      'snapshotSavedStringProperty': LocalizedStringProperty;
       'snapshotsGalleryButtonAccessibleNameStringProperty': LocalizedStringProperty;
       'snapshotsGalleryButtonAccessibleHelpTextStringProperty': LocalizedStringProperty;
     }
@@ -64,7 +65,7 @@ type StringsType = {
     'photonsStringProperty': LocalizedStringProperty;
     'electronsStringProperty': LocalizedStringProperty;
     'targetStringProperty': LocalizedStringProperty;
-    'collectorStringProperty': LocalizedStringProperty;
+    'sinkStringProperty': LocalizedStringProperty;
   };
   'preferences': {
     'mysteryMaterialLabelStringProperty': LocalizedStringProperty;

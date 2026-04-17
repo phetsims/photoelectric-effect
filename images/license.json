@@ -1,18 +1,3 @@
 {
-  "ground.svg": {
-    "text": [
-      "Copyright 2026 University of Colorado Boulder"
-    ],
-    "projectURL": "https://phet.colorado.edu",
-    "license": "contact phethelp@colorado.edu",
-    "notes": "created by Brett Fiedler"
-  },
-  "circuit.svg": {
-    "text": [
-      "Copyright 2026 University of Colorado Boulder"
-    ],
-    "projectURL": "https://phet.colorado.edu",
-    "license": "contact phethelp@colorado.edu",
-    "notes": "created by Brett Fiedler"
-  }
+
 }
