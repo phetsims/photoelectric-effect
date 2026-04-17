@@ -56,11 +56,9 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
         yAxisLabelYOffset: 10,
         gridXSpacing: 0.25,
         gridYSpacing: 0.25,
-        linePlotOptions: {
 
-          // TODO: Move this to PhotoelectricEffectColors.ts
-          stroke: '#7090F5'
-        }
+        // TODO: Move this to PhotoelectricEffectColors.ts
+        fill: '#7090F5'
       },
       tandem: options.tandem
     };

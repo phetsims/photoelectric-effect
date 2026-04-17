@@ -58,11 +58,9 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
           const isInteger = Math.abs( scaledValue - roundSymmetric( scaledValue ) ) < 1e-6;
           return toFixed( scaledValue, isInteger ? 0 : 2 );
         },
-        linePlotOptions: {
 
-          // TODO: Move this to PhotoelectricEffectColors.ts
-          stroke: '#4B853E'
-        }
+        // TODO: Move this to PhotoelectricEffectColors.ts
+        fill: '#4B853E'
       },
       tandem: providedOptions.tandem
     };

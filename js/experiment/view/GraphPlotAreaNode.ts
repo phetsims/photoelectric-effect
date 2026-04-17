@@ -5,8 +5,8 @@
  * It manages chart transform updates from zoom changes, including tick mark and tick label regeneration for each
  * configured zoom range pair.
  *
- * The node focuses on plotting concerns only (grid, masked line plot, ticks, axis labels, and border) so parent
- * components can layer controls and readouts around it.
+ * The node focuses on plotting concerns only (grid, masked line plot, latest-point marker, ticks, axis labels, and
+ * border) so parent components can layer controls and readouts around it.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -16,6 +16,7 @@ import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
 import GridLineSet from '../../../../bamboo/js/GridLineSet.js';
 import LinePlot, { type LinePlotOptions } from '../../../../bamboo/js/LinePlot.js';
+import ScatterPlot, { type ScatterPlotOptions } from '../../../../bamboo/js/ScatterPlot.js';
 import TickLabelSet from '../../../../bamboo/js/TickLabelSet.js';
 import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
 import Range from '../../../../dot/js/Range.js';
@@ -29,6 +30,8 @@ import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
+import Color from '../../../../scenery/js/util/Color.js';
+import type TColor from '../../../../scenery/js/util/TColor.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
@@ -99,8 +102,11 @@ type GraphPlotAreaSelfOptions = {
   // Base fractional padding applied to model ranges to create visual inset.
   rangePaddingFraction?: number;
 
-  // Line plot styling overrides.
-  linePlotOptions?: LinePlotOptions;
+  // Base color for the data line stroke and the latest-point marker fill (marker is darkened).
+  fill?: TColor;
+
+  // Line plot styling overrides (stroke comes from fill above).
+  linePlotOptions?: StrictOmit<LinePlotOptions, 'stroke'>;
 };
 
 export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions &
@@ -116,6 +122,9 @@ export default class GraphPlotAreaNode extends Node {
 
   // Plot rendering for the data set.
   private readonly linePlot: LinePlot;
+
+  // Single-point scatter plot marking the latest appended sample in model order.
+  private readonly currentPointPlot: ScatterPlot;
 
   // Chart border; exposed for outer layout (expand button alignment).
   public readonly plotRectangle: Rectangle;
@@ -144,6 +153,7 @@ export default class GraphPlotAreaNode extends Node {
       xTickLabelFormatter: null,
       yTickLabelFormatter: null,
       rangePaddingFraction: 0.05,
+      fill: 'black',
       linePlotOptions: {
         lineWidth: 6,
         lineCap: 'round'
@@ -195,14 +205,17 @@ export default class GraphPlotAreaNode extends Node {
       ]
     } );
 
-    this.linePlot = new LinePlot( this.chartTransform, [], combineOptions<LinePlotOptions>( {
-      stroke: 'black',
-      lineWidth: 2
-    }, options.linePlotOptions ) );
+    this.linePlot = new LinePlot( this.chartTransform, [], combineOptions<LinePlotOptions>( {}, options.linePlotOptions, {
+      stroke: options.fill
+    } ) );
+    this.currentPointPlot = new ScatterPlot( this.chartTransform, [], combineOptions<ScatterPlotOptions>( {}, {
+      radius: 4,
+      fill: Color.toColor( options.fill ).darkerColor()
+    } ) );
 
     const plotLayer = new Node( {
       clipArea: chartContentClipArea,
-      children: [ this.linePlot ]
+      children: [ this.linePlot, this.currentPointPlot ]
     } );
 
     const xAxisLabelText = options.xAxisLabelStringProperty ? new RichText( options.xAxisLabelStringProperty, {
@@ -312,17 +325,20 @@ export default class GraphPlotAreaNode extends Node {
   }
 
   /**
-   * Updates the line plot data set.
+   * Updates the line plot and the latest-point marker.
    *
    * Sorting by x ensures line joins/caps render consistently even when the data is captured in
-   * interaction order rather than model order.
+   * interaction order rather than model order. The marker uses the last element of the incoming array
+   * (most recently appended sample).
    *
    * @param dataSet - Model data points in chart coordinates.
    */
   public setDataSet( dataSet: Vector2[] ): void {
     const sortedDataSet = dataSet.slice().sort( ( a, b ) => a.x - b.x );
+    const latestPointDataSet = dataSet.length > 0 ? [ dataSet[ dataSet.length - 1 ] ] : [];
 
     this.linePlot.setDataSet( sortedDataSet );
+    this.currentPointPlot.setDataSet( latestPointDataSet );
   }
 
   /**

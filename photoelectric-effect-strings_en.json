@@ -98,8 +98,8 @@
   "debugLegend.target": {
     "value": "Red outline = target"
   },
-  "debugLegend.collector": {
-    "value": "Blue outline = collector"
+  "debugLegend.sink": {
+    "value": "Blue outline = sink"
   },
   "preferences.mysteryMaterialLabel": {
     "value": "Mystery Material"

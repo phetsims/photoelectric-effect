@@ -50,11 +50,9 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
         gridXSpacing: 2,
         gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
-        linePlotOptions: {
 
-          // TODO: Move this to PhotoelectricEffectColors.ts
-          stroke: '#E03722'
-        }
+        // TODO: Move this to PhotoelectricEffectColors.ts
+        fill: '#E03722'
       },
       tandem: providedOptions.tandem
     };
