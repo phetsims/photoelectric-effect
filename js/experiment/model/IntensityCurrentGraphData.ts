@@ -17,7 +17,7 @@ export default class IntensityCurrentGraphData extends GraphData {
   ) {
     super(
       model.photonSource.intensityProperty,
-      voltage => new Vector2( voltage, model.getCurrentForVoltage( voltage ) ),
+      intensity => new Vector2( intensity, model.getCurrentForIntensity( intensity ) ),
       [
         model.voltageProperty,
         model.wavelengthProperty,

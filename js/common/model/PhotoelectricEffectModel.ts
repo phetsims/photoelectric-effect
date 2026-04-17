@@ -127,8 +127,8 @@ export default class PhotoelectricEffectModel implements TModel {
         this.photonSource.wavelengthProperty,
         this.target.workFunctionProperty
       ],
-      voltage => {
-        return this.getCurrentForVoltage( voltage );
+      ( voltage, intensity, wavelength, workFunction ) => {
+        return this.getCurrentForSystem( voltage, intensity, wavelength, workFunction );
       }
     );
 
@@ -299,13 +299,30 @@ export default class PhotoelectricEffectModel implements TModel {
   }
 
   /**
-   * Computes the analytic current expected for the given conditions.
+   * Computes the analytic current for the voltage, with other variables from the current system.
    */
   public getCurrentForVoltage( voltage: number ): number {
     const intensity = this.photonSource.intensityProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
+    return this.getCurrentForSystem( voltage, intensity, wavelength, workFunction );
+  }
 
+  /**
+   * Get the analytic current for the provided intensity, with other variables from the current system.
+   * @param intensity
+   */
+  public getCurrentForIntensity( intensity: number ): number {
+    const voltage = this.voltageProperty.value;
+    const wavelength = this.photonSource.wavelengthProperty.value;
+    const workFunction = this.target.workFunctionProperty.value;
+    return this.getCurrentForSystem( voltage, intensity, wavelength, workFunction );
+  }
+
+  /**
+   * Computes the analytic current expected for the given conditions.
+   */
+  private getCurrentForSystem( voltage: number, intensity: number, wavelength: number, workFunction: number ): number {
     const photonsPerSecond = intensityToPhotonRate( intensity, wavelength );
 
     // Compute how much photon energy exceeds the work function; this bounds emission likelihood.
