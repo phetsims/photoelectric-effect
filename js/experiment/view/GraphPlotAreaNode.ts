@@ -5,8 +5,8 @@
  * It manages chart transform updates from zoom changes, including tick mark and tick label regeneration for each
  * configured zoom range pair.
  *
- * The node focuses on plotting concerns only (grid, masked line plot, latest-point marker, ticks, axis labels, and
- * border) so parent components can layer controls and readouts around it.
+ * The node focuses on plotting concerns only (grid, masked line plot, optional latest-point scatter marker, ticks,
+ * axis labels, and border) so parent components can layer controls and readouts around it.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -107,6 +107,9 @@ type GraphPlotAreaSelfOptions = {
 
   // Line plot styling overrides (stroke comes from fill above).
   linePlotOptions?: StrictOmit<LinePlotOptions, 'stroke'>;
+
+  // When true, a scatter plot marks the current operating point above the line; when false, no scatter layer is created.
+  showCurrentPointMarker?: boolean;
 };
 
 export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions &
@@ -123,8 +126,8 @@ export default class GraphPlotAreaNode extends Node {
   // Plot rendering for the data set.
   private readonly linePlot: LinePlot;
 
-  // Single-point scatter plot marking the latest appended sample in model order.
-  private readonly currentPointPlot: ScatterPlot;
+  // Single-point scatter plot marking the current operating point; omitted when showCurrentPointMarker is false.
+  private readonly currentPointPlot: ScatterPlot | null = null;
 
   // Chart border; exposed for outer layout (expand button alignment).
   public readonly plotRectangle: Rectangle;
@@ -158,6 +161,7 @@ export default class GraphPlotAreaNode extends Node {
         lineWidth: 6,
         lineCap: 'round'
       },
+      showCurrentPointMarker: true,
 
       // TODO: Consider tandems, but instinct is to opt out because this is a purely visual rendering of the
       //   plotted area (no buttons, no state, no data).
@@ -208,14 +212,17 @@ export default class GraphPlotAreaNode extends Node {
     this.linePlot = new LinePlot( this.chartTransform, [], combineOptions<LinePlotOptions>( {}, options.linePlotOptions, {
       stroke: options.fill
     } ) );
-    this.currentPointPlot = new ScatterPlot( this.chartTransform, [], combineOptions<ScatterPlotOptions>( {}, {
-      radius: 4,
-      fill: Color.toColor( options.fill ).darkerColor()
-    } ) );
+
+    if ( options.showCurrentPointMarker ) {
+      this.currentPointPlot = new ScatterPlot( this.chartTransform, [], combineOptions<ScatterPlotOptions>( {}, {
+        radius: 4,
+        fill: Color.toColor( options.fill ).darkerColor()
+      } ) );
+    }
 
     const plotLayer = new Node( {
       clipArea: chartContentClipArea,
-      children: [ this.linePlot, this.currentPointPlot ]
+      children: this.currentPointPlot ? [ this.linePlot, this.currentPointPlot ] : [ this.linePlot ]
     } );
 
     const xAxisLabelText = options.xAxisLabelStringProperty ? new RichText( options.xAxisLabelStringProperty, {
@@ -325,20 +332,27 @@ export default class GraphPlotAreaNode extends Node {
   }
 
   /**
-   * Updates the line plot and the latest-point marker.
+   * Updates the line plot data set only.
    *
    * Sorting by x ensures line joins/caps render consistently even when the data is captured in
-   * interaction order rather than model order. The marker uses the last element of the incoming array
-   * (most recently appended sample).
+   * interaction order rather than model order.
    *
    * @param dataSet - Model data points in chart coordinates.
    */
-  public setDataSet( dataSet: Vector2[] ): void {
+  public setLineDataSet( dataSet: Vector2[] ): void {
     const sortedDataSet = dataSet.slice().sort( ( a, b ) => a.x - b.x );
-    const latestPointDataSet = dataSet.length > 0 ? [ dataSet[ dataSet.length - 1 ] ] : [];
-
     this.linePlot.setDataSet( sortedDataSet );
-    this.currentPointPlot.setDataSet( latestPointDataSet );
+  }
+
+  /**
+   * Updates the current-point scatter marker when showCurrentPointMarker is true; no-op otherwise.
+   *
+   * @param point - Model coordinates for the marker, or null to hide it.
+   */
+  public setCurrentPointMarker( point: Vector2 | null ): void {
+    if ( this.currentPointPlot ) {
+      this.currentPointPlot.setDataSet( point ? [ point ] : [] );
+    }
   }
 
   /**

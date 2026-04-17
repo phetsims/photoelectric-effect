@@ -6,7 +6,9 @@
  *
  * Also stores a small number of immutable snapshot copies of the live series for later plotting.
  *
- * The view syncs from dataChangedEmitter; points are not wrapped in Property or ObservableArray.
+ * The view syncs line history from dataChangedEmitter; points are not wrapped in Property or ObservableArray.
+ * The current operating point for the latest-point marker syncs from currentPointProperty when the driving property
+ * changes (independent of line clears).
  *
  * clearDependencies should list every other model input that changes the physical meaning of the curve (or the
  * mapping in createDataPoint) so the plot does not mix samples from incompatible settings of the simulation.
@@ -17,6 +19,7 @@
 import Emitter from '../../../../axon/js/Emitter.js';
 import Multilink from '../../../../axon/js/Multilink.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
+import Property from '../../../../axon/js/Property.js';
 import type { TReadOnlyEmitter } from '../../../../axon/js/TEmitter.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Range from '../../../../dot/js/Range.js';
@@ -43,8 +46,11 @@ export default class GraphData {
   private readonly snapshots: Vector2[][] = [];
 
   // Fires after a new sample is appended or after clear() removes samples, so views can read
-  // getDataPoints() and update the plot.
+  // getDataPoints() and update plots.
   public readonly dataChangedEmitter = new Emitter();
+
+  // Latest chart coordinates for the current driving value.
+  public readonly currentPointProperty: Property<Vector2>;
 
   // Number of stored snapshots.
   public readonly snapshotsCountProperty = new NumberProperty( 0, {
@@ -66,6 +72,7 @@ export default class GraphData {
     clearDependencies: Readonly<TReadOnlyProperty<IntentionalAny>[]>,
     resetEmitter: TReadOnlyEmitter
   ) {
+    this.currentPointProperty = new Property( createDataPoint( drivingProperty.value ) );
 
     drivingProperty.lazyLink( ( drivingValue: number ) => {
       const newPoint = createDataPoint( drivingValue );
@@ -81,6 +88,7 @@ export default class GraphData {
         this.dataPoints.shift();
       }
       this.dataChangedEmitter.emit();
+      this.currentPointProperty.value = newPoint;
     } );
 
     Multilink.lazyMultilinkAny( clearDependencies, () => {

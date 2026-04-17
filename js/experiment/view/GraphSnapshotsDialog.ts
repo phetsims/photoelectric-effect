@@ -8,12 +8,14 @@
  *
  * Plot nodes are created once and reused so open/close cycles avoid repeated node allocation and disposal.
  * The VBox always lists all snapshot slots; unused slots stay hidden via visibility. Snapshot charts share the
- * same GraphPlotAreaNode options as the parent graph (ranges, labels, grid, line styling).
+ * same GraphPlotAreaNode options as the parent graph (ranges, labels, grid, line styling) but omit the current-point
+ * scatter layer.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Dialog from '../../../../sun/js/Dialog.js';
@@ -39,9 +41,13 @@ export default class GraphSnapshotsDialog extends Dialog {
     graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions
   ) {
 
+    const snapshotPlotOptions = combineOptions<GraphPlotAreaNodeOptions>( {}, graphPlotAreaNodeOptions, {
+      showCurrentPointMarker: false
+    } );
+
     const snapshotPlotNodes: GraphPlotAreaNode[] = [];
     _.times( GraphData.MAX_SNAPSHOTS, () => {
-      snapshotPlotNodes.push( new GraphPlotAreaNode( graphPlotAreaNodeOptions ) );
+      snapshotPlotNodes.push( new GraphPlotAreaNode( snapshotPlotOptions ) );
     } );
 
     const plotsVBox = new VBox( {
@@ -67,10 +73,10 @@ export default class GraphSnapshotsDialog extends Dialog {
         plotNode.visible = hasSnapshot;
 
         if ( hasSnapshot ) {
-          plotNode.setDataSet( [ ...snapshots[ i ] ] );
+          plotNode.setLineDataSet( [ ...snapshots[ i ] ] );
         }
         else {
-          plotNode.setDataSet( [] );
+          plotNode.setLineDataSet( [] );
         }
       } );
     };

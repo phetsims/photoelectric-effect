@@ -13,7 +13,6 @@
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
@@ -73,7 +72,7 @@ export default class GraphAssemblyNode extends Node {
   private readonly graphPlotAreaNode: GraphPlotAreaNode;
 
   /**
-   * @param graphData - Model-owned samples; this node redraws when dataChangedEmitter fires.
+   * @param graphData
    * @param providedOptions
    */
   public constructor( graphData: GraphData, providedOptions: GraphAssemblyNodeOptions ) {
@@ -205,21 +204,13 @@ export default class GraphAssemblyNode extends Node {
     } );
 
     const syncLinePlot = () => {
-      this.setDataSet( [ ...graphData.getDataPoints() ] );
+      this.graphPlotAreaNode.setLineDataSet( [ ...graphData.getDataPoints() ] );
     };
     graphData.dataChangedEmitter.addListener( syncLinePlot );
     syncLinePlot();
-  }
 
-  /**
-   * Updates the line plot data set.
-   *
-   * Sorting by x ensures line joins/caps render consistently even when the data is captured in
-   * interaction order rather than model order.
-   *
-   * @param dataSet - Model data points in chart coordinates.
-   */
-  public setDataSet( dataSet: Vector2[] ): void {
-    this.graphPlotAreaNode.setDataSet( dataSet );
+    graphData.currentPointProperty.link( currentPoint => {
+      this.graphPlotAreaNode.setCurrentPointMarker( currentPoint );
+    } );
   }
 }
