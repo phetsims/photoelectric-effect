@@ -7,11 +7,12 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import PreferencesModel from '../../joist/js/preferences/PreferencesModel.js';
 import Sim, { SimOptions } from '../../joist/js/Sim.js';
 import simLauncher from '../../joist/js/simLauncher.js';
 import Tandem from '../../tandem/js/Tandem.js';
 import PhotoelectricEffectMysteryMaterials from './common/model/PhotoelectricEffectMysteryMaterials.js';
-import PhotoelectricEffectPreferencesModel from './common/PhotoelectricEffectPreferencesModel.js';
+import PhotoelectricEffectPreferencesNode from './common/view/PhotoelectricEffectPreferencesNode.js';
 import EnergyScreen from './energy/EnergyScreen.js';
 import ExperimentScreen from './experiment/ExperimentScreen.js';
 import IntroScreen from './intro/IntroScreen.js';
@@ -24,7 +25,18 @@ simLauncher.launch( () => {
 
   const titleStringProperty = PhotoelectricEffectFluent[ 'photoelectric-effect' ].titleStringProperty;
 
-  const preferencesModel = new PhotoelectricEffectPreferencesModel();
+  const preferencesModel = new PreferencesModel( {
+    isDisposable: false,
+
+    // Preferences > Simulation
+    simulationOptions: {
+      customPreferences: [ {
+        createContent: tandem => new PhotoelectricEffectPreferencesNode( {
+          tandem: tandem
+        } )
+      } ]
+    }
+  } );
 
   const screens = [
     new IntroScreen(
