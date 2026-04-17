@@ -3,7 +3,7 @@
 /**
  * Model for the Intro screen of the photoelectric effect simulation.
  * Extends the shared photoelectric effect model with accessories like the
- * sink plate, ammeter, and battery.
+ * collector plate, ammeter, and battery.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)

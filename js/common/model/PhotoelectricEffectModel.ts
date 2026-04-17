@@ -26,7 +26,7 @@ import Material, { MaterialType } from './Material.js';
 import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon from './Photon.js';
 import PhotonSource from './PhotonSource.js';
-import Sink from './Sink.js';
+import Collector from './Collector.js';
 import Target from './Target.js';
 
 type SelfOptions = {
@@ -49,7 +49,7 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Collector plate that receives emitted electrons.
   // Used to determine current flow in the intro screen.
-  public readonly sink: Sink;
+  public readonly collector: Collector;
 
   // Battery that sets the potential difference between plates.
   // Controls the electric field that accelerates or decelerates electrons.
@@ -113,7 +113,7 @@ export default class PhotoelectricEffectModel implements TModel {
     } );
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
-    this.sink = new Sink( PhotoelectricEffectConstants.SINK_X, providedOptions.tandem.createTandem( 'sink' ) );
+    this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X, providedOptions.tandem.createTandem( 'collector' ) );
     this.battery = new Battery( providedOptions.tandem );
 
     this.currentProperty = new DerivedProperty(
@@ -158,11 +158,11 @@ export default class PhotoelectricEffectModel implements TModel {
   }
 
   /**
-   * Handles collisions between emitted electrons and the sink.
-   * Returns true when the electron is absorbed by the sink.
+   * Handles collisions between emitted electrons and the collector.
+   * Returns true when the electron is absorbed by the collector.
    */
-  protected handleElectronSinkCollision( electron: Electron ): boolean {
-    const absorbed = this.sink.isHitByElectron( electron );
+  protected handleElectronCollectorCollision( electron: Electron ): boolean {
+    const absorbed = this.collector.isHitByElectron( electron );
     if ( absorbed ) {
       console.log( 'HIT DETECTED!' );
     }
@@ -232,7 +232,7 @@ export default class PhotoelectricEffectModel implements TModel {
   }
 
   /**
-   * Advances electrons and handles collisions with the target or sink.
+   * Advances electrons and handles collisions with the target or collector.
    */
   private stepElectrons( dt: number ): void {
     const nextElectrons: Electron[] = [];
@@ -244,17 +244,17 @@ export default class PhotoelectricEffectModel implements TModel {
       electron.setAcceleration( acceleration );
       electron.step( dt );
 
-      // Check for target collisions; only electrons that avoid the target can reach the sink. If the electron
+      // Check for target collisions; only electrons that avoid the target can reach the collector. If the electron
       // hits the target, we do not need to handle it because it is going to be removed.
       const hitTarget = this.target.isHitByElectron( electron );
       if ( !hitTarget ) {
 
-        // Check whether the electron is absorbed by the sink (e.g. anode).
-        const absorbed = this.handleElectronSinkCollision( electron );
+        // Check whether the electron is absorbed by the collector (e.g. anode).
+        const absorbed = this.handleElectronCollectorCollision( electron );
 
-        // Cull electrons that leave the inter-plate region (bounced back past the target or past the sink).
+        // Cull electrons that leave the inter-plate region (bounced back past the target or past the collector).
         const inBounds = electron.position.x > PhotoelectricEffectConstants.TARGET_X &&
-                         electron.position.x < PhotoelectricEffectConstants.SINK_X;
+                         electron.position.x < PhotoelectricEffectConstants.COLLECTOR_X;
 
         // Keep only electrons that are neither absorbed nor out of bounds.
         if ( !absorbed && inBounds ) {

@@ -23,8 +23,8 @@ export default class PhotoelectricEffectConstants {
   // X position of the target plate center in model coordinates.
   public static readonly TARGET_X = 0;
 
-  // X position of the sink plate center in model coordinates.
-  public static readonly SINK_X = 100;
+  // X position of the collector plate center in model coordinates.
+  public static readonly COLLECTOR_X = 100;
 
   // Photon emission origin, positioned above and to the right of the target.
   public static readonly PHOTON_SOURCE_POSITION = new Vector2( 120, 80 );
@@ -49,7 +49,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly PHOTON_SPEED = 80;
 
   // Distance between plate centers, used for potential/field calculations.
-  public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.SINK_X - PhotoelectricEffectConstants.TARGET_X;
+  public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.COLLECTOR_X - PhotoelectricEffectConstants.TARGET_X;
 
   // Factor to scale analytically reported current from photons-per-second.
   public static readonly CURRENT_JIMMY_FACTOR = 0.015;
@@ -99,8 +99,8 @@ export default class PhotoelectricEffectConstants {
   // Bounds of the target plate for rendering purposes only.
   public static readonly TARGET_BOUNDS = new Bounds2( 0, 0, 5, 80 );
 
-  // Bounds of the sink plate for rendering purposes only.
-  public static readonly SINK_BOUNDS = new Bounds2( 0, 0, 5, 80 );
+  // Bounds of the collector plate for rendering purposes only.
+  public static readonly COLLECTOR_BOUNDS = new Bounds2( 0, 0, 5, 80 );
 
   // Width of the lamp opening which will emit our photons.
   public static readonly PHOTON_SOURCE_WIDTH = PHOTON_SOURCE_WIDTH;

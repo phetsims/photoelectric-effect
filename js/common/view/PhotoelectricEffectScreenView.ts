@@ -149,7 +149,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         new Text( PhotoelectricEffectFluent.debugLegend.photonsStringProperty, { fontSize: 12 } ),
         new Text( PhotoelectricEffectFluent.debugLegend.electronsStringProperty, { fontSize: 12 } ),
         new Text( PhotoelectricEffectFluent.debugLegend.targetStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.sinkStringProperty, { fontSize: 12 } )
+        new Text( PhotoelectricEffectFluent.debugLegend.collectorStringProperty, { fontSize: 12 } )
       ]
     } );
 
@@ -213,15 +213,15 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     // Debug visualization for collision bounds.
     const targetBounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
-    const sinkBounds = PhotoelectricEffectConstants.SINK_BOUNDS;
+    const collectorBounds = PhotoelectricEffectConstants.COLLECTOR_BOUNDS;
     const targetRectangle = this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' );
-    const sinkRectangle = this.createBoundsRectangle( sinkBounds, 'rgba(0,0,255,0.6)' );
+    const collectorRectangle = this.createBoundsRectangle( collectorBounds, 'rgba(0,0,255,0.6)' );
 
     this.addChild( targetRectangle );
-    this.addChild( sinkRectangle );
+    this.addChild( collectorRectangle );
 
     targetRectangle.rightCenter = this.modelViewTransform.modelToViewXY( this.model.target.x, 0 );
-    sinkRectangle.leftCenter = this.modelViewTransform.modelToViewXY( this.model.sink.x, 0 );
+    collectorRectangle.leftCenter = this.modelViewTransform.modelToViewXY( this.model.collector.x, 0 );
   }
 
   /**
