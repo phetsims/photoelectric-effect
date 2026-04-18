@@ -91,6 +91,9 @@ export default class PhotoelectricEffectConstants {
   // Acceleration scale from voltage to model units (model units per V*s^2).
   public static readonly ELECTRON_ACCELERATION_SCALE = 100.2865;
 
+  // Fixed time step for the step-forward button while paused, in seconds (one nominal animation frame).
+  public static readonly MANUAL_STEP_DT = 1 / 60;
+
   //--------------------------------------------------------------
   // VIEW CONSTANTS
   //--------------------------------------------------------------
