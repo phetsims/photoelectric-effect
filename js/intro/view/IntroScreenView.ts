@@ -30,9 +30,5 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     this.addChild( sceneRadioButtonGroup );
 
     sceneRadioButtonGroup.centerBottom = this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN );
-
-    model.sceneProperty.lazyLink( () => {
-      console.log( 'scene changed' );
-    } );
   }
 }
