@@ -178,7 +178,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           model.stepForwardInTime( PhotoelectricEffectConstants.MANUAL_STEP_DT );
         }
       },
-      centerBottom: this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
+
+      // TODO: clean up once layout is more settled in mockups.
+      centerBottom: this.layoutBounds.centerBottom.minusXY( -200, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
     } );
     this.addChild( playPauseStepButtonGroup );
 
