@@ -9,10 +9,16 @@
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Particle from './Particle.js';
 import { wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 
 export default class Photon extends Particle {
+
+  // Emitted photons should travel perpendicularly to the photon source's pointing direction.
+  // This vector will help define the line that each photon should travel on during it's lifecycle.
+  public static readonly TRAVEL_DIRECTION = new Vector2(
+    -PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.y, PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.x );
 
   /**
    * Creates a photon with initial kinematics and wavelength.

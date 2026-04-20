@@ -101,6 +101,10 @@ export default class Target {
     const energyAfterCollision = Material.energyAfterPhotonCollision( photonEnergy, workFunction );
 
     let electron: Electron | null = null;
+
+    // Electrons that do not exceed the minimum electron energy threshold are not emitted, to avoid large numbers of
+    // very low energy electrons hanging around the target. These low energy electrons do not have enough velocity
+    // to appear as though they are moving and therefore clutter the visual rendering.
     if ( energyAfterCollision > PhotoelectricEffectConstants.MINIMUM_ELECTRON_ENERGY ) {
       const speed = Electron.determineNewElectronSpeed( energyAfterCollision );
       let angle = 0;

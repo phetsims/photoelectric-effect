@@ -40,7 +40,6 @@ addToMapIfDefined( 'experiment_graph_energyAxisLabel', 'experiment.graph.energyA
 addToMapIfDefined( 'experiment_graph_infoDialogTitle', 'experiment.graph.infoDialogTitleStringProperty' );
 addToMapIfDefined( 'experiment_graph_infoDialogPlaceholder', 'experiment.graph.infoDialogPlaceholderStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsDialogTitle', 'experiment.graph.snapshotsDialogTitleStringProperty' );
-addToMapIfDefined( 'experiment_graph_snapshotSaved', 'experiment.graph.snapshotSavedStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleName', 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
@@ -54,7 +53,7 @@ addToMapIfDefined( 'debugLegend_title', 'debugLegend.titleStringProperty' );
 addToMapIfDefined( 'debugLegend_photons', 'debugLegend.photonsStringProperty' );
 addToMapIfDefined( 'debugLegend_electrons', 'debugLegend.electronsStringProperty' );
 addToMapIfDefined( 'debugLegend_target', 'debugLegend.targetStringProperty' );
-addToMapIfDefined( 'debugLegend_sink', 'debugLegend.sinkStringProperty' );
+addToMapIfDefined( 'debugLegend_collector', 'debugLegend.collectorStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialLabel', 'preferences.mysteryMaterialLabelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialDescription', 'preferences.mysteryMaterialDescriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionLabel', 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' );
@@ -99,7 +98,6 @@ const PhotoelectricEffectFluent = {
       infoDialogTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.infoDialogTitleStringProperty' ),
       infoDialogPlaceholderStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.infoDialogPlaceholderStringProperty' ),
       snapshotsDialogTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsDialogTitleStringProperty' ),
-      snapshotSavedStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotSavedStringProperty' ),
       snapshotsGalleryButtonAccessibleNameStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' ),
       snapshotsGalleryButtonAccessibleHelpTextStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' )
     }
@@ -131,7 +129,7 @@ const PhotoelectricEffectFluent = {
     photonsStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.photonsStringProperty' ),
     electronsStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.electronsStringProperty' ),
     targetStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.targetStringProperty' ),
-    sinkStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.sinkStringProperty' )
+    collectorStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.collectorStringProperty' )
   },
   preferences: {
     _comment_0: new FluentComment( {"comment":"Preferences PLACEHOLDERS","associatedKey":"preferences.mysteryMaterialLabel"} ),
