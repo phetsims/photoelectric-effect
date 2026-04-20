@@ -26,7 +26,7 @@ export default class FrequencyEnergyGraphData extends GraphData {
     );
 
     // Map the frequency to the plotted energy, returning an x,y data point.
-    const createFrequencyEnergyPointAtFrequency = ( frequency: number ): Vector2 => {
+    const createDataPointAtFrequency = ( frequency: number ): Vector2 => {
       const wavelength = frequencyToWavelength( frequency );
       const energy = Math.max( 0, wavelengthToEnergy( wavelength ) - model.target.workFunctionProperty.value );
       return new Vector2( frequency, energy );
@@ -34,11 +34,12 @@ export default class FrequencyEnergyGraphData extends GraphData {
 
     super(
       model.photonSource.wavelengthProperty,
-      createFrequencyEnergyPointAtFrequency,
+      createDataPointAtFrequency,
       [
-        model.photonSource.intensityProperty,
-        model.voltageProperty,
         model.target.materialProperty,
+
+        // TODO: Should the work function clear the frequency/energy data? Its efectively like changing the
+        //   material, so I wasn't sure.
         model.target.workFunctionProperty
       ],
       model.resetEmitter,

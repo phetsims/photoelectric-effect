@@ -13,9 +13,7 @@ import Material from '../common/model/Material.js';
 import PhotoelectricEffectColors from '../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../PhotoelectricEffectFluent.js';
 import IntroModel from './model/IntroModel.js';
-
-// TODO: Replace with a new IntroScreenView.
-import PhotoelectricEffectScreenView from '../common/view/PhotoelectricEffectScreenView.js';
+import IntroScreenView from './view/IntroScreenView.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreen here
@@ -23,7 +21,7 @@ type SelfOptions = {
 
 type PhotoelectricEffectScreenOptions = SelfOptions & ScreenOptions;
 
-export default class IntroScreen extends Screen<IntroModel, PhotoelectricEffectScreenView> {
+export default class IntroScreen extends Screen<IntroModel, IntroScreenView> {
 
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectScreenOptions ) {
 
@@ -38,7 +36,7 @@ export default class IntroScreen extends Screen<IntroModel, PhotoelectricEffectS
 
     super(
       () => new IntroModel( mysteryMaterials, { tandem: options.tandem.createTandem( 'model' ) } ),
-      model => new PhotoelectricEffectScreenView( model, { tandem: options.tandem.createTandem( 'view' ) } ),
+      model => new IntroScreenView( model, { tandem: options.tandem.createTandem( 'view' ) } ),
       options
     );
   }

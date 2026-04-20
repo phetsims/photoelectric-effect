@@ -51,6 +51,9 @@
       "snapshotsDialogTitle": {
         "value": "Saved snapshots"
       },
+      "snapshotSaved": {
+        "value": "Saved!"
+      },
       "snapshotsGalleryButtonAccessibleName": {
         "value": "View saved snapshots"
       },
@@ -98,8 +101,8 @@
   "debugLegend.target": {
     "value": "Red outline = target"
   },
-  "debugLegend.sink": {
-    "value": "Blue outline = sink"
+  "debugLegend.collector": {
+    "value": "Blue outline = collector"
   },
   "preferences.mysteryMaterialLabel": {
     "value": "Mystery Material"

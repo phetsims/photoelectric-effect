@@ -51,6 +51,15 @@ type SelfOptions = {
 
 export type GraphDataOptions = SelfOptions;
 
+type BinData = {
+
+  // Deterministic data point for this chart-x bin center.
+  dataPoint: Vector2;
+
+  // Whether this bin has been revealed by sweeping the driving control.
+  revealed: boolean;
+};
+
 export default class GraphData {
 
   // Upper bound on snapshots; captureSnapshot asserts the stored count stays below this before adding another.
@@ -65,11 +74,8 @@ export default class GraphData {
   // Number of bins = floor( span / xResolution ) + 1.
   private readonly binCount: number;
 
-  // Deterministic data point for each chart-x bin center.
-  private readonly deterministicBins: Vector2[];
-
-  // Whether each bin has been revealed by sweeping the driving control.
-  private readonly revealedBins: boolean[];
+  // Deterministic data and reveal state for each chart-x bin center.
+  private readonly bins: BinData[];
 
   // Most recent driving bin index, used to reveal all bins between previous and current positions.
   private previousDrivingBinIndex: number | null = null;
@@ -127,12 +133,17 @@ export default class GraphData {
     affirm( span >= 0, 'xDomain must be a valid range' );
     this.binCount = Math.max( 1, Math.floor( span / this.xResolution ) + 1 );
 
-    this.deterministicBins = _.times( this.binCount, index => new Vector2( this.binIndexToChartX( index ), 0 ) );
-    this.revealedBins = _.times( this.binCount, () => false );
-    this.recomputeDeterministicBins( createDataPointAtChartX );
-
     const initialChartX = options.drivingValueToChartX( drivingProperty.value );
     this.currentPointProperty = new Property( createDataPointAtChartX( initialChartX ) );
+
+    this.bins = _.times( this.binCount, index => ( {
+      dataPoint: new Vector2( this.binIndexToChartX( index ), 0 ),
+      revealed: false
+    } ) );
+    this.recomputeDeterministicBinsAndCurrentPoint(
+      createDataPointAtChartX,
+      options.drivingValueToChartX( drivingProperty.value )
+    );
 
     drivingProperty.lazyLink( ( drivingValue: number ) => {
       const chartX = options.drivingValueToChartX( drivingValue );
@@ -148,7 +159,11 @@ export default class GraphData {
 
       // Deterministic bins cache y-values for one physical configuration.
       // Any clear dependency change means the curve definition changed.
-      this.recomputeDeterministicBins( createDataPointAtChartX );
+      this.recomputeDeterministicBinsAndCurrentPoint(
+        createDataPointAtChartX,
+        options.drivingValueToChartX( drivingProperty.value )
+      );
+
       this.clear();
     } );
 
@@ -163,9 +178,9 @@ export default class GraphData {
    */
   public getDataPoints(): ReadonlyArray<Vector2> {
     const dataPoints: Vector2[] = [];
-    this.revealedBins.forEach( ( isRevealed, index ) => {
-      if ( isRevealed ) {
-        dataPoints.push( this.deterministicBins[ index ] );
+    this.bins.forEach( bin => {
+      if ( bin.revealed ) {
+        dataPoints.push( bin.dataPoint );
       }
     } );
     return dataPoints;
@@ -184,8 +199,8 @@ export default class GraphData {
    */
   public clear(): void {
     this.previousDrivingBinIndex = null;
-    for ( let i = 0; i < this.revealedBins.length; i++ ) {
-      this.revealedBins[ i ] = false;
+    for ( let i = 0; i < this.bins.length; i++ ) {
+      this.bins[ i ].revealed = false;
     }
     this.dataChangedEmitter.emit();
   }
@@ -236,12 +251,19 @@ export default class GraphData {
   /**
    * Recomputes deterministic bin y-values for the current model state.
    */
-  private recomputeDeterministicBins( createDataPointAtChartX: ( chartX: number ) => Vector2 ): void {
+  private recomputeDeterministicBinsAndCurrentPoint(
+    createDataPointAtChartX: ( chartX: number ) => Vector2,
+    drivingValueInChartX: number
+  ): void {
     _.times( this.binCount, i => {
       const canonicalX = this.binIndexToChartX( i );
       const point = createDataPointAtChartX( canonicalX );
-      this.deterministicBins[ i ] = new Vector2( canonicalX, point.y );
+      this.bins[ i ].dataPoint = new Vector2( canonicalX, point.y );
     } );
+
+    // When a dependency changes that should clear the plot, it changed the physical state for the system,
+    // so recompute the current point.
+    this.currentPointProperty.value = createDataPointAtChartX( drivingValueInChartX );
   }
 
   /**
@@ -261,11 +283,9 @@ export default class GraphData {
   }
 
   /**
-   * Reveals one bin if not already revealed.
+   * Reveals one bin.
    */
   private revealSingleBin( binIndex: number ): void {
-    if ( !this.revealedBins[ binIndex ] ) {
-      this.revealedBins[ binIndex ] = true;
-    }
+    this.bins[ binIndex ].revealed = true;
   }
 }

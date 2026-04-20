@@ -33,6 +33,7 @@ import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
 import GraphInfoDialog from './GraphInfoDialog.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
+import GraphSnapshotSavedMessageNode from './GraphSnapshotSavedMessageNode.js';
 import GraphSnapshotsDialog from './GraphSnapshotsDialog.js';
 
 // Horizontal spacing between the chart content and the right-side button column.
@@ -51,6 +52,9 @@ const GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET = 6;
 
 // Padding from the chart border for the snapshot count readout.
 const SNAPSHOT_READOUT_MARGIN = 4;
+
+// Padding from the chart border for the "Saved!" message.
+const SNAPSHOT_SAVED_MESSAGE_MARGIN = 4;
 
 type SelfOptions = {
 
@@ -100,17 +104,24 @@ export default class GraphAssemblyNode extends Node {
       { font: new PhetFont( { size: 18 } ) }
     );
 
+    const snapshotSavedMessageNode = new GraphSnapshotSavedMessageNode();
+
     const plotContentNode = new Node( {
       children: [
         this.graphPlotAreaNode,
+        snapshotSavedMessageNode,
         snapshotCountReadoutText
       ]
     } );
 
-    // A manual constraint keeps the readout text in the same place, as the string changes.
+    // Manual constraints keep the labels in the same place as strings change.
     ManualConstraint.create( plotContentNode, [ snapshotCountReadoutText, plotRectangle ], ( readout, rect ) => {
       readout.right = rect.right - SNAPSHOT_READOUT_MARGIN;
       readout.top = rect.top + SNAPSHOT_READOUT_MARGIN;
+    } );
+    ManualConstraint.create( plotContentNode, [ snapshotSavedMessageNode, plotRectangle ], ( savedMessageNode, rect ) => {
+      savedMessageNode.centerX = rect.centerX;
+      savedMessageNode.top = rect.top + SNAPSHOT_SAVED_MESSAGE_MARGIN;
     } );
 
     const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
@@ -201,6 +212,15 @@ export default class GraphAssemblyNode extends Node {
 
     this.expandedProperty.link( expanded => {
       contentRow.visible = expanded;
+    } );
+
+    // When we get a new snapshot, indicate that data was saved.
+    let previousSnapshotsCount = graphData.snapshotsCountProperty.value;
+    graphData.snapshotsCountProperty.link( snapshotsCount => {
+      if ( snapshotsCount > previousSnapshotsCount ) {
+        snapshotSavedMessageNode.showMessage();
+      }
+      previousSnapshotsCount = snapshotsCount;
     } );
 
     const syncLinePlot = () => {
