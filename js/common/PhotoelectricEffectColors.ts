@@ -35,4 +35,8 @@ export default class PhotoelectricEffectColors {
   public static readonly electronColorProperty = new ProfileColorProperty( photoelectricEffect, 'electronColor', {
     default: 'cyan'
   } );
+
+  public static readonly iconStrokeColorProperty = new ProfileColorProperty( photoelectricEffect, 'iconStroke', {
+    default: 'black'
+  } );
 }

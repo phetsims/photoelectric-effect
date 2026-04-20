@@ -34,7 +34,10 @@ export default class SceneRadioButtonGroup extends RectangularRadioButtonGroup<I
         // To create square shaped buttons.
         minWidth: 64,
         minHeight: 64
-      }
+      },
+
+      // Component should exist for life of simulation.
+      isDisposable: false
     }, providedOptions );
 
     const items: RectangularRadioButtonGroupItem<IntroScene>[] = [
@@ -70,9 +73,8 @@ export default class SceneRadioButtonGroup extends RectangularRadioButtonGroup<I
       .lineTo( 20.53, 38.22 );
 
     return new Path( shape, {
-      stroke: 'black',
-      lineWidth: 3,
-      fill: null
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: 3
     } );
   }
 
@@ -95,9 +97,8 @@ export default class SceneRadioButtonGroup extends RectangularRadioButtonGroup<I
       .arc( 37.41, 6.04, 5.04, 0, Math.PI * 2, false );
 
     return new Path( shape, {
-      stroke: 'black',
-      lineWidth: 2,
-      fill: null
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: 2
     } );
   }
 }
