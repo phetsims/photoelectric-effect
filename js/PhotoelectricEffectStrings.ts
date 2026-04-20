@@ -64,7 +64,7 @@ type StringsType = {
     'photonsStringProperty': LocalizedStringProperty;
     'electronsStringProperty': LocalizedStringProperty;
     'targetStringProperty': LocalizedStringProperty;
-    'sinkStringProperty': LocalizedStringProperty;
+    'collectorStringProperty': LocalizedStringProperty;
   };
   'preferences': {
     'mysteryMaterialLabelStringProperty': LocalizedStringProperty;

@@ -15,6 +15,7 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
+import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
@@ -125,7 +126,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         new Text( PhotoelectricEffectFluent.debugLegend.photonsStringProperty, { fontSize: 12 } ),
         new Text( PhotoelectricEffectFluent.debugLegend.electronsStringProperty, { fontSize: 12 } ),
         new Text( PhotoelectricEffectFluent.debugLegend.targetStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.sinkStringProperty, { fontSize: 12 } )
+        new Text( PhotoelectricEffectFluent.debugLegend.collectorStringProperty, { fontSize: 12 } )
       ]
     } );
 
@@ -170,21 +171,59 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     } );
     this.addChild( resetAllButton );
 
+    const playPauseStepButtonGroup = new PlayPauseStepButtonGroup( model.isPlayingProperty, {
+      tandem: options.tandem.createTandem( 'playPauseStepButtonGroup' ),
+      stepForwardButtonOptions: {
+        listener: () => {
+          model.stepForwardInTime( PhotoelectricEffectConstants.MANUAL_STEP_DT );
+        }
+      },
+      centerBottom: this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
+    } );
+    this.addChild( playPauseStepButtonGroup );
+
+    /**
+     * Create canvas that renders the particles.
+     */
+    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
+      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
+      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
+      PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
+
+    // Placeholder lamp rectangle aligned with the photon source line.
+    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
+
+    // Negate the model angle to convert to view space (the MVT inverts the y-axis).
+    const lampAngle = -PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE;
+    const lampFaceLength = PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH;
+    const lampBodyDepth = 20;
+    const lampRectangle = new Rectangle( -lampBodyDepth / 2, -lampFaceLength / 2, lampBodyDepth, lampFaceLength, {
+      fill: 'gray',
+      stroke: 'black',
+      rotation: lampAngle,
+
+      // TODO: The lamp needs to end at the beam start and currently it's centered at the beam start... awk.
+      centerX: beamStartCenter.x,
+      centerY: beamStartCenter.y
+    } );
+    this.addChild( lampRectangle );
+
     // Canvas that renders photons and electrons using the same model-view transform as the play area.
-    this.particleCanvasNode = new ParticleCanvasNode( model, this.modelViewTransform, { canvasBounds: this.layoutBounds } );
+    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, this.modelViewTransform,
+      { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
 
     // Debug visualization for collision bounds.
     const targetBounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
-    const sinkBounds = PhotoelectricEffectConstants.SINK_BOUNDS;
+    const collectorBounds = PhotoelectricEffectConstants.COLLECTOR_BOUNDS;
     const targetRectangle = this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' );
-    const sinkRectangle = this.createBoundsRectangle( sinkBounds, 'rgba(0,0,255,0.6)' );
+    const collectorRectangle = this.createBoundsRectangle( collectorBounds, 'rgba(0,0,255,0.6)' );
 
     this.addChild( targetRectangle );
-    this.addChild( sinkRectangle );
+    this.addChild( collectorRectangle );
 
     targetRectangle.rightCenter = this.modelViewTransform.modelToViewXY( this.model.target.x, 0 );
-    sinkRectangle.leftCenter = this.modelViewTransform.modelToViewXY( this.model.sink.x, 0 );
+    collectorRectangle.leftCenter = this.modelViewTransform.modelToViewXY( this.model.collector.x, 0 );
   }
 
   /**
