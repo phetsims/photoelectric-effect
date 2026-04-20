@@ -1,8 +1,8 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Owns deterministic binned chart samples for one experiment graph, and wires axon listeners so reveal state updates
- * when a driving NumberProperty changes, clear when any dependency changes, and clear on model reset.
+ * Owns deterministic binned chart samples for one experiment graph, and wires axon listeners to reveal state updates
+ * when a driving NumberProperty changes. Clears when any dependency changes, and clear on model reset.
  *
  * Samples are stored in fixed x-axis bins derived from xDomain (defaults to drivingProperty.range) and
  * xResolution so memory stays bounded while sweeping the control. Bin y-values are deterministic for the current
@@ -30,6 +30,7 @@ import Range from '../../../../dot/js/Range.js';
 import { clamp } from '../../../../dot/js/util/clamp.js';
 import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
@@ -69,9 +70,6 @@ export default class GraphData {
 
   // Whether each bin has been revealed by sweeping the driving control.
   private readonly revealedBins: boolean[];
-
-  // Count of revealed bins for fast clear() checks.
-  private revealedBinCount = 0;
 
   // Most recent driving bin index, used to reveal all bins between previous and current positions.
   private previousDrivingBinIndex: number | null = null;
@@ -120,47 +118,37 @@ export default class GraphData {
       drivingValueToChartX: drivingValue => drivingValue
     }, providedOptions );
 
-    assert && assert( options.xResolution > 0, 'xResolution must be positive' );
+    affirm( options.xResolution > 0, 'xResolution must be positive' );
 
     this.xResolution = options.xResolution;
     this.xDomain = options.xDomain;
 
     const span = this.xDomain.getLength();
-    assert && assert( span >= 0, 'xDomain must be a valid range' );
+    affirm( span >= 0, 'xDomain must be a valid range' );
     this.binCount = Math.max( 1, Math.floor( span / this.xResolution ) + 1 );
-
-    const initialChartX = options.drivingValueToChartX( drivingProperty.value );
-    this.currentPointProperty = new Property( createDataPointAtChartX( initialChartX ) );
 
     this.deterministicBins = _.times( this.binCount, index => new Vector2( this.binIndexToChartX( index ), 0 ) );
     this.revealedBins = _.times( this.binCount, () => false );
-    this.recomputeDeterministicBinsAndCurrentPoint(
-      createDataPointAtChartX,
-      options.drivingValueToChartX( drivingProperty.value )
-    );
+    this.recomputeDeterministicBins( createDataPointAtChartX );
+
+    const initialChartX = options.drivingValueToChartX( drivingProperty.value );
+    this.currentPointProperty = new Property( createDataPointAtChartX( initialChartX ) );
 
     drivingProperty.lazyLink( ( drivingValue: number ) => {
       const chartX = options.drivingValueToChartX( drivingValue );
       this.currentPointProperty.value = createDataPointAtChartX( chartX );
 
       const currentBinIndex = this.chartXToBinIndex( chartX );
-      const revealChanged = this.revealBinRange( this.previousDrivingBinIndex, currentBinIndex );
+      this.revealBinRange( this.previousDrivingBinIndex, currentBinIndex );
       this.previousDrivingBinIndex = currentBinIndex;
-
-      if ( revealChanged ) {
-        this.dataChangedEmitter.emit();
-      }
+      this.dataChangedEmitter.emit();
     } );
 
     Multilink.lazyMultilinkAny( clearDependencies, () => {
 
       // Deterministic bins cache y-values for one physical configuration.
       // Any clear dependency change means the curve definition changed.
-      this.recomputeDeterministicBinsAndCurrentPoint(
-        createDataPointAtChartX,
-        options.drivingValueToChartX( drivingProperty.value )
-      );
-
+      this.recomputeDeterministicBins( createDataPointAtChartX );
       this.clear();
     } );
 
@@ -196,13 +184,10 @@ export default class GraphData {
    */
   public clear(): void {
     this.previousDrivingBinIndex = null;
-    if ( this.revealedBinCount > 0 ) {
-      for ( let i = 0; i < this.revealedBins.length; i++ ) {
-        this.revealedBins[ i ] = false;
-      }
-      this.revealedBinCount = 0;
-      this.dataChangedEmitter.emit();
+    for ( let i = 0; i < this.revealedBins.length; i++ ) {
+      this.revealedBins[ i ] = false;
     }
+    this.dataChangedEmitter.emit();
   }
 
   /**
@@ -210,7 +195,7 @@ export default class GraphData {
    * are already stored (clear snapshots before capturing more).
    */
   public captureSnapshot(): void {
-    assert && assert( this.snapshots.length < GraphData.MAX_SNAPSHOTS, 'snapshot storage is full' );
+    affirm( this.snapshots.length < GraphData.MAX_SNAPSHOTS, 'snapshot storage is full' );
     const snapshot = this.getDataPoints().map( point => new Vector2( point.x, point.y ) );
     this.snapshots.push( snapshot );
     this.syncSnapshotsCountProperty();
@@ -251,53 +236,36 @@ export default class GraphData {
   /**
    * Recomputes deterministic bin y-values for the current model state.
    */
-  private recomputeDeterministicBinsAndCurrentPoint(
-    createDataPointAtChartX: ( chartX: number ) => Vector2,
-    drivingValueInChartX: number
-  ): void {
+  private recomputeDeterministicBins( createDataPointAtChartX: ( chartX: number ) => Vector2 ): void {
     _.times( this.binCount, i => {
       const canonicalX = this.binIndexToChartX( i );
       const point = createDataPointAtChartX( canonicalX );
       this.deterministicBins[ i ] = new Vector2( canonicalX, point.y );
     } );
-
-    // When a dependency changes that should clear the plot, it changed the physical state for the system,
-    // so recompute the current point.
-    this.currentPointProperty.value = createDataPointAtChartX( drivingValueInChartX );
   }
 
   /**
    * Reveals one bin or a contiguous range between previous and current bin indices.
    */
-  private revealBinRange( previousBinIndex: number | null, currentBinIndex: number ): boolean {
-    let changed = false;
-
+  private revealBinRange( previousBinIndex: number | null, currentBinIndex: number ): void {
     if ( previousBinIndex === null ) {
-      changed = this.revealSingleBin( currentBinIndex );
+      this.revealSingleBin( currentBinIndex );
     }
     else {
       const startIndex = Math.min( previousBinIndex, currentBinIndex );
       const endIndex = Math.max( previousBinIndex, currentBinIndex );
       for ( let i = startIndex; i <= endIndex; i++ ) {
-        changed = this.revealSingleBin( i ) || changed;
+        this.revealSingleBin( i );
       }
     }
-
-    return changed;
   }
 
   /**
    * Reveals one bin if not already revealed.
    */
-  private revealSingleBin( binIndex: number ): boolean {
-    let changed = false;
-
+  private revealSingleBin( binIndex: number ): void {
     if ( !this.revealedBins[ binIndex ] ) {
       this.revealedBins[ binIndex ] = true;
-      this.revealedBinCount++;
-      changed = true;
     }
-
-    return changed;
   }
 }
