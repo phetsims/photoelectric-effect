@@ -142,6 +142,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
       new Text( PhotoelectricEffectFluent.showElectronsStringProperty, {
+        font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: 170
       } ),
       {
@@ -152,6 +153,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const highestEnergyOnlyCheckbox = new Checkbox(
       model.showHighestEnergyOnlyProperty,
       new Text( PhotoelectricEffectFluent.highestEnergyOnlyStringProperty, {
+        font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: 170
       } ),
       {
