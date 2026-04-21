@@ -32,14 +32,15 @@ experiment:
 showElectrons: 'Show Electrons'
 highestEnergyOnly: 'Highest Energy Only'
 
+spectrumTrack.uvLabel: 'UV'
+spectrumTrack.irLabel: 'IR'
+
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Intensity'
 intensity.percentReadoutPattern: '{{value}} %'
 wavelength.label: 'Wavelength (nm)'
 wavelength.valueReadoutPattern: '{{value}} nm'
-spectrumTrack.uvLabel: 'UV'
-spectrumTrack.irLabel: 'IR'
 voltage.label: 'Voltage (V)'
 current.label: 'Current (A)'
 

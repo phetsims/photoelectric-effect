@@ -41,6 +41,10 @@ type StringsType = {
   };
   'showElectronsStringProperty': LocalizedStringProperty;
   'highestEnergyOnlyStringProperty': LocalizedStringProperty;
+  'spectrumTrack': {
+    'uvLabelStringProperty': LocalizedStringProperty;
+    'irLabelStringProperty': LocalizedStringProperty;
+  };
   'workFunction': {
     'labelStringProperty': LocalizedStringProperty;
   };
@@ -51,10 +55,6 @@ type StringsType = {
   'wavelength': {
     'labelStringProperty': LocalizedStringProperty;
     'valueReadoutPatternStringProperty': LocalizedStringProperty;
-  };
-  'spectrumTrack': {
-    'uvLabelStringProperty': LocalizedStringProperty;
-    'irLabelStringProperty': LocalizedStringProperty;
   };
   'voltage': {
     'labelStringProperty': LocalizedStringProperty;
