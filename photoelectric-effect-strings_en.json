@@ -68,12 +68,6 @@
   "highestEnergyOnly": {
     "value": "Highest Energy Only"
   },
-  "spectrumTrack.uvLabel": {
-    "value": "UV"
-  },
-  "spectrumTrack.irLabel": {
-    "value": "IR"
-  },
   "workFunction.label": {
     "value": "Work Function (eV)"
   },
@@ -88,6 +82,12 @@
   },
   "wavelength.valueReadoutPattern": {
     "value": "{{value}} nm"
+  },
+  "spectrumTrack.uvLabel": {
+    "value": "UV"
+  },
+  "spectrumTrack.irLabel": {
+    "value": "IR"
   },
   "voltage.label": {
     "value": "Voltage (V)"

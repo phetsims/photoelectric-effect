@@ -115,6 +115,15 @@ export default class PhotoelectricEffectConstants {
   // Maximum text width used by dialogs for readable line lengths.
   public static readonly DIALOG_MAX_CONTENT_WIDTH = 480;
 
+  // Title font shared by dialogs.
+  public static readonly DIALOG_TITLE_FONT = new PhetFont( {
+    size: 18,
+    weight: 'bold'
+  } );
+
+  // Body text font shared by dialogs.
+  public static readonly DIALOG_CONTENT_FONT = new PhetFont( 14 );
+
   // Common horizontal and vertical spacing used by dialogs.
   public static readonly DIALOG_SPACING = 30;
 
@@ -129,18 +138,15 @@ export default class PhotoelectricEffectConstants {
   public static readonly VIEW_ORIGIN_X = 400;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 
-  //------------------------------------------------------------
-  // Fonts
-  //------------------------------------------------------------
-  // Title font shared by dialogs.
-  public static readonly DIALOG_TITLE_FONT = new PhetFont( { size: 18, weight: 'bold' } );
-
-  // Font for subsection titles in control panels (e.g. photon source intensity label).
-  public static readonly PANEL_TITLE_FONT = new PhetFont( 18 );
-
-  // Fonts for general screen content
-  public static readonly CONTENT_FONT = new PhetFont( 16 );
-
   // Font for numeric readouts (NumberDisplay) and experiment graph axis titles (shared 12 pt instance).
   public static readonly READOUT_FONT = new PhetFont( 12 );
+
+  // Font for subsection titles in control panels (e.g. photon source intensity label).
+  public static readonly PANEL_TITLE_FONT = new PhetFont( 16 );
+
+  // Font for UV / IR labels on the wavelength spectrum track.
+  public static readonly SPECTRUM_BAND_LABEL_FONT = new PhetFont( 11 );
+
+  // Font for numeric tick labels on experiment graphs.
+  public static readonly EXPERIMENT_GRAPH_TICK_LABEL_FONT = new PhetFont( 10 );
 }

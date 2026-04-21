@@ -9,8 +9,8 @@
 
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
-import { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
@@ -19,10 +19,7 @@ import WavelengthSliderWithReadout from './WavelengthSliderWithReadout.js';
 
 type SelfOptions = EmptySelfOptions;
 
-type IntensityAndWavelengthControlOptions =
-  SelfOptions &
-  NodeBoundsBasedTranslationOptions &
-  PickRequired<PanelOptions, 'tandem'>;
+type IntensityAndWavelengthControlOptions = SelfOptions & PickRequired<StrictOmit<PanelOptions, 'isDisposable'>, 'tandem'>;
 
 export default class IntensityAndWavelengthControl extends Panel {
 

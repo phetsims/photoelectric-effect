@@ -53,13 +53,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     super( options );
     this.model = model;
 
-    // model-view transform places the model x origin at the target plate, and a view origin at an x-offset with
-    // y centered in the layout bounds
-    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
-      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
-      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
-      PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
-
     // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
     // https://github.com/phetsims/photoelectric-effect/issues/5
     const comboBoxItems = model.target.materials.map( ( material, i ) => {
@@ -70,8 +63,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     } );
 
     const materialsComboBox = new ComboBox( model.target.materialProperty, comboBoxItems, this, {
-      tandem: options.tandem.createTandem( 'materialsComboBox' ),
-      leftCenter: this.layoutBounds.leftCenter.plusXY( PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN, 0 )
+      tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
     const workFunctionProperty = new DynamicProperty<number, number, Material>( model.target.materialProperty, {
@@ -96,12 +88,21 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     );
 
     const photonSourcePanel = new IntensityAndWavelengthControl( model.photonSource, {
-      rightTop: new Vector2(
-        this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x,
-        this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      ),
       tandem: options.tandem.createTandem( 'photonSourcePanel' )
     } );
+
+    const voltageControl = new NumberControl(
+      PhotoelectricEffectFluent.voltage.labelStringProperty,
+      model.voltageProperty,
+      new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
+      {
+        delta: 0.1,
+        numberDisplayOptions: {
+          decimalPlaces: 1
+        },
+        tandem: options.tandem.createTandem( 'voltageControl' )
+      }
+    );
 
     const currentDisplay = new NumberDisplay(
       model.currentProperty,
@@ -118,31 +119,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       children: [
         new Text( PhotoelectricEffectFluent.current.labelStringProperty ),
         currentDisplay
-      ],
-      centerTop: photonSourcePanel.centerBottom.plusXY(
-        0,
-        PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      )
+      ]
     } );
-
-    const voltageControl = new NumberControl(
-      PhotoelectricEffectFluent.voltage.labelStringProperty,
-      model.voltageProperty,
-      new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
-          decimalPlaces: 1
-        },
-        leftBottom: materialsComboBox.leftTop,
-        tandem: options.tandem.createTandem( 'voltageControl' )
-      }
-    );
 
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
       new Text( PhotoelectricEffectFluent.showElectronsStringProperty, {
-        font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: 170
       } ),
       {
@@ -153,7 +135,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const highestEnergyOnlyCheckbox = new Checkbox(
       model.showHighestEnergyOnlyProperty,
       new Text( PhotoelectricEffectFluent.highestEnergyOnlyStringProperty, {
-        font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: 170
       } ),
       {
@@ -171,11 +152,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       children: [
         showElectronsCheckbox,
         highestEnergyOnlyCheckbox
-      ],
-      leftBottom: this.layoutBounds.leftBottom.plusXY(
-        PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-        -PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      )
+      ]
     } );
 
     // When electrons become invisible, the "highest energy only" is not relevant and becomes unavailable.
@@ -187,12 +164,35 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     } );
 
-    this.addChild( materialsComboBox );
-    this.addChild( workFunctionControl );
-    this.addChild( currentReadout );
-    this.addChild( this.electronVisibilityControls );
+    const debugControlsVBox = new VBox( {
+      spacing: 15,
+      align: 'left',
+      excludeInvisible: true,
+      children: [
+        materialsComboBox,
+        workFunctionControl,
+        voltageControl,
+        currentReadout,
+        this.electronVisibilityControls
+      ]
+    } );
+
+    /**
+     * Shared transform for model coordinates to this ScreenView (same as particle canvas and target overlay).
+     */
+    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
+      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
+      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
+      PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
+
+    // Right-align the photon control with the target plate's x in view space (targetRectangle uses the same anchor).
+    photonSourcePanel.right = this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x;
+    photonSourcePanel.top = this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
     this.addChild( photonSourcePanel );
-    this.addChild( voltageControl );
+
+    debugControlsVBox.left = this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
+    debugControlsVBox.bottom = this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
+    this.addChild( debugControlsVBox );
 
     const resetAllButton = new ResetAllButton( {
       listener: () => {
@@ -217,6 +217,14 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       centerBottom: this.layoutBounds.centerBottom.minusXY( -200, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
     } );
     this.addChild( playPauseStepButtonGroup );
+
+    /**
+     * Create canvas that renders the particles.
+     */
+    this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
+      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
+      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
+      PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
     // Placeholder lamp rectangle aligned with the photon source line.
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
