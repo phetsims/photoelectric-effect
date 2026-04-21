@@ -45,11 +45,11 @@ addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleName', 'exp
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' );
 addToMapIfDefined( 'showElectrons', 'showElectronsStringProperty' );
 addToMapIfDefined( 'highestEnergyOnly', 'highestEnergyOnlyStringProperty' );
+addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
+addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
-addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
-addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialLabel', 'preferences.mysteryMaterialLabelStringProperty' );
@@ -103,6 +103,10 @@ const PhotoelectricEffectFluent = {
   },
   showElectronsStringProperty: _.get( PhotoelectricEffectStrings, 'showElectronsStringProperty' ),
   highestEnergyOnlyStringProperty: _.get( PhotoelectricEffectStrings, 'highestEnergyOnlyStringProperty' ),
+  spectrumTrack: {
+    uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
+    irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )
+  },
   workFunction: {
     _comment_0: new FluentComment( {"comment":"FOR DEBUGGING","associatedKey":"workFunction.label"} ),
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'workFunction.labelStringProperty' )
@@ -114,10 +118,6 @@ const PhotoelectricEffectFluent = {
   wavelength: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' ),
     valueReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.valueReadoutPatternStringProperty' )
-  },
-  spectrumTrack: {
-    uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
-    irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )
   },
   voltage: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.labelStringProperty' )
