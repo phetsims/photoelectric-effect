@@ -11,6 +11,7 @@ import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import CanvasNode, { CanvasNodeOptions } from '../../../../scenery/js/nodes/CanvasNode.js';
 import Color from '../../../../scenery/js/util/Color.js';
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Electron from '../model/Electron.js';
 import Particle from '../model/Particle.js';
 import Photon from '../model/Photon.js';
@@ -28,6 +29,7 @@ export default class ParticleCanvasNode extends CanvasNode {
   public constructor(
     private readonly photons: Photon[],
     private readonly electrons: Electron[],
+    private readonly showElectronsProperty: TReadOnlyProperty<boolean>,
     private readonly modelViewTransform: ModelViewTransform2,
     providedOptions: ParticleCanvasNodeOptions ) {
     super( providedOptions );
@@ -35,7 +37,10 @@ export default class ParticleCanvasNode extends CanvasNode {
 
   public override paintCanvas( context: CanvasRenderingContext2D ): void {
     this.drawParticles( context, this.photons, PHOTON_RADIUS, PhotoelectricEffectColors.photonColorProperty.value );
-    this.drawParticles( context, this.electrons, ELECTRON_RADIUS, PhotoelectricEffectColors.electronColorProperty.value );
+
+    if ( this.showElectronsProperty.value ) {
+      this.drawParticles( context, this.electrons, ELECTRON_RADIUS, PhotoelectricEffectColors.electronColorProperty.value );
+    }
   }
 
   private drawParticles( context: CanvasRenderingContext2D, particles: Particle[],
@@ -53,7 +58,7 @@ export default class ParticleCanvasNode extends CanvasNode {
     } );
   }
 
-  public step( _dt: number ): void {
+  public step(): void {
     this.invalidatePaint();
   }
 }

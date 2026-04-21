@@ -62,6 +62,12 @@
       }
     }
   },
+  "showElectrons": {
+    "value": "Show Electrons"
+  },
+  "highestEnergyOnly": {
+    "value": "Highest Energy Only"
+  },
   "workFunction.label": {
     "value": "Work Function (eV)"
   },
@@ -88,21 +94,6 @@
   },
   "current.label": {
     "value": "Current (A)"
-  },
-  "debugLegend.title": {
-    "value": "Legend:"
-  },
-  "debugLegend.photons": {
-    "value": "Yellow = photons"
-  },
-  "debugLegend.electrons": {
-    "value": "Cyan = electrons"
-  },
-  "debugLegend.target": {
-    "value": "Red outline = target"
-  },
-  "debugLegend.collector": {
-    "value": "Blue outline = collector"
   },
   "preferences.mysteryMaterialLabel": {
     "value": "Mystery Material"

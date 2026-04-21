@@ -39,6 +39,8 @@ type StringsType = {
       'snapshotsGalleryButtonAccessibleHelpTextStringProperty': LocalizedStringProperty;
     }
   };
+  'showElectronsStringProperty': LocalizedStringProperty;
+  'highestEnergyOnlyStringProperty': LocalizedStringProperty;
   'workFunction': {
     'labelStringProperty': LocalizedStringProperty;
   };
@@ -59,13 +61,6 @@ type StringsType = {
   };
   'current': {
     'labelStringProperty': LocalizedStringProperty;
-  };
-  'debugLegend': {
-    'titleStringProperty': LocalizedStringProperty;
-    'photonsStringProperty': LocalizedStringProperty;
-    'electronsStringProperty': LocalizedStringProperty;
-    'targetStringProperty': LocalizedStringProperty;
-    'collectorStringProperty': LocalizedStringProperty;
   };
   'preferences': {
     'mysteryMaterialLabelStringProperty': LocalizedStringProperty;

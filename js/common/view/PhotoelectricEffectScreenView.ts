@@ -23,13 +23,14 @@ import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
+import Checkbox from '../../../../sun/js/Checkbox.js';
 import ComboBox from '../../../../sun/js/ComboBox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import ParticleCanvasNode from './ParticleCanvasNode.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
+import ParticleCanvasNode from './ParticleCanvasNode.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -41,6 +42,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
   private readonly particleCanvasNode: ParticleCanvasNode;
   private readonly modelViewTransform: ModelViewTransform2;
+
+  // Controls for electron rendering and behavior, for layout and visibility control in subclasses.
+  protected readonly electronVisibilityControls: VBox;
 
   public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
@@ -118,16 +122,46 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       ]
     } );
 
-    const debugLegend = new VBox( {
-      spacing: 2,
+    const showElectronsCheckbox = new Checkbox(
+      model.showElectronsProperty,
+      new Text( PhotoelectricEffectFluent.showElectronsStringProperty, {
+        maxWidth: 170
+      } ),
+      {
+        tandem: options.tandem.createTandem( 'showElectronsCheckbox' )
+      }
+    );
+
+    const highestEnergyOnlyCheckbox = new Checkbox(
+      model.showHighestEnergyOnlyProperty,
+      new Text( PhotoelectricEffectFluent.highestEnergyOnlyStringProperty, {
+        maxWidth: 170
+      } ),
+      {
+        enabledProperty: model.showElectronsProperty,
+        layoutOptions: {
+          leftMargin: 20
+        },
+        tandem: options.tandem.createTandem( 'highestEnergyOnlyCheckbox' )
+      }
+    );
+
+    this.electronVisibilityControls = new VBox( {
+      spacing: 5,
       align: 'left',
       children: [
-        new Text( PhotoelectricEffectFluent.debugLegend.titleStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.photonsStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.electronsStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.targetStringProperty, { fontSize: 12 } ),
-        new Text( PhotoelectricEffectFluent.debugLegend.collectorStringProperty, { fontSize: 12 } )
+        showElectronsCheckbox,
+        highestEnergyOnlyCheckbox
       ]
+    } );
+
+    // When electrons become invisible, the "highest energy only" is not relevant and becomes unavailable.
+    // Reset to false so that it is clearly not selected in the UI.
+    // TODO: @brett is this behavior correct?
+    model.showElectronsProperty.link( showElectrons => {
+      if ( !showElectrons ) {
+        model.showHighestEnergyOnlyProperty.value = false;
+      }
     } );
 
     const debugControlsVBox = new VBox( {
@@ -139,7 +173,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         workFunctionControl,
         voltageControl,
         currentReadout,
-        debugLegend
+        this.electronVisibilityControls
       ]
     } );
 
@@ -211,7 +245,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( lampRectangle );
 
     // Canvas that renders photons and electrons using the same model-view transform as the play area.
-    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, this.modelViewTransform,
+    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
       { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
 
@@ -237,10 +271,10 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
   /**
    * Steps the view.
-   * @param dt - time step, in seconds
+   * @param _dt - time step, in seconds
    */
-  public override step( dt: number ): void {
-    this.particleCanvasNode.step( dt );
+  public override step( _dt: number ): void {
+    this.particleCanvasNode.step();
   }
 
   private createBoundsRectangle( bounds: Bounds2, stroke: string ): Rectangle {

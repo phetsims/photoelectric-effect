@@ -94,11 +94,24 @@ export default class Target {
 
   /**
    * Produces an electron if the photon has enough energy.
+   *
+   * @param highestEnergyOnly - When true, uses Java simple-mode absorption behavior.
    */
-  public handlePhotonCollision( photon: Photon ): Electron | null {
+  public handlePhotonCollision( photon: Photon, highestEnergyOnly = false ): Electron | null {
     const photonEnergy = photon.getEnergy();
     const workFunction = this.workFunctionProperty.value;
-    const energyAfterCollision = Material.energyAfterPhotonCollision( photonEnergy, workFunction );
+
+    let energyAfterCollision = 0;
+    if ( highestEnergyOnly ) {
+
+      // Java simple mode emits only when the selected sub-level is the highest-energy band.
+      energyAfterCollision = dotRandom.nextInt( Material.NUM_SUB_LEVELS ) === 0 ?
+                             photonEnergy - workFunction :
+                             Number.NEGATIVE_INFINITY;
+    }
+    else {
+      energyAfterCollision = Material.energyAfterPhotonCollision( photonEnergy, workFunction );
+    }
 
     let electron: Electron | null = null;
 

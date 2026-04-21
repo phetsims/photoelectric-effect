@@ -29,6 +29,9 @@ experiment:
     snapshotsGalleryButtonAccessibleName: 'View saved snapshots'
     snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
 
+showElectrons: 'Show Electrons'
+highestEnergyOnly: 'Highest Energy Only'
+
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Intensity'
@@ -39,11 +42,6 @@ spectrumTrack.uvLabel: 'UV'
 spectrumTrack.irLabel: 'IR'
 voltage.label: 'Voltage (V)'
 current.label: 'Current (A)'
-debugLegend.title: 'Legend:'
-debugLegend.photons: 'Yellow = photons'
-debugLegend.electrons: 'Cyan = electrons'
-debugLegend.target: 'Red outline = target'
-debugLegend.collector: 'Blue outline = collector'
 
 # Preferences PLACEHOLDERS
 preferences.mysteryMaterialLabel: 'Mystery Material'
