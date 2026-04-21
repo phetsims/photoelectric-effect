@@ -62,18 +62,6 @@
       }
     }
   },
-  "showElectrons": {
-    "value": "Show Electrons"
-  },
-  "highestEnergyOnly": {
-    "value": "Highest Energy Only"
-  },
-  "spectrumTrack.uvLabel": {
-    "value": "UV"
-  },
-  "spectrumTrack.irLabel": {
-    "value": "IR"
-  },
   "workFunction.label": {
     "value": "Work Function (eV)"
   },
@@ -89,11 +77,35 @@
   "wavelength.valueReadoutPattern": {
     "value": "{{value}} nm"
   },
+  "spectrumTrack.uvLabel": {
+    "value": "UV"
+  },
+  "spectrumTrack.irLabel": {
+    "value": "IR"
+  },
   "voltage.label": {
     "value": "Voltage (V)"
   },
   "current.label": {
-    "value": "Current (A)"
+    "value": "Current"
+  },
+  "current.readoutPattern": {
+    "value": "{{value}} mA"
+  },
+  "debugLegend.title": {
+    "value": "Legend:"
+  },
+  "debugLegend.photons": {
+    "value": "Yellow = photons"
+  },
+  "debugLegend.electrons": {
+    "value": "Cyan = electrons"
+  },
+  "debugLegend.target": {
+    "value": "Red outline = target"
+  },
+  "debugLegend.collector": {
+    "value": "Blue outline = collector"
   },
   "preferences.mysteryMaterialLabel": {
     "value": "Mystery Material"

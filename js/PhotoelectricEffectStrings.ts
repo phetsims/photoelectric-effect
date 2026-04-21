@@ -39,12 +39,6 @@ type StringsType = {
       'snapshotsGalleryButtonAccessibleHelpTextStringProperty': LocalizedStringProperty;
     }
   };
-  'showElectronsStringProperty': LocalizedStringProperty;
-  'highestEnergyOnlyStringProperty': LocalizedStringProperty;
-  'spectrumTrack': {
-    'uvLabelStringProperty': LocalizedStringProperty;
-    'irLabelStringProperty': LocalizedStringProperty;
-  };
   'workFunction': {
     'labelStringProperty': LocalizedStringProperty;
   };
@@ -56,11 +50,23 @@ type StringsType = {
     'labelStringProperty': LocalizedStringProperty;
     'valueReadoutPatternStringProperty': LocalizedStringProperty;
   };
+  'spectrumTrack': {
+    'uvLabelStringProperty': LocalizedStringProperty;
+    'irLabelStringProperty': LocalizedStringProperty;
+  };
   'voltage': {
     'labelStringProperty': LocalizedStringProperty;
   };
   'current': {
     'labelStringProperty': LocalizedStringProperty;
+    'readoutPatternStringProperty': LocalizedStringProperty;
+  };
+  'debugLegend': {
+    'titleStringProperty': LocalizedStringProperty;
+    'photonsStringProperty': LocalizedStringProperty;
+    'electronsStringProperty': LocalizedStringProperty;
+    'targetStringProperty': LocalizedStringProperty;
+    'collectorStringProperty': LocalizedStringProperty;
   };
   'preferences': {
     'mysteryMaterialLabelStringProperty': LocalizedStringProperty;

@@ -31,9 +31,10 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
 
     sceneRadioButtonGroup.centerBottom = this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN );
 
-    // In the intro screen, electron visibility controls are only available in the circuit scene.
+    // In the intro screen, the ammeter is only available in the circuit scene.
     model.sceneProperty.link( scene => {
-      this.electronVisibilityControls.visible = scene === 'circuit';
+      const inCircuitScene = scene === 'circuit';
+      this.ammeterDisplayPanel.visible = inCircuitScene;
     } );
   }
 }
