@@ -54,12 +54,14 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Battery that sets the potential difference between plates.
   // Controls the electric field that accelerates or decelerates electrons.
+  // TODO: Should we move this into ExperimentModel?
   public readonly battery: Battery;
 
   // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
 
   // Voltage across the plates in model units.
+  // TODO: Should we move this into ExperimentModel?
   public readonly voltageProperty: NumberProperty;
 
   // Wavelength of emitted photons in nanometers.

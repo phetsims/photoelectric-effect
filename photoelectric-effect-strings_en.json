@@ -84,13 +84,10 @@
     "value": "IR"
   },
   "voltage.label": {
-    "value": "Voltage (V)"
+    "value": "Voltage"
   },
   "current.label": {
-    "value": "Current"
-  },
-  "current.readoutPattern": {
-    "value": "{{value}} mA"
+    "value": "Current (A)"
   },
   "debugLegend.title": {
     "value": "Legend:"

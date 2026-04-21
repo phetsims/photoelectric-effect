@@ -59,7 +59,6 @@ type StringsType = {
   };
   'current': {
     'labelStringProperty': LocalizedStringProperty;
-    'readoutPatternStringProperty': LocalizedStringProperty;
   };
   'debugLegend': {
     'titleStringProperty': LocalizedStringProperty;

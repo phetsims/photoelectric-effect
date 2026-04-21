@@ -124,8 +124,7 @@ const PhotoelectricEffectFluent = {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.labelStringProperty' )
   },
   current: {
-    labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' ),
-    readoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'current.readoutPatternStringProperty' )
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' )
   },
   debugLegend: {
     titleStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.titleStringProperty' ),

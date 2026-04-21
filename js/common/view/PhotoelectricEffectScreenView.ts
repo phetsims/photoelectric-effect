@@ -18,6 +18,8 @@ import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransfo
 import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
+import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
+import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -25,10 +27,9 @@ import ComboBox from '../../../../sun/js/ComboBox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
-import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -39,10 +40,7 @@ type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 export default class PhotoelectricEffectScreenView extends ScreenView {
 
   private readonly particleCanvasNode: ParticleCanvasNode;
-  private readonly modelViewTransform: ModelViewTransform2;
-
-  // Shared ammeter panel for layout and visibility control in subclasses.
-  protected readonly ammeterDisplayPanel: AmmeterDisplayPanel;
+  protected readonly modelViewTransform: ModelViewTransform2;
 
   public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
@@ -89,20 +87,23 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'photonSourcePanel' )
     } );
 
-    const voltageControl = new NumberControl(
-      PhotoelectricEffectFluent.voltage.labelStringProperty,
-      model.voltageProperty,
-      new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
+    const currentDisplay = new NumberDisplay(
+      model.currentProperty,
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT ),
       {
-        delta: 0.1,
-        numberDisplayOptions: {
-          decimalPlaces: 1
-        },
-        tandem: options.tandem.createTandem( 'voltageControl' )
+        decimalPlaces: 3,
+        tandem: options.tandem.createTandem( 'currentDisplay' )
       }
     );
 
-    this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty );
+    const currentReadout = new HBox( {
+      spacing: 10,
+      align: 'center',
+      children: [
+        new Text( PhotoelectricEffectFluent.current.labelStringProperty ),
+        currentDisplay
+      ]
+    } );
 
     const debugLegend = new VBox( {
       spacing: 2,
@@ -123,7 +124,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       children: [
         materialsComboBox,
         workFunctionControl,
-        voltageControl,
+        currentReadout,
         debugLegend
       ]
     } );
@@ -140,12 +141,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     photonSourcePanel.right = this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x;
     photonSourcePanel.top = this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
     this.addChild( photonSourcePanel );
-
-    this.ammeterDisplayPanel.centerTop = this.modelViewTransform.modelToViewXY( model.collector.x, 0 ).plusXY(
-      0,
-      PhotoelectricEffectConstants.COLLECTOR_BOUNDS.maxY + 20
-    );
-    this.addChild( this.ammeterDisplayPanel );
 
     debugControlsVBox.left = this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
     debugControlsVBox.bottom = this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;

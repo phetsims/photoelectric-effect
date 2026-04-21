@@ -39,8 +39,4 @@ export default class PhotoelectricEffectColors {
   public static readonly iconStrokeColorProperty = new ProfileColorProperty( photoelectricEffect, 'iconStroke', {
     default: 'black'
   } );
-
-  public static readonly ammeterPanelFillColorProperty = new ProfileColorProperty( photoelectricEffect, 'ammeterPanelFill', {
-    default: '#eab253'
-  } );
 }
