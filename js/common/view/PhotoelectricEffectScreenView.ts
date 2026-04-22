@@ -51,6 +51,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
     // https://github.com/phetsims/photoelectric-effect/issues/5
+    // TODO: Placement and visibility of this control. Will be best to do that once other changes are merged
+    //  into main. See 
     const materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
