@@ -8,24 +8,29 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import PreferencesControl, { PreferencesControlOptions } from '../../../../joist/js/preferences/PreferencesControl.js';
 import PreferencesDialogConstants from '../../../../joist/js/preferences/PreferencesDialogConstants.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
+import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import PhotoelectricEffectPreferences, { MYSTERY_MATERIAL_WORK_FUNCTION_RANGE } from '../model/PhotoelectricEffectPreferences.js';
+import { MYSTERY_MATERIAL_WORK_FUNCTION_RANGE } from '../model/PhotoelectricEffectPreferences.js';
 
 type MysteryMaterialWorkFunctionControlOptions = WithRequired<PreferencesControlOptions, 'tandem'>;
 
 export default class MysteryMaterialWorkFunctionControl extends PreferencesControl {
 
-  public constructor( providedOptions: MysteryMaterialWorkFunctionControlOptions ) {
+  /**
+   * @param workFunctionProperty - The mystery material work function, in eV.
+   * @param providedOptions - Preferences control options, with required tandem for instrumentation.
+   */
+  public constructor( workFunctionProperty: NumberProperty, providedOptions: MysteryMaterialWorkFunctionControlOptions ) {
 
     // TODO: Do we want to add a title?
-    const numberControl = new NumberControl( '', PhotoelectricEffectPreferences.mysteryMaterialWorkFunctionProperty, MYSTERY_MATERIAL_WORK_FUNCTION_RANGE, {
+    const numberControl = new NumberControl( '', workFunctionProperty, MYSTERY_MATERIAL_WORK_FUNCTION_RANGE, {
       delta: 0.1,
       numberDisplayOptions: {
         decimalPlaces: 1

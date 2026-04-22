@@ -145,8 +145,11 @@
   "debugLegend.collector": {
     "value": "Blue outline = collector"
   },
-  "preferences.mysteryMaterialLabel": {
-    "value": "Mystery Material"
+  "preferences.mysteryMaterial1Label": {
+    "value": "Mystery Material 1"
+  },
+  "preferences.mysteryMaterial2Label": {
+    "value": "Mystery Material 2"
   },
   "preferences.mysteryMaterialDescription": {
     "value": "When enabled, adds a mystery material with a configurable work function to the available materials."

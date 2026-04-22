@@ -83,7 +83,8 @@ type StringsType = {
     'collectorStringProperty': LocalizedStringProperty;
   };
   'preferences': {
-    'mysteryMaterialLabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterial1LabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterial2LabelStringProperty': LocalizedStringProperty;
     'mysteryMaterialDescriptionStringProperty': LocalizedStringProperty;
     'mysteryMaterialWorkFunctionLabelStringProperty': LocalizedStringProperty;
     'mysteryMaterialWorkFunctionDescriptionStringProperty': LocalizedStringProperty;

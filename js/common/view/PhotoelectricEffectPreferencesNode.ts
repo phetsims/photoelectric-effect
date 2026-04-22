@@ -13,9 +13,9 @@ import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import WithOptional from '../../../../phet-core/js/types/WithOptional.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectPreferences from '../model/PhotoelectricEffectPreferences.js';
-import MysteryMaterialControl from './MysteryMaterialControl.js';
-import MysteryMaterialWorkFunctionControl from './MysteryMaterialWorkFunctionControl.js';
+import MysteryMaterialPreferencesControls from './MysteryMaterialPreferencesControls.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -33,16 +33,24 @@ export default class PhotoelectricEffectPreferencesNode extends PreferencesPanel
       fill: 'white'
     }, providedOptions );
 
-    const mysteryMaterialControl = new MysteryMaterialControl( {
-      tandem: options.tandem.createTandem( 'mysteryMaterialControl' )
-    } );
+    const mysteryMaterial1Controls = new MysteryMaterialPreferencesControls(
+      PhotoelectricEffectPreferences.mysteryMaterial1EnabledProperty,
+      PhotoelectricEffectPreferences.mysteryMaterial1WorkFunctionProperty,
+      PhotoelectricEffectFluent.preferences.mysteryMaterial1LabelStringProperty,
+      options.tandem.createTandem( 'mysteryMaterial1Controls' )
+    );
 
-    const mysteryMaterialWorkFunctionControl = new MysteryMaterialWorkFunctionControl( {
-      tandem: options.tandem.createTandem( 'mysteryMaterialWorkFunctionControl' ),
-      visibleProperty: PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty
-    } );
+    const mysteryMaterial2Controls = new MysteryMaterialPreferencesControls(
+      PhotoelectricEffectPreferences.mysteryMaterial2EnabledProperty,
+      PhotoelectricEffectPreferences.mysteryMaterial2WorkFunctionProperty,
+      PhotoelectricEffectFluent.preferences.mysteryMaterial2LabelStringProperty,
+      options.tandem.createTandem( 'mysteryMaterial2Controls' )
+    );
 
-    options.content = [ mysteryMaterialControl, mysteryMaterialWorkFunctionControl ];
+    options.content = [
+      mysteryMaterial1Controls,
+      mysteryMaterial2Controls
+    ];
 
     super( options );
   }

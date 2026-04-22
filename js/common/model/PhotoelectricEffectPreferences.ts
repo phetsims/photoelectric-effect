@@ -16,6 +16,7 @@ import PhotoelectricEffectQueryParameters from '../PhotoelectricEffectQueryParam
 import PhotoelectricEffectMysteryMaterials from './PhotoelectricEffectMysteryMaterials.js';
 
 // Range of valid work function values, in eV.
+// TODO: Should this be assigned to the work function NumberProperty?
 const MYSTERY_MATERIAL_WORK_FUNCTION_RANGE = new Range( 1.5, 7.0 );
 
 export default class PhotoelectricEffectPreferences {
@@ -24,16 +25,27 @@ export default class PhotoelectricEffectPreferences {
   }
 
   // Whether the mystery material is available in the materials list.
-  public static readonly mysteryMaterialEnabledProperty = new BooleanProperty( PhotoelectricEffectQueryParameters.mysteryMaterial, {
-    tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterialEnabledProperty' ),
+  // TODO: Wondering if we should keep this. Should materials have an enabled Property? Then we could get
+  //   rid of this file, and that enabledProperty would also work for the phet-io materials.
+  //   https://github.com/phetsims/photoelectric-effect/issues/38
+  //   How will phet-io clients ideally customize these?
+  public static readonly mysteryMaterial1EnabledProperty = new BooleanProperty( PhotoelectricEffectQueryParameters.mysteryMaterial1Enabled, {
+    tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial1EnabledProperty' ),
     phetioFeatured: true
   } );
 
-  // The work function of the preferences mystery material, in eV.
+  public static readonly mysteryMaterial2EnabledProperty = new BooleanProperty( PhotoelectricEffectQueryParameters.mysteryMaterial2Enabled, {
+    tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial2EnabledProperty' ),
+    phetioFeatured: true
+  } );
+
+  // The work function of the preferences mystery materials, in eV.
   // This is the workFunctionProperty of PREFERENCES_MYSTERY_MATERIAL, shared so that the
   // Preferences UI and the model operate on the same Property instance.
-  public static readonly mysteryMaterialWorkFunctionProperty =
-    PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL.workFunctionProperty;
+  public static readonly mysteryMaterial1WorkFunctionProperty =
+    PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_1.workFunctionProperty;
+  public static readonly mysteryMaterial2WorkFunctionProperty =
+    PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_2.workFunctionProperty;
 }
 
 export { MYSTERY_MATERIAL_WORK_FUNCTION_RANGE };
