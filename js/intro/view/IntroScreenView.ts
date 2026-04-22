@@ -33,8 +33,7 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
 
     // In the intro screen, the ammeter is only available in the circuit scene.
     model.sceneProperty.link( scene => {
-      const inCircuitScene = scene === 'circuit';
-      this.ammeterDisplayPanel.visible = inCircuitScene;
+      this.ammeterDisplayPanel.visible = scene === 'circuit';
     } );
   }
 }
