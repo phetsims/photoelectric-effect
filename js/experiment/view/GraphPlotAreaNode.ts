@@ -26,7 +26,6 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
@@ -66,9 +65,6 @@ const TICK_MARK_LINE_WIDTH = 3;
 // Default chart size in view coordinates (experiment screen graphs).
 export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH = 220;
 export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT = 136;
-
-// Font for numeric tick labels on experiment graphs.
-const EXPERIMENT_GRAPH_TICK_LABEL_FONT = new PhetFont( 10 );
 
 type GraphPlotAreaSelfOptions = {
 
@@ -377,7 +373,7 @@ export default class GraphPlotAreaNode extends Node {
     const isInteger = Math.abs( value - roundSymmetric( value ) ) < 1e-6;
     const label = formatter ? formatter( value ) : toFixed( value, isInteger ? 0 : 2 );
     return new Text( label, {
-      font: EXPERIMENT_GRAPH_TICK_LABEL_FONT
+      font: PhotoelectricEffectConstants.EXPERIMENT_GRAPH_TICK_LABEL_FONT
     } );
   }
 

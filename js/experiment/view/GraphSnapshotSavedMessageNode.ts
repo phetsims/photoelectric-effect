@@ -8,11 +8,11 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Animation from '../../../../twixt/js/Animation.js';
 import Easing from '../../../../twixt/js/Easing.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 // Delay before the message begins fading out.
@@ -35,7 +35,7 @@ export default class GraphSnapshotSavedMessageNode extends Node {
     this.snapshotSavedText = new Text(
       PhotoelectricEffectFluent.experiment.graph.snapshotSavedStringProperty,
       {
-        font: PhotoelectricEffectConstants.CONTENT_FONT,
+        font: new PhetFont( { size: 18 } ),
         visible: false,
         opacity: 0
       }

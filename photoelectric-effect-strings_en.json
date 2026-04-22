@@ -13,6 +13,47 @@
       "value": "Energy"
     }
   },
+  "materials": {
+    "sodium": {
+      "value": "Sodium"
+    },
+    "copper": {
+      "value": "Copper"
+    },
+    "calcium": {
+      "value": "Calcium"
+    },
+    "magnesium": {
+      "value": "Magnesium"
+    },
+    "platinum": {
+      "value": "Platinum"
+    },
+    "zinc": {
+      "value": "Zinc"
+    },
+    "custom": {
+      "value": "Custom"
+    },
+    "mystery": {
+      "value": "Mystery"
+    },
+    "mystery1": {
+      "value": "Mystery 1"
+    },
+    "mystery2": {
+      "value": "Mystery 2"
+    },
+    "mystery3": {
+      "value": "Mystery 3"
+    },
+    "mystery4": {
+      "value": "Mystery 4"
+    },
+    "mystery5": {
+      "value": "Mystery 5"
+    }
+  },
   "experiment": {
     "graph": {
       "voltageCurrentTitle": {
@@ -62,18 +103,6 @@
       }
     }
   },
-  "showElectrons": {
-    "value": "Show Electrons"
-  },
-  "highestEnergyOnly": {
-    "value": "Highest Energy Only"
-  },
-  "spectrumTrack.uvLabel": {
-    "value": "UV"
-  },
-  "spectrumTrack.irLabel": {
-    "value": "IR"
-  },
   "workFunction.label": {
     "value": "Work Function (eV)"
   },
@@ -89,14 +118,17 @@
   "wavelength.valueReadoutPattern": {
     "value": "{{value}} nm"
   },
+  "spectrumTrack.uvLabel": {
+    "value": "UV"
+  },
+  "spectrumTrack.irLabel": {
+    "value": "IR"
+  },
   "voltage.label": {
-    "value": "Voltage"
+    "value": "Voltage (V)"
   },
   "current.label": {
-    "value": "Current"
-  },
-  "current.readoutPattern": {
-    "value": "{{value}} mA"
+    "value": "Current (A)"
   },
   "debugLegend.title": {
     "value": "Legend:"

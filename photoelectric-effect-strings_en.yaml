@@ -7,6 +7,21 @@ screen:
   experiment: 'Experiment'
   energy: 'Energy'
 
+materials:
+  sodium: 'Sodium'
+  copper: 'Copper'
+  calcium: 'Calcium'
+  magnesium: 'Magnesium'
+  platinum: 'Platinum'
+  zinc: 'Zinc'
+  custom: 'Custom'
+  mystery: 'Mystery'
+  mystery1: 'Mystery 1'
+  mystery2: 'Mystery 2'
+  mystery3: 'Mystery 3'
+  mystery4: 'Mystery 4'
+  mystery5: 'Mystery 5'
+
 # Experiment graphs
 experiment:
   graph:
@@ -29,21 +44,16 @@ experiment:
     snapshotsGalleryButtonAccessibleName: 'View saved snapshots'
     snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
 
-showElectrons: 'Show Electrons'
-highestEnergyOnly: 'Highest Energy Only'
-
-spectrumTrack.uvLabel: 'UV'
-spectrumTrack.irLabel: 'IR'
-
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Intensity'
 intensity.percentReadoutPattern: '{{value}} %'
 wavelength.label: 'Wavelength (nm)'
 wavelength.valueReadoutPattern: '{{value}} nm'
-voltage.label: 'Voltage'
-current.label: 'Current'
-current.readoutPattern: '{{value}} mA'
+spectrumTrack.uvLabel: 'UV'
+spectrumTrack.irLabel: 'IR'
+voltage.label: 'Voltage (V)'
+current.label: 'Current (A)'
 debugLegend.title: 'Legend:'
 debugLegend.photons: 'Yellow = photons'
 debugLegend.electrons: 'Cyan = electrons'

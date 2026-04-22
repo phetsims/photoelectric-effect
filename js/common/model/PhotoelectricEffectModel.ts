@@ -54,14 +54,12 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Battery that sets the potential difference between plates.
   // Controls the electric field that accelerates or decelerates electrons.
-  // TODO: Should we move this into ExperimentModel?
   public readonly battery: Battery;
 
   // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
 
   // Voltage across the plates in model units.
-  // TODO: Should we move this into ExperimentModel?
   public readonly voltageProperty: NumberProperty;
 
   // Wavelength of emitted photons in nanometers.
@@ -72,12 +70,6 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // When false, continuous time stepping is paused; the step-forward control advances the model.
   public readonly isPlayingProperty: BooleanProperty;
-
-  // Controls whether emitted electrons are rendered in the particle canvas.
-  public readonly showElectronsProperty: BooleanProperty;
-
-  // When true, use Java-style simple mode so only highest-band collisions emit electrons.
-  public readonly showHighestEnergyOnlyProperty: BooleanProperty;
 
   // Emits when the model has been reset to its default state.
   public readonly resetEmitter = new Emitter();
@@ -100,13 +92,13 @@ export default class PhotoelectricEffectModel implements TModel {
     const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {}, providedOptions );
 
     const standardMaterials = [
-      new Material( MaterialType.SODIUM, options.tandem ),
-      new Material( MaterialType.COPPER, options.tandem ),
-      new Material( MaterialType.CALCIUM, options.tandem ),
-      new Material( MaterialType.MAGNESIUM, options.tandem ),
-      new Material( MaterialType.PLATINUM, options.tandem ),
-      new Material( MaterialType.ZINC, options.tandem ),
-      new Material( MaterialType.CUSTOM, options.tandem )
+      new Material( MaterialType.SODIUM, { tandem: options.tandem } ),
+      new Material( MaterialType.COPPER, { tandem: options.tandem } ),
+      new Material( MaterialType.CALCIUM, { tandem: options.tandem } ),
+      new Material( MaterialType.MAGNESIUM, { tandem: options.tandem } ),
+      new Material( MaterialType.PLATINUM, { tandem: options.tandem } ),
+      new Material( MaterialType.ZINC, { tandem: options.tandem } ),
+      new Material( MaterialType.CUSTOM, { tandem: options.tandem } )
     ];
 
     const allMaterials = [
@@ -144,14 +136,6 @@ export default class PhotoelectricEffectModel implements TModel {
       tandem: options.tandem.createTandem( 'isPlayingProperty' ),
       phetioFeatured: true
     } );
-
-    this.showElectronsProperty = new BooleanProperty( true, {
-      tandem: options.tandem.createTandem( 'showElectronsProperty' )
-    } );
-
-    this.showHighestEnergyOnlyProperty = new BooleanProperty( false, {
-      tandem: options.tandem.createTandem( 'showHighestEnergyOnlyProperty' )
-    } );
   }
 
   /**
@@ -163,8 +147,6 @@ export default class PhotoelectricEffectModel implements TModel {
     this.photonSource.reset();
     this.voltageProperty.reset();
     this.isPlayingProperty.reset();
-    this.showElectronsProperty.reset();
-    this.showHighestEnergyOnlyProperty.reset();
 
     this.photons.length = 0;
     this.electrons.length = 0;
@@ -258,7 +240,7 @@ export default class PhotoelectricEffectModel implements TModel {
       // Check for target collisions, which may emit an electron and removes the photon from the beam.
       const hitTarget = this.target.isHitByPhoton( photon );
       if ( hitTarget ) {
-        const electron = this.target.handlePhotonCollision( photon, this.showHighestEnergyOnlyProperty.value );
+        const electron = this.target.handlePhotonCollision( photon );
         if ( electron ) {
           this.electrons.push( electron );
         }
@@ -371,7 +353,12 @@ export default class PhotoelectricEffectModel implements TModel {
                 Material.TOTAL_ENERGY_DEPTH, 1 )
     );
 
-    const electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
+    let electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
+
+    // Implementation choice: treat sub-1 counts as zero to avoid tiny non-physical current readouts.
+    if ( electronsPerSecondToAnode < 1 ) {
+      electronsPerSecondToAnode = 0;
+    }
 
     // "Jimmy factor" scales model output to match the sim's calibrated current display.
     return electronsPerSecondToAnode * PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR;

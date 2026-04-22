@@ -12,8 +12,9 @@ import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Enumeration from '../../../../phet-core/js/Enumeration.js';
 import EnumerationValue from '../../../../phet-core/js/EnumerationValue.js';
-import PhetioObject from '../../../../tandem/js/PhetioObject.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
+import optionize from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 
@@ -29,14 +30,13 @@ export class MaterialType extends EnumerationValue {
   public static readonly PLATINUM = new MaterialType( 6.3 );
   public static readonly ZINC = new MaterialType( 4.3 );
 
-  // The work function for mystery is set in preferences.
-
-  // Reset should not affect the workFunctionProperty of mystery.
+  // Mystery materials are for teachers and phet-io clients. The work function will only be set from
+  // preferences or with a PhET-iO customization. As such, simulation reset should not affect the
+  // workFunctionProperty of mystery materials.
   public static readonly MYSTERY = new MaterialType( 5 );
 
-  // The work function for custom is set by the user in the screen.
-
-  // Reset should set the workFunctionProperty back to its initial value.
+  // Controllable by the student, the custom material will have a work function control right in the
+  // simulation. Reset should set the workFunctionProperty back to its initial value.
   public static readonly CUSTOM = new MaterialType( 5 );
 
   // Must be defined after all values are declared.
@@ -54,6 +54,14 @@ type MaterialStateObject = {
   materialType: MaterialType;
 };
 
+type SelfOptions = {
+
+  // An identifier for the material label that can be used by the view layer.
+  labelKey?: string | null;
+};
+
+export type MaterialOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
+
 export default class Material extends PhetioObject {
 
   // TODO: Is this where these should live?
@@ -69,6 +77,11 @@ export default class Material extends PhetioObject {
   public readonly materialType: MaterialType;
 
   /**
+   * Identifier for the material label used by the view layer.
+   */
+  public readonly labelKey: string | null;
+
+  /**
    * Minimum energy required for an electron to escape this material.
    * Used alongside photon energy to decide when emission occurs.
    */
@@ -76,15 +89,23 @@ export default class Material extends PhetioObject {
 
   /**
    * Creates a material instance with its own work function Property.
+   * @param materialType
+   * @param providedOptions - material configuration including required tandem and optional label key override
    */
-  public constructor( materialType: MaterialType, tandem: Tandem ) {
+  public constructor( materialType: MaterialType, providedOptions: MaterialOptions ) {
+
+    const options = optionize<MaterialOptions, SelfOptions, PhetioObjectOptions>()( {
+      labelKey: null
+    }, providedOptions );
 
     super( {
+      tandem: options.tandem,
       phetioType: Material.MaterialIO
     } );
     this.materialType = materialType;
+    this.labelKey = options.labelKey;
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
-      tandem: tandem.createTandem( 'workFunctionProperty' )
+      tandem: options.tandem.createTandem( 'workFunctionProperty' )
     } );
   }
 

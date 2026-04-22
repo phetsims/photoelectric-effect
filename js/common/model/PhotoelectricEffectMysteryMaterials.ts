@@ -20,13 +20,28 @@ import Tandem from '../../../../tandem/js/Tandem.js';
 import Material, { MaterialType } from './Material.js';
 
 // The mystery material whose work function is user-configurable via the Preferences dialog.
-const PREFERENCES_MYSTERY_MATERIAL = new Material( MaterialType.MYSTERY, Tandem.PREFERENCES );
+const PREFERENCES_MYSTERY_MATERIAL = new Material( MaterialType.MYSTERY, {
+  tandem: Tandem.PREFERENCES,
+  labelKey: 'mystery1'
+} );
 
 // Mystery materials reserved for PhET-iO client control. Work functions are not exposed in the sim UI.
-const MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial1' ) );
-const MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial2' ) );
-const MYSTERY_MATERIAL_3 = new Material( MaterialType.MYSTERY, Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial3' ) );
-const MYSTERY_MATERIAL_4 = new Material( MaterialType.MYSTERY, Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial4' ) );
+const MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
+  tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial1' ),
+  labelKey: 'mystery2'
+} );
+const MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
+  tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial2' ),
+  labelKey: 'mystery3'
+} );
+const MYSTERY_MATERIAL_3 = new Material( MaterialType.MYSTERY, {
+  tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial3' ),
+  labelKey: 'mystery4'
+} );
+const MYSTERY_MATERIAL_4 = new Material( MaterialType.MYSTERY, {
+  tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial4' ),
+  labelKey: 'mystery5'
+} );
 
 const PhotoelectricEffectMysteryMaterials = {
   PREFERENCES_MYSTERY_MATERIAL: PREFERENCES_MYSTERY_MATERIAL,

@@ -19,6 +19,7 @@ import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
 import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
+import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
@@ -28,7 +29,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
 import GraphInfoDialog from './GraphInfoDialog.js';
@@ -101,7 +101,7 @@ export default class GraphAssemblyNode extends Node {
     // A readout for the number of snapshots taken and remaining.
     const snapshotCountReadoutText = new Text(
       new DerivedProperty( [ graphData.snapshotsCountProperty ], count => `${count}/${GraphData.MAX_SNAPSHOTS}` ),
-      { font: PhotoelectricEffectConstants.CONTENT_FONT }
+      { font: new PhetFont( { size: 18 } ) }
     );
 
     const snapshotSavedMessageNode = new GraphSnapshotSavedMessageNode();

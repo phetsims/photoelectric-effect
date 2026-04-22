@@ -28,6 +28,19 @@ addToMapIfDefined( 'photoelectric_effect_title', 'photoelectric-effect.titleStri
 addToMapIfDefined( 'screen_intro', 'screen.introStringProperty' );
 addToMapIfDefined( 'screen_experiment', 'screen.experimentStringProperty' );
 addToMapIfDefined( 'screen_energy', 'screen.energyStringProperty' );
+addToMapIfDefined( 'materials_sodium', 'materials.sodiumStringProperty' );
+addToMapIfDefined( 'materials_copper', 'materials.copperStringProperty' );
+addToMapIfDefined( 'materials_calcium', 'materials.calciumStringProperty' );
+addToMapIfDefined( 'materials_magnesium', 'materials.magnesiumStringProperty' );
+addToMapIfDefined( 'materials_platinum', 'materials.platinumStringProperty' );
+addToMapIfDefined( 'materials_zinc', 'materials.zincStringProperty' );
+addToMapIfDefined( 'materials_custom', 'materials.customStringProperty' );
+addToMapIfDefined( 'materials_mystery', 'materials.mysteryStringProperty' );
+addToMapIfDefined( 'materials_mystery1', 'materials.mystery1StringProperty' );
+addToMapIfDefined( 'materials_mystery2', 'materials.mystery2StringProperty' );
+addToMapIfDefined( 'materials_mystery3', 'materials.mystery3StringProperty' );
+addToMapIfDefined( 'materials_mystery4', 'materials.mystery4StringProperty' );
+addToMapIfDefined( 'materials_mystery5', 'materials.mystery5StringProperty' );
 addToMapIfDefined( 'experiment_graph_voltageCurrentTitle', 'experiment.graph.voltageCurrentTitleStringProperty' );
 addToMapIfDefined( 'experiment_graph_intensityCurrentTitle', 'experiment.graph.intensityCurrentTitleStringProperty' );
 addToMapIfDefined( 'experiment_graph_frequencyEnergyTitle', 'experiment.graph.frequencyEnergyTitleStringProperty' );
@@ -43,13 +56,11 @@ addToMapIfDefined( 'experiment_graph_snapshotsDialogTitle', 'experiment.graph.sn
 addToMapIfDefined( 'experiment_graph_snapshotSaved', 'experiment.graph.snapshotSavedStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleName', 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' );
-addToMapIfDefined( 'showElectrons', 'showElectronsStringProperty' );
-addToMapIfDefined( 'highestEnergyOnly', 'highestEnergyOnlyStringProperty' );
-addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
-addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
+addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
+addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
 addToMapIfDefined( 'debugLegend_title', 'debugLegend.titleStringProperty' );
@@ -85,6 +96,21 @@ const PhotoelectricEffectFluent = {
     experimentStringProperty: _.get( PhotoelectricEffectStrings, 'screen.experimentStringProperty' ),
     energyStringProperty: _.get( PhotoelectricEffectStrings, 'screen.energyStringProperty' )
   },
+  materials: {
+    sodiumStringProperty: _.get( PhotoelectricEffectStrings, 'materials.sodiumStringProperty' ),
+    copperStringProperty: _.get( PhotoelectricEffectStrings, 'materials.copperStringProperty' ),
+    calciumStringProperty: _.get( PhotoelectricEffectStrings, 'materials.calciumStringProperty' ),
+    magnesiumStringProperty: _.get( PhotoelectricEffectStrings, 'materials.magnesiumStringProperty' ),
+    platinumStringProperty: _.get( PhotoelectricEffectStrings, 'materials.platinumStringProperty' ),
+    zincStringProperty: _.get( PhotoelectricEffectStrings, 'materials.zincStringProperty' ),
+    customStringProperty: _.get( PhotoelectricEffectStrings, 'materials.customStringProperty' ),
+    mysteryStringProperty: _.get( PhotoelectricEffectStrings, 'materials.mysteryStringProperty' ),
+    mystery1StringProperty: _.get( PhotoelectricEffectStrings, 'materials.mystery1StringProperty' ),
+    mystery2StringProperty: _.get( PhotoelectricEffectStrings, 'materials.mystery2StringProperty' ),
+    mystery3StringProperty: _.get( PhotoelectricEffectStrings, 'materials.mystery3StringProperty' ),
+    mystery4StringProperty: _.get( PhotoelectricEffectStrings, 'materials.mystery4StringProperty' ),
+    mystery5StringProperty: _.get( PhotoelectricEffectStrings, 'materials.mystery5StringProperty' )
+  },
   _comment_1: new FluentComment( {"comment":"Experiment graphs","associatedKey":"experiment"} ),
   experiment: {
     graph: {
@@ -106,12 +132,6 @@ const PhotoelectricEffectFluent = {
       snapshotsGalleryButtonAccessibleHelpTextStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' )
     }
   },
-  showElectronsStringProperty: _.get( PhotoelectricEffectStrings, 'showElectronsStringProperty' ),
-  highestEnergyOnlyStringProperty: _.get( PhotoelectricEffectStrings, 'highestEnergyOnlyStringProperty' ),
-  spectrumTrack: {
-    uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
-    irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )
-  },
   workFunction: {
     _comment_0: new FluentComment( {"comment":"FOR DEBUGGING","associatedKey":"workFunction.label"} ),
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'workFunction.labelStringProperty' )
@@ -124,12 +144,15 @@ const PhotoelectricEffectFluent = {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' ),
     valueReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.valueReadoutPatternStringProperty' )
   },
+  spectrumTrack: {
+    uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
+    irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )
+  },
   voltage: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.labelStringProperty' )
   },
   current: {
-    labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' ),
-    readoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'current.readoutPatternStringProperty' )
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' )
   },
   debugLegend: {
     titleStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.titleStringProperty' ),
