@@ -7,14 +7,11 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import CircuitNode from '../../common/view/CircuitNode.js';
 import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
 import IntroModel from '../model/IntroModel.js';
-import GroundedCircuitNode from './GroundedCircuitNode.js';
 import SceneRadioButtonGroup from './SceneRadioButtonGroup.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -27,13 +24,6 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     const options = optionize<IntroScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
     super( model, options );
 
-    // Add circuit as background. The type of circuit is determined by the sceneRadioButtonGroup
-    this.addChild( new CircuitNode( this.modelViewTransform, {
-      visibleProperty: DerivedProperty.valueEqualsConstant( model.sceneProperty, 'circuit' )
-    } ) );
-    this.addChild( new GroundedCircuitNode( this.modelViewTransform, {
-      visibleProperty: DerivedProperty.valueEqualsConstant( model.sceneProperty, 'grounded' )
-    } ) );
     const sceneRadioButtonGroup = new SceneRadioButtonGroup( model.sceneProperty, {
       tandem: options.tandem.createTandem( 'sceneRadioButtonGroup' )
     } );
@@ -44,7 +34,6 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     // In the intro screen, electron visibility controls are only available in the circuit scene.
     model.sceneProperty.link( scene => {
       this.electronVisibilityControls.visible = scene === 'circuit';
-      this.ammeterDisplayPanel.visible = scene === 'circuit';
     } );
   }
 }

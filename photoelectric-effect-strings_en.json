@@ -90,28 +90,10 @@
     "value": "{{value}} nm"
   },
   "voltage.label": {
-    "value": "Voltage"
+    "value": "Voltage (V)"
   },
   "current.label": {
-    "value": "Current"
-  },
-  "current.readoutPattern": {
-    "value": "{{value}} mA"
-  },
-  "debugLegend.title": {
-    "value": "Legend:"
-  },
-  "debugLegend.photons": {
-    "value": "Yellow = photons"
-  },
-  "debugLegend.electrons": {
-    "value": "Cyan = electrons"
-  },
-  "debugLegend.target": {
-    "value": "Red outline = target"
-  },
-  "debugLegend.collector": {
-    "value": "Blue outline = collector"
+    "value": "Current (A)"
   },
   "preferences.mysteryMaterialLabel": {
     "value": "Mystery Material"

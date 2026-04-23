@@ -54,14 +54,12 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Battery that sets the potential difference between plates.
   // Controls the electric field that accelerates or decelerates electrons.
-  // TODO: Should we move this into ExperimentModel?
   public readonly battery: Battery;
 
   // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
 
   // Voltage across the plates in model units.
-  // TODO: Should we move this into ExperimentModel?
   public readonly voltageProperty: NumberProperty;
 
   // Wavelength of emitted photons in nanometers.
@@ -371,7 +369,12 @@ export default class PhotoelectricEffectModel implements TModel {
                 Material.TOTAL_ENERGY_DEPTH, 1 )
     );
 
-    const electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
+    let electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
+
+    // Implementation choice: treat sub-1 counts as zero to avoid tiny non-physical current readouts.
+    if ( electronsPerSecondToAnode < 1 ) {
+      electronsPerSecondToAnode = 0;
+    }
 
     // "Jimmy factor" scales model output to match the sim's calibrated current display.
     return electronsPerSecondToAnode * PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR;

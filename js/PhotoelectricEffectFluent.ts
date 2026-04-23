@@ -52,11 +52,6 @@ addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
-addToMapIfDefined( 'debugLegend_title', 'debugLegend.titleStringProperty' );
-addToMapIfDefined( 'debugLegend_photons', 'debugLegend.photonsStringProperty' );
-addToMapIfDefined( 'debugLegend_electrons', 'debugLegend.electronsStringProperty' );
-addToMapIfDefined( 'debugLegend_target', 'debugLegend.targetStringProperty' );
-addToMapIfDefined( 'debugLegend_collector', 'debugLegend.collectorStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialLabel', 'preferences.mysteryMaterialLabelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialDescription', 'preferences.mysteryMaterialDescriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionLabel', 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' );
@@ -128,15 +123,7 @@ const PhotoelectricEffectFluent = {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.labelStringProperty' )
   },
   current: {
-    labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' ),
-    readoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'current.readoutPatternStringProperty' )
-  },
-  debugLegend: {
-    titleStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.titleStringProperty' ),
-    photonsStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.photonsStringProperty' ),
-    electronsStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.electronsStringProperty' ),
-    targetStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.targetStringProperty' ),
-    collectorStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.collectorStringProperty' )
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' )
   },
   preferences: {
     _comment_0: new FluentComment( {"comment":"Preferences PLACEHOLDERS","associatedKey":"preferences.mysteryMaterialLabel"} ),
