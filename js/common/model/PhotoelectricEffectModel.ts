@@ -22,12 +22,12 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Battery from './Battery.js';
+import Collector from './Collector.js';
 import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
 import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon from './Photon.js';
 import PhotonSource from './PhotonSource.js';
-import Collector from './Collector.js';
 import Target from './Target.js';
 
 type SelfOptions = {
@@ -89,13 +89,14 @@ export default class PhotoelectricEffectModel implements TModel {
   private photonEmissionAccumulator = 0;
 
   /**
-   * Creates the model and configures materials, sources, and derived current.
+   * @param customMaterials - Custom materials that the student can play with. These have a controllable
+   *                          work function.
    * @param mysteryMaterials - mystery materials owned by PhotoelectricEffectPreferencesModel and passed down.
    *   One entry for the user-configurable mystery material; additional entries can be added in the future
    *   for PhET-iO clients to manipulate.
    * @param providedOptions
    */
-  public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
+  public constructor( mysteryMaterials: Material[], customMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
 
     const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {}, providedOptions );
 
@@ -105,13 +106,14 @@ export default class PhotoelectricEffectModel implements TModel {
       new Material( MaterialType.CALCIUM, { tandem: options.tandem } ),
       new Material( MaterialType.MAGNESIUM, { tandem: options.tandem } ),
       new Material( MaterialType.PLATINUM, { tandem: options.tandem } ),
-      new Material( MaterialType.ZINC, { tandem: options.tandem } ),
-      new Material( MaterialType.CUSTOM, { tandem: options.tandem } )
+      new Material( MaterialType.ZINC, { tandem: options.tandem } )
     ];
 
+    // The order according to the design document - standard, mystery, then custom.
     const allMaterials = [
       ...standardMaterials,
-      ...mysteryMaterials
+      ...mysteryMaterials,
+      ...customMaterials
     ];
 
     this.target = new Target( allMaterials, providedOptions.tandem.createTandem( 'target' ) );
