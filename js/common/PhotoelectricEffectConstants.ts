@@ -14,6 +14,7 @@ import PhetFont from '../../../scenery-phet/js/PhetFont.js';
 // Width of the lamp opening which will emit our photons.
 // Defined here so that our model constant can derive the length of the line along which photons will emit.
 const PHOTON_SOURCE_WIDTH = 40;
+const PLATE_HEIGHT = 170;
 
 export default class PhotoelectricEffectConstants {
 
@@ -28,7 +29,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly COLLECTOR_X = 100;
 
   // Photon emission origin, positioned above and to the right of the target.
-  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 120, 80 );
+  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 100, 80 );
 
   // Angle of the photon beam direction, in radians, counter-clockwise from the positive x-axis.
   // Adjust this single value to pixel-polish the beam direction (e.g. change to -2.3 to tilt slightly up).
@@ -100,11 +101,9 @@ export default class PhotoelectricEffectConstants {
   // VIEW CONSTANTS
   //--------------------------------------------------------------
 
-  // Bounds of the target plate for rendering purposes only.
-  public static readonly TARGET_BOUNDS = new Bounds2( 0, 0, 5, 80 );
-
-  // Bounds of the collector plate for rendering purposes only.
-  public static readonly COLLECTOR_BOUNDS = new Bounds2( 0, 0, 5, 80 );
+  // Bounds of the target and collector plate for rendering purposes only.
+  public static readonly TARGET_PLATE_BOUNDS = new Bounds2( 0, 0, 8, PLATE_HEIGHT );
+  public static readonly COLLECTOR_BOUNDS = new Bounds2( 0, 0, 25, PLATE_HEIGHT + 30 );
 
   // Width of the lamp opening which will emit our photons.
   public static readonly PHOTON_SOURCE_WIDTH = PHOTON_SOURCE_WIDTH;
@@ -126,7 +125,7 @@ export default class PhotoelectricEffectConstants {
 
   // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
   // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
-  public static readonly VIEW_ORIGIN_X = 400;
+  public static readonly VIEW_ORIGIN_X = 350;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 
   //------------------------------------------------------------

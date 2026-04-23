@@ -26,6 +26,8 @@ import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectMode
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
+import LightSourceNode from './LightSourceNode.js';
+import CircuitNode from './CircuitNode.js';
 import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
@@ -63,7 +65,18 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     const materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
       rightCenter: this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ).plusXY( -25, 0 ),
-      tandem: options.tandem.createTandem( 'materialsComboBox' )
+      tandem: options.tandem.createTandem( 'materialsComboBox' ) } );
+
+    // Add circuit node as background.
+    this.addChild( new CircuitNode( this.modelViewTransform ) );
+
+    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
+    // https://github.com/phetsims/photoelectric-effect/issues/5
+    const comboBoxItems = model.target.materials.map( ( material, i ) => {
+      return {
+        value: material,
+        createNode: () => new Text( `Material ${i}, ${material.materialType}` )
+      };
     } );
 
     const workFunctionProperty = new DynamicProperty<number, number, Material>( model.target.materialProperty, {
@@ -185,40 +198,18 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     } );
     this.addChild( playPauseStepButtonGroup );
 
-    // Placeholder lamp rectangle aligned with the photon source line.
+    // Light source node: aperture at local origin, placed at the beam-start view position.
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
-
-    // Negate the model angle to convert to view space (the MVT inverts the y-axis).
-    const lampAngle = -PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE;
-    const lampFaceLength = PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH;
-    const lampBodyDepth = 20;
-    const lampRectangle = new Rectangle( -lampBodyDepth / 2, -lampFaceLength / 2, lampBodyDepth, lampFaceLength, {
-      fill: 'gray',
-      stroke: 'black',
-      rotation: lampAngle,
-
-      // TODO: The lamp needs to end at the beam start and currently it's centered at the beam start... awk.
-      centerX: beamStartCenter.x,
-      centerY: beamStartCenter.y
+    const lightSourceNode = new LightSourceNode( {
+      x: beamStartCenter.x,
+      y: beamStartCenter.y
     } );
-    this.addChild( lampRectangle );
+    this.addChild( lightSourceNode );
 
     // Canvas that renders photons and electrons using the same model-view transform as the play area.
     this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
       { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
-
-    // Debug visualization for collision bounds.
-    const targetBounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
-    const collectorBounds = PhotoelectricEffectConstants.COLLECTOR_BOUNDS;
-    const targetRectangle = this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' );
-    const collectorRectangle = this.createBoundsRectangle( collectorBounds, 'rgba(0,0,255,0.6)' );
-
-    this.addChild( targetRectangle );
-    this.addChild( collectorRectangle );
-
-    targetRectangle.rightCenter = this.modelViewTransform.modelToViewXY( this.model.target.x, 0 );
-    collectorRectangle.leftCenter = this.modelViewTransform.modelToViewXY( this.model.collector.x, 0 );
   }
 
   /**
