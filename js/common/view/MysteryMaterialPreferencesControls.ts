@@ -4,8 +4,7 @@
  * MysteryMaterialPreferencesControls groups the mystery material toggle and work function controls.
  * It extends VBox so a full mystery material section can be added to preferences content as a single child.
  *
- * TODO: This is a placeholder to test functionality until we know what the final look and
- *   behavior will be. See https://github.com/phetsims/photoelectric-effect/issues/38.
+ * TODO: This is a placeholder to test functionality until we know what the final look and behavior will be.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */

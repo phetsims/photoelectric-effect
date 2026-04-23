@@ -43,7 +43,6 @@ const MATERIAL_TYPE_LABELS = new Map<MaterialType, TReadOnlyProperty<string>>( [
 // Use this for cases where multiple Material instances share a MaterialType but need distinct labels
 // (for example, mystery1 => "Mystery 1"). If a Material provides a non-null
 // labelKey, it must exist here or label resolution will throw.
-// TODO: Thoughts on this mapping? https://github.com/phetsims/photoelectric-effect/issues/38
 const MATERIAL_TYPE_LABEL_OVERRIDES: Record<string, TReadOnlyProperty<string>> = {
   mystery1: PhotoelectricEffectFluent.materials.mystery1StringProperty,
   mystery2: PhotoelectricEffectFluent.materials.mystery2StringProperty,
