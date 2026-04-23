@@ -61,7 +61,9 @@ export default class MaterialsComboBox extends ComboBox<Material> {
    * @param providedOptions - Combo box options, with required tandem instrumentation.
    */
   public constructor( materialProperty: Property<Material>, materials: Material[], listParent: Node, providedOptions: MaterialsComboBoxOptions ) {
-    const options = optionize<MaterialsComboBoxOptions, SelfOptions, ComboBoxOptions>()( {}, providedOptions );
+    const options = optionize<MaterialsComboBoxOptions, SelfOptions, ComboBoxOptions>()( {
+      isDisposable: false
+    }, providedOptions );
 
     const comboBoxItems: ComboBoxItem<Material>[] = materials.map( material => {
       return {
@@ -78,6 +80,11 @@ export default class MaterialsComboBox extends ComboBox<Material> {
     } );
 
     super( materialProperty, comboBoxItems, listParent, options );
+
+    // Interface to hide specific items uses setItemVisible so we must loop again to manually link.
+    materials.forEach( material => {
+      material.enabledProperty.link( enabled => this.setItemVisible( material, enabled ) );
+    } );
   }
 
 
