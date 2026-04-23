@@ -15,7 +15,7 @@ import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
+import Node, { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import ComboBox, { ComboBoxItem, ComboBoxOptions } from '../../../../sun/js/ComboBox.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -23,7 +23,7 @@ import Material, { MaterialType } from '../model/Material.js';
 
 type SelfOptions = EmptySelfOptions;
 
-type MaterialsComboBoxOptions = SelfOptions & PickRequired<ComboBoxOptions, 'tandem'>;
+type MaterialsComboBoxOptions = SelfOptions & PickRequired<ComboBoxOptions, 'tandem'> & NodeBoundsBasedTranslationOptions;
 
 // Default labels for materials when no instance-level labelKey override is provided.
 // Add one entry per MaterialType that can appear in the combo box. When a Material has
