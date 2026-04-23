@@ -23,7 +23,7 @@ export default class GraphInfoDialog extends Dialog {
     } );
 
     const placeholderText = new Text( PhotoelectricEffectFluent.experiment.graph.infoDialogPlaceholderStringProperty, {
-      font: PhotoelectricEffectConstants.DIALOG_CONTENT_FONT,
+      font: PhotoelectricEffectConstants.CONTENT_FONT,
       maxWidth: PhotoelectricEffectConstants.DIALOG_MAX_CONTENT_WIDTH
     } );
 

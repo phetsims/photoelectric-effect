@@ -29,16 +29,21 @@ experiment:
     snapshotsGalleryButtonAccessibleName: 'View saved snapshots'
     snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
 
+showElectrons: 'Show Electrons'
+highestEnergyOnly: 'Highest Energy Only'
+
+spectrumTrack.uvLabel: 'UV'
+spectrumTrack.irLabel: 'IR'
+
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Intensity'
 intensity.percentReadoutPattern: '{{value}} %'
 wavelength.label: 'Wavelength (nm)'
 wavelength.valueReadoutPattern: '{{value}} nm'
-spectrumTrack.uvLabel: 'UV'
-spectrumTrack.irLabel: 'IR'
 voltage.label: 'Voltage'
-current.label: 'Current (A)'
+current.label: 'Current'
+current.readoutPattern: '{{value}} mA'
 debugLegend.title: 'Legend:'
 debugLegend.photons: 'Yellow = photons'
 debugLegend.electrons: 'Cyan = electrons'
