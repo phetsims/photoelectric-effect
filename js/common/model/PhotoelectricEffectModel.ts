@@ -54,12 +54,14 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Battery that sets the potential difference between plates.
   // Controls the electric field that accelerates or decelerates electrons.
+  // TODO: Should we move this into ExperimentModel?
   public readonly battery: Battery;
 
   // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
 
   // Voltage across the plates in model units.
+  // TODO: Should we move this into ExperimentModel?
   public readonly voltageProperty: NumberProperty;
 
   // Wavelength of emitted photons in nanometers.
@@ -70,6 +72,12 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // When false, continuous time stepping is paused; the step-forward control advances the model.
   public readonly isPlayingProperty: BooleanProperty;
+
+  // Controls whether emitted electrons are rendered in the particle canvas.
+  public readonly showElectronsProperty: BooleanProperty;
+
+  // When true, use Java-style simple mode so only highest-band collisions emit electrons.
+  public readonly showHighestEnergyOnlyProperty: BooleanProperty;
 
   // Emits when the model has been reset to its default state.
   public readonly resetEmitter = new Emitter();
@@ -136,6 +144,14 @@ export default class PhotoelectricEffectModel implements TModel {
       tandem: options.tandem.createTandem( 'isPlayingProperty' ),
       phetioFeatured: true
     } );
+
+    this.showElectronsProperty = new BooleanProperty( true, {
+      tandem: options.tandem.createTandem( 'showElectronsProperty' )
+    } );
+
+    this.showHighestEnergyOnlyProperty = new BooleanProperty( false, {
+      tandem: options.tandem.createTandem( 'showHighestEnergyOnlyProperty' )
+    } );
   }
 
   /**
@@ -147,6 +163,8 @@ export default class PhotoelectricEffectModel implements TModel {
     this.photonSource.reset();
     this.voltageProperty.reset();
     this.isPlayingProperty.reset();
+    this.showElectronsProperty.reset();
+    this.showHighestEnergyOnlyProperty.reset();
 
     this.photons.length = 0;
     this.electrons.length = 0;
@@ -240,7 +258,7 @@ export default class PhotoelectricEffectModel implements TModel {
       // Check for target collisions, which may emit an electron and removes the photon from the beam.
       const hitTarget = this.target.isHitByPhoton( photon );
       if ( hitTarget ) {
-        const electron = this.target.handlePhotonCollision( photon );
+        const electron = this.target.handlePhotonCollision( photon, this.showHighestEnergyOnlyProperty.value );
         if ( electron ) {
           this.electrons.push( electron );
         }

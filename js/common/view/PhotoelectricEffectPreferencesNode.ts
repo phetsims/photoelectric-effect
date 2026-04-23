@@ -14,7 +14,7 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import WithOptional from '../../../../phet-core/js/types/WithOptional.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import PhotoelectricEffectPreferences from '../model/PhotoelectricEffectPreferences.js';
+import PhotoelectricEffectMysteryMaterials from '../model/PhotoelectricEffectMysteryMaterials.js';
 import MysteryMaterialPreferencesControls from './MysteryMaterialPreferencesControls.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -34,15 +34,15 @@ export default class PhotoelectricEffectPreferencesNode extends PreferencesPanel
     }, providedOptions );
 
     const mysteryMaterial1Controls = new MysteryMaterialPreferencesControls(
-      PhotoelectricEffectPreferences.mysteryMaterial1EnabledProperty,
-      PhotoelectricEffectPreferences.mysteryMaterial1WorkFunctionProperty,
+      PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_1.enabledProperty,
+      PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_1.workFunctionProperty,
       PhotoelectricEffectFluent.preferences.mysteryMaterial1LabelStringProperty,
       options.tandem.createTandem( 'mysteryMaterial1Controls' )
     );
 
     const mysteryMaterial2Controls = new MysteryMaterialPreferencesControls(
-      PhotoelectricEffectPreferences.mysteryMaterial2EnabledProperty,
-      PhotoelectricEffectPreferences.mysteryMaterial2WorkFunctionProperty,
+      PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_2.enabledProperty,
+      PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_2.workFunctionProperty,
       PhotoelectricEffectFluent.preferences.mysteryMaterial2LabelStringProperty,
       options.tandem.createTandem( 'mysteryMaterial2Controls' )
     );

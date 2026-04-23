@@ -8,8 +8,10 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
+import Range from '../../../../dot/js/Range.js';
 import Enumeration from '../../../../phet-core/js/Enumeration.js';
 import EnumerationValue from '../../../../phet-core/js/EnumerationValue.js';
 import optionize from '../../../../phet-core/js/optionize.js';
@@ -17,6 +19,13 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
+
+// TODO: How is this going to work? Will different mystery/custom materials have different
+//   ranges? If so, we need to assign this to each type or maybe even each Material instance.
+//   For now, this is convenient because we can use one range for every work function Property
+//   and know that it will be available when we create UI components.
+// Range for the work function of the material in eV.
+const WORK_FUNCTION_RANGE = new Range( 1.5, 7 );
 
 export class MaterialType extends EnumerationValue {
 
@@ -58,6 +67,8 @@ type SelfOptions = {
 
   // An identifier for the material label that can be used by the view layer.
   labelKey?: string | null;
+
+  enabled?: boolean;
 };
 
 export type MaterialOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
@@ -88,6 +99,11 @@ export default class Material extends PhetioObject {
   public readonly workFunctionProperty: NumberProperty;
 
   /**
+   * Controls whether this material is available for selection in the UI.
+   */
+  public readonly enabledProperty: BooleanProperty;
+
+  /**
    * Creates a material instance with its own work function Property.
    * @param materialType
    * @param providedOptions - material configuration including required tandem and optional label key override
@@ -95,7 +111,8 @@ export default class Material extends PhetioObject {
   public constructor( materialType: MaterialType, providedOptions: MaterialOptions ) {
 
     const options = optionize<MaterialOptions, SelfOptions, PhetioObjectOptions>()( {
-      labelKey: null
+      labelKey: null,
+      enabled: true
     }, providedOptions );
 
     super( {
@@ -105,7 +122,13 @@ export default class Material extends PhetioObject {
     this.materialType = materialType;
     this.labelKey = options.labelKey;
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
+      range: WORK_FUNCTION_RANGE,
       tandem: options.tandem.createTandem( 'workFunctionProperty' )
+    } );
+
+    // TODO: Should this class extend EnabledComponent?
+    this.enabledProperty = new BooleanProperty( options.enabled, {
+      tandem: options.tandem.createTandem( 'enabledProperty' )
     } );
   }
 

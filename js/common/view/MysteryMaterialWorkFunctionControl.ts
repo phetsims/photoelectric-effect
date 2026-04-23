@@ -17,7 +17,6 @@ import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import { MYSTERY_MATERIAL_WORK_FUNCTION_RANGE } from '../model/PhotoelectricEffectPreferences.js';
 
 type MysteryMaterialWorkFunctionControlOptions = WithRequired<PreferencesControlOptions, 'tandem'>;
 
@@ -30,7 +29,7 @@ export default class MysteryMaterialWorkFunctionControl extends PreferencesContr
   public constructor( workFunctionProperty: NumberProperty, providedOptions: MysteryMaterialWorkFunctionControlOptions ) {
 
     // TODO: Do we want to add a title?
-    const numberControl = new NumberControl( '', workFunctionProperty, MYSTERY_MATERIAL_WORK_FUNCTION_RANGE, {
+    const numberControl = new NumberControl( '', workFunctionProperty, workFunctionProperty.range, {
       delta: 0.1,
       numberDisplayOptions: {
         decimalPlaces: 1

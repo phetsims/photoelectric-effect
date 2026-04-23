@@ -25,12 +25,12 @@ export default class LabeledSpectrumSliderTrack extends SpectrumSliderTrack {
     } ) );
 
     const uvText = new Text( PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty, {
-      font: PhotoelectricEffectConstants.SPECTRUM_BAND_LABEL_FONT,
+      font: PhotoelectricEffectConstants.READOUT_FONT,
       maxWidth: 50
     } );
 
     const irText = new Text( PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty, {
-      font: PhotoelectricEffectConstants.SPECTRUM_BAND_LABEL_FONT,
+      font: PhotoelectricEffectConstants.READOUT_FONT,
       maxWidth: 50
     } );
 
