@@ -10,7 +10,6 @@
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
-import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
@@ -28,8 +27,8 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
 import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
-import ParticleCanvasNode from './ParticleCanvasNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
+import ParticleCanvasNode from './ParticleCanvasNode.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -77,13 +76,18 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const workFunctionControl = new NumberControl(
       PhotoelectricEffectFluent.workFunction.labelStringProperty,
       workFunctionProperty,
-      new Range( 0, 10 ),
+
+      // TODO: NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
+      //   we will need to add support in scenery-phet or reconstruct this NumberControl on material change,
+      //   or create several NumberControls and toggle visibility.
+      Material.WORK_FUNCTION_RANGE,
       {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1
         },
         visibleProperty: customMaterialSelectedProperty,
+        centerTop: materialsComboBox.centerBottom.plusXY( 0, 25 ),
         tandem: options.tandem.createTandem( 'workFunctionControl' )
       }
     );

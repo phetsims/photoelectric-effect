@@ -20,13 +20,6 @@ import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioO
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 
-// TODO: How is this going to work? Will different mystery/custom materials have different
-//   ranges? If so, we need to assign this to each type or maybe even each Material instance.
-//   For now, this is convenient because we can use one range for every work function Property
-//   and know that it will be available when we create UI components.
-// Range for the work function of the material in eV.
-const WORK_FUNCTION_RANGE = new Range( 1.5, 7 );
-
 export class MaterialType extends EnumerationValue {
 
   // All of the work functions for the following MaterialTypes are ReadOnly.
@@ -103,6 +96,13 @@ export default class Material extends PhetioObject {
    */
   public readonly enabledProperty: BooleanProperty;
 
+  // TODO: How is this going to work? Will different mystery/custom materials have different
+  //   ranges? If so, we need to assign this to each type or maybe even each Material instance.
+  //   For now, this is convenient because we can use one range for every work function Property
+  //   and know that it will be available when we create UI components.
+  // Range for the work function of the material in eV.
+  public static readonly WORK_FUNCTION_RANGE = new Range( 1.5, 7 );
+
   /**
    * Creates a material instance with its own work function Property.
    * @param materialType
@@ -122,7 +122,7 @@ export default class Material extends PhetioObject {
     this.materialType = materialType;
     this.labelKey = options.labelKey;
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
-      range: WORK_FUNCTION_RANGE,
+      range: Material.WORK_FUNCTION_RANGE,
       tandem: options.tandem.createTandem( 'workFunctionProperty' )
     } );
 
