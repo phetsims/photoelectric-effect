@@ -8,16 +8,12 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
-import EnabledProperty from '../../../../axon/js/EnabledProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
-import Range from '../../../../dot/js/Range.js';
 import Enumeration from '../../../../phet-core/js/Enumeration.js';
 import EnumerationValue from '../../../../phet-core/js/EnumerationValue.js';
-import optionize from '../../../../phet-core/js/optionize.js';
-import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import PhetioObject from '../../../../tandem/js/PhetioObject.js';
+import Tandem from '../../../../tandem/js/Tandem.js';
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 
@@ -33,13 +29,14 @@ export class MaterialType extends EnumerationValue {
   public static readonly PLATINUM = new MaterialType( 6.3 );
   public static readonly ZINC = new MaterialType( 4.3 );
 
-  // Mystery materials are for teachers and phet-io clients. The work function will only be set from
-  // preferences or with a PhET-iO customization. As such, simulation reset should not affect the
-  // workFunctionProperty of mystery materials.
+  // The work function for mystery is set in preferences.
+
+  // Reset should not affect the workFunctionProperty of mystery.
   public static readonly MYSTERY = new MaterialType( 5 );
 
-  // Controllable by the student, the custom material will have a work function control right in the
-  // simulation. Reset should set the workFunctionProperty back to its initial value.
+  // The work function for custom is set by the user in the screen.
+
+  // Reset should set the workFunctionProperty back to its initial value.
   public static readonly CUSTOM = new MaterialType( 5 );
 
   // Must be defined after all values are declared.
@@ -57,16 +54,6 @@ type MaterialStateObject = {
   materialType: MaterialType;
 };
 
-type SelfOptions = {
-
-  // An identifier for the material label that can be used by the view layer.
-  labelKey?: string | null;
-
-  enabled?: boolean;
-};
-
-export type MaterialOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
-
 export default class Material extends PhetioObject {
 
   // TODO: Is this where these should live?
@@ -82,54 +69,22 @@ export default class Material extends PhetioObject {
   public readonly materialType: MaterialType;
 
   /**
-   * Identifier for the material label used by the view layer.
-   */
-  public readonly labelKey: string | null;
-
-  /**
    * Minimum energy required for an electron to escape this material.
    * Used alongside photon energy to decide when emission occurs.
    */
   public readonly workFunctionProperty: NumberProperty;
 
   /**
-   * Controls whether this material is available for selection in the UI.
-   */
-  public readonly enabledProperty: BooleanProperty;
-
-  // TODO: @design How is this going to work? Will different mystery/custom materials have different
-  //   ranges? If so, we need to assign this to each type or maybe even each Material instance.
-  //   For now, this is convenient because we can use one range for every work function Property
-  //   and know that it will be available when we create UI components.
-  // Range for the work function of the material in eV.
-  public static readonly WORK_FUNCTION_RANGE = new Range( 1.5, 7 );
-
-  /**
    * Creates a material instance with its own work function Property.
-   * @param materialType
-   * @param providedOptions - material configuration including required tandem and optional label key override
    */
-  public constructor( materialType: MaterialType, providedOptions: MaterialOptions ) {
-
-    const options = optionize<MaterialOptions, SelfOptions, PhetioObjectOptions>()( {
-      labelKey: null,
-      enabled: true
-    }, providedOptions );
+  public constructor( materialType: MaterialType, tandem: Tandem ) {
 
     super( {
-      tandem: options.tandem,
       phetioType: Material.MaterialIO
     } );
     this.materialType = materialType;
-    this.labelKey = options.labelKey;
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
-      range: Material.WORK_FUNCTION_RANGE,
-      tandem: options.tandem.createTandem( 'workFunctionProperty' )
-    } );
-
-    // TODO: @design (phet-io) All EnabledProperty instances are featured. Do we want that for all Materials?
-    this.enabledProperty = new EnabledProperty( options.enabled, {
-      tandem: options.tandem.createTandem( 'enabledProperty' )
+      tandem: tandem.createTandem( 'workFunctionProperty' )
     } );
   }
 

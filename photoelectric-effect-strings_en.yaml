@@ -7,21 +7,6 @@ screen:
   experiment: 'Experiment'
   energy: 'Energy'
 
-materials:
-  sodium: 'Sodium'
-  copper: 'Copper'
-  calcium: 'Calcium'
-  magnesium: 'Magnesium'
-  platinum: 'Platinum'
-  zinc: 'Zinc'
-  custom: 'Custom'
-  mystery: 'Mystery'
-  mystery1: 'Mystery 1'
-  mystery2: 'Mystery 2'
-  mystery3: 'Mystery 3'
-  mystery4: 'Mystery 4'
-  mystery5: 'Mystery 5'
-
 # Experiment graphs
 experiment:
   graph:
@@ -66,8 +51,7 @@ debugLegend.target: 'Red outline = target'
 debugLegend.collector: 'Blue outline = collector'
 
 # Preferences PLACEHOLDERS
-preferences.mysteryMaterial1Label: 'Mystery Material 1'
-preferences.mysteryMaterial2Label: 'Mystery Material 2'
+preferences.mysteryMaterialLabel: 'Mystery Material'
 preferences.mysteryMaterialDescription: 'When enabled, adds a mystery material with a configurable work function to the available materials.'
 preferences.mysteryMaterialWorkFunctionLabel: 'Work Function (eV)'
 preferences.mysteryMaterialWorkFunctionDescription: 'Set the work function of the mystery material.'

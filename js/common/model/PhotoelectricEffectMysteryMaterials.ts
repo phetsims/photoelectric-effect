@@ -3,13 +3,10 @@
 /**
  * PhotoelectricEffectMysteryMaterials defines all global mystery material instances for the sim.
  *
- * TODO: @design, are you OK with all of these materials being globals (state shared across all screens,
- *   not reset from ResetAllButton, will have different location in the phetio tree, and so on...)
- *
- * PREFERENCES_MYSTERY_MATERIAL_1 and _2 are user-configurable via the Preferences dialog. Its work function
+ * PREFERENCES_MYSTERY_MATERIAL is user-configurable via the Preferences dialog. Its work function
  * is exposed through PhotoelectricEffectPreferences and persists across sessions.
  *
- * PHET_IO_MYSTERY_MATERIAL_1 through _3 are reserved for PhET-iO clients (e.g. Studio)
+ * MYSTERY_MATERIAL_1 through _4 are reserved for PhET-iO clients (e.g. Studio operators)
  * who need additional controllable mystery materials. Their work functions are set exclusively
  * through the PhET-iO API and are not configurable in the sim UI.
  *
@@ -22,50 +19,30 @@
 import Tandem from '../../../../tandem/js/Tandem.js';
 import Material, { MaterialType } from './Material.js';
 
-// The mystery materials whose work functions are user-configurable via the Preferences dialog.
-const PREFERENCES_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
-  tandem: Tandem.PREFERENCES,
-  labelKey: 'mystery1',
-  enabled: false
-} );
-const PREFERENCES_MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
-  tandem: Tandem.PREFERENCES,
-  labelKey: 'mystery2',
-  enabled: false
-} );
+// The mystery material whose work function is user-configurable via the Preferences dialog.
+const PREFERENCES_MYSTERY_MATERIAL = new Material( MaterialType.MYSTERY, Tandem.PREFERENCES );
 
 // Mystery materials reserved for PhET-iO client control. Work functions are not exposed in the sim UI.
-const PHET_IO_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
-  tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial1' ),
-  labelKey: 'mystery3',
-  enabled: false
-} );
-const PHET_IO_MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
-  tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial2' ),
-  labelKey: 'mystery4',
-  enabled: false
-} );
-const PHET_IO_MYSTERY_MATERIAL_3 = new Material( MaterialType.MYSTERY, {
-  tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial3' ),
-  labelKey: 'mystery5',
-  enabled: false
-} );
+const MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial1' ) );
+const MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial2' ) );
+const MYSTERY_MATERIAL_3 = new Material( MaterialType.MYSTERY, Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial3' ) );
+const MYSTERY_MATERIAL_4 = new Material( MaterialType.MYSTERY, Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial4' ) );
 
 const PhotoelectricEffectMysteryMaterials = {
-  PREFERENCES_MYSTERY_MATERIAL_1: PREFERENCES_MYSTERY_MATERIAL_1,
-  PREFERENCES_MYSTERY_MATERIAL_2: PREFERENCES_MYSTERY_MATERIAL_2,
-  MYSTERY_MATERIAL_1: PHET_IO_MYSTERY_MATERIAL_1,
-  MYSTERY_MATERIAL_2: PHET_IO_MYSTERY_MATERIAL_2,
-  MYSTERY_MATERIAL_3: PHET_IO_MYSTERY_MATERIAL_3,
+  PREFERENCES_MYSTERY_MATERIAL: PREFERENCES_MYSTERY_MATERIAL,
+  MYSTERY_MATERIAL_1: MYSTERY_MATERIAL_1,
+  MYSTERY_MATERIAL_2: MYSTERY_MATERIAL_2,
+  MYSTERY_MATERIAL_3: MYSTERY_MATERIAL_3,
+  MYSTERY_MATERIAL_4: MYSTERY_MATERIAL_4,
 
   // All mystery materials in display order. Pass this array to each screen so they all share
   // the same global instances.
   ALL_MYSTERY_MATERIALS: [
-    PREFERENCES_MYSTERY_MATERIAL_1,
-    PREFERENCES_MYSTERY_MATERIAL_2,
-    PHET_IO_MYSTERY_MATERIAL_1,
-    PHET_IO_MYSTERY_MATERIAL_2,
-    PHET_IO_MYSTERY_MATERIAL_3
+    PREFERENCES_MYSTERY_MATERIAL,
+    MYSTERY_MATERIAL_1,
+    MYSTERY_MATERIAL_2,
+    MYSTERY_MATERIAL_3,
+    MYSTERY_MATERIAL_4
   ]
 };
 

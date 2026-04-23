@@ -21,7 +21,7 @@ export default class IntroModel extends PhotoelectricEffectModel {
   public readonly sceneProperty: StringUnionProperty<IntroScene>;
 
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
-    super( mysteryMaterials, [], providedOptions );
+    super( mysteryMaterials, providedOptions );
 
     this.sceneProperty = new StringUnionProperty( 'grounded', {
       validValues: [ 'grounded', 'circuit' ],

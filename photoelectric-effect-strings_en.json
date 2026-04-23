@@ -13,47 +13,6 @@
       "value": "Energy"
     }
   },
-  "materials": {
-    "sodium": {
-      "value": "Sodium"
-    },
-    "copper": {
-      "value": "Copper"
-    },
-    "calcium": {
-      "value": "Calcium"
-    },
-    "magnesium": {
-      "value": "Magnesium"
-    },
-    "platinum": {
-      "value": "Platinum"
-    },
-    "zinc": {
-      "value": "Zinc"
-    },
-    "custom": {
-      "value": "Custom"
-    },
-    "mystery": {
-      "value": "Mystery"
-    },
-    "mystery1": {
-      "value": "Mystery 1"
-    },
-    "mystery2": {
-      "value": "Mystery 2"
-    },
-    "mystery3": {
-      "value": "Mystery 3"
-    },
-    "mystery4": {
-      "value": "Mystery 4"
-    },
-    "mystery5": {
-      "value": "Mystery 5"
-    }
-  },
   "experiment": {
     "graph": {
       "voltageCurrentTitle": {
@@ -154,11 +113,8 @@
   "debugLegend.collector": {
     "value": "Blue outline = collector"
   },
-  "preferences.mysteryMaterial1Label": {
-    "value": "Mystery Material 1"
-  },
-  "preferences.mysteryMaterial2Label": {
-    "value": "Mystery Material 2"
+  "preferences.mysteryMaterialLabel": {
+    "value": "Mystery Material"
   },
   "preferences.mysteryMaterialDescription": {
     "value": "When enabled, adds a mystery material with a configurable work function to the available materials."

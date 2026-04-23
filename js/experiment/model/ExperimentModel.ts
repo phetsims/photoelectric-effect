@@ -7,7 +7,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Material, { MaterialType } from '../../common/model/Material.js';
+import Material from '../../common/model/Material.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 import FrequencyEnergyGraphData from './FrequencyEnergyGraphData.js';
 import IntensityCurrentGraphData from './IntensityCurrentGraphData.js';
@@ -21,11 +21,7 @@ export default class ExperimentModel extends PhotoelectricEffectModel {
   public readonly voltageCurrentGraphData: VoltageCurrentGraphData;
 
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
-    super(
-      mysteryMaterials,
-      [ new Material( MaterialType.CUSTOM, { tandem: providedOptions.tandem } ) ],
-      providedOptions
-    );
+    super( mysteryMaterials, providedOptions );
 
     this.intensityCurrentGraphData = new IntensityCurrentGraphData( this );
     this.frequencyEnergyGraphData = new FrequencyEnergyGraphData( this );

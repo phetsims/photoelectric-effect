@@ -38,7 +38,7 @@ export default class FrequencyEnergyGraphData extends GraphData {
       [
         model.target.materialProperty,
 
-        // TODO: @design Should the work function clear the frequency/energy data? Its efectively like changing the
+        // TODO: Should the work function clear the frequency/energy data? Its efectively like changing the
         //   material, so I wasn't sure.
         model.target.workFunctionProperty
       ],
@@ -46,10 +46,6 @@ export default class FrequencyEnergyGraphData extends GraphData {
       {
         // The user controls wavelength. But we plot with frequency.
         xDomain: frequencyXDomain,
-
-        // It is more important for this plot to see exactly where the energy starts to increase linearly
-        // so the resolution is increased to produce ~200 points.
-        xResolution: 0.005,
         drivingValueToChartX: wavelength => wavelengthToFrequency( wavelength )
       }
     );
