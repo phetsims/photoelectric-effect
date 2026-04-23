@@ -1,9 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * MaterialsComboBox is the combo box used to choose the active target material in the photoelectric effect screen.
- * It encapsulates item construction so the screen view can compose higher-level controls without owning combo box
- * details. Labels are currently hardcoded here and will move to translatable strings in a future cleanup.
+ * MaterialsComboBox is the combo box used to choose the active target material.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -14,12 +12,12 @@ import { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Node, { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import ComboBox, { ComboBoxItem, ComboBoxOptions } from '../../../../sun/js/ComboBox.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import Material, { MaterialType } from '../model/Material.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -70,9 +68,7 @@ export default class MaterialsComboBox extends ComboBox<Material> {
         createNode: () => new Text(
           MaterialsComboBox.getMaterialLabelStringProperty( material ),
           {
-
-            // TODO: This should use font entries from constants when available.
-            font: new PhetFont( 16 )
+            font: PhotoelectricEffectConstants.CONTENT_FONT
           }
         )
       };
