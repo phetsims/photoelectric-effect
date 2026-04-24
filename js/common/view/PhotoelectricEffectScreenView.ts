@@ -66,9 +66,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY + 40 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
-    // Add circuit node as background.
-    this.addChild( new CircuitNode( this.modelViewTransform ) );
-
     // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
     // https://github.com/phetsims/photoelectric-effect/issues/5
     const comboBoxItems = model.target.materials.map( ( material, i ) => {
@@ -141,28 +138,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( lightSourceNode );
     this.addChild( photonSourcePanel );
 
-    const currentDisplay = new NumberDisplay(
-      model.currentProperty,
-      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT ),
-      {
-        decimalPlaces: 3,
-        tandem: options.tandem.createTandem( 'currentDisplay' )
-      }
-    );
-
-    const currentReadout = new HBox( {
-      spacing: 10,
-      align: 'center',
-      children: [
-        new Text( PhotoelectricEffectFluent.current.labelStringProperty ),
-        currentDisplay
-      ],
-      centerTop: photonSourcePanel.centerBottom.plusXY(
-        0,
-        PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      )
-    } );
-
     const voltageControl = new NumberControl(
       PhotoelectricEffectFluent.voltage.labelStringProperty,
       model.voltageProperty,
@@ -228,12 +203,11 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( materialsComboBox );
     this.addChild( workFunctionControl );
     this.addChild( this.electronVisibilityControls );
-    this.addChild( photonSourcePanel );
     this.addChild( this.ammeterDisplayPanel );
 
     this.ammeterDisplayPanel.centerTop = this.modelViewTransform.modelToViewXY( model.collector.x, 0 ).plusXY(
       0,
-      PhotoelectricEffectConstants.COLLECTOR_BOUNDS.maxY + 20
+      PhotoelectricEffectConstants.PLATE_BOUNDS.maxY + 20
     );
     this.addChild( voltageControl );
 

@@ -11,34 +11,31 @@
 
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Shape from '../../../../kite/js/Shape.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
+import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
-import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
+import CircuitFactory from './CircuitFactory.js';
+
+type SelfOptions = EmptySelfOptions;
+type CircuitNodeOptions = SelfOptions & StrictOmit<NodeOptions, 'children'>;
 
 export default class CircuitNode extends Node {
 
-  public constructor( modelViewTransform: ModelViewTransform2 ) {
+  public constructor( modelViewTransform: ModelViewTransform2, providedOptions: CircuitNodeOptions ) {
 
     /**
      * Create the collectors and plate that the electrons travel between
      */
-    const targetPlate = new Rectangle( PhotoelectricEffectConstants.TARGET_PLATE_BOUNDS, {
-      rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ),
-      fill: PhotoelectricEffectColors.targetPlateFillColorProperty,
-      stroke: 'black'
+    const targetPlate = CircuitFactory.createPlateWithMaterial( {
+      rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 )
     } );
-    const targetCollector = new Rectangle( PhotoelectricEffectConstants.COLLECTOR_BOUNDS, {
-      rightCenter: targetPlate.leftCenter,
-      fill: PhotoelectricEffectColors.collectorColorProperty,
-      cornerRadius: 5
-    } );
-    const sinkCollector = new Rectangle( PhotoelectricEffectConstants.COLLECTOR_BOUNDS, {
-      leftCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.COLLECTOR_X, 0 ),
-      fill: PhotoelectricEffectColors.collectorColorProperty,
-      cornerRadius: 5
+
+    const collectorPlate = CircuitFactory.createPlate( {
+      leftCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.COLLECTOR_X, 0 )
     } );
 
     /**
@@ -47,12 +44,12 @@ export default class CircuitNode extends Node {
     const circuitWireHeight = 150;
     const circuitWirePlateExtension = 50;
     const circuitWireLineWidth = 10;
-    const circuitWireShape = new Shape().moveToPoint( targetCollector.leftCenter )
-      .lineTo( targetCollector.left - circuitWirePlateExtension, targetCollector.centerY )
-      .lineTo( targetCollector.left - circuitWirePlateExtension, targetCollector.centerY + circuitWireHeight )
-      .lineTo( sinkCollector.right + circuitWirePlateExtension, sinkCollector.centerY + circuitWireHeight )
-      .lineTo( sinkCollector.right + circuitWirePlateExtension, sinkCollector.centerY )
-      .lineToPoint( sinkCollector.rightCenter );
+    const circuitWireShape = new Shape().moveToPoint( targetPlate.leftCenter )
+      .lineTo( targetPlate.left - circuitWirePlateExtension, targetPlate.centerY )
+      .lineTo( targetPlate.left - circuitWirePlateExtension, targetPlate.centerY + circuitWireHeight )
+      .lineTo( collectorPlate.right + circuitWirePlateExtension, collectorPlate.centerY + circuitWireHeight )
+      .lineTo( collectorPlate.right + circuitWirePlateExtension, collectorPlate.centerY )
+      .lineToPoint( collectorPlate.rightCenter );
 
 
     /**
@@ -61,27 +58,27 @@ export default class CircuitNode extends Node {
     const vacuumTubeHorizontalExtension = 10;
     const vacuumTubeVerticalExtension = 10;
     const tubeEndXRadius = 5;
-    const tubeEndYRadius = PhotoelectricEffectConstants.COLLECTOR_BOUNDS.height / 2 + vacuumTubeVerticalExtension;
+    const tubeEndYRadius = PhotoelectricEffectConstants.PLATE_BOUNDS.height / 2 + vacuumTubeVerticalExtension;
     const vacuumTubeLineWidth = 1.5;
     const vacuumTubeShape = new Shape()
 
       // Create the top boundary of the tube
-      .moveTo( targetCollector.left - vacuumTubeHorizontalExtension, targetCollector.top - vacuumTubeVerticalExtension )
-      .lineTo( sinkCollector.right + vacuumTubeHorizontalExtension, sinkCollector.top - vacuumTubeVerticalExtension )
-      .moveTo( sinkCollector.right + vacuumTubeHorizontalExtension, sinkCollector.centerY )
+      .moveTo( targetPlate.left - vacuumTubeHorizontalExtension, targetPlate.top - vacuumTubeVerticalExtension )
+      .lineTo( collectorPlate.right + vacuumTubeHorizontalExtension, collectorPlate.top - vacuumTubeVerticalExtension )
+      .moveTo( collectorPlate.right + vacuumTubeHorizontalExtension, collectorPlate.centerY )
 
       // Create the right end of the tube
       .ellipse(
-        new Vector2( sinkCollector.right + vacuumTubeHorizontalExtension, sinkCollector.centerY ),
+        new Vector2( collectorPlate.right + vacuumTubeHorizontalExtension, collectorPlate.centerY ),
         tubeEndXRadius, tubeEndYRadius, 0 )
 
       // Create the bottom boundary of the tube
-      .moveTo( sinkCollector.right + vacuumTubeHorizontalExtension, sinkCollector.bottom + vacuumTubeVerticalExtension )
-      .lineTo( targetCollector.left - vacuumTubeHorizontalExtension, targetCollector.bottom + vacuumTubeVerticalExtension )
-      .moveTo( targetCollector.left - vacuumTubeHorizontalExtension, targetCollector.centerY )
+      .moveTo( collectorPlate.right + vacuumTubeHorizontalExtension, collectorPlate.bottom + vacuumTubeVerticalExtension )
+      .lineTo( targetPlate.left - vacuumTubeHorizontalExtension, targetPlate.bottom + vacuumTubeVerticalExtension )
+      .moveTo( targetPlate.left - vacuumTubeHorizontalExtension, targetPlate.centerY )
 
       // Create the left end of the tube
-      .ellipse( new Vector2( targetCollector.left - vacuumTubeHorizontalExtension, targetCollector.centerY ),
+      .ellipse( new Vector2( targetPlate.left - vacuumTubeHorizontalExtension, targetPlate.centerY ),
         tubeEndXRadius, tubeEndYRadius, 0 );
     const vacuumNode = new Path( vacuumTubeShape, {
       stroke: PhotoelectricEffectColors.vacuumTubeColorProperty,
@@ -93,13 +90,13 @@ export default class CircuitNode extends Node {
      * We create a clip area to cut out "holes" in the wire for the vacuum tube outline to appear through in two spots.
      */
 
-    // Clip area that allows part of the vacuum line to appear in front of the circuit wire.
-    // Shared parameters for the two spots where the circuit wire crosses the tube ellipses.
-    const clipRectY = targetCollector.centerY - circuitWireLineWidth / 2;
+      // Clip area that allows part of the vacuum line to appear in front of the circuit wire.
+      // Shared parameters for the two spots where the circuit wire crosses the tube ellipses.
+    const clipRectY = targetPlate.centerY - circuitWireLineWidth / 2;
     const clipRectWidth = vacuumTubeLineWidth;
     const clipRectHeight = circuitWireLineWidth;
-    const leftClipRectX = targetCollector.left - vacuumTubeHorizontalExtension - tubeEndXRadius - vacuumTubeLineWidth / 2;
-    const rightClipRectX = sinkCollector.right + vacuumTubeHorizontalExtension - tubeEndXRadius - vacuumTubeLineWidth / 2;
+    const leftClipRectX = targetPlate.left - vacuumTubeHorizontalExtension - tubeEndXRadius - vacuumTubeLineWidth / 2;
+    const rightClipRectX = collectorPlate.right + vacuumTubeHorizontalExtension - tubeEndXRadius - vacuumTubeLineWidth / 2;
 
     const wireClipArea = new Shape()
       .rect( -1000, -1000, 2000, 2000 )
@@ -124,8 +121,9 @@ export default class CircuitNode extends Node {
       clipArea: wireClipArea
     } );
 
-    super( {
-      children: [ vacuumNode, targetPlate, targetCollector, sinkCollector, circuitWirePath ]
-    } );
+    const options = optionize<CircuitNodeOptions, SelfOptions, NodeOptions>()( {
+      children: [ vacuumNode, targetPlate, collectorPlate, circuitWirePath ]
+    }, providedOptions );
+    super( options );
   }
 }

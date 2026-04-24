@@ -101,8 +101,8 @@ export default class PhotoelectricEffectConstants {
   //--------------------------------------------------------------
 
   // Bounds of the target and collector plate for rendering purposes only.
-  public static readonly TARGET_PLATE_BOUNDS = new Bounds2( 0, 0, 8, PLATE_HEIGHT );
-  public static readonly COLLECTOR_BOUNDS = new Bounds2( 0, 0, 25, PLATE_HEIGHT + 30 );
+  public static readonly PLATE_MATERIAL_BOUNDS = new Bounds2( 0, 0, 8, PLATE_HEIGHT );
+  public static readonly PLATE_BOUNDS = new Bounds2( 0, 0, 25, PLATE_HEIGHT + 30 );
 
   // Width of the lamp opening which will emit our photons.
   public static readonly PHOTON_SOURCE_WIDTH = PHOTON_SOURCE_WIDTH;
