@@ -1,6 +1,9 @@
 // Copyright 2024, University of Colorado Boulder
 /**
- * TODO: describe file
+ * A node that draws the circuit. This circuit includes the wires connecting to each collector (target and sink),
+ * as well as the target plate, and visual outline of a vacuum tube that the electrons travel inside. This is a purely
+ * visual component whose position and size is determined by the needs of the model-view transform. There are no
+ * interactive components.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  *
@@ -19,6 +22,9 @@ export default class CircuitNode extends Node {
 
   public constructor( modelViewTransform: ModelViewTransform2 ) {
 
+    /**
+     * Create the collectors and plate that the electrons travel between
+     */
     const targetPlate = new Rectangle( PhotoelectricEffectConstants.TARGET_PLATE_BOUNDS, {
       rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ),
       fill: PhotoelectricEffectColors.targetPlateFillColorProperty,
@@ -35,6 +41,9 @@ export default class CircuitNode extends Node {
       cornerRadius: 5
     } );
 
+    /**
+     * Create the shape for the circuit wire that connects the collectors.
+     */
     const circuitWireHeight = 150;
     const circuitWirePlateExtension = 50;
     const circuitWireLineWidth = 10;
@@ -74,6 +83,15 @@ export default class CircuitNode extends Node {
       // Create the left end of the tube
       .ellipse( new Vector2( targetCollector.left - vacuumTubeHorizontalExtension, targetCollector.centerY ),
         tubeEndXRadius, tubeEndYRadius, 0 );
+    const vacuumNode = new Path( vacuumTubeShape, {
+      stroke: PhotoelectricEffectColors.vacuumTubeColorProperty,
+      lineWidth: vacuumTubeLineWidth
+    } );
+
+    /**
+     * We want the vacuum tobe to appear as though it is surrounding the collectors and traveling electrons.
+     * We create a clip area to cut out "holes" in the wire for the vacuum tube outline to appear through in two spots.
+     */
 
     // Clip area that allows part of the vacuum line to appear in front of the circuit wire.
     // Shared parameters for the two spots where the circuit wire crosses the tube ellipses.
@@ -86,24 +104,19 @@ export default class CircuitNode extends Node {
     const wireClipArea = new Shape()
       .rect( -1000, -1000, 2000, 2000 )
 
-      // Left hole
+      // Left hole drawn in a counter-clockwise direction
       .moveTo( leftClipRectX + clipRectWidth, clipRectY )
       .lineTo( leftClipRectX, clipRectY )
       .lineTo( leftClipRectX, clipRectY + clipRectHeight )
       .lineTo( leftClipRectX + clipRectWidth, clipRectY + clipRectHeight )
       .close()
 
-      // Right hole
+      // Right hole drawn in a counter-clockwise direction
       .moveTo( rightClipRectX + clipRectWidth, clipRectY )
       .lineTo( rightClipRectX, clipRectY )
       .lineTo( rightClipRectX, clipRectY + clipRectHeight )
       .lineTo( rightClipRectX + clipRectWidth, clipRectY + clipRectHeight )
       .close();
-
-    const vacuumNode = new Path( vacuumTubeShape, {
-      stroke: PhotoelectricEffectColors.vacuumTubeColorProperty,
-      lineWidth: vacuumTubeLineWidth
-    } );
 
     const circuitWirePath = new Path( circuitWireShape, {
       stroke: PhotoelectricEffectColors.circuitWireColorProperty,

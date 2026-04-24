@@ -1,13 +1,10 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * TODO: This needs a big cleanup.
  *
- * LightSourceNode renders the photon light source lamp using Scenery primitives,
- * faithfully reproducing the SVG design provided in the project assets. The local
- * origin (0, 0) is positioned at the aperture center (where photons exit), so
- * placing this node at the beam-start view position aligns the emitter correctly.
- *
+ * LightSourceNode renders the lamp from which photons emit. The light source is first drawn with the lens opening
+ * facing down in natural coordinates and is then rotated to align with the beam direction.
+ * After LAMP_ROTATION, the +y direction lands on the beam direction in view.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  */
@@ -21,12 +18,10 @@ import RadialGradient from '../../../../scenery/js/util/RadialGradient.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
-// Body — main lamp housing.
+// Constants
 const BODY_WIDTH = 125;
 const BODY_HEIGHT = 100;
 const BODY_CORNER_RADIUS = 5;
-
-// Mount — aperture housing on the left side of the body.
 const LENS_WIDTH = PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH + 10;
 const LENS_HEIGHT = 30;
 
@@ -42,14 +37,7 @@ export default class LightSourceNode extends Node {
   public constructor( beamStartCenter: Vector2 ) {
     super();
 
-    // All parts are drawn in natural coordinates, then a single rotation on the
-    // container maps them to screen space:
-    //   - aperture at (0, 0)
-    //   - lamp face runs along the x-axis
-    //   - beam exits in the +y direction; lamp body extends in -y
-    // After LAMP_ROTATION, the +y direction lands on the beam direction in view.
-
-    // Lens: wide along the face (x-axis), thin along the beam (y-axis).
+    // Aperture: Defines the lens opening which is wide along the face (x-axis), thin along the beam (y-axis).
     const apertureGradient = new RadialGradient( 0, 0, 1, 0, 0, 15 )
       .addColorStop( 0, PhotoelectricEffectColors.apertureGradientCenterColorProperty.value )
       .addColorStop( 0.5, PhotoelectricEffectColors.apertureGradientMidColorProperty.value )
@@ -59,14 +47,14 @@ export default class LightSourceNode extends Node {
       stroke: PhotoelectricEffectColors.lightSourceBodyColorProperty
     } );
 
-    // Mount: centered on the aperture, depth extending into the lamp (-y).
+    // Lens: Centered on the aperture and extends out from the body of the light source.
     const lens = new Rectangle( 0, 0, LENS_WIDTH, LENS_HEIGHT, {
       fill: PhotoelectricEffectColors.lightSourceBodyColorProperty,
       stroke: PhotoelectricEffectColors.lightSourceBodyColorProperty,
       centerBottom: aperture.center
     } );
 
-    // Body: directly behind the lens.
+    // Body: The main housing of the light source.
     const body = new Rectangle( 0, 0, BODY_WIDTH, BODY_HEIGHT, {
       cornerRadius: BODY_CORNER_RADIUS,
       fill: PhotoelectricEffectColors.lightSourceBodyColorProperty,
