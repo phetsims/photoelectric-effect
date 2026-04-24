@@ -12,6 +12,7 @@ import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransfo
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
+import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 export default class CircuitNode extends Node {
@@ -20,17 +21,17 @@ export default class CircuitNode extends Node {
 
     const targetPlate = new Rectangle( PhotoelectricEffectConstants.TARGET_PLATE_BOUNDS, {
       rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ),
-      fill: 'gray',
+      fill: PhotoelectricEffectColors.targetPlateFillColorProperty,
       stroke: 'black'
     } );
     const targetCollector = new Rectangle( PhotoelectricEffectConstants.COLLECTOR_BOUNDS, {
       rightCenter: targetPlate.leftCenter,
-      fill: 'black',
+      fill: PhotoelectricEffectColors.collectorColorProperty,
       cornerRadius: 5
     } );
     const sinkCollector = new Rectangle( PhotoelectricEffectConstants.COLLECTOR_BOUNDS, {
       leftCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.COLLECTOR_X, 0 ),
-      fill: 'black',
+      fill: PhotoelectricEffectColors.collectorColorProperty,
       cornerRadius: 5
     } );
 
@@ -100,12 +101,12 @@ export default class CircuitNode extends Node {
       .close();
 
     const vacuumNode = new Path( vacuumTubeShape, {
-      stroke: 'blue',
+      stroke: PhotoelectricEffectColors.vacuumTubeColorProperty,
       lineWidth: vacuumTubeLineWidth
     } );
 
     const circuitWirePath = new Path( circuitWireShape, {
-      stroke: 'gray',
+      stroke: PhotoelectricEffectColors.circuitWireColorProperty,
       lineWidth: circuitWireLineWidth,
       clipArea: wireClipArea
     } );
