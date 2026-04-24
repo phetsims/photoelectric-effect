@@ -18,6 +18,7 @@ import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RadialGradient from '../../../../scenery/js/util/RadialGradient.js';
+import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 // Body — main lamp housing.
@@ -50,25 +51,25 @@ export default class LightSourceNode extends Node {
 
     // Lens: wide along the face (x-axis), thin along the beam (y-axis).
     const apertureGradient = new RadialGradient( 0, 0, 1, 0, 0, 15 )
-      .addColorStop( 0, '#ffffff' )
-      .addColorStop( 0.5, '#80c3ec' )
-      .addColorStop( 0.90, '#6ea4c6' );
+      .addColorStop( 0, PhotoelectricEffectColors.apertureGradientCenterColorProperty.value )
+      .addColorStop( 0.5, PhotoelectricEffectColors.apertureGradientMidColorProperty.value )
+      .addColorStop( 0.90, PhotoelectricEffectColors.apertureGradientEdgeColorProperty.value );
     const aperture = new Path( new Shape().ellipse( 0, 0, LENS_WIDTH / 2 - 1, 5, 0 ), {
       fill: apertureGradient,
-      stroke: 'black'
+      stroke: PhotoelectricEffectColors.lightSourceBodyColorProperty
     } );
 
     // Mount: centered on the aperture, depth extending into the lamp (-y).
     const lens = new Rectangle( 0, 0, LENS_WIDTH, LENS_HEIGHT, {
-      fill: 'black',
-      stroke: 'black',
+      fill: PhotoelectricEffectColors.lightSourceBodyColorProperty,
+      stroke: PhotoelectricEffectColors.lightSourceBodyColorProperty,
       centerBottom: aperture.center
     } );
 
     // Body: directly behind the lens.
     const body = new Rectangle( 0, 0, BODY_WIDTH, BODY_HEIGHT, {
       cornerRadius: BODY_CORNER_RADIUS,
-      fill: 'black',
+      fill: PhotoelectricEffectColors.lightSourceBodyColorProperty,
       centerBottom: lens.centerTop.plusXY( 0, 1 ) // overlap a bit to eliminate finicky white space.
     } );
 
