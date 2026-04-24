@@ -21,8 +21,10 @@ import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
+import Shape from '../../../../kite/js/Shape.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 import ComboBox from '../../../../sun/js/ComboBox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
@@ -59,7 +61,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // y centered in the layout bounds
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
-      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
+      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY + 40 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
     // Add circuit node as background.
@@ -100,6 +102,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     );
 
+    /**
+     * Create the photon/light source and accompanying control panel.
+     */
     const photonSourcePanel = new IntensityAndWavelengthControl( model.photonSource, {
       rightTop: new Vector2(
         this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x,
@@ -107,6 +112,31 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       ),
       tandem: options.tandem.createTandem( 'photonSourcePanel' )
     } );
+
+    // Light source node: aperture at local origin, placed at the beam-start view position.
+    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
+    const lightSourceNode = new LightSourceNode( beamStartCenter );
+
+    // S-shaped wire from the back of the lamp to the right side of the control panel.
+    // ctrl1 below the start and ctrl2 above the end create the S regardless of height difference.
+    const S_BEND = 200;
+    const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
+    const photonSourceWireEnd = photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
+    const photonSourceWireNode = new Path( new Shape()
+      .moveToPoint( photonSourceWireStart )
+      .cubicCurveToPoint(
+        photonSourceWireStart.plusXY( 0, -S_BEND ),
+        photonSourceWireEnd.plusXY( 0, S_BEND ),
+        photonSourceWireEnd
+      ), {
+      stroke: 'black',
+      lineWidth: 3
+    } );
+
+    // Added in this order for proper z-layering.
+    this.addChild( photonSourceWireNode );
+    this.addChild( lightSourceNode );
+    this.addChild( photonSourcePanel );
 
     const currentDisplay = new NumberDisplay(
       model.currentProperty,
@@ -196,7 +226,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( workFunctionControl );
     this.addChild( currentReadout );
     this.addChild( this.electronVisibilityControls );
-    this.addChild( photonSourcePanel );
     this.addChild( voltageControl );
 
     const resetAllButton = new ResetAllButton( {
@@ -222,14 +251,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       centerBottom: this.layoutBounds.centerBottom.minusXY( -200, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
     } );
     this.addChild( playPauseStepButtonGroup );
-
-    // Light source node: aperture at local origin, placed at the beam-start view position.
-    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
-    const lightSourceNode = new LightSourceNode( {
-      x: beamStartCenter.x,
-      y: beamStartCenter.y
-    } );
-    this.addChild( lightSourceNode );
 
     // Canvas that renders photons and electrons using the same model-view transform as the play area.
     this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,

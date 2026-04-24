@@ -36,16 +36,14 @@ export default class CircuitNode extends Node {
 
     const circuitWireHeight = 150;
     const circuitWirePlateExtension = 50;
-    const circuitShape = new Shape().moveToPoint( targetCollector.leftCenter )
+    const circuitWireLineWidth = 10;
+    const circuitWireShape = new Shape().moveToPoint( targetCollector.leftCenter )
       .lineTo( targetCollector.left - circuitWirePlateExtension, targetCollector.centerY )
       .lineTo( targetCollector.left - circuitWirePlateExtension, targetCollector.centerY + circuitWireHeight )
       .lineTo( sinkCollector.right + circuitWirePlateExtension, sinkCollector.centerY + circuitWireHeight )
       .lineTo( sinkCollector.right + circuitWirePlateExtension, sinkCollector.centerY )
       .lineToPoint( sinkCollector.rightCenter );
-    const circuitPath = new Path( circuitShape, {
-      stroke: 'gray',
-      lineWidth: 10
-    } );
+
 
     /**
      * Create the vacuum tube which is an outline of a cylinder.
@@ -54,6 +52,7 @@ export default class CircuitNode extends Node {
     const vacuumTubeVerticalExtension = 10;
     const tubeEndXRadius = 5;
     const tubeEndYRadius = PhotoelectricEffectConstants.COLLECTOR_BOUNDS.height / 2 + vacuumTubeVerticalExtension;
+    const vacuumTubeLineWidth = 1.5;
     const vacuumTubeShape = new Shape()
 
       // Create the top boundary of the tube
@@ -74,12 +73,45 @@ export default class CircuitNode extends Node {
       // Create the left end of the tube
       .ellipse( new Vector2( targetCollector.left - vacuumTubeHorizontalExtension, targetCollector.centerY ),
         tubeEndXRadius, tubeEndYRadius, 0 );
+
+    // Clip area that allows part of the vacuum line to appear in front of the circuit wire.
+    // Shared parameters for the two spots where the circuit wire crosses the tube ellipses.
+    const clipRectY = targetCollector.centerY - circuitWireLineWidth / 2;
+    const clipRectWidth = vacuumTubeLineWidth;
+    const clipRectHeight = circuitWireLineWidth;
+    const leftClipRectX = targetCollector.left - vacuumTubeHorizontalExtension - tubeEndXRadius - vacuumTubeLineWidth / 2;
+    const rightClipRectX = sinkCollector.right + vacuumTubeHorizontalExtension - tubeEndXRadius - vacuumTubeLineWidth / 2;
+
+    const wireClipArea = new Shape()
+      .rect( -1000, -1000, 2000, 2000 )
+
+      // Left hole
+      .moveTo( leftClipRectX + clipRectWidth, clipRectY )
+      .lineTo( leftClipRectX, clipRectY )
+      .lineTo( leftClipRectX, clipRectY + clipRectHeight )
+      .lineTo( leftClipRectX + clipRectWidth, clipRectY + clipRectHeight )
+      .close()
+
+      // Right hole
+      .moveTo( rightClipRectX + clipRectWidth, clipRectY )
+      .lineTo( rightClipRectX, clipRectY )
+      .lineTo( rightClipRectX, clipRectY + clipRectHeight )
+      .lineTo( rightClipRectX + clipRectWidth, clipRectY + clipRectHeight )
+      .close();
+
     const vacuumNode = new Path( vacuumTubeShape, {
-      stroke: 'blue'
+      stroke: 'blue',
+      lineWidth: vacuumTubeLineWidth
+    } );
+
+    const circuitWirePath = new Path( circuitWireShape, {
+      stroke: 'gray',
+      lineWidth: circuitWireLineWidth,
+      clipArea: wireClipArea
     } );
 
     super( {
-      children: [ vacuumNode, targetPlate, targetCollector, sinkCollector, circuitPath ]
+      children: [ vacuumNode, targetPlate, targetCollector, sinkCollector, circuitWirePath ]
     } );
   }
 }
