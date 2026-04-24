@@ -9,6 +9,7 @@
  */
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
+import EnabledProperty from '../../../../axon/js/EnabledProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Range from '../../../../dot/js/Range.js';
@@ -126,8 +127,8 @@ export default class Material extends PhetioObject {
       tandem: options.tandem.createTandem( 'workFunctionProperty' )
     } );
 
-    // TODO: Should this class extend EnabledComponent?
-    this.enabledProperty = new BooleanProperty( options.enabled, {
+    // TODO: All EnabledProperty instances are featured. Do we want that for all Materials?
+    this.enabledProperty = new EnabledProperty( options.enabled, {
       tandem: options.tandem.createTandem( 'enabledProperty' )
     } );
   }
