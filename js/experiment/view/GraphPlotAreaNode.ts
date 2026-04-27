@@ -204,6 +204,8 @@ export default class GraphPlotAreaNode extends Node {
       fill: 'white'
     } );
     const chartContentClipArea = this.plotRectangle.getShape();
+
+    // TODO: @design, do we want to adjust the grid lines with zoom?
     const gridLineSet = new Node( {
       clipArea: chartContentClipArea,
       children: [
