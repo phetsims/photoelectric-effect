@@ -1,26 +1,28 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Dialog listing each stored GraphData snapshot as its own chart. Chart ranges match the parent graph's active
- * zoom level at the time the dialog is opened (see showCallback).
- *
- * TODO: In the future, the zoom level for these will also be controllable.
+ * Dialog listing each stored GraphData snapshot as its own chart. Chart ranges are initialized from the parent
+ * graph's active zoom level whenever the dialog is opened and can then be adjusted directly in the dialog.
  *
  * Plot nodes are created once and reused so open/close cycles avoid repeated node allocation and disposal.
- * The VBox always lists all snapshot slots; unused slots stay hidden via visibility. Snapshot charts share the
+ * The GridBox always allocates all snapshot slots; unused slots stay hidden via visibility. Snapshot charts share the
  * same GraphPlotAreaNode options as the parent graph (ranges, labels, grid, line styling) but omit the current-point
  * scatter layer.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
+import MagnifyingGlassZoomButtonGroup from '../../../../scenery-phet/js/MagnifyingGlassZoomButtonGroup.js';
+import GridBox from '../../../../scenery/js/layout/nodes/GridBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
@@ -55,10 +57,39 @@ export default class GraphSnapshotsDialog extends Dialog {
       snapshotPlotNodes.push( new GraphPlotAreaNode( xRange, yZoomRanges, snapshotPlotOptions ) );
     } );
 
-    const plotsVBox = new VBox( {
-      spacing: 16,
-      align: 'left',
+    const plotsGridBox = new GridBox( {
+      autoColumns: 2,
+      xSpacing: 16,
+      ySpacing: 16,
+      xAlign: 'left',
       children: snapshotPlotNodes
+    } );
+
+    const zoomLevelProperty = new NumberProperty( parentZoomLevelProperty.value, {
+      range: new Range( 1, yZoomRanges.length ),
+      numberType: 'Integer',
+      tandem: tandem.createTandem( 'zoomLevelProperty' )
+    } );
+
+    const zoomButtonGroup = new MagnifyingGlassZoomButtonGroup( zoomLevelProperty, {
+      orientation: 'horizontal',
+      spacing: 5,
+      magnifyingGlassNodeOptions: {
+        glassRadius: 10.5
+      },
+      buttonOptions: {
+        baseColor: PhotoelectricEffectColors.screenBackgroundColorProperty
+      },
+      tandem: tandem.createTandem( 'zoomButtonGroup' )
+    } );
+
+    const contentVBox = new VBox( {
+      spacing: 12,
+      align: 'center',
+      children: [
+        plotsGridBox,
+        zoomButtonGroup
+      ]
     } );
 
     const titleText = new Text( PhotoelectricEffectFluent.experiment.graph.snapshotsDialogTitleStringProperty, {
@@ -68,12 +99,9 @@ export default class GraphSnapshotsDialog extends Dialog {
 
     // Redraw snapshots. Only plots with data are displayed.
     const updateSnapshotPlots = () => {
-      const zoomLevel = parentZoomLevelProperty.value;
       const snapshots = graphData.getSnapshots();
 
       snapshotPlotNodes.forEach( ( plotNode, i ) => {
-        plotNode.zoomLevelProperty.value = zoomLevel;
-
         const hasSnapshot = i < snapshots.length;
         plotNode.visible = hasSnapshot;
 
@@ -86,9 +114,20 @@ export default class GraphSnapshotsDialog extends Dialog {
       } );
     };
 
+    zoomLevelProperty.link( zoomLevel => {
+      snapshotPlotNodes.forEach( plotNode => {
+        plotNode.zoomLevelProperty.value = zoomLevel;
+      } );
+    } );
+
+    const updateOnShow = () => {
+      zoomLevelProperty.value = parentZoomLevelProperty.value;
+      updateSnapshotPlots();
+    };
+
     updateSnapshotPlots();
 
-    super( plotsVBox, {
+    super( contentVBox, {
       title: titleText,
       xSpacing: PhotoelectricEffectConstants.DIALOG_SPACING,
       cornerRadius: PhotoelectricEffectConstants.DIALOG_CORNER_RADIUS,
@@ -96,7 +135,7 @@ export default class GraphSnapshotsDialog extends Dialog {
       isDisposable: false,
       tandem: tandem,
       phetioReadOnly: true,
-      showCallback: updateSnapshotPlots
+      showCallback: updateOnShow
     } );
   }
 }
