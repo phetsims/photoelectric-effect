@@ -26,28 +26,21 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
    * @param providedOptions - Node options for layout and instrumentation.
    */
   public constructor( model: ExperimentModel, providedOptions: FrequencyEnergyGraphAssemblyNodeOptions ) {
+
+    // Frequency domain displayed for this graph.
     const xRange = new Range( 0, 3 );
 
-    const zoomRangePairs = [
-      {
-        xRange: xRange,
-        yRange: new Range( 0, 1 )
-      },
-      {
-        xRange: xRange,
-        yRange: new Range( 0, 6 )
-      },
-      {
-        xRange: xRange,
-        yRange: new Range( 0, 12 )
-      }
+    // Preset y-axis domains used by zoom controls (most zoomed-in to most zoomed-out after sorting).
+    const yZoomRanges = [
+      new Range( 0, 1 ),
+      new Range( 0, 6 ),
+      new Range( 0, 12 )
     ];
 
     const options = optionize<FrequencyEnergyGraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {}, providedOptions );
 
     const graphOptions: GraphAssemblyNodeOptions = {
       graphPlotAreaNodeOptions: {
-        zoomRangePairs: zoomRangePairs,
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
 
@@ -63,6 +56,6 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
       tandem: options.tandem
     };
 
-    super( model.frequencyEnergyGraphData, graphOptions );
+    super( model.frequencyEnergyGraphData, xRange, yZoomRanges, graphOptions );
   }
 }

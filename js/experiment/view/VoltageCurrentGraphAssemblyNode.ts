@@ -28,24 +28,18 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
    */
   public constructor( model: ExperimentModel, providedOptions: VoltageCurrentGraphAssemblyNodeOptions ) {
 
-    const zoomRangePairs = [
-      {
-        xRange: new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
-        yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT )
-      },
-      {
-        xRange: new Range( -4, 4 ),
-        yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.6 )
-      },
-      {
-        xRange: new Range( -2, 2 ),
-        yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.3 )
-      }
+    // Full voltage domain displayed for this graph.
+    const xRange = new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE );
+
+    // Preset y-axis domains used by zoom controls (most zoomed-in to most zoomed-out after sorting).
+    const yZoomRanges = [
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT ),
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.6 ),
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.3 )
     ];
 
     const graphOptions: GraphAssemblyNodeOptions = {
       graphPlotAreaNodeOptions: {
-        zoomRangePairs: zoomRangePairs,
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
         gridXSpacing: 2,
@@ -57,6 +51,6 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
       tandem: providedOptions.tandem
     };
 
-    super( model.voltageCurrentGraphData, graphOptions );
+    super( model.voltageCurrentGraphData, xRange, yZoomRanges, graphOptions );
   }
 }

@@ -15,6 +15,7 @@
  */
 
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import Range from '../../../../dot/js/Range.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -32,12 +33,16 @@ export default class GraphSnapshotsDialog extends Dialog {
    * @param graphData - Model that owns live samples and immutable snapshot copies for this dialog.
    * @param parentZoomLevelProperty - 1-based zoom index from the parent graph's chart; its current value whenever the
    *                                  dialog is shown sets the initial zoom level for charts in this dialog.
+   * @param xRange - Shared x range used by each snapshot plot.
+   * @param yZoomRanges - Y zoom presets used by each snapshot plot.
    * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
    */
   public constructor(
     tandem: Tandem,
     graphData: GraphData,
     parentZoomLevelProperty: TReadOnlyProperty<number>,
+    xRange: Range,
+    yZoomRanges: Range[],
     graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions
   ) {
 
@@ -47,7 +52,7 @@ export default class GraphSnapshotsDialog extends Dialog {
 
     const snapshotPlotNodes: GraphPlotAreaNode[] = [];
     _.times( GraphData.MAX_SNAPSHOTS, () => {
-      snapshotPlotNodes.push( new GraphPlotAreaNode( snapshotPlotOptions ) );
+      snapshotPlotNodes.push( new GraphPlotAreaNode( xRange, yZoomRanges, snapshotPlotOptions ) );
     } );
 
     const plotsVBox = new VBox( {
