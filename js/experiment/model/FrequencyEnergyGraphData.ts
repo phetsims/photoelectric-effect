@@ -46,10 +46,6 @@ export default class FrequencyEnergyGraphData extends GraphData {
       {
         // The user controls wavelength. But we plot with frequency.
         xDomain: frequencyXDomain,
-
-        // It is more important for this plot to see exactly where the energy starts to increase linearly
-        // so the resolution is increased to produce ~200 points.
-        xResolution: 0.005,
         drivingValueToChartX: wavelength => wavelengthToFrequency( wavelength )
       }
     );
