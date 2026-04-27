@@ -40,38 +40,6 @@ export default class PhotoelectricEffectColors {
     default: 'black'
   } );
 
-  public static readonly vacuumTubeColorProperty = new ProfileColorProperty( photoelectricEffect, 'vacuumTubeColor', {
-    default: '#2284c5'
-  } );
-
-  public static readonly targetPlateFillColorProperty = new ProfileColorProperty( photoelectricEffect, 'targetPlateFill', {
-    default: 'gray'
-  } );
-
-  public static readonly collectorColorProperty = new ProfileColorProperty( photoelectricEffect, 'collector', {
-    default: 'black'
-  } );
-
-  public static readonly circuitWireColorProperty = new ProfileColorProperty( photoelectricEffect, 'circuitWire', {
-    default: 'gray'
-  } );
-
-  public static readonly lightSourceBodyColorProperty = new ProfileColorProperty( photoelectricEffect, 'lightSourceBody', {
-    default: 'black'
-  } );
-
-  public static readonly apertureGradientCenterColorProperty = new ProfileColorProperty( photoelectricEffect, 'apertureGradientCenter', {
-    default: '#ffffff'
-  } );
-
-  public static readonly apertureGradientMidColorProperty = new ProfileColorProperty( photoelectricEffect, 'apertureGradientMid', {
-    default: '#80c3ec'
-  } );
-
-  public static readonly apertureGradientEdgeColorProperty = new ProfileColorProperty( photoelectricEffect, 'apertureGradientEdge', {
-    default: '#6ea4c6'
-  } );
-
   public static readonly ammeterPanelFillColorProperty = new ProfileColorProperty( photoelectricEffect, 'ammeterPanelFill', {
     default: '#eab253'
   } );

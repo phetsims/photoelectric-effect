@@ -26,24 +26,24 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
    * @param providedOptions - Node options for layout and instrumentation.
    */
   public constructor( model: ExperimentModel, providedOptions: FrequencyEnergyGraphAssemblyNodeOptions ) {
+    const xRange = new Range( 0, 3 );
 
     const zoomRangePairs = [
       {
-        xRange: new Range( 0, 1 ),
+        xRange: xRange,
         yRange: new Range( 0, 1 )
       },
       {
-        xRange: new Range( 0, 0.5 ),
-        yRange: new Range( 0, 0.5 )
+        xRange: xRange,
+        yRange: new Range( 0, 6 )
       },
       {
-        xRange: new Range( 0, 0.25 ),
-        yRange: new Range( 0, 0.25 )
+        xRange: xRange,
+        yRange: new Range( 0, 12 )
       }
     ];
 
-    const options = optionize<FrequencyEnergyGraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {
-    }, providedOptions );
+    const options = optionize<FrequencyEnergyGraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {}, providedOptions );
 
     const graphOptions: GraphAssemblyNodeOptions = {
       graphPlotAreaNodeOptions: {
@@ -51,7 +51,7 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
 
-        // TODO: @design This option is a little strange. We needed it so that the label did not overlap with the
+        // TODO: This option is a little strange. We needed it so that the label did not overlap with the
         //   ExpandCollapseButton. Check in with design to see how the layout should ideally be done.
         yAxisLabelYOffset: 10,
         gridXSpacing: 0.25,

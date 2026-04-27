@@ -231,6 +231,7 @@ export default class GraphAssemblyNode extends Node {
 
     graphData.currentPointProperty.link( currentPoint => {
       this.graphPlotAreaNode.setCurrentPointMarker( currentPoint );
+      this.graphPlotAreaNode.zoomOutToFitPointY( currentPoint );
     } );
   }
 }

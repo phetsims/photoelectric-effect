@@ -76,10 +76,7 @@ type GraphPlotAreaSelfOptions = {
   chartViewWidth?: number;
   chartViewHeight?: number;
 
-  // 1-based index into zoomRangePairs for the initial model ranges.
-  initialZoomLevel?: number;
-
-  // Zoom presets mapped to zoomLevelProperty (1-based).
+  // Zoom presets mapped to zoomLevelProperty (1-based), sorted internally from most zoomed-in to most zoomed-out.
   zoomRangePairs?: ZoomRangePair[];
 
   // Optional X-axis label centered beneath the chart. Null hides the label.
@@ -142,12 +139,14 @@ export default class GraphPlotAreaNode extends Node {
   // Updates chart ranges and recreated tick sets when zoom level changes.
   private readonly zoomLevelObserver: ( zoomLevel: number ) => void;
 
+  // Zoom range presets sorted from most zoomed-in to most zoomed-out.
+  private readonly zoomRangePairs: ZoomRangePair[];
+
   public constructor( providedOptions: GraphPlotAreaNodeOptions ) {
 
     const options = optionize<GraphPlotAreaNodeOptions, GraphPlotAreaSelfOptions, NodeOptions>()( {
       chartViewWidth: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH,
       chartViewHeight: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT,
-      initialZoomLevel: 1,
       zoomRangePairs: [ {
         xRange: new Range( 0, 1 ),
         yRange: new Range( 0, 1 )
@@ -177,10 +176,13 @@ export default class GraphPlotAreaNode extends Node {
 
     const chartViewWidth = options.chartViewWidth;
     const chartViewHeight = options.chartViewHeight;
-    const zoomRangePairs = options.zoomRangePairs;
-    const initialZoomLevel = options.initialZoomLevel;
-    const initialRangeIndex = Math.min( Math.max( initialZoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
-    const initialRangePair = zoomRangePairs[ initialRangeIndex ];
+
+    // Keep level 1 as the most zoomed-in preset by ordering ranges from smallest to largest y span.
+    // Intentionally ignore x span because zoom behavior is defined only by vertical current range.
+    this.zoomRangePairs = options.zoomRangePairs.slice().sort( ( a, b ) => {
+      return a.yRange.getLength() - b.yRange.getLength();
+    } );
+    const initialRangePair = this.zoomRangePairs[ 0 ];
 
     // Uses axis-specific padding to preserve visual margin with non-square chart aspect ratios.
     const baseRangePaddingFraction = options.rangePaddingFraction;
@@ -294,15 +296,15 @@ export default class GraphPlotAreaNode extends Node {
       children: chartChildren
     } ) );
 
-    this.zoomLevelProperty = new NumberProperty( initialZoomLevel, {
-      range: new Range( 1, zoomRangePairs.length ),
+    this.zoomLevelProperty = new NumberProperty( 1, {
+      range: new Range( 1, this.zoomRangePairs.length ),
       numberType: 'Integer',
       tandem: options.tandem.createTandem( 'zoomLevelProperty' )
     } );
 
     this.zoomLevelObserver = ( zoomLevel: number ) => {
-      const index = Math.min( Math.max( zoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
-      const rangePair = zoomRangePairs[ index ];
+      const index = Math.min( Math.max( zoomLevel - 1, 0 ), this.zoomRangePairs.length - 1 );
+      const rangePair = this.zoomRangePairs[ index ];
       this.chartTransform.setModelXRange( GraphPlotAreaNode.getPaddedRange( rangePair.xRange, rangePaddingFractionX ) );
       this.chartTransform.setModelYRange( GraphPlotAreaNode.getPaddedRange( rangePair.yRange, rangePaddingFractionY ) );
 
@@ -356,6 +358,24 @@ export default class GraphPlotAreaNode extends Node {
   public setCurrentPointMarker( point: Vector2 | null ): void {
     if ( this.currentPointPlot ) {
       this.currentPointPlot.setDataSet( point ? [ point ] : [] );
+    }
+  }
+
+  /**
+   * Zooms out as needed until the point's y-value fits in the active y range.
+   * Does not zoom in automatically.
+   */
+  public zoomOutToFitPointY( point: Vector2 | null ): void {
+    if ( point ) {
+      const maxZoomLevel = this.zoomRangePairs.length;
+      let updatedZoomLevel = this.zoomLevelProperty.value;
+      let pointFitsInRange = this.zoomRangePairs[ updatedZoomLevel - 1 ].yRange.contains( point.y );
+
+      while ( !pointFitsInRange && updatedZoomLevel < maxZoomLevel ) {
+        updatedZoomLevel = updatedZoomLevel + 1;
+        pointFitsInRange = this.zoomRangePairs[ updatedZoomLevel - 1 ].yRange.contains( point.y );
+      }
+      this.zoomLevelProperty.value = updatedZoomLevel;
     }
   }
 

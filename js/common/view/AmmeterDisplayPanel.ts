@@ -48,7 +48,7 @@ export default class AmmeterDisplayPanel extends Panel {
       microampCurrentProperty,
       new Range( 0, ampsToMilliAmps( PhotoelectricEffectConstants.MAX_CURRENT ) ),
       {
-        // TODO: @design What should this be? And the design doc describes units for this readout are still tbd.
+        // TODO: What should this be? And the design doc describes units for this readout are still tbd.
         decimalPlaces: 3,
         cornerRadius: 3,
         backgroundStroke: 'black',

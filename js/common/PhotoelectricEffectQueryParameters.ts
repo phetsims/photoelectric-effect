@@ -13,20 +13,20 @@ import { QueryStringMachine } from '../../../query-string-machine/js/QueryString
 const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
 
   // Whether the mystery material is initially enabled.
-  // TODO: @design, do we want to keep this?
+  // TODO: @Brett, do we want to keep this?
   mysteryMaterial1Enabled: {
     public: true,
     type: 'flag'
   },
 
   // Whether the mystery material is initially enabled.
-  // TODO: @design, do we want to keep this?
+  // TODO: @Brett, do we want to keep this?
   mysteryMaterial2Enabled: {
     public: true,
     type: 'flag'
   },
 
-  // TODO: @design, Do we want to keep this?
+  // TODO: @Brett, Do we want to keep this?
   // Initial work function (in eV) mystery material 1.
   mysteryMaterial1WorkFunction: {
     public: true,
@@ -34,7 +34,7 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
     defaultValue: 5
   },
 
-  // TODO: @design, Do we want to keep this?
+  // TODO: @Brett, Do we want to keep this?
   // Initial work function (in eV) for mystery material 2.
   mysteryMaterial2WorkFunction: {
     public: true,
