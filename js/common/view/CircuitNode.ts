@@ -88,44 +88,24 @@ export default class CircuitNode extends Node {
       lineWidth: vacuumTubeLineWidth
     } );
 
-    /**
-     * We want the vacuum tobe to appear as though it is surrounding the collectors and traveling electrons.
-     * We create a clip area to cut out "holes" in the wire for the vacuum tube outline to appear through in two spots.
-     */
-
-    // Clip area that allows part of the vacuum line to appear in front of the circuit wire.
-    // Shared parameters for the two spots where the circuit wire crosses the tube ellipses.
-    const clipRectY = targetCollector.centerY - circuitWireLineWidth / 2;
-    const clipRectWidth = vacuumTubeLineWidth;
-    const clipRectHeight = circuitWireLineWidth;
-    const leftClipRectX = targetCollector.left - vacuumTubeHorizontalExtension - tubeEndXRadius - vacuumTubeLineWidth / 2;
-    const rightClipRectX = sinkCollector.right + vacuumTubeHorizontalExtension - tubeEndXRadius - vacuumTubeLineWidth / 2;
-
-    const wireClipArea = new Shape()
-      .rect( -1000, -1000, 2000, 2000 )
-
-      // Left hole drawn in a counter-clockwise direction
-      .moveTo( leftClipRectX + clipRectWidth, clipRectY )
-      .lineTo( leftClipRectX, clipRectY )
-      .lineTo( leftClipRectX, clipRectY + clipRectHeight )
-      .lineTo( leftClipRectX + clipRectWidth, clipRectY + clipRectHeight )
-      .close()
-
-      // Right hole drawn in a counter-clockwise direction
-      .moveTo( rightClipRectX + clipRectWidth, clipRectY )
-      .lineTo( rightClipRectX, clipRectY )
-      .lineTo( rightClipRectX, clipRectY + clipRectHeight )
-      .lineTo( rightClipRectX + clipRectWidth, clipRectY + clipRectHeight )
-      .close();
+     // We want the vacuum tube to appear as though it is surrounding the collectors and traveling electrons.
+     // To do this we create two elliptical arcs to z-order above the circuitWirePath.
+    const leftTubeEndShape = new Shape().ellipticalArc( targetCollector.left - vacuumTubeHorizontalExtension,
+      targetCollector.centerY, tubeEndXRadius, tubeEndYRadius, 0, Math.PI / 2, Math.PI * 1.5 );
+    const leftTubeEndPath = new Path( leftTubeEndShape, { stroke: PhotoelectricEffectColors.vacuumTubeColorProperty,
+      lineWidth: vacuumTubeLineWidth } );
+    const rightTubeEndShape = new Shape().ellipticalArc( sinkCollector.right + vacuumTubeHorizontalExtension,
+      sinkCollector.centerY, tubeEndXRadius, tubeEndYRadius, 0, Math.PI / 2, Math.PI * 1.5 );
+    const rightTubeEndPath = new Path( rightTubeEndShape, { stroke: PhotoelectricEffectColors.vacuumTubeColorProperty,
+      lineWidth: vacuumTubeLineWidth } );
 
     const circuitWirePath = new Path( circuitWireShape, {
       stroke: PhotoelectricEffectColors.circuitWireColorProperty,
-      lineWidth: circuitWireLineWidth,
-      clipArea: wireClipArea
+      lineWidth: circuitWireLineWidth
     } );
 
     super( {
-      children: [ vacuumNode, targetPlate, targetCollector, sinkCollector, circuitWirePath ]
+      children: [ vacuumNode, targetPlate, targetCollector, sinkCollector, circuitWirePath, leftTubeEndPath, rightTubeEndPath ]
     } );
   }
 }
