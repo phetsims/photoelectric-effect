@@ -84,7 +84,7 @@ export default class GradientBackplateIntensitySlider extends Node {
     } );
 
     const intensitySlider = new HSlider( intensityProperty, intensityProperty.range, {
-      tandem: options.tandem,
+      tandem: options.tandem.createTandem( 'intensitySlider' ),
       trackSize: options.trackSize,
       thumbSize: options.thumbSize
     } );

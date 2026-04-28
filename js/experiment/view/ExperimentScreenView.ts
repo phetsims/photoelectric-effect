@@ -12,7 +12,6 @@ import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import CircuitNode from '../../common/view/CircuitNode.js';
 import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import FrequencyEnergyGraphAssemblyNode from './FrequencyEnergyGraphAssemblyNode.js';
@@ -34,9 +33,6 @@ export default class ExperimentScreenView extends PhotoelectricEffectScreenView 
     const options = optionize<ExperimentScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
 
     super( model, options );
-
-    // Add circuit node as background.
-    this.backgroundNode.addChild( new CircuitNode( this.modelViewTransform ) );
 
     const graphsVBox = new VBox( {
       spacing: GraphAssemblyNode.GRAPH_ASSEMBLY_SPACING,

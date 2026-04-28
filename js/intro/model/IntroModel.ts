@@ -24,6 +24,7 @@ export default class IntroModel extends PhotoelectricEffectModel {
     super( mysteryMaterials, [], providedOptions );
 
     this.sceneProperty = new StringUnionProperty( 'grounded', {
+      phetioFeatured: true,
       validValues: [ 'grounded', 'circuit' ],
       tandem: providedOptions.tandem.createTandem( 'sceneProperty' )
     } );

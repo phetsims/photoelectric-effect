@@ -13,7 +13,6 @@
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
-import Range from '../../../../dot/js/Range.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
@@ -77,17 +76,10 @@ export default class GraphAssemblyNode extends Node {
   private readonly graphPlotAreaNode: GraphPlotAreaNode;
 
   /**
-   * @param graphData - Source of live samples, snapshots, and current operating-point state.
-   * @param xRange - Shared x range used for all zoom levels in this plot.
-   * @param yZoomRanges - Zoom presets for the y axis, from any order (sorted internally by span).
-   * @param providedOptions - Node options plus graph-plot-area configuration forwarded to child components.
+   * @param graphData
+   * @param providedOptions
    */
-  public constructor(
-    graphData: GraphData,
-    xRange: Range,
-    yZoomRanges: Range[],
-    providedOptions: GraphAssemblyNodeOptions
-  ) {
+  public constructor( graphData: GraphData, providedOptions: GraphAssemblyNodeOptions ) {
     const options = optionize<GraphAssemblyNodeOptions, StrictOmit<SelfOptions, 'graphPlotAreaNodeOptions'>, NodeOptions>()( {
       isDisposable: false
     }, providedOptions );
@@ -101,7 +93,7 @@ export default class GraphAssemblyNode extends Node {
       tandem: tandem.createTandem( 'expandedProperty' )
     } );
 
-    this.graphPlotAreaNode = new GraphPlotAreaNode( xRange, yZoomRanges, graphPlotAreaNodeOptions );
+    this.graphPlotAreaNode = new GraphPlotAreaNode( graphPlotAreaNodeOptions );
 
     // Layout for UI components will be relative to this chart rectangle area.
     const plotRectangle = this.graphPlotAreaNode.plotRectangle;
@@ -158,8 +150,6 @@ export default class GraphAssemblyNode extends Node {
       tandem.createTandem( 'snapshotsDialog' ),
       graphData,
       this.graphPlotAreaNode.zoomLevelProperty,
-      xRange,
-      yZoomRanges,
       graphPlotAreaNodeOptions
     );
 
@@ -234,11 +224,7 @@ export default class GraphAssemblyNode extends Node {
     } );
 
     const syncLinePlot = () => {
-
-      // Revealed curve points currently shown in the line plot.
-      const lineDataSet = [ ...graphData.getDataPoints() ];
-      this.graphPlotAreaNode.setLineDataSet( lineDataSet );
-      this.graphPlotAreaNode.zoomToFitDataSetY( lineDataSet, graphData.currentPointProperty.value );
+      this.graphPlotAreaNode.setLineDataSet( [ ...graphData.getDataPoints() ] );
     };
     graphData.dataChangedEmitter.addListener( syncLinePlot );
     syncLinePlot();

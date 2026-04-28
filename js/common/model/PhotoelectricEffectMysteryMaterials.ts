@@ -24,12 +24,12 @@ import Material, { MaterialType } from './Material.js';
 
 // The mystery materials whose work functions are user-configurable via the Preferences dialog.
 const PREFERENCES_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
-  tandem: Tandem.PREFERENCES,
+  tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial1' ),
   labelKey: 'mystery1',
   enabled: false
 } );
 const PREFERENCES_MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
-  tandem: Tandem.PREFERENCES,
+  tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial2' ),
   labelKey: 'mystery2',
   enabled: false
 } );

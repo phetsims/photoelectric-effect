@@ -101,12 +101,12 @@ export default class PhotoelectricEffectModel implements TModel {
     const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {}, providedOptions );
 
     const standardMaterials = [
-      new Material( MaterialType.SODIUM, { tandem: options.tandem } ),
-      new Material( MaterialType.COPPER, { tandem: options.tandem } ),
-      new Material( MaterialType.CALCIUM, { tandem: options.tandem } ),
-      new Material( MaterialType.MAGNESIUM, { tandem: options.tandem } ),
-      new Material( MaterialType.PLATINUM, { tandem: options.tandem } ),
-      new Material( MaterialType.ZINC, { tandem: options.tandem } )
+      new Material( MaterialType.SODIUM, { tandem: options.tandem.createTandem( 'sodiumMaterial' ) } ),
+      new Material( MaterialType.COPPER, { tandem: options.tandem.createTandem( 'copperMaterial' ) } ),
+      new Material( MaterialType.CALCIUM, { tandem: options.tandem.createTandem( 'calciumMaterial' ) } ),
+      new Material( MaterialType.MAGNESIUM, { tandem: options.tandem.createTandem( 'magnesiumMaterial' ) } ),
+      new Material( MaterialType.PLATINUM, { tandem: options.tandem.createTandem( 'platinumMaterial' ) } ),
+      new Material( MaterialType.ZINC, { tandem: options.tandem.createTandem( 'zincMaterial' ) } )
     ];
 
     // The order according to the design document - standard, mystery, then custom.
@@ -148,10 +148,12 @@ export default class PhotoelectricEffectModel implements TModel {
     } );
 
     this.showElectronsProperty = new BooleanProperty( true, {
+      phetioFeatured: true,
       tandem: options.tandem.createTandem( 'showElectronsProperty' )
     } );
 
     this.showHighestEnergyOnlyProperty = new BooleanProperty( false, {
+      phetioFeatured: true,
       tandem: options.tandem.createTandem( 'showHighestEnergyOnlyProperty' )
     } );
   }

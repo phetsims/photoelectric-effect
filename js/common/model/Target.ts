@@ -58,6 +58,7 @@ export default class Target {
     this.materialProperty = new Property( materials[ 0 ], {
       validValues: materials,
       tandem: tandem.createTandem( 'materialProperty' ),
+      phetioFeatured: true,
       phetioValueType: Material.MaterialIO
     } );
 

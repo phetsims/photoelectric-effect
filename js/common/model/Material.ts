@@ -113,13 +113,11 @@ export default class Material extends PhetioObject {
 
     const options = optionize<MaterialOptions, SelfOptions, PhetioObjectOptions>()( {
       labelKey: null,
-      enabled: true
+      enabled: true,
+      phetioType: Material.MaterialIO
     }, providedOptions );
 
-    super( {
-      tandem: options.tandem,
-      phetioType: Material.MaterialIO
-    } );
+    super( options );
     this.materialType = materialType;
     this.labelKey = options.labelKey;
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
