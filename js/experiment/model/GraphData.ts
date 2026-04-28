@@ -33,6 +33,12 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
+import IOType from '../../../../tandem/js/types/IOType.js';
+import NullableIO from '../../../../tandem/js/types/NullableIO.js';
+import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 
 type SelfOptions = {
 
@@ -49,7 +55,20 @@ type SelfOptions = {
   xResolution?: number;
 };
 
-export type GraphDataOptions = SelfOptions;
+export type GraphDataOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
+
+type GraphDataStateObject = {
+
+  // Revealed bin indices are enough to restore the live line because bin y-values are recomputed from current model
+  // state.
+  revealedBinIndices: number[];
+
+  // Preserves sweep continuity after state restore.
+  previousDrivingBinIndex: number | null;
+
+  // Snapshot copies are user-saved historical series, so preserve their exact points.
+  snapshots: Vector2[][];
+};
 
 type BinData = {
 
@@ -60,7 +79,7 @@ type BinData = {
   revealed: boolean;
 };
 
-export default class GraphData {
+export default class GraphData extends PhetioObject {
 
   // Upper bound on snapshots; captureSnapshot asserts the stored count stays below this before adding another.
   public static readonly MAX_SNAPSHOTS = 4;
@@ -106,23 +125,25 @@ export default class GraphData {
    *   would stay on screen and imply a single curve even though the underlying relationship or experimental
    *   conditions have changed.
    * @param resetEmitter - Model reset clears live samples and all snapshots.
-   * @param providedOptions - Optional chart x-domain override and optional driving value -> chart-x mapper. The mapper
-   *   is identity when chart x-axis uses the driving value directly (voltage/current, intensity/current), and a
-   *   transform when chart x differs (wavelength-driven frequency/energy graph maps wavelength -> frequency).
+   * @param providedOptions
    */
   public constructor(
     drivingProperty: NumberProperty,
     createDataPointAtChartX: ( chartX: number ) => Vector2,
     clearDependencies: Readonly<TReadOnlyProperty<IntentionalAny>[]>,
     resetEmitter: TReadOnlyEmitter,
-    providedOptions?: GraphDataOptions
+    providedOptions: GraphDataOptions
   ) {
 
-    const options = optionize<GraphDataOptions, SelfOptions>()( {
+    const options = optionize<GraphDataOptions, SelfOptions, PhetioObjectOptions>()( {
+      phetioType: GraphData.GraphDataIO,
+      phetioState: true,
       xDomain: drivingProperty.range,
       xResolution: 0.01,
       drivingValueToChartX: drivingValue => drivingValue
     }, providedOptions );
+
+    super( options );
 
     affirm( options.xResolution > 0, 'xResolution must be positive' );
 
@@ -227,6 +248,17 @@ export default class GraphData {
   }
 
   /**
+   * Restores user-saved snapshot series from PhET-iO state.
+   */
+  private setSnapshots( snapshots: Vector2[][] ): void {
+    this.snapshots.length = 0;
+    snapshots.forEach( snapshot => {
+      this.snapshots.push( snapshot.map( point => new Vector2( point.x, point.y ) ) );
+    } );
+    this.syncSnapshotsCountProperty();
+  }
+
+  /**
    * Sets snapshotsCountProperty from the current snapshot list length.
    */
   private syncSnapshotsCountProperty(): void {
@@ -246,6 +278,32 @@ export default class GraphData {
    */
   private binIndexToChartX( binIndex: number ): number {
     return this.xDomain.min + binIndex * this.xResolution;
+  }
+
+  /**
+   * Gets the live line's revealed bin indices for compact PhET-iO state.
+   */
+  private getRevealedBinIndices(): number[] {
+    const revealedBinIndices: number[] = [];
+    this.bins.forEach( ( bin, index ) => {
+      if ( bin.revealed ) {
+        revealedBinIndices.push( index );
+      }
+    } );
+    return revealedBinIndices;
+  }
+
+  /**
+   * Restores the live line's reveal mask from compact PhET-iO state.
+   */
+  private setRevealedBinIndices( revealedBinIndices: number[] ): void {
+    for ( let i = 0; i < this.bins.length; i++ ) {
+      this.bins[ i ].revealed = false;
+    }
+    revealedBinIndices.forEach( binIndex => {
+      affirm( binIndex >= 0 && binIndex < this.bins.length, 'revealed bin index out of range' );
+      this.bins[ binIndex ].revealed = true;
+    } );
   }
 
   /**
@@ -288,4 +346,31 @@ export default class GraphData {
   private revealSingleBin( binIndex: number ): void {
     this.bins[ binIndex ].revealed = true;
   }
+
+  /**
+   * GraphData uses aggregate state because the live graph is more than a simple array of points.
+   * The plotted line is derived from deterministic bins whose y-values are recomputed from the current model state,
+   * while the persisted state only needs to preserve which bins have been revealed by user interaction.
+   *
+   * This IOType serializes the state rather than exposing the internal bin data structures.
+   */
+  public static readonly GraphDataIO = new IOType<GraphData, GraphDataStateObject>( 'GraphDataIO', {
+    valueType: GraphData,
+    stateSchema: {
+      revealedBinIndices: ArrayIO( NumberIO ),
+      previousDrivingBinIndex: NullableIO( NumberIO ),
+      snapshots: ArrayIO( ArrayIO( Vector2.Vector2IO ) )
+    },
+    toStateObject: graphData => ( {
+      revealedBinIndices: graphData.getRevealedBinIndices(),
+      previousDrivingBinIndex: graphData.previousDrivingBinIndex,
+      snapshots: graphData.snapshots.map( snapshot => snapshot.map( point => new Vector2( point.x, point.y ) ) )
+    } ),
+    applyState: ( graphData, stateObject ) => {
+      graphData.previousDrivingBinIndex = stateObject.previousDrivingBinIndex;
+      graphData.setRevealedBinIndices( stateObject.revealedBinIndices );
+      graphData.setSnapshots( stateObject.snapshots );
+      graphData.dataChangedEmitter.emit();
+    }
+  } );
 }

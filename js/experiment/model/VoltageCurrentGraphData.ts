@@ -7,16 +7,21 @@
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import GraphData from './GraphData.js';
+
+type VoltageCurrentGraphDataOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
 
 export default class VoltageCurrentGraphData extends GraphData {
 
   public constructor(
-    model: PhotoelectricEffectModel
+    model: PhotoelectricEffectModel,
+    providedOptions: VoltageCurrentGraphDataOptions
   ) {
     super(
-      model.voltageProperty,
+      model.battery.voltageProperty,
       voltage => new Vector2( voltage, model.getCurrentForVoltage( voltage ) ),
       [
         model.photonSource.intensityProperty,
@@ -24,7 +29,8 @@ export default class VoltageCurrentGraphData extends GraphData {
         model.target.materialProperty,
         model.target.workFunctionProperty
       ],
-      model.resetEmitter
+      model.resetEmitter,
+      providedOptions
     );
   }
 }

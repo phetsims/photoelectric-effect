@@ -29,8 +29,8 @@ export default class VoltageNumberControl extends NumberControl {
   public constructor( model: ExperimentModel, providedOptions: VoltageNumberControlOptions ) {
     super(
       PhotoelectricEffectFluent.voltage.labelStringProperty,
-      model.voltageProperty,
-      model.voltageProperty.range,
+      model.battery.voltageProperty,
+      model.battery.voltageProperty.range,
       combineOptions<NumberControlOptions>( {
         delta: 0.01,
         titleNodeOptions: {
@@ -63,7 +63,7 @@ export default class VoltageNumberControl extends NumberControl {
           majorTickLength: 8,
 
           // To produce one minor tick at 0.
-          minorTickSpacing: model.voltageProperty.range.getLength() / 2
+          minorTickSpacing: model.battery.voltageProperty.range.getLength() / 2
         }
       }, providedOptions )
     );

@@ -8,13 +8,17 @@
 
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import { frequencyToWavelength, wavelengthToEnergy, wavelengthToFrequency } from '../../common/model/PhotoelectricEffectUtils.js';
 import GraphData from './GraphData.js';
 
+type FrequencyEnergyGraphDataOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
+
 export default class FrequencyEnergyGraphData extends GraphData {
 
-  public constructor( model: PhotoelectricEffectModel ) {
+  public constructor( model: PhotoelectricEffectModel, providedOptions: FrequencyEnergyGraphDataOptions ) {
 
     // The driving Property is wavelength, but we need to map that to the plotted frequency range.
     const wavelengthRange = model.photonSource.wavelengthProperty.range;
@@ -44,6 +48,8 @@ export default class FrequencyEnergyGraphData extends GraphData {
       ],
       model.resetEmitter,
       {
+        tandem: providedOptions.tandem,
+
         // The user controls wavelength. But we plot with frequency.
         xDomain: frequencyXDomain,
 

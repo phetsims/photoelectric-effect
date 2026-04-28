@@ -14,6 +14,7 @@ import Property from '../../../../axon/js/Property.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import ReferenceIO from '../../../../tandem/js/types/ReferenceIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
@@ -59,7 +60,7 @@ export default class Target {
       validValues: materials,
       tandem: tandem.createTandem( 'materialProperty' ),
       phetioFeatured: true,
-      phetioValueType: Material.MaterialIO
+      phetioValueType: ReferenceIO( Material.MaterialIO )
     } );
 
     this.workFunctionProperty = new DynamicProperty( this.materialProperty, {

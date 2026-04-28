@@ -14,7 +14,6 @@ import Emitter from '../../../../axon/js/Emitter.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
-import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import TModel from '../../../../joist/js/TModel.js';
 import optionize from '../../../../phet-core/js/optionize.js';
@@ -59,10 +58,6 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
-
-  // Voltage across the plates in model units.
-  // TODO: Should we move this into ExperimentModel?
-  public readonly voltageProperty: NumberProperty;
 
   // Wavelength of emitted photons in nanometers.
   public readonly wavelengthProperty: NumberProperty;
@@ -122,11 +117,6 @@ export default class PhotoelectricEffectModel implements TModel {
     this.photonSource = new PhotonSource( {
       tandem: providedOptions.tandem.createTandem( 'photonSource' )
     } );
-
-    this.voltageProperty = new NumberProperty( 0, {
-      range: new Range( PhotoelectricEffectConstants.MIN_VOLTAGE,
-        PhotoelectricEffectConstants.MAX_VOLTAGE )
-    } );
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
     this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X, providedOptions.tandem.createTandem( 'collector' ) );
@@ -134,7 +124,7 @@ export default class PhotoelectricEffectModel implements TModel {
 
     this.currentProperty = new DerivedProperty(
       [
-        this.voltageProperty,
+        this.battery.voltageProperty,
         this.photonSource.intensityProperty,
         this.photonSource.wavelengthProperty,
         this.target.workFunctionProperty
@@ -167,7 +157,6 @@ export default class PhotoelectricEffectModel implements TModel {
     this.target.reset();
     this.battery.reset();
     this.photonSource.reset();
-    this.voltageProperty.reset();
     this.isPlayingProperty.reset();
     this.showElectronsProperty.reset();
     this.showHighestEnergyOnlyProperty.reset();
@@ -324,7 +313,7 @@ export default class PhotoelectricEffectModel implements TModel {
    * Computes the acceleration applied to electrons from the plate voltage.
    */
   private getElectronAcceleration(): Vector2 {
-    const accelerationMagnitude = ( this.voltageProperty.value *
+    const accelerationMagnitude = ( this.battery.voltageProperty.value *
                                     PhotoelectricEffectConstants.ELECTRON_ACCELERATION_SCALE ) /
                                   PhotoelectricEffectConstants.PLATE_SEPARATION;
     return new Vector2( accelerationMagnitude, 0 );
@@ -345,7 +334,7 @@ export default class PhotoelectricEffectModel implements TModel {
    * @param intensity
    */
   public getCurrentForIntensity( intensity: number ): number {
-    const voltage = this.voltageProperty.value;
+    const voltage = this.battery.voltageProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
     return this.getCurrentForSystem( voltage, intensity, wavelength, workFunction );

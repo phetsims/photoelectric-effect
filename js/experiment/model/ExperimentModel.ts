@@ -27,8 +27,14 @@ export default class ExperimentModel extends PhotoelectricEffectModel {
       providedOptions
     );
 
-    this.intensityCurrentGraphData = new IntensityCurrentGraphData( this );
-    this.frequencyEnergyGraphData = new FrequencyEnergyGraphData( this );
-    this.voltageCurrentGraphData = new VoltageCurrentGraphData( this );
+    this.intensityCurrentGraphData = new IntensityCurrentGraphData( this, {
+      tandem: providedOptions.tandem.createTandem( 'intensityCurrentGraphData' )
+    } );
+    this.frequencyEnergyGraphData = new FrequencyEnergyGraphData( this, {
+      tandem: providedOptions.tandem.createTandem( 'frequencyEnergyGraphData' )
+    } );
+    this.voltageCurrentGraphData = new VoltageCurrentGraphData( this, {
+      tandem: providedOptions.tandem.createTandem( 'voltageCurrentGraphData' )
+    } );
   }
 }
