@@ -118,7 +118,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const lightSourceNode = new LightSourceNode( beamStartCenter );
 
     // S-shaped wire from the back of the lamp to the right side of the control panel.
-    // ctrl1 below the start and ctrl2 above the end create the S regardless of height difference.
+    // First control point of cubic curve below the start and second control point of cubic curve above the end
+    // create the S regardless of height difference.
     const S_BEND = 200;
     const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
     const photonSourceWireEnd = photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
