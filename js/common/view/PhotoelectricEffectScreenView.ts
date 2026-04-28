@@ -77,9 +77,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       PhotoelectricEffectFluent.workFunction.labelStringProperty,
       workFunctionProperty,
 
-      // TODO: NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
+      // TODO: @design NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
       //   we will need to add support in scenery-phet or reconstruct this NumberControl on material change,
-      //   or create several NumberControls and toggle visibility.
+      //   or create several NumberControls and toggle visibility. SEE TODO where this is created.
       Material.WORK_FUNCTION_RANGE,
       {
         delta: 0.1,
@@ -143,7 +143,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     // When electrons become invisible, the "highest energy only" is not relevant and becomes unavailable.
     // Reset to false so that it is clearly not selected in the UI.
-    // TODO: @brett is this behavior correct?
+    // TODO: @design is this behavior correct?
     model.showElectronsProperty.link( showElectrons => {
       if ( !showElectrons ) {
         model.showHighestEnergyOnlyProperty.value = false;

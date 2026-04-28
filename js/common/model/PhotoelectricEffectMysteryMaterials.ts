@@ -3,7 +3,7 @@
 /**
  * PhotoelectricEffectMysteryMaterials defines all global mystery material instances for the sim.
  *
- * TODO: @Brett, are you OK with all of these materials being globals (state shared across all screens,
+ * TODO: @design, are you OK with all of these materials being globals (state shared across all screens,
  *   not reset from ResetAllButton, will have different location in the phetio tree, and so on...)
  *
  * PREFERENCES_MYSTERY_MATERIAL_1 and _2 are user-configurable via the Preferences dialog. Its work function

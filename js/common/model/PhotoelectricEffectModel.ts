@@ -373,12 +373,7 @@ export default class PhotoelectricEffectModel implements TModel {
                 Material.TOTAL_ENERGY_DEPTH, 1 )
     );
 
-    let electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
-
-    // Implementation choice: treat sub-1 counts as zero to avoid tiny non-physical current readouts.
-    if ( electronsPerSecondToAnode < 1 ) {
-      electronsPerSecondToAnode = 0;
-    }
+    const electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
 
     // "Jimmy factor" scales model output to match the sim's calibrated current display.
     return electronsPerSecondToAnode * PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR;
