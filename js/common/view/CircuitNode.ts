@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2026, University of Colorado Boulder
 /**
  * A node that draws the circuit. This circuit includes the wires connecting to each collector (target and sink),
  * as well as the target plate, and visual outline of a vacuum tube that the electrons travel inside. This is a purely

@@ -63,7 +63,10 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // y centered in the layout bounds
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
-      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY + 40 ),
+
+      // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
+      // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
+      new Vector2( 340, this.layoutBounds.centerY + 40 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
     const materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
