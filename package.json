@@ -23,7 +23,8 @@
     ],
     "supportsOutputJS": true,
     "simFeatures": {
-      "supportsDynamicLocale": true
+      "supportsDynamicLocale": true,
+      "supportsInteractiveDescription": true
     },
     "screenNameKeys": [
       "PHOTOELECTRIC_EFFECT/screen.intro",
