@@ -20,6 +20,21 @@ type StringsType = {
     'experimentStringProperty': LocalizedStringProperty;
     'energyStringProperty': LocalizedStringProperty;
   };
+  'materials': {
+    'sodiumStringProperty': LocalizedStringProperty;
+    'copperStringProperty': LocalizedStringProperty;
+    'calciumStringProperty': LocalizedStringProperty;
+    'magnesiumStringProperty': LocalizedStringProperty;
+    'platinumStringProperty': LocalizedStringProperty;
+    'zincStringProperty': LocalizedStringProperty;
+    'customStringProperty': LocalizedStringProperty;
+    'mysteryStringProperty': LocalizedStringProperty;
+    'mystery1StringProperty': LocalizedStringProperty;
+    'mystery2StringProperty': LocalizedStringProperty;
+    'mystery3StringProperty': LocalizedStringProperty;
+    'mystery4StringProperty': LocalizedStringProperty;
+    'mystery5StringProperty': LocalizedStringProperty;
+  };
   'experiment': {
     'graph': {
       'voltageCurrentTitleStringProperty': LocalizedStringProperty;
@@ -61,9 +76,18 @@ type StringsType = {
   };
   'current': {
     'labelStringProperty': LocalizedStringProperty;
+    'readoutPatternStringProperty': LocalizedStringProperty;
+  };
+  'debugLegend': {
+    'titleStringProperty': LocalizedStringProperty;
+    'photonsStringProperty': LocalizedStringProperty;
+    'electronsStringProperty': LocalizedStringProperty;
+    'targetStringProperty': LocalizedStringProperty;
+    'collectorStringProperty': LocalizedStringProperty;
   };
   'preferences': {
-    'mysteryMaterialLabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterial1LabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterial2LabelStringProperty': LocalizedStringProperty;
     'mysteryMaterialDescriptionStringProperty': LocalizedStringProperty;
     'mysteryMaterialWorkFunctionLabelStringProperty': LocalizedStringProperty;
     'mysteryMaterialWorkFunctionDescriptionStringProperty': LocalizedStringProperty;

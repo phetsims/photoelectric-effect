@@ -34,6 +34,7 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     // In the intro screen, electron visibility controls are only available in the circuit scene.
     model.sceneProperty.link( scene => {
       this.electronVisibilityControls.visible = scene === 'circuit';
+      this.ammeterDisplayPanel.visible = scene === 'circuit';
     } );
   }
 }

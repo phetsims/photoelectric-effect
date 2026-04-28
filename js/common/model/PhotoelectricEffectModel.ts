@@ -22,12 +22,12 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Battery from './Battery.js';
+import Collector from './Collector.js';
 import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
 import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon from './Photon.js';
 import PhotonSource from './PhotonSource.js';
-import Collector from './Collector.js';
 import Target from './Target.js';
 
 type SelfOptions = {
@@ -54,12 +54,14 @@ export default class PhotoelectricEffectModel implements TModel {
 
   // Battery that sets the potential difference between plates.
   // Controls the electric field that accelerates or decelerates electrons.
+  // TODO: Should we move this into ExperimentModel?
   public readonly battery: Battery;
 
   // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
 
   // Voltage across the plates in model units.
+  // TODO: Should we move this into ExperimentModel?
   public readonly voltageProperty: NumberProperty;
 
   // Wavelength of emitted photons in nanometers.
@@ -87,29 +89,31 @@ export default class PhotoelectricEffectModel implements TModel {
   private photonEmissionAccumulator = 0;
 
   /**
-   * Creates the model and configures materials, sources, and derived current.
+   * @param customMaterials - Custom materials that the student can play with. These have a controllable
+   *                          work function.
    * @param mysteryMaterials - mystery materials owned by PhotoelectricEffectPreferencesModel and passed down.
    *   One entry for the user-configurable mystery material; additional entries can be added in the future
    *   for PhET-iO clients to manipulate.
    * @param providedOptions
    */
-  public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
+  public constructor( mysteryMaterials: Material[], customMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
 
     const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {}, providedOptions );
 
     const standardMaterials = [
-      new Material( MaterialType.SODIUM, options.tandem ),
-      new Material( MaterialType.COPPER, options.tandem ),
-      new Material( MaterialType.CALCIUM, options.tandem ),
-      new Material( MaterialType.MAGNESIUM, options.tandem ),
-      new Material( MaterialType.PLATINUM, options.tandem ),
-      new Material( MaterialType.ZINC, options.tandem ),
-      new Material( MaterialType.CUSTOM, options.tandem )
+      new Material( MaterialType.SODIUM, { tandem: options.tandem } ),
+      new Material( MaterialType.COPPER, { tandem: options.tandem } ),
+      new Material( MaterialType.CALCIUM, { tandem: options.tandem } ),
+      new Material( MaterialType.MAGNESIUM, { tandem: options.tandem } ),
+      new Material( MaterialType.PLATINUM, { tandem: options.tandem } ),
+      new Material( MaterialType.ZINC, { tandem: options.tandem } )
     ];
 
+    // The order according to the design document - standard, mystery, then custom.
     const allMaterials = [
       ...standardMaterials,
-      ...mysteryMaterials
+      ...mysteryMaterials,
+      ...customMaterials
     ];
 
     this.target = new Target( allMaterials, providedOptions.tandem.createTandem( 'target' ) );
@@ -369,12 +373,7 @@ export default class PhotoelectricEffectModel implements TModel {
                 Material.TOTAL_ENERGY_DEPTH, 1 )
     );
 
-    let electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
-
-    // Implementation choice: treat sub-1 counts as zero to avoid tiny non-physical current readouts.
-    if ( electronsPerSecondToAnode < 1 ) {
-      electronsPerSecondToAnode = 0;
-    }
+    const electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
 
     // "Jimmy factor" scales model output to match the sim's calibrated current display.
     return electronsPerSecondToAnode * PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR;

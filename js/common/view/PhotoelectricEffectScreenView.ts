@@ -10,7 +10,6 @@
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
-import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
@@ -18,22 +17,21 @@ import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransfo
 import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
-import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
-import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Shape from '../../../../kite/js/Shape.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
-import ComboBox from '../../../../sun/js/ComboBox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
 import LightSourceNode from './LightSourceNode.js';
 import CircuitNode from './CircuitNode.js';
 import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
+import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
 
 type SelfOptions = {
@@ -45,7 +43,10 @@ type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 export default class PhotoelectricEffectScreenView extends ScreenView {
 
   private readonly particleCanvasNode: ParticleCanvasNode;
-  private readonly modelViewTransform: ModelViewTransform2;
+  protected readonly modelViewTransform: ModelViewTransform2;
+
+  // Shared ammeter panel for layout and visibility control in subclasses.
+  protected readonly ammeterDisplayPanel: AmmeterDisplayPanel;
 
   // Controls for electron rendering and behavior, for layout and visibility control in subclasses.
   protected readonly electronVisibilityControls: VBox;
@@ -61,24 +62,19 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // y centered in the layout bounds
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
-      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY + 40 ),
+
+      // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
+      // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
+      new Vector2( 340, this.layoutBounds.centerY + 40 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
     // Add circuit node as background.
     this.addChild( new CircuitNode( this.modelViewTransform ) );
 
-    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
-    // https://github.com/phetsims/photoelectric-effect/issues/5
-    const comboBoxItems = model.target.materials.map( ( material, i ) => {
-      return {
-        value: material,
-        createNode: () => new Text( `Material ${i}, ${material.materialType}` )
-      };
-    } );
 
-    const materialsComboBox = new ComboBox( model.target.materialProperty, comboBoxItems, this, {
-      tandem: options.tandem.createTandem( 'materialsComboBox' ),
-      leftCenter: this.layoutBounds.leftCenter.plusXY( PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN, 0 )
+    const materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
+      rightCenter: this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ).plusXY( -25, 0 ),
+      tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
     const workFunctionProperty = new DynamicProperty<number, number, Material>( model.target.materialProperty, {
@@ -91,20 +87,22 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const workFunctionControl = new NumberControl(
       PhotoelectricEffectFluent.workFunction.labelStringProperty,
       workFunctionProperty,
-      new Range( 0, 10 ),
+
+      // TODO: NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
+      //   we will need to add support in scenery-phet or reconstruct this NumberControl on material change,
+      //   or create several NumberControls and toggle visibility.
+      Material.WORK_FUNCTION_RANGE,
       {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1
         },
         visibleProperty: customMaterialSelectedProperty,
+        centerTop: materialsComboBox.centerBottom.plusXY( 0, 25 ),
         tandem: options.tandem.createTandem( 'workFunctionControl' )
       }
     );
 
-    /**
-     * Create the photon/light source and accompanying control panel.
-     */
     const photonSourcePanel = new IntensityAndWavelengthControl( model.photonSource, {
       rightTop: new Vector2(
         this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x,
@@ -112,6 +110,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       ),
       tandem: options.tandem.createTandem( 'photonSourcePanel' )
     } );
+
+    this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty );
 
     // Light source node: aperture at local origin, placed at the beam-start view position.
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
@@ -137,42 +137,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( photonSourceWireNode );
     this.addChild( lightSourceNode );
     this.addChild( photonSourcePanel );
-
-    const currentDisplay = new NumberDisplay(
-      model.currentProperty,
-      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT ),
-      {
-        decimalPlaces: 3,
-        tandem: options.tandem.createTandem( 'currentDisplay' )
-      }
-    );
-
-    const currentReadout = new HBox( {
-      spacing: 10,
-      align: 'center',
-      children: [
-        new Text( PhotoelectricEffectFluent.current.labelStringProperty ),
-        currentDisplay
-      ],
-      centerTop: photonSourcePanel.centerBottom.plusXY(
-        0,
-        PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      )
-    } );
-
-    const voltageControl = new NumberControl(
-      PhotoelectricEffectFluent.voltage.labelStringProperty,
-      model.voltageProperty,
-      new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
-          decimalPlaces: 1
-        },
-        leftBottom: materialsComboBox.leftTop,
-        tandem: options.tandem.createTandem( 'voltageControl' )
-      }
-    );
 
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
@@ -224,9 +188,13 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     this.addChild( materialsComboBox );
     this.addChild( workFunctionControl );
-    this.addChild( currentReadout );
     this.addChild( this.electronVisibilityControls );
-    this.addChild( voltageControl );
+    this.addChild( this.ammeterDisplayPanel );
+
+    this.ammeterDisplayPanel.centerTop = this.modelViewTransform.modelToViewXY( model.collector.x, 0 ).plusXY(
+      0,
+      PhotoelectricEffectConstants.COLLECTOR_BOUNDS.maxY + 20
+    );
 
     const resetAllButton = new ResetAllButton( {
       listener: () => {

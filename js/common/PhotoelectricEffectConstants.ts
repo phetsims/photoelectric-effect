@@ -122,9 +122,6 @@ export default class PhotoelectricEffectConstants {
   // Scale factor for the model-to-view transform, in view pixels per model unit.
   public static readonly MODEL_VIEW_SCALE = 4;
 
-  // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
-  // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
-  public static readonly VIEW_ORIGIN_X = 340;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 
   //------------------------------------------------------------

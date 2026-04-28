@@ -13,6 +13,47 @@
       "value": "Energy"
     }
   },
+  "materials": {
+    "sodium": {
+      "value": "Sodium"
+    },
+    "copper": {
+      "value": "Copper"
+    },
+    "calcium": {
+      "value": "Calcium"
+    },
+    "magnesium": {
+      "value": "Magnesium"
+    },
+    "platinum": {
+      "value": "Platinum"
+    },
+    "zinc": {
+      "value": "Zinc"
+    },
+    "custom": {
+      "value": "Custom"
+    },
+    "mystery": {
+      "value": "Mystery"
+    },
+    "mystery1": {
+      "value": "Mystery 1"
+    },
+    "mystery2": {
+      "value": "Mystery 2"
+    },
+    "mystery3": {
+      "value": "Mystery 3"
+    },
+    "mystery4": {
+      "value": "Mystery 4"
+    },
+    "mystery5": {
+      "value": "Mystery 5"
+    }
+  },
   "experiment": {
     "graph": {
       "voltageCurrentTitle": {
@@ -90,13 +131,34 @@
     "value": "{{value}} nm"
   },
   "voltage.label": {
-    "value": "Voltage (V)"
+    "value": "Voltage"
   },
   "current.label": {
-    "value": "Current (A)"
+    "value": "Current"
   },
-  "preferences.mysteryMaterialLabel": {
-    "value": "Mystery Material"
+  "current.readoutPattern": {
+    "value": "{{value}} mA"
+  },
+  "debugLegend.title": {
+    "value": "Legend:"
+  },
+  "debugLegend.photons": {
+    "value": "Yellow = photons"
+  },
+  "debugLegend.electrons": {
+    "value": "Cyan = electrons"
+  },
+  "debugLegend.target": {
+    "value": "Red outline = target"
+  },
+  "debugLegend.collector": {
+    "value": "Blue outline = collector"
+  },
+  "preferences.mysteryMaterial1Label": {
+    "value": "Mystery Material 1"
+  },
+  "preferences.mysteryMaterial2Label": {
+    "value": "Mystery Material 2"
   },
   "preferences.mysteryMaterialDescription": {
     "value": "When enabled, adds a mystery material with a configurable work function to the available materials."

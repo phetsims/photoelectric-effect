@@ -71,4 +71,8 @@ export default class PhotoelectricEffectColors {
   public static readonly apertureGradientEdgeColorProperty = new ProfileColorProperty( photoelectricEffect, 'apertureGradientEdge', {
     default: '#6ea4c6'
   } );
+
+  public static readonly ammeterPanelFillColorProperty = new ProfileColorProperty( photoelectricEffect, 'ammeterPanelFill', {
+    default: '#eab253'
+  } );
 }
