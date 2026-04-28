@@ -25,7 +25,7 @@ type CircuitNodeOptions = SelfOptions & StrictOmit<NodeOptions, 'children'>;
 
 export default class CircuitNode extends Node {
 
-  public constructor( modelViewTransform: ModelViewTransform2, providedOptions: CircuitNodeOptions ) {
+  public constructor( modelViewTransform: ModelViewTransform2, providedOptions?: CircuitNodeOptions ) {
 
     /**
      * Create the collectors and plate that the electrons travel between

@@ -27,8 +27,7 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     const options = optionize<IntroScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
     super( model, options );
 
-    // Add circuit node as background.
-
+    // Add circuit as background. The type of circuit is determined by the sceneRadioButtonGroup
     this.addChild( new CircuitNode( this.modelViewTransform, {
       visibleProperty: DerivedProperty.valueEqualsConstant( model.sceneProperty, 'circuit' )
     } ) );
