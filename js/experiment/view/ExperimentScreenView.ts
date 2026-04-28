@@ -36,8 +36,7 @@ export default class ExperimentScreenView extends PhotoelectricEffectScreenView 
     super( model, options );
 
     // Add circuit node as background.
-    const circuitNode = new CircuitNode( this.modelViewTransform );
-    this.addChild( circuitNode );
+    this.backgroundNode.addChild( new CircuitNode( this.modelViewTransform ) );
 
     const graphsVBox = new VBox( {
       spacing: GraphAssemblyNode.GRAPH_ASSEMBLY_SPACING,

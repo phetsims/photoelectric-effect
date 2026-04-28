@@ -28,10 +28,10 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     super( model, options );
 
     // Add circuit as background. The type of circuit is determined by the sceneRadioButtonGroup
-    this.addChild( new CircuitNode( this.modelViewTransform, {
+    this.backgroundNode.addChild( new CircuitNode( this.modelViewTransform, {
       visibleProperty: DerivedProperty.valueEqualsConstant( model.sceneProperty, 'circuit' )
     } ) );
-    this.addChild( new GroundedCircuitNode( this.modelViewTransform, {
+    this.backgroundNode.addChild( new GroundedCircuitNode( this.modelViewTransform, {
       visibleProperty: DerivedProperty.valueEqualsConstant( model.sceneProperty, 'grounded' )
     } ) );
     const sceneRadioButtonGroup = new SceneRadioButtonGroup( model.sceneProperty, {

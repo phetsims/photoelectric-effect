@@ -34,6 +34,7 @@ import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
 import LightSourceNode from './LightSourceNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -42,6 +43,10 @@ type SelfOptions = {
 type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class PhotoelectricEffectScreenView extends ScreenView {
+
+  // The background node holds static drawings that decorate and add context to each screen. Generally this is
+  // populated by the specific circuit required by the screen.
+  protected readonly backgroundNode = new Node();
 
   private readonly particleCanvasNode: ParticleCanvasNode;
   protected readonly modelViewTransform: ModelViewTransform2;
@@ -57,7 +62,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
 
     super( options );
-    this.model = model;
+
+    // Added first to be in the background of each screen.
+    this.addChild( this.backgroundNode )
 
     // model-view transform places the model x origin at the target plate, and a view origin at an x-offset with
     // y centered in the layout bounds
@@ -69,25 +76,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       new Vector2( 340, this.layoutBounds.centerY + 40 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
-    // Add circuit node as background.
-    this.addChild( new CircuitNode( this.modelViewTransform ) );
-
-
     const materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
       rightCenter: this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ).plusXY( -25, 0 ),
       tandem: options.tandem.createTandem( 'materialsComboBox' )
-    } );
-
-    // Add circuit node as background.
-    this.addChild( new CircuitNode( this.modelViewTransform ) );
-
-    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
-    // https://github.com/phetsims/photoelectric-effect/issues/5
-    const comboBoxItems = model.target.materials.map( ( material, i ) => {
-      return {
-        value: material,
-        createNode: () => new Text( `Material ${i}, ${material.materialType}` )
-      };
     } );
 
     const workFunctionProperty = new DynamicProperty<number, number, Material>( model.target.materialProperty, {
@@ -128,31 +119,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     } );
 
     this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty );
-    // Light source node: aperture at local origin, placed at the beam-start view position.
-    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
-    const lightSourceNode = new LightSourceNode( beamStartCenter );
-
-    // S-shaped wire from the back of the lamp to the right side of the control panel.
-    // First control point of cubic curve below the start and second control point of cubic curve above the end
-    // create the S regardless of height difference.
-    const S_BEND = 200;
-    const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
-    const photonSourceWireEnd = photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
-    const photonSourceWireNode = new Path( new Shape()
-      .moveToPoint( photonSourceWireStart )
-      .cubicCurveToPoint(
-        photonSourceWireStart.plusXY( 0, -S_BEND ),
-        photonSourceWireEnd.plusXY( 0, S_BEND ),
-        photonSourceWireEnd
-      ), {
-      stroke: 'black',
-      lineWidth: 3
-    } );
-
-    // Added in this order for proper z-layering.
-    this.addChild( photonSourceWireNode );
-    this.addChild( lightSourceNode );
-    this.addChild( photonSourcePanel );
 
     const voltageControl = new NumberControl(
       PhotoelectricEffectFluent.voltage.labelStringProperty,
