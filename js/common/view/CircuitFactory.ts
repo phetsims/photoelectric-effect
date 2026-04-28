@@ -26,7 +26,7 @@ export default class CircuitFactory {
       fill: PhotoelectricEffectColors.targetPlateFillColorProperty,
       stroke: 'black'
     } );
-    const plate = CircuitFactory.createPlate( { rightCenter: material.leftCenter } )
+    const plate = CircuitFactory.createPlate( { rightCenter: material.leftCenter } );
 
     return new Node( combineOptions<NodeOptions>( {
       children: [ material, plate ]

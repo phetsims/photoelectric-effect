@@ -11,23 +11,20 @@
 
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Shape from '../../../../kite/js/Shape.js';
-import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
-import Path from '../../../../scenery/js/nodes/Path.js';
-import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
-import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
-import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
+import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import CircuitFactory from './CircuitFactory.js';
 
 type SelfOptions = EmptySelfOptions;
 type CircuitNodeOptions = SelfOptions & StrictOmit<NodeOptions, 'children'>;
 
 export default class CircuitNode extends Node {
+  public static readonly WIRE_HEIGHT = 150;
 
   public constructor( modelViewTransform: ModelViewTransform2, providedOptions?: CircuitNodeOptions ) {
 
@@ -45,7 +42,7 @@ export default class CircuitNode extends Node {
     /**
      * Create the shape for the circuit wire that connects the collectors.
      */
-    const circuitWireHeight = 150;
+    const circuitWireHeight = CircuitNode.WIRE_HEIGHT;
     const circuitWirePlateExtension = 50;
     const circuitWireLineWidth = 10;
     const circuitWireShape = new Shape().moveToPoint( targetPlate.leftCenter )
@@ -54,6 +51,11 @@ export default class CircuitNode extends Node {
       .lineTo( collectorPlate.right + circuitWirePlateExtension, collectorPlate.centerY + circuitWireHeight )
       .lineTo( collectorPlate.right + circuitWirePlateExtension, collectorPlate.centerY )
       .lineToPoint( collectorPlate.rightCenter );
+
+    const circuitWirePath = new Path( circuitWireShape, {
+      stroke: PhotoelectricEffectColors.circuitWireColorProperty,
+      lineWidth: circuitWireLineWidth
+    } );
 
     /**
      * Create the vacuum tube which is an outline of a cylinder.
@@ -83,7 +85,7 @@ export default class CircuitNode extends Node {
       // Create the left end of the tube
       .ellipse( new Vector2( targetPlate.left - vacuumTubeHorizontalExtension, targetPlate.centerY ),
         tubeEndXRadius, tubeEndYRadius, 0 );
-    
+
     const vacuumNode = new Path( vacuumTubeShape, {
       stroke: PhotoelectricEffectColors.vacuumTubeColorProperty,
       lineWidth: vacuumTubeLineWidth
@@ -102,11 +104,6 @@ export default class CircuitNode extends Node {
     const rightTubeEndPath = new Path( rightTubeEndShape, {
       stroke: PhotoelectricEffectColors.vacuumTubeColorProperty,
       lineWidth: vacuumTubeLineWidth
-    } );
-
-    const circuitWirePath = new Path( circuitWireShape, {
-      stroke: PhotoelectricEffectColors.circuitWireColorProperty,
-      lineWidth: circuitWireLineWidth
     } );
 
     const options = optionize<CircuitNodeOptions, SelfOptions, NodeOptions>()( {

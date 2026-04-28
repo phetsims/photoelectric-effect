@@ -24,15 +24,15 @@ export default class GroundedCircuitNode extends Node {
   public constructor( modelViewTransform: ModelViewTransform2, providedOptions: GroundedCircuitNodeOptions ) {
     const targetPlate = CircuitFactory.createPlateWithMaterial( {
       rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 )
-    } )
+    } );
 
     const groundLineShape = new Shape().moveToPoint( targetPlate.leftCenter )
       .lineTo( targetPlate.left - 50, targetPlate.centerY )
-      .lineTo( targetPlate.left - 50, targetPlate.centerY + 150 )
+      .lineTo( targetPlate.left - 50, targetPlate.centerY + 150 );
     const groundLinePath = new Path( groundLineShape, {
       stroke: 'black',
       lineWidth: 5
-    } )
+    } );
 
     const options = optionize<GroundedCircuitNodeOptions, SelfOptions, NodeOptions>()( {
       children: [ targetPlate, groundLinePath ]

@@ -10,19 +10,19 @@
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
-import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
+import Shape from '../../../../kite/js/Shape.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import Shape from '../../../../kite/js/Shape.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
@@ -34,7 +34,6 @@ import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
 import LightSourceNode from './LightSourceNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -64,7 +63,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     super( options );
 
     // Added first to be in the background of each screen.
-    this.addChild( this.backgroundNode )
+    this.addChild( this.backgroundNode );
 
     // model-view transform places the model x origin at the target plate, and a view origin at an x-offset with
     // y centered in the layout bounds
@@ -73,11 +72,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
       // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
       // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
-      new Vector2( 340, this.layoutBounds.centerY + 40 ),
+      new Vector2( 250, this.layoutBounds.centerY + 40 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
     const materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
-      rightCenter: this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ).plusXY( -25, 0 ),
+      left: this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      top: this.layoutBounds.centerY,
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
@@ -118,21 +118,10 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'photonSourcePanel' )
     } );
 
-    this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty );
-
-    const voltageControl = new NumberControl(
-      PhotoelectricEffectFluent.voltage.labelStringProperty,
-      model.voltageProperty,
-      new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
-          decimalPlaces: 1
-        },
-        leftBottom: materialsComboBox.leftTop,
-        tandem: options.tandem.createTandem( 'voltageControl' )
-      }
-    );
+    this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty, {
+      center: this.modelViewTransform.modelToViewXY( model.collector.x, 0 )
+        .plusXY( 0, CircuitNode.WIRE_HEIGHT )
+    } );
 
     // Light source node: aperture at local origin, placed at the beam-start view position.
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
@@ -212,12 +201,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( workFunctionControl );
     this.addChild( this.electronVisibilityControls );
     this.addChild( this.ammeterDisplayPanel );
-
-    this.ammeterDisplayPanel.centerTop = this.modelViewTransform.modelToViewXY( model.collector.x, 0 ).plusXY(
-      0,
-      PhotoelectricEffectConstants.PLATE_BOUNDS.maxY + 20
-    );
-    this.addChild( voltageControl );
 
     const resetAllButton = new ResetAllButton( {
       listener: () => {
