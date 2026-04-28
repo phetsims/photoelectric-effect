@@ -23,7 +23,7 @@ export default class ExperimentModel extends PhotoelectricEffectModel {
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
     super(
       mysteryMaterials,
-      [ new Material( MaterialType.CUSTOM, { tandem: providedOptions.tandem } ) ],
+      [ new Material( MaterialType.CUSTOM, { tandem: providedOptions.tandem.createTandem( 'custom' ) } ) ],
       providedOptions
     );
 

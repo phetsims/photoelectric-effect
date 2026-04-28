@@ -8,7 +8,7 @@
  */
 
 import Range from '../../../../dot/js/Range.js';
-import optionize, { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -42,9 +42,6 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
       }
     ];
 
-    const options = optionize<FrequencyEnergyGraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {
-    }, providedOptions );
-
     const graphOptions: GraphAssemblyNodeOptions = {
       graphPlotAreaNodeOptions: {
         zoomRangePairs: zoomRangePairs,
@@ -60,7 +57,7 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
         // TODO: Move this to PhotoelectricEffectColors.ts
         fill: '#7090F5'
       },
-      tandem: options.tandem
+      tandem: providedOptions.tandem
     };
 
     super( model.frequencyEnergyGraphData, graphOptions );

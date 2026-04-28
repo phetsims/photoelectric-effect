@@ -101,6 +101,8 @@ export default class PhotoelectricEffectModel implements TModel {
     const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {}, providedOptions );
 
     const standardMaterials = [
+
+      // TODO @design, is this the right tandem Name for materials?
       new Material( MaterialType.SODIUM, { tandem: options.tandem.createTandem( 'sodiumMaterial' ) } ),
       new Material( MaterialType.COPPER, { tandem: options.tandem.createTandem( 'copperMaterial' ) } ),
       new Material( MaterialType.CALCIUM, { tandem: options.tandem.createTandem( 'calciumMaterial' ) } ),
@@ -128,7 +130,7 @@ export default class PhotoelectricEffectModel implements TModel {
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
     this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X, providedOptions.tandem.createTandem( 'collector' ) );
-    this.battery = new Battery( providedOptions.tandem );
+    this.battery = new Battery( providedOptions.tandem.createTandem( 'battery' ) );
 
     this.currentProperty = new DerivedProperty(
       [

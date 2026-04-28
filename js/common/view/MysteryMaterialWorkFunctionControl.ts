@@ -35,9 +35,6 @@ export default class MysteryMaterialWorkFunctionControl extends PreferencesContr
       numberDisplayOptions: {
         decimalPlaces: 1
       },
-      sliderOptions: {
-        tandem: providedOptions.tandem.createTandem( 'slider' )
-      },
       tandem: providedOptions.tandem.createTandem( 'numberControl' )
     } );
 
