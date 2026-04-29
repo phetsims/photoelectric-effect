@@ -120,14 +120,17 @@ export default class Material extends PhetioObject {
     super( options );
     this.materialType = materialType;
     this.labelKey = options.labelKey;
+
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
       range: Material.WORK_FUNCTION_RANGE,
-      tandem: options.tandem.createTandem( 'workFunctionProperty' )
+      tandem: options.tandem.createTandem( 'workFunctionProperty' ),
+      phetioDocumentation: 'Minimum energy, in electron volts, required to eject an electron from this material'
     } );
 
     // TODO: @design (phet-io) All EnabledProperty instances are featured. Do we want that for all Materials?
     this.enabledProperty = new EnabledProperty( options.enabled, {
-      tandem: options.tandem.createTandem( 'enabledProperty' )
+      tandem: options.tandem.createTandem( 'enabledProperty' ),
+      phetioDocumentation: 'Whether this material is available for selection'
     } );
   }
 

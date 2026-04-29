@@ -4,6 +4,8 @@
  * Particle-based photoelectric effect model.
  * Owns the photon and electron collections and computes analytic current.
  *
+ * TODO: @design Review PhET-iO documentation strings with the design team.
+ *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -12,7 +14,7 @@ import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import type ReadOnlyProperty from '../../../../axon/js/ReadOnlyProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import TModel from '../../../../joist/js/TModel.js';
@@ -75,7 +77,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   public readonly wavelengthProperty: NumberProperty;
 
   // Derived analytic current based on model settings.
-  public readonly currentProperty: TReadOnlyProperty<number>;
+  public readonly currentProperty: ReadOnlyProperty<number>;
 
   // When false, continuous time stepping is paused; the step-forward control advances the model.
   public readonly isPlayingProperty: BooleanProperty;
@@ -156,6 +158,13 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       ],
       ( voltage, intensity, wavelength, workFunction ) => {
         return this.getCurrentForSystem( voltage, intensity, wavelength, workFunction );
+      },
+      {
+        tandem: tandem.createTandem( 'currentProperty' ),
+        phetioValueType: NumberIO,
+        phetioFeatured: true,
+        units: 'A',
+        phetioDocumentation: 'Analytic current in the circuit, in amps'
       }
     );
 
@@ -171,7 +180,8 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
     this.showHighestEnergyOnlyProperty = new BooleanProperty( false, {
       phetioFeatured: true,
-      tandem: tandem.createTandem( 'showHighestEnergyOnlyProperty' )
+      tandem: tandem.createTandem( 'showHighestEnergyOnlyProperty' ),
+      phetioDocumentation: 'Whether only highest-energy electron emissions are shown'
     } );
   }
 

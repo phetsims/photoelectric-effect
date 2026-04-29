@@ -3,7 +3,7 @@
 /**
  * GraphPlotAreaNode renders the reusable chart region for the experiment graph.
  * It manages chart transform updates from zoom changes, including tick mark and tick label regeneration for each
- * configured zoom range pair.
+ * configured y-zoom range.
  *
  * The node focuses on plotting concerns only (grid, masked line plot, optional latest-point scatter marker, ticks,
  * axis labels, and border) so parent components can layer controls and readouts around it.
@@ -35,11 +35,6 @@ import Color from '../../../../scenery/js/util/Color.js';
 import type TColor from '../../../../scenery/js/util/TColor.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-
-export type ZoomRangePair = {
-  xRange: Range;
-  yRange: Range;
-};
 
 type TickSetGroup = {
   xTickLabelSet: TickLabelSet;
@@ -75,12 +70,6 @@ type GraphPlotAreaSelfOptions = {
   // View size of the plot area in scenery coordinates.
   chartViewWidth?: number;
   chartViewHeight?: number;
-
-  // 1-based index into zoomRangePairs for the initial model ranges.
-  initialZoomLevel?: number;
-
-  // Zoom presets mapped to zoomLevelProperty (1-based).
-  zoomRangePairs?: ZoomRangePair[];
 
   // Optional X-axis label centered beneath the chart. Null hides the label.
   xAxisLabelStringProperty?: TReadOnlyProperty<string> | null;
@@ -142,16 +131,23 @@ export default class GraphPlotAreaNode extends Node {
   // Updates chart ranges and recreated tick sets when zoom level changes.
   private readonly zoomLevelObserver: ( zoomLevel: number ) => void;
 
-  public constructor( providedOptions: GraphPlotAreaNodeOptions ) {
+  // Zoom range presets sorted from most zoomed-in to most zoomed-out.
+  private readonly yZoomRanges: Range[];
+
+  /**
+   * @param xRange - Shared x-axis domain used for every zoom level.
+   * @param yZoomRanges - Y-axis zoom presets. Level 1 is treated as most zoomed-in after sorting by span.
+   * @param providedOptions - Visual configuration for labels, grid spacing, line styling, and marker behavior.
+   */
+  public constructor(
+    xRange: Range,
+    yZoomRanges: Range[],
+    providedOptions: GraphPlotAreaNodeOptions
+  ) {
 
     const options = optionize<GraphPlotAreaNodeOptions, GraphPlotAreaSelfOptions, NodeOptions>()( {
       chartViewWidth: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH,
       chartViewHeight: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT,
-      initialZoomLevel: 1,
-      zoomRangePairs: [ {
-        xRange: new Range( 0, 1 ),
-        yRange: new Range( 0, 1 )
-      } ],
       xAxisLabelStringProperty: null,
       yAxisLabelStringProperty: null,
       yAxisLabelYOffset: 0,
@@ -177,10 +173,13 @@ export default class GraphPlotAreaNode extends Node {
 
     const chartViewWidth = options.chartViewWidth;
     const chartViewHeight = options.chartViewHeight;
-    const zoomRangePairs = options.zoomRangePairs;
-    const initialZoomLevel = options.initialZoomLevel;
-    const initialRangeIndex = Math.min( Math.max( initialZoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
-    const initialRangePair = zoomRangePairs[ initialRangeIndex ];
+
+    // Keep level 1 as the most zoomed-in preset by ordering ranges from smallest to largest y span.
+    // Intentionally ignore x span because zoom behavior is defined only by vertical current range.
+    this.yZoomRanges = yZoomRanges.slice().sort( ( a, b ) => {
+      return a.getLength() - b.getLength();
+    } );
+    const initialYRange = this.yZoomRanges[ 0 ];
 
     // Uses axis-specific padding to preserve visual margin with non-square chart aspect ratios.
     const baseRangePaddingFraction = options.rangePaddingFraction;
@@ -190,8 +189,8 @@ export default class GraphPlotAreaNode extends Node {
     this.chartTransform = new ChartTransform( {
       viewWidth: chartViewWidth,
       viewHeight: chartViewHeight,
-      modelXRange: GraphPlotAreaNode.getPaddedRange( initialRangePair.xRange, rangePaddingFractionX ),
-      modelYRange: GraphPlotAreaNode.getPaddedRange( initialRangePair.yRange, rangePaddingFractionY )
+      modelXRange: GraphPlotAreaNode.getPaddedRange( xRange, rangePaddingFractionX ),
+      modelYRange: GraphPlotAreaNode.getPaddedRange( initialYRange, rangePaddingFractionY )
     } );
 
     this.plotRectangle = new Rectangle( 0, 0, chartViewWidth, chartViewHeight, {
@@ -205,6 +204,8 @@ export default class GraphPlotAreaNode extends Node {
       fill: 'white'
     } );
     const chartContentClipArea = this.plotRectangle.getShape();
+
+    // TODO: @design, do we want to adjust the grid lines with zoom?
     const gridLineSet = new Node( {
       clipArea: chartContentClipArea,
       children: [
@@ -240,7 +241,8 @@ export default class GraphPlotAreaNode extends Node {
 
     this.tickSets = GraphPlotAreaNode.createTickSets(
       this.chartTransform,
-      initialRangePair,
+      xRange,
+      initialYRange,
       options.xTickLabelFormatter,
       options.yTickLabelFormatter
     );
@@ -294,24 +296,25 @@ export default class GraphPlotAreaNode extends Node {
       children: chartChildren
     } ) );
 
-    this.zoomLevelProperty = new NumberProperty( initialZoomLevel, {
-      range: new Range( 1, zoomRangePairs.length ),
+    this.zoomLevelProperty = new NumberProperty( 1, {
+      range: new Range( 1, this.yZoomRanges.length ),
       numberType: 'Integer',
       tandem: options.tandem.createTandem( 'zoomLevelProperty' )
     } );
 
     this.zoomLevelObserver = ( zoomLevel: number ) => {
-      const index = Math.min( Math.max( zoomLevel - 1, 0 ), zoomRangePairs.length - 1 );
-      const rangePair = zoomRangePairs[ index ];
-      this.chartTransform.setModelXRange( GraphPlotAreaNode.getPaddedRange( rangePair.xRange, rangePaddingFractionX ) );
-      this.chartTransform.setModelYRange( GraphPlotAreaNode.getPaddedRange( rangePair.yRange, rangePaddingFractionY ) );
+      const index = Math.min( Math.max( zoomLevel - 1, 0 ), this.yZoomRanges.length - 1 );
+      const yRange = this.yZoomRanges[ index ];
+      this.chartTransform.setModelXRange( GraphPlotAreaNode.getPaddedRange( xRange, rangePaddingFractionX ) );
+      this.chartTransform.setModelYRange( GraphPlotAreaNode.getPaddedRange( yRange, rangePaddingFractionY ) );
 
       // Dispose previous sets after swapping to avoid detached scenery/bamboo nodes lingering in memory.
       const previousTickSets = this.tickSets;
 
       this.tickSets = GraphPlotAreaNode.createTickSets(
         this.chartTransform,
-        rangePair,
+        xRange,
+        yRange,
         options.xTickLabelFormatter,
         options.yTickLabelFormatter
       );
@@ -357,6 +360,48 @@ export default class GraphPlotAreaNode extends Node {
     if ( this.currentPointPlot ) {
       this.currentPointPlot.setDataSet( point ? [ point ] : [] );
     }
+  }
+
+  /**
+   * Chooses the most zoomed-in level that still contains all plotted y-values.
+   * This supports both zooming in and out as data is added or cleared.
+   *
+   * @param dataSet - Revealed points currently shown by the line plot.
+   * @param currentPoint - Optional latest-point marker to include in the fit.
+   */
+  public zoomToFitDataSetY( dataSet: ReadonlyArray<Vector2>, currentPoint: Vector2 | null ): void {
+
+    // Track both bounds for forward compatibility.
+    // Current experiment graphs are non-negative and use y ranges that start at zero, but checking
+    // both min and max keeps this method correct if future graphs include negative values or shifted ranges.
+    let minimumYValue = currentPoint ? currentPoint.y : Number.POSITIVE_INFINITY;
+    let maximumYValue = currentPoint ? currentPoint.y : Number.NEGATIVE_INFINITY;
+    for ( let i = 0; i < dataSet.length; i++ ) {
+      minimumYValue = Math.min( minimumYValue, dataSet[ i ].y );
+      maximumYValue = Math.max( maximumYValue, dataSet[ i ].y );
+    }
+
+    // Defaults to most zoomed-out until we find the tightest fitting preset.
+    let updatedZoomLevel = this.yZoomRanges.length;
+    if ( minimumYValue === Number.POSITIVE_INFINITY ) {
+
+      // No data shown yet, so restore the default zoomed-in view.
+      updatedZoomLevel = 1;
+    }
+    else {
+
+      // Loop starting at most zoomed in. If the zoom range fits both data bounds,
+      // we can use that zoom range.
+      for ( let i = 0; i < this.yZoomRanges.length; i++ ) {
+        if ( this.yZoomRanges[ i ].contains( minimumYValue ) &&
+             this.yZoomRanges[ i ].contains( maximumYValue ) ) {
+          updatedZoomLevel = i + 1;
+          break;
+        }
+      }
+    }
+
+    this.zoomLevelProperty.value = updatedZoomLevel;
   }
 
   /**
@@ -408,39 +453,40 @@ export default class GraphPlotAreaNode extends Node {
   }
 
   /**
-   * Creates tick marks and labels for both chart axes for one zoom range pair.
+   * Creates tick marks and labels for both chart axes for one zoom range preset.
    */
   private static createTickSets(
     chartTransform: ChartTransform,
-    rangePair: ZoomRangePair,
+    xRange: Range,
+    yRange: Range,
     xTickLabelFormatter: ( ( value: number ) => string ) | null,
     yTickLabelFormatter: ( ( value: number ) => string ) | null
   ): TickSetGroup {
-    const xSpacing = GraphPlotAreaNode.createTickSpacing( rangePair.xRange );
-    const ySpacing = GraphPlotAreaNode.createTickSpacing( rangePair.yRange );
+    const xSpacing = GraphPlotAreaNode.createTickSpacing( xRange );
+    const ySpacing = GraphPlotAreaNode.createTickSpacing( yRange );
 
     const xTickLabelSet = new TickLabelSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
       edge: 'min',
-      origin: rangePair.xRange.min,
-      createLabel: GraphPlotAreaNode.createEdgeLabel( rangePair.xRange, xTickLabelFormatter )
+      origin: xRange.min,
+      createLabel: GraphPlotAreaNode.createEdgeLabel( xRange, xTickLabelFormatter )
     } );
 
     const yTickLabelSet = new TickLabelSet( chartTransform, Orientation.VERTICAL, ySpacing, {
       edge: 'min',
-      origin: rangePair.yRange.min,
-      createLabel: GraphPlotAreaNode.createEdgeLabel( rangePair.yRange, yTickLabelFormatter )
+      origin: yRange.min,
+      createLabel: GraphPlotAreaNode.createEdgeLabel( yRange, yTickLabelFormatter )
     } );
 
     const xTickMarkSet = new TickMarkSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
       edge: 'min',
-      origin: rangePair.xRange.min,
+      origin: xRange.min,
       extent: TICK_MARK_EXTENT,
       lineWidth: TICK_MARK_LINE_WIDTH
     } );
 
     const yTickMarkSet = new TickMarkSet( chartTransform, Orientation.VERTICAL, ySpacing, {
       edge: 'min',
-      origin: rangePair.yRange.min,
+      origin: yRange.min,
       extent: TICK_MARK_EXTENT,
       lineWidth: TICK_MARK_LINE_WIDTH
     } );

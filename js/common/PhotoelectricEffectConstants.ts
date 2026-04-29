@@ -13,7 +13,8 @@ import PhetFont from '../../../scenery-phet/js/PhetFont.js';
 
 // Width of the lamp opening which will emit our photons.
 // Defined here so that our model constant can derive the length of the line along which photons will emit.
-const PHOTON_SOURCE_WIDTH = 40;
+const PHOTON_SOURCE_WIDTH = 60;
+const PLATE_HEIGHT = 170;
 
 export default class PhotoelectricEffectConstants {
 
@@ -28,10 +29,9 @@ export default class PhotoelectricEffectConstants {
   public static readonly COLLECTOR_X = 100;
 
   // Photon emission origin, positioned above and to the right of the target.
-  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 120, 80 );
+  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 55, 45 );
 
   // Angle of the photon beam direction, in radians, counter-clockwise from the positive x-axis.
-  // Adjust this single value to pixel-polish the beam direction (e.g. change to -2.3 to tilt slightly up).
   // Defaults to pointing from PHOTON_SOURCE_POSITION directly toward the target center (x=0, y=0).
   public static readonly PHOTON_SOURCE_DIRECTION_ANGLE = Math.atan2(
     -PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.y,
@@ -100,11 +100,10 @@ export default class PhotoelectricEffectConstants {
   // VIEW CONSTANTS
   //--------------------------------------------------------------
 
-  // Bounds of the target plate for rendering purposes only.
-  public static readonly TARGET_BOUNDS = new Bounds2( 0, 0, 5, 80 );
+  // Bounds of the target and collector plate for rendering purposes only.
 
-  // Bounds of the collector plate for rendering purposes only.
-  public static readonly COLLECTOR_BOUNDS = new Bounds2( 0, 0, 5, 80 );
+  public static readonly PLATE_MATERIAL_BOUNDS = new Bounds2( 0, 0, 8, PLATE_HEIGHT );
+  public static readonly PLATE_BOUNDS = new Bounds2( 0, 0, 25, PLATE_HEIGHT + 30 );
 
   // Width of the lamp opening which will emit our photons.
   public static readonly PHOTON_SOURCE_WIDTH = PHOTON_SOURCE_WIDTH;
@@ -122,11 +121,8 @@ export default class PhotoelectricEffectConstants {
   public static readonly DIALOG_CORNER_RADIUS = 10;
 
   // Scale factor for the model-to-view transform, in view pixels per model unit.
-  public static readonly MODEL_VIEW_SCALE = 3;
+  public static readonly MODEL_VIEW_SCALE = 4;
 
-  // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
-  // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
-  public static readonly VIEW_ORIGIN_X = 400;
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 
   //------------------------------------------------------------

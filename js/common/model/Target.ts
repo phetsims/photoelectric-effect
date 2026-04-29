@@ -60,6 +60,7 @@ export default class Target {
       validValues: materials,
       tandem: tandem.createTandem( 'materialProperty' ),
       phetioFeatured: true,
+      phetioDocumentation: 'Currently selected target material',
       phetioValueType: ReferenceIO( Material.MaterialIO )
     } );
 

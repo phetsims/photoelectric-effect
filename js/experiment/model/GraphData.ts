@@ -33,6 +33,7 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import PickOptional from '../../../../phet-core/js/types/PickOptional.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
@@ -55,7 +56,11 @@ type SelfOptions = {
   xResolution?: number;
 };
 
-export type GraphDataOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
+export type GraphDataPhetioOptions =
+  PickRequired<PhetioObjectOptions, 'tandem'> &
+  PickOptional<PhetioObjectOptions, 'phetioDocumentation'>;
+
+export type GraphDataOptions = SelfOptions & GraphDataPhetioOptions;
 
 type GraphDataStateObject = {
 

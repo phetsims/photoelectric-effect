@@ -26,7 +26,8 @@ export default class IntroModel extends PhotoelectricEffectModel {
     this.sceneProperty = new StringUnionProperty( 'grounded', {
       phetioFeatured: true,
       validValues: [ 'grounded', 'circuit' ],
-      tandem: providedOptions.tandem.createTandem( 'sceneProperty' )
+      tandem: providedOptions.tandem.createTandem( 'sceneProperty' ),
+      phetioDocumentation: 'Currently selected Intro screen scene'
     } );
   }
 

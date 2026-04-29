@@ -31,24 +31,18 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
    */
   public constructor( model: ExperimentModel, providedOptions: IntensityCurrentGraphAssemblyNodeOptions ) {
 
-    const zoomRangePairs = [
-      {
-        xRange: PhotonSource.INTENSITY_RANGE,
-        yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT )
-      },
-      {
-        xRange: PhotonSource.INTENSITY_RANGE,
-        yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.6 )
-      },
-      {
-        xRange: PhotonSource.INTENSITY_RANGE,
-        yRange: new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.3 )
-      }
+    // Intensity domain from PhotonSource model state.
+    const xRange = PhotonSource.INTENSITY_RANGE;
+
+    // Preset y-axis domains used by zoom controls (most zoomed-in to most zoomed-out after sorting).
+    const yZoomRanges = [
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT ),
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.6 ),
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.2 )
     ];
 
     const graphOptions: GraphAssemblyNodeOptions = {
       graphPlotAreaNodeOptions: {
-        zoomRangePairs: zoomRangePairs,
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.intensityAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
         gridXSpacing: 0.25,
@@ -65,6 +59,6 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
       tandem: providedOptions.tandem
     };
 
-    super( model.intensityCurrentGraphData, graphOptions );
+    super( model.intensityCurrentGraphData, xRange, yZoomRanges, graphOptions );
   }
 }

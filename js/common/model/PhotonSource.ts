@@ -60,7 +60,8 @@ export default class PhotonSource {
 
     this.intensityProperty = new NumberProperty( INITIAL_INTENSITY, {
       range: PhotonSource.INTENSITY_RANGE,
-      tandem: tandem.createTandem( 'intensityProperty' )
+      tandem: tandem.createTandem( 'intensityProperty' ),
+      phetioDocumentation: 'Normalized light intensity from 0 to 1'
     } );
 
     this.intensityPercentProperty = new DerivedProperty(
@@ -68,13 +69,15 @@ export default class PhotonSource {
       intensity => 100 * intensity,
       {
         tandem: tandem.createTandem( 'intensityPercentProperty' ),
-        phetioValueType: NumberIO
+        phetioValueType: NumberIO,
+        phetioDocumentation: 'Light intensity as a percentage from 0 to 100'
       }
     );
 
     this.wavelengthProperty = new NumberProperty( INITIAL_WAVELENGTH, {
       range: WAVELENGTH_RANGE,
-      tandem: tandem.createTandem( 'wavelengthProperty' )
+      tandem: tandem.createTandem( 'wavelengthProperty' ),
+      phetioDocumentation: 'Wavelength of emitted photons in nanometers'
     } );
   }
 

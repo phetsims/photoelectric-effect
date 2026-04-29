@@ -7,18 +7,14 @@
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
-import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
-import GraphData from './GraphData.js';
-
-type IntensityCurrentGraphDataOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
+import GraphData, { type GraphDataPhetioOptions } from './GraphData.js';
 
 export default class IntensityCurrentGraphData extends GraphData {
 
   public constructor(
     model: PhotoelectricEffectModel,
-    providedOptions: IntensityCurrentGraphDataOptions
+    providedOptions: GraphDataPhetioOptions
   ) {
     super(
       model.photonSource.intensityProperty,

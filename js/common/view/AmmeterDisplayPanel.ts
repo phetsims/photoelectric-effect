@@ -8,9 +8,10 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import type ReadOnlyProperty from '../../../../axon/js/ReadOnlyProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
@@ -24,11 +25,14 @@ import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = EmptySelfOptions;
 
-export type AmmeterDisplayPanelOptions = SelfOptions & NodeBoundsBasedTranslationOptions;
+export type AmmeterDisplayPanelOptions =
+  SelfOptions &
+  NodeBoundsBasedTranslationOptions &
+  PickRequired<PanelOptions, 'tandem'>;
 
 export default class AmmeterDisplayPanel extends Panel {
 
-  public constructor( currentProperty: TReadOnlyProperty<number>, providedOptions?: AmmeterDisplayPanelOptions ) {
+  public constructor( currentProperty: ReadOnlyProperty<number>, providedOptions: AmmeterDisplayPanelOptions ) {
 
     const options = optionize<AmmeterDisplayPanelOptions, SelfOptions, PanelOptions>()( {
       stroke: 'black',
@@ -55,7 +59,8 @@ export default class AmmeterDisplayPanel extends Panel {
         valuePattern: PhotoelectricEffectFluent.current.readoutPatternStringProperty,
         textOptions: {
           font: PhotoelectricEffectConstants.READOUT_FONT
-        }
+        },
+        tandem: options.tandem.createTandem( 'currentDisplay' )
       }
     );
 
@@ -76,5 +81,9 @@ export default class AmmeterDisplayPanel extends Panel {
     } );
 
     super( content, options );
+
+    this.addLinkedElement( currentProperty, {
+      tandemName: 'currentProperty'
+    } );
   }
 }
