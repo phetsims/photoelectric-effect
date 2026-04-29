@@ -352,6 +352,27 @@ export default class GraphData extends PhetioObject {
     this.bins[ binIndex ].revealed = true;
   }
 
+  private toStateObject(): GraphDataStateObject {
+    return {
+      revealedBinIndices: this.getRevealedBinIndices(),
+      previousDrivingBinIndex: this.previousDrivingBinIndex,
+      snapshots: this.snapshots.map( snapshot => snapshot.map( point => new Vector2( point.x, point.y ) ) )
+    };
+  }
+
+  private applyState( stateObject: GraphDataStateObject ): void {
+    this.previousDrivingBinIndex = stateObject.previousDrivingBinIndex;
+    this.setRevealedBinIndices( stateObject.revealedBinIndices );
+    this.setSnapshots( stateObject.snapshots );
+    this.dataChangedEmitter.emit();
+  }
+
+  private static readonly GRAPH_DATA_STATE_SCHEMA = {
+    revealedBinIndices: ArrayIO( NumberIO ),
+    previousDrivingBinIndex: NullableIO( NumberIO ),
+    snapshots: ArrayIO( ArrayIO( Vector2.Vector2IO ) )
+  };
+
   /**
    * GraphData uses aggregate state because the live graph is more than a simple array of points.
    * The plotted line is derived from deterministic bins whose y-values are recomputed from the current model state,
@@ -361,21 +382,8 @@ export default class GraphData extends PhetioObject {
    */
   public static readonly GraphDataIO = new IOType<GraphData, GraphDataStateObject>( 'GraphDataIO', {
     valueType: GraphData,
-    stateSchema: {
-      revealedBinIndices: ArrayIO( NumberIO ),
-      previousDrivingBinIndex: NullableIO( NumberIO ),
-      snapshots: ArrayIO( ArrayIO( Vector2.Vector2IO ) )
-    },
-    toStateObject: graphData => ( {
-      revealedBinIndices: graphData.getRevealedBinIndices(),
-      previousDrivingBinIndex: graphData.previousDrivingBinIndex,
-      snapshots: graphData.snapshots.map( snapshot => snapshot.map( point => new Vector2( point.x, point.y ) ) )
-    } ),
-    applyState: ( graphData, stateObject ) => {
-      graphData.previousDrivingBinIndex = stateObject.previousDrivingBinIndex;
-      graphData.setRevealedBinIndices( stateObject.revealedBinIndices );
-      graphData.setSnapshots( stateObject.snapshots );
-      graphData.dataChangedEmitter.emit();
-    }
+    stateSchema: GraphData.GRAPH_DATA_STATE_SCHEMA,
+    toStateObject: graphData => graphData.toStateObject(),
+    applyState: ( graphData, stateObject ) => graphData.applyState( stateObject )
   } );
 }

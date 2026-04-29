@@ -409,23 +409,34 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
   // Aggregate state for transient particles. ReferenceArrayIO mutates the existing arrays during restore so views that
   // hold references to model.photons/model.electrons continue to observe the restored particles.
+  private static readonly PHOTONS_IO = ReferenceArrayIO( Photon.PhotonIO );
+  private static readonly ELECTRONS_IO = ReferenceArrayIO( Electron.ElectronIO );
+
+  private static readonly PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA = {
+    photons: PhotoelectricEffectModel.PHOTONS_IO,
+    electrons: PhotoelectricEffectModel.ELECTRONS_IO,
+    photonEmissionAccumulator: NumberIO
+  };
+
+  private toStateObject(): PhotoelectricEffectModelStateObject {
+    return {
+      photons: PhotoelectricEffectModel.PHOTONS_IO.toStateObject( this.photons ),
+      electrons: PhotoelectricEffectModel.ELECTRONS_IO.toStateObject( this.electrons ),
+      photonEmissionAccumulator: this.photonEmissionAccumulator
+    };
+  }
+
+  private applyState( stateObject: PhotoelectricEffectModelStateObject ): void {
+    PhotoelectricEffectModel.PHOTONS_IO.applyState( this.photons, stateObject.photons );
+    PhotoelectricEffectModel.ELECTRONS_IO.applyState( this.electrons, stateObject.electrons );
+    this.photonEmissionAccumulator = stateObject.photonEmissionAccumulator;
+  }
+
   public static readonly PhotoelectricEffectModelIO = new IOType<PhotoelectricEffectModel, PhotoelectricEffectModelStateObject>(
     'PhotoelectricEffectModelIO', {
       valueType: PhotoelectricEffectModel,
-      stateSchema: {
-        photons: ReferenceArrayIO( Photon.PhotonIO ),
-        electrons: ReferenceArrayIO( Electron.ElectronIO ),
-        photonEmissionAccumulator: NumberIO
-      },
-      toStateObject: model => ( {
-        photons: ReferenceArrayIO( Photon.PhotonIO ).toStateObject( model.photons ),
-        electrons: ReferenceArrayIO( Electron.ElectronIO ).toStateObject( model.electrons ),
-        photonEmissionAccumulator: model.photonEmissionAccumulator
-      } ),
-      applyState: ( model, stateObject ) => {
-        ReferenceArrayIO( Photon.PhotonIO ).applyState( model.photons, stateObject.photons );
-        ReferenceArrayIO( Electron.ElectronIO ).applyState( model.electrons, stateObject.electrons );
-        model.photonEmissionAccumulator = stateObject.photonEmissionAccumulator;
-      }
+      stateSchema: PhotoelectricEffectModel.PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA,
+      toStateObject: model => model.toStateObject(),
+      applyState: ( model, stateObject ) => model.applyState( stateObject )
     } );
 }
