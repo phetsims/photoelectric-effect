@@ -10,6 +10,7 @@
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
+import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import optionize from '../../../../phet-core/js/optionize.js';
@@ -28,9 +29,9 @@ import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectMode
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
-import LightSourceNode from './LightSourceNode.js';
 import CircuitNode from './CircuitNode.js';
 import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
+import LightSourceNode from './LightSourceNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
 
@@ -77,6 +78,18 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
+    // Add circuit node as background.
+    this.addChild( new CircuitNode( this.modelViewTransform ) );
+
+    // TODO: Toggle comboBox item visibility based on PhotoelectricEffectPreferences.mysteryMaterialEnabledProperty, see
+    // https://github.com/phetsims/photoelectric-effect/issues/5
+    const comboBoxItems = model.target.materials.map( ( material, i ) => {
+      return {
+        value: material,
+        createNode: () => new Text( `Material ${i}, ${material.materialType}` )
+      };
+    } );
+
     const workFunctionProperty = new DynamicProperty<number, number, Material>( model.target.materialProperty, {
       bidirectional: true,
       derive: 'workFunctionProperty'
@@ -88,9 +101,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       PhotoelectricEffectFluent.workFunction.labelStringProperty,
       workFunctionProperty,
 
-      // TODO: NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
+      // TODO: @design NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
       //   we will need to add support in scenery-phet or reconstruct this NumberControl on material change,
-      //   or create several NumberControls and toggle visibility.
+      //   or create several NumberControls and toggle visibility. SEE TODO where this is created.
       Material.WORK_FUNCTION_RANGE,
       {
         delta: 0.1,
@@ -103,6 +116,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     );
 
+    /**
+     * Create the photon/light source and accompanying control panel.
+     */
     const photonSourcePanel = new IntensityAndWavelengthControl( model.photonSource, {
       rightTop: new Vector2(
         this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x,
@@ -112,6 +128,45 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     } );
 
     this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty );
+    // Light source node: aperture at local origin, placed at the beam-start view position.
+    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
+    const lightSourceNode = new LightSourceNode( beamStartCenter );
+
+    // S-shaped wire from the back of the lamp to the right side of the control panel.
+    // First control point of cubic curve below the start and second control point of cubic curve above the end
+    // create the S regardless of height difference.
+    const S_BEND = 200;
+    const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
+    const photonSourceWireEnd = photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
+    const photonSourceWireNode = new Path( new Shape()
+      .moveToPoint( photonSourceWireStart )
+      .cubicCurveToPoint(
+        photonSourceWireStart.plusXY( 0, -S_BEND ),
+        photonSourceWireEnd.plusXY( 0, S_BEND ),
+        photonSourceWireEnd
+      ), {
+      stroke: 'black',
+      lineWidth: 3
+    } );
+
+    // Added in this order for proper z-layering.
+    this.addChild( photonSourceWireNode );
+    this.addChild( lightSourceNode );
+    this.addChild( photonSourcePanel );
+
+    const voltageControl = new NumberControl(
+      PhotoelectricEffectFluent.voltage.labelStringProperty,
+      model.voltageProperty,
+      new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
+      {
+        delta: 0.1,
+        numberDisplayOptions: {
+          decimalPlaces: 1
+        },
+        leftBottom: materialsComboBox.leftTop,
+        tandem: options.tandem.createTandem( 'voltageControl' )
+      }
+    );
 
     // Light source node: aperture at local origin, placed at the beam-start view position.
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
@@ -180,7 +235,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     // When electrons become invisible, the "highest energy only" is not relevant and becomes unavailable.
     // Reset to false so that it is clearly not selected in the UI.
-    // TODO: @brett is this behavior correct?
+    // TODO: @design is this behavior correct?
     model.showElectronsProperty.link( showElectrons => {
       if ( !showElectrons ) {
         model.showHighestEnergyOnlyProperty.value = false;
@@ -194,8 +249,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     this.ammeterDisplayPanel.centerTop = this.modelViewTransform.modelToViewXY( model.collector.x, 0 ).plusXY(
       0,
-      PhotoelectricEffectConstants.COLLECTOR_BOUNDS.maxY + 20
+      PhotoelectricEffectConstants.PLATE_BOUNDS.maxY + 20
     );
+    this.addChild( voltageControl );
 
     const resetAllButton = new ResetAllButton( {
       listener: () => {

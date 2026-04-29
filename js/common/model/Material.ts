@@ -97,7 +97,7 @@ export default class Material extends PhetioObject {
    */
   public readonly enabledProperty: BooleanProperty;
 
-  // TODO: How is this going to work? Will different mystery/custom materials have different
+  // TODO: @design How is this going to work? Will different mystery/custom materials have different
   //   ranges? If so, we need to assign this to each type or maybe even each Material instance.
   //   For now, this is convenient because we can use one range for every work function Property
   //   and know that it will be available when we create UI components.
@@ -127,7 +127,7 @@ export default class Material extends PhetioObject {
       tandem: options.tandem.createTandem( 'workFunctionProperty' )
     } );
 
-    // TODO: All EnabledProperty instances are featured. Do we want that for all Materials?
+    // TODO: @design (phet-io) All EnabledProperty instances are featured. Do we want that for all Materials?
     this.enabledProperty = new EnabledProperty( options.enabled, {
       tandem: options.tandem.createTandem( 'enabledProperty' )
     } );
