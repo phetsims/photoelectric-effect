@@ -12,12 +12,15 @@ import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
+import Shape from '../../../../kite/js/Shape.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
+import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
@@ -26,7 +29,9 @@ import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectMode
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
+import CircuitNode from './CircuitNode.js';
 import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
+import LightSourceNode from './LightSourceNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
 
@@ -37,6 +42,10 @@ type SelfOptions = {
 type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class PhotoelectricEffectScreenView extends ScreenView {
+
+  // The background node holds static drawings that decorate and add context to each screen. Generally this is
+  // populated by the specific circuit required by the screen.
+  protected readonly backgroundNode = new Node();
 
   private readonly particleCanvasNode: ParticleCanvasNode;
   protected readonly modelViewTransform: ModelViewTransform2;
@@ -52,17 +61,23 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
 
     super( options );
-    this.model = model;
+
+    // Added first to be in the background of each screen.
+    this.addChild( this.backgroundNode );
 
     // model-view transform places the model x origin at the target plate, and a view origin at an x-offset with
     // y centered in the layout bounds
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
-      new Vector2( PhotoelectricEffectConstants.VIEW_ORIGIN_X, this.layoutBounds.centerY ),
+
+      // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
+      // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
+      new Vector2( 250, this.layoutBounds.centerY + 40 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
     const materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
-      rightCenter: this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ).plusXY( -25, 0 ),
+      left: this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      top: this.layoutBounds.centerY,
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
@@ -77,9 +92,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       PhotoelectricEffectFluent.workFunction.labelStringProperty,
       workFunctionProperty,
 
-      // TODO: NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
+      // TODO: @design NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
       //   we will need to add support in scenery-phet or reconstruct this NumberControl on material change,
-      //   or create several NumberControls and toggle visibility.
+      //   or create several NumberControls and toggle visibility. SEE TODO where this is created.
       Material.WORK_FUNCTION_RANGE,
       {
         delta: 0.1,
@@ -92,6 +107,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     );
 
+    /**
+     * Create the photon/light source and accompanying control panel.
+     */
     const photonSourcePanel = new IntensityAndWavelengthControl( model.photonSource, {
       rightTop: new Vector2(
         this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x,
@@ -100,7 +118,36 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'photonSourcePanel' )
     } );
 
-    this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty );
+    this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty, {
+      center: this.modelViewTransform.modelToViewXY( model.collector.x, 0 )
+        .plusXY( 0, CircuitNode.WIRE_HEIGHT )
+    } );
+
+    // Light source node: aperture at local origin, placed at the beam-start view position.
+    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
+    const lightSourceNode = new LightSourceNode( beamStartCenter );
+
+    // S-shaped wire from the back of the lamp to the right side of the control panel.
+    // First control point of cubic curve below the start and second control point of cubic curve above the end
+    // create the S regardless of height difference.
+    const S_BEND = 200;
+    const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
+    const photonSourceWireEnd = photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
+    const photonSourceWireNode = new Path( new Shape()
+      .moveToPoint( photonSourceWireStart )
+      .cubicCurveToPoint(
+        photonSourceWireStart.plusXY( 0, -S_BEND ),
+        photonSourceWireEnd.plusXY( 0, S_BEND ),
+        photonSourceWireEnd
+      ), {
+      stroke: 'black',
+      lineWidth: 3
+    } );
+
+    // Added in this order for proper z-layering.
+    this.addChild( photonSourceWireNode );
+    this.addChild( lightSourceNode );
+    this.addChild( photonSourcePanel );
 
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
@@ -143,7 +190,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     // When electrons become invisible, the "highest energy only" is not relevant and becomes unavailable.
     // Reset to false so that it is clearly not selected in the UI.
-    // TODO: @brett is this behavior correct?
+    // TODO: @design is this behavior correct?
     model.showElectronsProperty.link( showElectrons => {
       if ( !showElectrons ) {
         model.showHighestEnergyOnlyProperty.value = false;
@@ -153,13 +200,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( materialsComboBox );
     this.addChild( workFunctionControl );
     this.addChild( this.electronVisibilityControls );
-    this.addChild( photonSourcePanel );
     this.addChild( this.ammeterDisplayPanel );
-
-    this.ammeterDisplayPanel.centerTop = this.modelViewTransform.modelToViewXY( model.collector.x, 0 ).plusXY(
-      0,
-      PhotoelectricEffectConstants.COLLECTOR_BOUNDS.maxY + 20
-    );
 
     const resetAllButton = new ResetAllButton( {
       listener: () => {
@@ -185,40 +226,10 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     } );
     this.addChild( playPauseStepButtonGroup );
 
-    // Placeholder lamp rectangle aligned with the photon source line.
-    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
-
-    // Negate the model angle to convert to view space (the MVT inverts the y-axis).
-    const lampAngle = -PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE;
-    const lampFaceLength = PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH;
-    const lampBodyDepth = 20;
-    const lampRectangle = new Rectangle( -lampBodyDepth / 2, -lampFaceLength / 2, lampBodyDepth, lampFaceLength, {
-      fill: 'gray',
-      stroke: 'black',
-      rotation: lampAngle,
-
-      // TODO: The lamp needs to end at the beam start and currently it's centered at the beam start... awk.
-      centerX: beamStartCenter.x,
-      centerY: beamStartCenter.y
-    } );
-    this.addChild( lampRectangle );
-
     // Canvas that renders photons and electrons using the same model-view transform as the play area.
     this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
       { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
-
-    // Debug visualization for collision bounds.
-    const targetBounds = PhotoelectricEffectConstants.TARGET_BOUNDS;
-    const collectorBounds = PhotoelectricEffectConstants.COLLECTOR_BOUNDS;
-    const targetRectangle = this.createBoundsRectangle( targetBounds, 'rgba(255,0,0,0.6)' );
-    const collectorRectangle = this.createBoundsRectangle( collectorBounds, 'rgba(0,0,255,0.6)' );
-
-    this.addChild( targetRectangle );
-    this.addChild( collectorRectangle );
-
-    targetRectangle.rightCenter = this.modelViewTransform.modelToViewXY( this.model.target.x, 0 );
-    collectorRectangle.leftCenter = this.modelViewTransform.modelToViewXY( this.model.collector.x, 0 );
   }
 
   /**
