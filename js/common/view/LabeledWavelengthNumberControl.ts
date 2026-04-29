@@ -30,7 +30,7 @@ import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = EmptySelfOptions;
-export type WavelengthSliderWithReadoutOptions = SelfOptions & PickRequired<WavelengthNumberControlOptions, 'tandem'>;
+export type LabeledWavelengthNumberControlOptions = SelfOptions & PickRequired<WavelengthNumberControlOptions, 'tandem'>;
 
 const TRACK_SIZE = new Dimension2( 240, 20 );
 const THUMB_WIDTH = 18;
@@ -47,11 +47,11 @@ const DEFAULT_NUMBER_DISPLAY_OPTIONS: NumberDisplayOptions = {
   xMargin: 2
 };
 
-export default class WavelengthSliderWithReadout extends WavelengthNumberControl {
+export default class LabeledWavelengthNumberControl extends WavelengthNumberControl {
 
-  public constructor( wavelengthProperty: NumberProperty, providedOptions: WavelengthSliderWithReadoutOptions ) {
+  public constructor( wavelengthProperty: NumberProperty, providedOptions: LabeledWavelengthNumberControlOptions ) {
 
-    const options = optionize<WavelengthSliderWithReadoutOptions, SelfOptions, WavelengthNumberControlOptions>()( {
+    const options = optionize<LabeledWavelengthNumberControlOptions, SelfOptions, WavelengthNumberControlOptions>()( {
       isDisposable: false
     }, providedOptions );
 

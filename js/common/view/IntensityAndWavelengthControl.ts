@@ -15,7 +15,7 @@ import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import GradientBackplateIntensitySlider from './GradientBackplateIntensitySlider.js';
-import WavelengthSliderWithReadout from './WavelengthSliderWithReadout.js';
+import LabeledWavelengthNumberControl from './LabeledWavelengthNumberControl.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -45,8 +45,8 @@ export default class IntensityAndWavelengthControl extends Panel {
       }
     );
 
-    const wavelengthSlider = new WavelengthSliderWithReadout( photonSource.wavelengthProperty, {
-      tandem: options.tandem.createTandem( 'wavelengthSlider' )
+    const wavelengthNumberControl = new LabeledWavelengthNumberControl( photonSource.wavelengthProperty, {
+      tandem: options.tandem.createTandem( 'wavelengthNumberControl' )
     } );
 
     const content = new VBox( {
@@ -54,7 +54,7 @@ export default class IntensityAndWavelengthControl extends Panel {
       align: 'center',
       children: [
         intensitySlider,
-        wavelengthSlider
+        wavelengthNumberControl
       ]
     } );
 
