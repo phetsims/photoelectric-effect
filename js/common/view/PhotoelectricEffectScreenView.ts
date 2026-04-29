@@ -252,6 +252,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     }
   }
 
+  protected setScreenPDOMOrder(): void {
+    this.pdomPlayAreaNode.setPDOMOrder( [
+
+    ] );
+  }
+
   /**
    * Resets the view.
    */
