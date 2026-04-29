@@ -9,8 +9,14 @@
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
+import IOType from '../../../../tandem/js/types/IOType.js';
+import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
-import Particle from './Particle.js';
+import Particle, { type ParticleStateObject } from './Particle.js';
+
+export type ElectronStateObject = {
+  energy: number;
+} & ParticleStateObject;
 
 export default class Electron extends Particle {
 
@@ -21,14 +27,18 @@ export default class Electron extends Particle {
    * @param velocity - Initial velocity in model coordinates.
    * @param acceleration - Initial acceleration in model coordinates.
    * @param energy - Energy of the electron in model units.
+   * @param previousPosition - Particle position from the previous step. This is optional for normal runtime
+   *                           construction and mainly provided so PhET-iO state restore preserves collision behavior
+   *                           that depends on prior-step position.
    */
   public constructor(
     position: Vector2,
     velocity: Vector2,
     acceleration: Vector2,
-    public readonly energy: number
+    public readonly energy: number,
+    previousPosition?: Vector2
   ) {
-    super( position, velocity, acceleration );
+    super( position, velocity, acceleration, previousPosition );
   }
 
   /**
@@ -47,4 +57,32 @@ export default class Electron extends Particle {
     const scaleFactor = PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR;
     return Math.sqrt( 2 * energy / PhotoelectricEffectConstants.ELECTRON_MASS ) * scaleFactor;
   }
+
+  protected override toStateObject(): ElectronStateObject {
+    return Object.assign( super.toStateObject(), {
+      energy: this.energy
+    } );
+  }
+
+  protected static fromStateObject( stateObject: ElectronStateObject ): Electron {
+    const kinematics = Particle.kinematicsFromStateObject( stateObject );
+    return new Electron(
+      kinematics.position,
+      kinematics.velocity,
+      kinematics.acceleration,
+      stateObject.energy,
+      kinematics.previousPosition
+    );
+  }
+
+  private static readonly ELECTRON_STATE_SCHEMA = Object.assign( {}, Particle.PARTICLE_STATE_SCHEMA, {
+    energy: NumberIO
+  } );
+
+  public static readonly ElectronIO = new IOType<Electron, ElectronStateObject>( 'ElectronIO', {
+    valueType: Electron,
+    stateSchema: Electron.ELECTRON_STATE_SCHEMA,
+    toStateObject: electron => electron.toStateObject(),
+    fromStateObject: stateObject => Electron.fromStateObject( stateObject )
+  } );
 }

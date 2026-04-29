@@ -18,14 +18,18 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import TModel from '../../../../joist/js/TModel.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import type Tandem from '../../../../tandem/js/Tandem.js';
+import IOType from '../../../../tandem/js/types/IOType.js';
+import NumberIO from '../../../../tandem/js/types/NumberIO.js';
+import ReferenceArrayIO from '../../../../tandem/js/types/ReferenceArrayIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Battery from './Battery.js';
 import Collector from './Collector.js';
-import Electron from './Electron.js';
+import Electron, { type ElectronStateObject } from './Electron.js';
 import Material, { MaterialType } from './Material.js';
 import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
-import Photon from './Photon.js';
+import Photon, { type PhotonStateObject } from './Photon.js';
 import PhotonSource from './PhotonSource.js';
 import Target from './Target.js';
 
@@ -36,7 +40,15 @@ type SelfOptions = {
 
 export type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
 
-export default class PhotoelectricEffectModel implements TModel {
+type CustomMaterialsFactory = ( tandem: Tandem ) => Material[];
+
+type PhotoelectricEffectModelStateObject = {
+  photons: PhotonStateObject[];
+  electrons: ElectronStateObject[];
+  photonEmissionAccumulator: number;
+};
+
+export default class PhotoelectricEffectModel extends PhetioObject implements TModel {
 
   // Active photons in the model.
   public readonly photons: Photon[] = [];
@@ -84,26 +96,39 @@ export default class PhotoelectricEffectModel implements TModel {
   private photonEmissionAccumulator = 0;
 
   /**
-   * @param customMaterials - Custom materials that the student can play with. These have a controllable
-   *                          work function.
    * @param mysteryMaterials - mystery materials owned by PhotoelectricEffectPreferencesModel and passed down.
    *   One entry for the user-configurable mystery material; additional entries can be added in the future
    *   for PhET-iO clients to manipulate.
+   * @param createCustomMaterials - Creates custom materials that the student can play with. These have a controllable
+   *                                work function. This is a factory callback (instead of pre-created instances) so
+   *                                this model can create them with THIS model's tandem during construction.
    * @param providedOptions
    */
-  public constructor( mysteryMaterials: Material[], customMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
+  public constructor(
+    mysteryMaterials: Material[],
+    createCustomMaterials: CustomMaterialsFactory | null,
+    providedOptions: PhotoelectricEffectModelOptions
+  ) {
 
-    const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {}, providedOptions );
+    const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {
+      phetioType: PhotoelectricEffectModel.PhotoelectricEffectModelIO,
+      phetioState: true
+    }, providedOptions );
+
+    super( options );
+
+    const tandem = options.tandem;
+    const customMaterials = createCustomMaterials ? createCustomMaterials( tandem ) : [];
 
     const standardMaterials = [
 
       // TODO @design, is this the right tandem Name for materials?
-      new Material( MaterialType.SODIUM, { tandem: options.tandem.createTandem( 'sodiumMaterial' ) } ),
-      new Material( MaterialType.COPPER, { tandem: options.tandem.createTandem( 'copperMaterial' ) } ),
-      new Material( MaterialType.CALCIUM, { tandem: options.tandem.createTandem( 'calciumMaterial' ) } ),
-      new Material( MaterialType.MAGNESIUM, { tandem: options.tandem.createTandem( 'magnesiumMaterial' ) } ),
-      new Material( MaterialType.PLATINUM, { tandem: options.tandem.createTandem( 'platinumMaterial' ) } ),
-      new Material( MaterialType.ZINC, { tandem: options.tandem.createTandem( 'zincMaterial' ) } )
+      new Material( MaterialType.SODIUM, { tandem: tandem.createTandem( 'sodiumMaterial' ) } ),
+      new Material( MaterialType.COPPER, { tandem: tandem.createTandem( 'copperMaterial' ) } ),
+      new Material( MaterialType.CALCIUM, { tandem: tandem.createTandem( 'calciumMaterial' ) } ),
+      new Material( MaterialType.MAGNESIUM, { tandem: tandem.createTandem( 'magnesiumMaterial' ) } ),
+      new Material( MaterialType.PLATINUM, { tandem: tandem.createTandem( 'platinumMaterial' ) } ),
+      new Material( MaterialType.ZINC, { tandem: tandem.createTandem( 'zincMaterial' ) } )
     ];
 
     // The order according to the design document - standard, mystery, then custom.
@@ -113,14 +138,14 @@ export default class PhotoelectricEffectModel implements TModel {
       ...customMaterials
     ];
 
-    this.target = new Target( allMaterials, providedOptions.tandem.createTandem( 'target' ) );
+    this.target = new Target( allMaterials, tandem.createTandem( 'target' ) );
     this.photonSource = new PhotonSource( {
-      tandem: providedOptions.tandem.createTandem( 'photonSource' )
+      tandem: tandem.createTandem( 'photonSource' )
     } );
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
-    this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X, providedOptions.tandem.createTandem( 'collector' ) );
-    this.battery = new Battery( providedOptions.tandem.createTandem( 'battery' ) );
+    this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X, tandem.createTandem( 'collector' ) );
+    this.battery = new Battery( tandem.createTandem( 'battery' ) );
 
     this.currentProperty = new DerivedProperty(
       [
@@ -135,18 +160,18 @@ export default class PhotoelectricEffectModel implements TModel {
     );
 
     this.isPlayingProperty = new BooleanProperty( true, {
-      tandem: options.tandem.createTandem( 'isPlayingProperty' ),
+      tandem: tandem.createTandem( 'isPlayingProperty' ),
       phetioFeatured: true
     } );
 
     this.showElectronsProperty = new BooleanProperty( true, {
       phetioFeatured: true,
-      tandem: options.tandem.createTandem( 'showElectronsProperty' )
+      tandem: tandem.createTandem( 'showElectronsProperty' )
     } );
 
     this.showHighestEnergyOnlyProperty = new BooleanProperty( false, {
       phetioFeatured: true,
-      tandem: options.tandem.createTandem( 'showHighestEnergyOnlyProperty' )
+      tandem: tandem.createTandem( 'showHighestEnergyOnlyProperty' )
     } );
   }
 
@@ -371,4 +396,26 @@ export default class PhotoelectricEffectModel implements TModel {
     // "Jimmy factor" scales model output to match the sim's calibrated current display.
     return electronsPerSecondToAnode * PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR;
   }
+
+  // Aggregate state for transient particles. ReferenceArrayIO mutates the existing arrays during restore so views that
+  // hold references to model.photons/model.electrons continue to observe the restored particles.
+  public static readonly PhotoelectricEffectModelIO = new IOType<PhotoelectricEffectModel, PhotoelectricEffectModelStateObject>(
+    'PhotoelectricEffectModelIO', {
+      valueType: PhotoelectricEffectModel,
+      stateSchema: {
+        photons: ReferenceArrayIO( Photon.PhotonIO ),
+        electrons: ReferenceArrayIO( Electron.ElectronIO ),
+        photonEmissionAccumulator: NumberIO
+      },
+      toStateObject: model => ( {
+        photons: ReferenceArrayIO( Photon.PhotonIO ).toStateObject( model.photons ),
+        electrons: ReferenceArrayIO( Electron.ElectronIO ).toStateObject( model.electrons ),
+        photonEmissionAccumulator: model.photonEmissionAccumulator
+      } ),
+      applyState: ( model, stateObject ) => {
+        ReferenceArrayIO( Photon.PhotonIO ).applyState( model.photons, stateObject.photons );
+        ReferenceArrayIO( Electron.ElectronIO ).applyState( model.electrons, stateObject.electrons );
+        model.photonEmissionAccumulator = stateObject.photonEmissionAccumulator;
+      }
+    } );
 }

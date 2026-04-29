@@ -9,9 +9,15 @@
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
+import IOType from '../../../../tandem/js/types/IOType.js';
+import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
-import Particle from './Particle.js';
+import Particle, { type ParticleStateObject } from './Particle.js';
 import { wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
+
+export type PhotonStateObject = {
+  wavelength: number;
+} & ParticleStateObject;
 
 export default class Photon extends Particle {
 
@@ -27,14 +33,18 @@ export default class Photon extends Particle {
    * @param velocity
    * @param acceleration
    * @param wavelength - Wavelength of the photon in nanometers.
+   * @param previousPosition - Particle position from the previous step. This is optional for normal runtime
+   *                           construction and mainly provided so PhET-iO state restore preserves target-crossing
+   *                           interpolation behavior on the first step after load.
    */
   public constructor(
     position: Vector2,
     velocity: Vector2,
     acceleration: Vector2,
-    public readonly wavelength: number
+    public readonly wavelength: number,
+    previousPosition?: Vector2
   ) {
-    super( position, velocity, acceleration );
+    super( position, velocity, acceleration, previousPosition );
   }
 
   /**
@@ -43,4 +53,32 @@ export default class Photon extends Particle {
   public getEnergy(): number {
     return wavelengthToEnergy( this.wavelength );
   }
+
+  protected override toStateObject(): PhotonStateObject {
+    return Object.assign( super.toStateObject(), {
+      wavelength: this.wavelength
+    } );
+  }
+
+  protected static fromStateObject( stateObject: PhotonStateObject ): Photon {
+    const kinematics = Particle.kinematicsFromStateObject( stateObject );
+    return new Photon(
+      kinematics.position,
+      kinematics.velocity,
+      kinematics.acceleration,
+      stateObject.wavelength,
+      kinematics.previousPosition
+    );
+  }
+
+  private static readonly PHOTON_STATE_SCHEMA = Object.assign( {}, Particle.PARTICLE_STATE_SCHEMA, {
+    wavelength: NumberIO
+  } );
+
+  public static readonly PhotonIO = new IOType<Photon, PhotonStateObject>( 'PhotonIO', {
+    valueType: Photon,
+    stateSchema: Photon.PHOTON_STATE_SCHEMA,
+    toStateObject: photon => photon.toStateObject(),
+    fromStateObject: stateObject => Photon.fromStateObject( stateObject )
+  } );
 }
