@@ -15,6 +15,7 @@ import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Particle, { type ParticleStateObject } from './Particle.js';
 import { wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 
+// PhET-iO serialized state for a photon.
 export type PhotonStateObject = {
   wavelength: number;
 } & ParticleStateObject;
@@ -54,12 +55,18 @@ export default class Photon extends Particle {
     return wavelengthToEnergy( this.wavelength );
   }
 
+  /**
+   * Serializes this photon for PhET-iO, including particle kinematics from the superclass and wavelength.
+   */
   protected override toStateObject(): PhotonStateObject {
     return Object.assign( super.toStateObject(), {
       wavelength: this.wavelength
     } );
   }
 
+  /**
+   * Creates a photon from PhET-iO state.
+   */
   protected static fromStateObject( stateObject: PhotonStateObject ): Photon {
     const kinematics = Particle.kinematicsFromStateObject( stateObject );
     return new Photon(
@@ -71,10 +78,16 @@ export default class Photon extends Particle {
     );
   }
 
+  /**
+   * PhET-iO state schema.
+   */
   private static readonly PHOTON_STATE_SCHEMA = Object.assign( {}, Particle.PARTICLE_STATE_SCHEMA, {
     wavelength: NumberIO
   } );
 
+  /**
+   * PhET-iO IOType for an emitted photon.
+   */
   public static readonly PhotonIO = new IOType<Photon, PhotonStateObject>( 'PhotonIO', {
     valueType: Photon,
     stateSchema: Photon.PHOTON_STATE_SCHEMA,

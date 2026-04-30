@@ -62,6 +62,7 @@ export type GraphDataPhetioOptions =
 
 export type GraphDataOptions = SelfOptions & GraphDataPhetioOptions;
 
+// PhET-iO serialized state for experiment graph data.
 type GraphDataStateObject = {
 
   // Revealed bin indices are enough to restore the live line because bin y-values are recomputed from current model
@@ -352,6 +353,9 @@ export default class GraphData extends PhetioObject {
     this.bins[ binIndex ].revealed = true;
   }
 
+  /**
+   * Serializes graph reveal continuity and snapshot series for PhET-iO (bin y-values follow from current model state).
+   */
   private toStateObject(): GraphDataStateObject {
     return {
       revealedBinIndices: this.getRevealedBinIndices(),
@@ -360,6 +364,9 @@ export default class GraphData extends PhetioObject {
     };
   }
 
+  /**
+   * Restores reveal mask, sweep continuity, and snapshots from PhET-iO state.
+   */
   private applyState( stateObject: GraphDataStateObject ): void {
     this.previousDrivingBinIndex = stateObject.previousDrivingBinIndex;
     this.setRevealedBinIndices( stateObject.revealedBinIndices );
@@ -367,6 +374,9 @@ export default class GraphData extends PhetioObject {
     this.dataChangedEmitter.emit();
   }
 
+  /**
+   * PhET-iO state schema.
+   */
   private static readonly GRAPH_DATA_STATE_SCHEMA = {
     revealedBinIndices: ArrayIO( NumberIO ),
     previousDrivingBinIndex: NullableIO( NumberIO ),

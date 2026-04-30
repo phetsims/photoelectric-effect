@@ -44,6 +44,7 @@ export type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioO
 
 type CustomMaterialsFactory = ( tandem: Tandem ) => Material[];
 
+// PhET-iO serialized state for the photoelectric-effect model.
 type PhotoelectricEffectModelStateObject = {
   photons: PhotonStateObject[];
   electrons: ElectronStateObject[];
@@ -414,12 +415,18 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   private static readonly PHOTONS_IO = ReferenceArrayIO( Photon.PhotonIO );
   private static readonly ELECTRONS_IO = ReferenceArrayIO( Electron.ElectronIO );
 
+  /**
+   * PhET-iO state schema.
+   */
   private static readonly PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA = {
     photons: PhotoelectricEffectModel.PHOTONS_IO,
     electrons: PhotoelectricEffectModel.ELECTRONS_IO,
     photonEmissionAccumulator: NumberIO
   };
 
+  /**
+   * Serializes active photons, electrons, and fractional photon emission accumulator for PhET-iO.
+   */
   private toStateObject(): PhotoelectricEffectModelStateObject {
     return {
       photons: PhotoelectricEffectModel.PHOTONS_IO.toStateObject( this.photons ),
@@ -428,12 +435,18 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     };
   }
 
+  /**
+   * Restores transient particles and the photon emission accumulator from PhET-iO state.
+   */
   private applyState( stateObject: PhotoelectricEffectModelStateObject ): void {
     PhotoelectricEffectModel.PHOTONS_IO.applyState( this.photons, stateObject.photons );
     PhotoelectricEffectModel.ELECTRONS_IO.applyState( this.electrons, stateObject.electrons );
     this.photonEmissionAccumulator = stateObject.photonEmissionAccumulator;
   }
 
+  /**
+   * PhET-iO IOType for the photoelectric-effect model.
+   */
   public static readonly PhotoelectricEffectModelIO = new IOType<PhotoelectricEffectModel, PhotoelectricEffectModelStateObject>(
     'PhotoelectricEffectModelIO', {
       valueType: PhotoelectricEffectModel,
