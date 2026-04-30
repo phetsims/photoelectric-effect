@@ -121,22 +121,18 @@ export default class Target {
 
     let electron: Electron | null = null;
 
-    // Electrons that do not exceed the minimum electron energy threshold are not emitted, to avoid large numbers of
-    // very low energy electrons hanging around the target. These low energy electrons do not have enough velocity
-    // to appear as though they are moving and therefore clutter the visual rendering.
-    if ( energyAfterCollision > PhotoelectricEffectConstants.MINIMUM_ELECTRON_ENERGY ) {
-      const speed = Electron.determineNewElectronSpeed( energyAfterCollision );
-      let angle = 0;
-      if ( Target.ELECTRON_DISPERSION_ANGLE !== 0 ) {
-        angle = dotRandom.nextDouble() * Target.ELECTRON_DISPERSION_ANGLE -
-                Target.ELECTRON_DISPERSION_ANGLE / 2;
-      }
 
-      const velocity = new Vector2( speed * Math.cos( angle ), speed * Math.sin( angle ) );
-      const emissionY = this.getPhotonTargetCrossingY( photon );
-      const emissionPosition = new Vector2( this.x + Target.EMISSION_OFFSET, emissionY );
-      electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), energyAfterCollision );
+    const speed = Electron.determineNewElectronSpeed( energyAfterCollision );
+    let angle = 0;
+    if ( Target.ELECTRON_DISPERSION_ANGLE !== 0 ) {
+      angle = dotRandom.nextDouble() * Target.ELECTRON_DISPERSION_ANGLE -
+              Target.ELECTRON_DISPERSION_ANGLE / 2;
     }
+
+    const velocity = new Vector2( speed * Math.cos( angle ), speed * Math.sin( angle ) );
+    const emissionY = this.getPhotonTargetCrossingY( photon );
+    const emissionPosition = new Vector2( this.x + Target.EMISSION_OFFSET, emissionY );
+    electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), energyAfterCollision );
 
     return electron;
   }

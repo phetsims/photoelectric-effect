@@ -88,6 +88,7 @@ export default class PhotoelectricEffectConstants {
 
   // Minimum energy (in eV) for an emitted electron to be tracked and rendered.
   // Electrons below this threshold are discarded rather than shown hanging near the target.
+  // TODO: We may need to use this again after we do some more debugging around electron emissions.
   public static readonly MINIMUM_ELECTRON_ENERGY = 0.05;
 
   // Acceleration scale from voltage to model units (model units per V*s^2).
