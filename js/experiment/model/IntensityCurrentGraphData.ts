@@ -7,8 +7,9 @@
  */
 
 import Vector2 from '../../../../dot/js/Vector2.js';
+import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
-import GraphData, { type GraphDataPhetioOptions } from './GraphData.js';
+import GraphData, { type GraphDataOptions, type GraphDataPhetioOptions } from './GraphData.js';
 
 export default class IntensityCurrentGraphData extends GraphData {
 
@@ -26,7 +27,9 @@ export default class IntensityCurrentGraphData extends GraphData {
         model.target.workFunctionProperty
       ],
       model.resetEmitter,
-      providedOptions
+      combineOptions<GraphDataOptions>( {}, providedOptions, {
+        binCount: 100
+      } )
     );
   }
 }

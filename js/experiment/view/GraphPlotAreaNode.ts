@@ -159,7 +159,8 @@ export default class GraphPlotAreaNode extends Node {
       fill: 'black',
       linePlotOptions: {
         lineWidth: 6,
-        lineCap: 'round'
+        lineCap: 'round',
+        lineJoin: 'round'
       },
       showCurrentPointMarker: true,
 

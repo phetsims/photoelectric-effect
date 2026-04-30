@@ -4,8 +4,8 @@
  * Owns deterministic binned chart samples for one experiment graph, and wires axon listeners to reveal state updates
  * when a driving NumberProperty changes. Clears when any dependency changes, and clear on model reset.
  *
- * Samples are stored in fixed x-axis bins derived from xDomain (defaults to drivingProperty.range) and
- * xResolution so memory stays bounded while sweeping the control. Bin y-values are deterministic for the current
+ * Samples are stored in a fixed number of x-axis bins across xDomain (defaults to drivingProperty.range) so memory
+ * stays bounded while sweeping the control. Bin y-values are deterministic for the current
  * model state, and a reveal mask tracks which bins have been swept by the driving control.
  *
  * Also stores a small number of immutable snapshot copies of the live series for later plotting.
@@ -52,8 +52,9 @@ type SelfOptions = {
   // frequency/energy graph maps wavelength -> frequency).
   drivingValueToChartX?: ( drivingValue: number ) => number;
 
-  // Model-units spacing between adjacent x bins. Reduce this value to increase the number of bins.
-  xResolution?: number;
+  // Number of fixed x-axis bins across xDomain, including both endpoints. Increase the binCount for
+  // more accurate/smooth plots.
+  binCount?: number;
 };
 
 export type GraphDataPhetioOptions =
@@ -91,12 +92,12 @@ export default class GraphData extends PhetioObject {
   public static readonly MAX_SNAPSHOTS = 4;
 
   // Bin width in chart x model units.
-  private readonly xResolution: number;
+  private readonly binWidth: number;
 
   // Inclusive span used for bin indices; when omitted at construction, matches drivingProperty.range.
   private readonly xDomain: Range;
 
-  // Number of bins = floor( span / xResolution ) + 1.
+  // Number of fixed x-axis bins, including both endpoints.
   private readonly binCount: number;
 
   // Deterministic data and reveal state for each chart-x bin center.
@@ -145,20 +146,21 @@ export default class GraphData extends PhetioObject {
       phetioType: GraphData.GraphDataIO,
       phetioState: true,
       xDomain: drivingProperty.range,
-      xResolution: 0.01,
+      binCount: 200,
       drivingValueToChartX: drivingValue => drivingValue
     }, providedOptions );
 
     super( options );
 
-    affirm( options.xResolution > 0, 'xResolution must be positive' );
+    affirm( Number.isInteger( options.binCount ) && options.binCount > 1,
+      'binCount must be an integer greater than 1' );
 
-    this.xResolution = options.xResolution;
     this.xDomain = options.xDomain;
 
     const span = this.xDomain.getLength();
-    affirm( span >= 0, 'xDomain must be a valid range' );
-    this.binCount = Math.max( 1, Math.floor( span / this.xResolution ) + 1 );
+    affirm( span > 0, 'xDomain must have positive length' );
+    this.binCount = options.binCount;
+    this.binWidth = span / ( this.binCount - 1 );
 
     const initialChartX = options.drivingValueToChartX( drivingProperty.value );
     this.currentPointProperty = new Property( createDataPointAtChartX( initialChartX ) );
@@ -275,7 +277,7 @@ export default class GraphData extends PhetioObject {
    * Maps chart x to a bin index in [0, binCount - 1].
    */
   private chartXToBinIndex( chartX: number ): number {
-    const rawIndex = roundSymmetric( ( chartX - this.xDomain.min ) / this.xResolution );
+    const rawIndex = roundSymmetric( ( chartX - this.xDomain.min ) / this.binWidth );
     return clamp( rawIndex, 0, this.binCount - 1 );
   }
 
@@ -283,7 +285,7 @@ export default class GraphData extends PhetioObject {
    * Canonical chart x for a bin index.
    */
   private binIndexToChartX( binIndex: number ): number {
-    return this.xDomain.min + binIndex * this.xResolution;
+    return this.xDomain.min + binIndex * this.binWidth;
   }
 
   /**
