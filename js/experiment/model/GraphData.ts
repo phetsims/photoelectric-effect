@@ -29,7 +29,7 @@ import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js
 import Range from '../../../../dot/js/Range.js';
 import { clamp } from '../../../../dot/js/util/clamp.js';
 import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
+import Vector2, { Vector2StateObject } from '../../../../dot/js/Vector2.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
@@ -72,7 +72,7 @@ type GraphDataStateObject = {
   previousDrivingBinIndex: number | null;
 
   // Snapshot copies are user-saved historical series, so preserve their exact points.
-  snapshots: Vector2[][];
+  snapshots: Vector2StateObject[][];
 };
 
 type BinData = {
@@ -225,9 +225,9 @@ export default class GraphData extends PhetioObject {
    */
   public clear(): void {
     this.previousDrivingBinIndex = null;
-    for ( let i = 0; i < this.bins.length; i++ ) {
-      this.bins[ i ].revealed = false;
-    }
+    this.bins.forEach( bin => {
+      bin.revealed = false;
+    } );
     this.dataChangedEmitter.emit();
   }
 
@@ -255,10 +255,10 @@ export default class GraphData extends PhetioObject {
   /**
    * Restores user-saved snapshot series from PhET-iO state.
    */
-  private setSnapshots( snapshots: Vector2[][] ): void {
+  private setSnapshotsFromStateObjects( snapshots: Vector2StateObject[][] ): void {
     this.snapshots.length = 0;
     snapshots.forEach( snapshot => {
-      this.snapshots.push( snapshot.map( point => new Vector2( point.x, point.y ) ) );
+      this.snapshots.push( snapshot.map( point => Vector2.fromStateObject( point ) ) );
     } );
     this.syncSnapshotsCountProperty();
   }
@@ -302,9 +302,9 @@ export default class GraphData extends PhetioObject {
    * Restores the live line's reveal mask from compact PhET-iO state.
    */
   private setRevealedBinIndices( revealedBinIndices: number[] ): void {
-    for ( let i = 0; i < this.bins.length; i++ ) {
-      this.bins[ i ].revealed = false;
-    }
+    this.bins.forEach( bin => {
+      bin.revealed = false;
+    } );
     revealedBinIndices.forEach( binIndex => {
       affirm( binIndex >= 0 && binIndex < this.bins.length, 'revealed bin index out of range' );
       this.bins[ binIndex ].revealed = true;
@@ -318,10 +318,10 @@ export default class GraphData extends PhetioObject {
     createDataPointAtChartX: ( chartX: number ) => Vector2,
     drivingValueInChartX: number
   ): void {
-    _.times( this.binCount, i => {
+    this.bins.forEach( ( bin, i ) => {
       const canonicalX = this.binIndexToChartX( i );
       const point = createDataPointAtChartX( canonicalX );
-      this.bins[ i ].dataPoint = new Vector2( canonicalX, point.y );
+      bin.dataPoint = new Vector2( canonicalX, point.y );
     } );
 
     // When a dependency changes that should clear the plot, it changed the physical state for the system,
@@ -356,14 +356,14 @@ export default class GraphData extends PhetioObject {
     return {
       revealedBinIndices: this.getRevealedBinIndices(),
       previousDrivingBinIndex: this.previousDrivingBinIndex,
-      snapshots: this.snapshots.map( snapshot => snapshot.map( point => new Vector2( point.x, point.y ) ) )
+      snapshots: this.snapshots.map( snapshot => snapshot.map( point => point.toStateObject() ) )
     };
   }
 
   private applyState( stateObject: GraphDataStateObject ): void {
     this.previousDrivingBinIndex = stateObject.previousDrivingBinIndex;
     this.setRevealedBinIndices( stateObject.revealedBinIndices );
-    this.setSnapshots( stateObject.snapshots );
+    this.setSnapshotsFromStateObjects( stateObject.snapshots );
     this.dataChangedEmitter.emit();
   }
 

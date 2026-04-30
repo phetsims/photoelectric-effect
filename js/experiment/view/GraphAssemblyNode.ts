@@ -97,9 +97,7 @@ export default class GraphAssemblyNode extends Node {
 
     super( options );
 
-    this.addLinkedElement( graphData, {
-      tandemName: 'graphData'
-    } );
+    this.addLinkedElement( graphData );
 
     this.expandedProperty = new BooleanProperty( true, {
       tandem: tandem.createTandem( 'expandedProperty' )

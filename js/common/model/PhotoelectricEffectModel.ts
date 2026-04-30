@@ -120,17 +120,19 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     super( options );
 
     const tandem = options.tandem;
-    const customMaterials = createCustomMaterials ? createCustomMaterials( tandem ) : [];
+    const materialsTandem = tandem.createTandem( 'materials' );
+
+    const customMaterials = createCustomMaterials ? createCustomMaterials( materialsTandem ) : [];
 
     const standardMaterials = [
 
       // TODO @design, is this the right tandem Name for materials?
-      new Material( MaterialType.SODIUM, { tandem: tandem.createTandem( 'sodiumMaterial' ) } ),
-      new Material( MaterialType.COPPER, { tandem: tandem.createTandem( 'copperMaterial' ) } ),
-      new Material( MaterialType.CALCIUM, { tandem: tandem.createTandem( 'calciumMaterial' ) } ),
-      new Material( MaterialType.MAGNESIUM, { tandem: tandem.createTandem( 'magnesiumMaterial' ) } ),
-      new Material( MaterialType.PLATINUM, { tandem: tandem.createTandem( 'platinumMaterial' ) } ),
-      new Material( MaterialType.ZINC, { tandem: tandem.createTandem( 'zincMaterial' ) } )
+      new Material( MaterialType.SODIUM, { tandem: materialsTandem.createTandem( 'sodium' ) } ),
+      new Material( MaterialType.COPPER, { tandem: materialsTandem.createTandem( 'copper' ) } ),
+      new Material( MaterialType.CALCIUM, { tandem: materialsTandem.createTandem( 'calcium' ) } ),
+      new Material( MaterialType.MAGNESIUM, { tandem: materialsTandem.createTandem( 'magnesium' ) } ),
+      new Material( MaterialType.PLATINUM, { tandem: materialsTandem.createTandem( 'platinum' ) } ),
+      new Material( MaterialType.ZINC, { tandem: materialsTandem.createTandem( 'zinc' ) } )
     ];
 
     // The order according to the design document - standard, mystery, then custom.

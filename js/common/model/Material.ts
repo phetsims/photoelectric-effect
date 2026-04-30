@@ -129,7 +129,7 @@ export default class Material extends PhetioObject {
 
     // TODO: @design (phet-io) All EnabledProperty instances are featured. Do we want that for all Materials?
     this.enabledProperty = new EnabledProperty( options.enabled, {
-      tandem: options.tandem.createTandem( 'enabledProperty' ),
+      tandem: options.tandem.createTandem( EnabledProperty.TANDEM_NAME ),
       phetioDocumentation: 'Whether this material is available for selection'
     } );
   }

@@ -14,6 +14,7 @@ import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Particle, { type ParticleStateObject } from './Particle.js';
 
+// PhET-iO serialized state for an electron.
 export type ElectronStateObject = {
   energy: number;
 } & ParticleStateObject;
@@ -58,12 +59,20 @@ export default class Electron extends Particle {
     return Math.sqrt( 2 * energy / PhotoelectricEffectConstants.ELECTRON_MASS ) * scaleFactor;
   }
 
+  /**
+   * Serializes this electron for PhET-iO, including particle kinematics from the superclass and energy.
+   */
   protected override toStateObject(): ElectronStateObject {
     return Object.assign( super.toStateObject(), {
       energy: this.energy
     } );
   }
 
+  /**
+   * Creates an electron from PhET-iO state.
+   *
+   * @param stateObject - Serialized kinematics and energy from state restore or API clients.
+   */
   protected static fromStateObject( stateObject: ElectronStateObject ): Electron {
     const kinematics = Particle.kinematicsFromStateObject( stateObject );
     return new Electron(
@@ -75,10 +84,16 @@ export default class Electron extends Particle {
     );
   }
 
+  /**
+   * PhET-iO state schema.
+   */
   private static readonly ELECTRON_STATE_SCHEMA = Object.assign( {}, Particle.PARTICLE_STATE_SCHEMA, {
     energy: NumberIO
   } );
 
+  /**
+   * PhET-iO IOType for an emitted electron.
+   */
   public static readonly ElectronIO = new IOType<Electron, ElectronStateObject>( 'ElectronIO', {
     valueType: Electron,
     stateSchema: Electron.ELECTRON_STATE_SCHEMA,

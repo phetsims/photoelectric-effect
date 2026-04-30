@@ -82,8 +82,6 @@ export default class AmmeterDisplayPanel extends Panel {
 
     super( content, options );
 
-    this.addLinkedElement( currentProperty, {
-      tandemName: 'currentProperty'
-    } );
+    this.addLinkedElement( currentProperty );
   }
 }
