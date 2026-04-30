@@ -13,21 +13,21 @@ import StringUnionProperty from '../../../../axon/js/StringUnionProperty.js';
 import Material from '../../common/model/Material.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 
-export type IntroScene = 'grounded' | 'circuit';
+export type IntroRepresentation = 'grounded' | 'circuit';
 
 export default class IntroModel extends PhotoelectricEffectModel {
 
   // Which Intro representation is active: simple grounded plate vs full circuit view.
-  public readonly sceneProperty: StringUnionProperty<IntroScene>;
+  public readonly representationProperty: StringUnionProperty<IntroRepresentation>;
 
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
     super( mysteryMaterials, null, providedOptions );
 
-    this.sceneProperty = new StringUnionProperty( 'grounded', {
+    this.representationProperty = new StringUnionProperty( 'grounded', {
       phetioFeatured: true,
       validValues: [ 'grounded', 'circuit' ],
-      tandem: providedOptions.tandem.createTandem( 'sceneProperty' ),
-      phetioDocumentation: 'Currently selected Intro screen scene'
+      tandem: providedOptions.tandem.createTandem( 'representationProperty' ),
+      phetioDocumentation: 'Currently selected Intro screen representation'
     } );
   }
 
@@ -37,6 +37,6 @@ export default class IntroModel extends PhotoelectricEffectModel {
   public override reset(): void {
     super.reset();
 
-    this.sceneProperty.reset();
+    this.representationProperty.reset();
   }
 }

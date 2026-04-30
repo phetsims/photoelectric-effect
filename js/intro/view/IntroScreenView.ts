@@ -27,24 +27,24 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     const options = optionize<IntroScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
     super( model, options );
 
-    // Add circuit as background. The type of circuit is determined by the sceneRadioButtonGroup
+    // Add circuit as background. The type of circuit is determined by the representationRadioButtonGroup
     this.backgroundNode.addChild( new CircuitNode( this.modelViewTransform, {
-      visibleProperty: DerivedProperty.valueEqualsConstant( model.sceneProperty, 'circuit' )
+      visibleProperty: DerivedProperty.valueEqualsConstant( model.representationProperty, 'circuit' )
     } ) );
     this.backgroundNode.addChild( new GroundedCircuitNode( this.modelViewTransform, {
-      visibleProperty: DerivedProperty.valueEqualsConstant( model.sceneProperty, 'grounded' )
+      visibleProperty: DerivedProperty.valueEqualsConstant( model.representationProperty, 'grounded' )
     } ) );
-    const sceneRadioButtonGroup = new SceneRadioButtonGroup( model.sceneProperty, {
-      tandem: options.tandem.createTandem( 'sceneRadioButtonGroup' )
+    const representationRadioButtonGroup = new SceneRadioButtonGroup( model.representationProperty, {
+      tandem: options.tandem.createTandem( 'representationRadioButtonGroup' )
     } );
-    this.addChild( sceneRadioButtonGroup );
+    this.addChild( representationRadioButtonGroup );
 
-    sceneRadioButtonGroup.centerBottom = this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN );
+    representationRadioButtonGroup.centerBottom = this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN );
 
-    // In the intro screen, electron visibility controls are only available in the circuit scene.
-    model.sceneProperty.link( scene => {
-      this.electronVisibilityControls.visible = scene === 'circuit';
-      this.ammeterDisplayPanel.visible = scene === 'circuit';
+    // In the intro screen, electron visibility controls are only available in the circuit representation.
+    model.representationProperty.link( representation => {
+      this.electronVisibilityControls.visible = representation === 'circuit';
+      this.ammeterDisplayPanel.visible = representation === 'circuit';
     } );
   }
 }

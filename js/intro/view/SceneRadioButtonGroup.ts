@@ -15,15 +15,15 @@ import RectangularRadioButtonGroup, { RectangularRadioButtonGroupItem, Rectangul
 import circuit_svg from '../../../images/circuit_svg.js';
 import ground_svg from '../../../images/ground_svg.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import type { IntroScene } from '../model/IntroModel.js';
+import type { IntroRepresentation } from '../model/IntroModel.js';
 
 type SelfOptions = EmptySelfOptions;
 
 export type SceneRadioButtonGroupOptions = SelfOptions & PickRequired<RectangularRadioButtonGroupOptions, 'tandem'>;
 
-export default class SceneRadioButtonGroup extends RectangularRadioButtonGroup<IntroScene> {
+export default class SceneRadioButtonGroup extends RectangularRadioButtonGroup<IntroRepresentation> {
 
-  public constructor( sceneProperty: PhetioProperty<IntroScene>, providedOptions: SceneRadioButtonGroupOptions ) {
+  public constructor( sceneProperty: PhetioProperty<IntroRepresentation>, providedOptions: SceneRadioButtonGroupOptions ) {
 
     const options = optionize<SceneRadioButtonGroupOptions, SelfOptions, RectangularRadioButtonGroupOptions>()( {
 
@@ -41,7 +41,7 @@ export default class SceneRadioButtonGroup extends RectangularRadioButtonGroup<I
       isDisposable: false
     }, providedOptions );
 
-    const items: RectangularRadioButtonGroupItem<IntroScene>[] = [
+    const items: RectangularRadioButtonGroupItem<IntroRepresentation>[] = [
       {
         value: 'grounded',
         createNode: () => new Image( ground_svg ),
