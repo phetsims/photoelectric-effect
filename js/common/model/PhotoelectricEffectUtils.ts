@@ -68,6 +68,22 @@ export const intensityToPhotonRate = ( intensity: number, wavelength: number ): 
 };
 
 /**
+ * Converts normalized photon source output to photons-per-second for the selected emission mode.
+ * This is a direct port from the java.
+ */
+export const normalizedOutputToPhotonRate = (
+  normalizedOutput: number,
+  wavelength: number,
+  photonCountModeEnabled: boolean
+): number => {
+
+  // Sanity check.
+  const clampedNormalizedOutput = Math.max( 0, Math.min( normalizedOutput, 1 ) );
+  return photonCountModeEnabled ? clampedNormalizedOutput * PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND :
+                                  intensityToPhotonRate( clampedNormalizedOutput, wavelength );
+};
+
+/**
  * Converts electric current from amps to microamps.
  */
 export const ampsToMicroamps = ( currentAmps: number ): number => {

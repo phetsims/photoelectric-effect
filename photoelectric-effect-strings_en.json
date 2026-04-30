@@ -121,6 +121,12 @@
   "intensity.percentReadoutPattern": {
     "value": "{{value}} %"
   },
+  "photonRate.label": {
+    "value": "Photon Rate"
+  },
+  "sourceOutput.percentReadoutPattern": {
+    "value": "{{value}} %"
+  },
   "wavelength.label": {
     "value": "Wavelength (nm)"
   },
@@ -165,5 +171,11 @@
   },
   "preferences.mysteryMaterialWorkFunctionDescription": {
     "value": "Set the work function of the mystery material."
+  },
+  "preferences.photonCountModeLabel": {
+    "value": "Photon Count"
+  },
+  "preferences.photonCountModeDescription": {
+    "value": "When enabled, the photon source output controls the number of emitted photons instead of light intensity."
   }
 }

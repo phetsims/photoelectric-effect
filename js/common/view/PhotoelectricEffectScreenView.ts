@@ -32,10 +32,10 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
 import CircuitNode from './CircuitNode.js';
-import IntensityAndWavelengthControl from './IntensityAndWavelengthControl.js';
 import LightSourceNode from './LightSourceNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
+import PhotonSourceControl from './PhotonSourceControl.js';
 
 type SelfOptions = {
   //TODO add options that are specific to PhotoelectricEffectScreenView here
@@ -59,7 +59,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
   protected readonly electronVisibilityControls: VBox;
 
   // For pdom order
-  protected readonly photonSourcePanel: Node;
+  protected readonly photonSourceControl: Node;
   protected readonly materialsComboBox: Node;
 
   public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
@@ -113,15 +113,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     );
 
-    /**
-     * Create the photon/light source and accompanying control panel.
-     */
-    this.photonSourcePanel = new IntensityAndWavelengthControl( model.photonSource, {
+    this.photonSourceControl = new PhotonSourceControl( model.photonSource, {
       rightTop: new Vector2(
         this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x,
         this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
       ),
-      tandem: options.tandem.createTandem( 'photonSourcePanel' )
+      tandem: options.tandem.createTandem( 'photonSourceControl' )
     } );
 
     this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty, {
@@ -139,7 +136,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // create the S regardless of height difference.
     const S_BEND = 200;
     const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
-    const photonSourceWireEnd = this.photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
+    const photonSourceWireEnd = this.photonSourceControl.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
     const photonSourceWireNode = new Path( new Shape()
       .moveToPoint( photonSourceWireStart )
       .cubicCurveToPoint(
@@ -154,7 +151,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // Added in this order for proper z-layering.
     this.addChild( photonSourceWireNode );
     this.addChild( lightSourceNode );
-    this.addChild( this.photonSourcePanel );
+    this.addChild( this.photonSourceControl );
 
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
@@ -263,7 +260,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           new Text( devWorkFunctionPlusDepthStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
           new Text( devPhotonEnergyStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } )
         ],
-        leftTop: this.photonSourcePanel.rightTop
+        leftTop: this.photonSourceControl.rightTop
       } ) );
     }
   }

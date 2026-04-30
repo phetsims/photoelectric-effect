@@ -17,9 +17,11 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
+import PhotoelectricEffectPreferences from './PhotoelectricEffectPreferences.js';
+import { normalizedOutputToPhotonRate } from './PhotoelectricEffectUtils.js';
 
-// Default intensity used at initialization.
-const INITIAL_INTENSITY = 0;
+// Default normalized source output used at initialization.
+const INITIAL_NORMALIZED_OUTPUT = 0;
 
 // Default wavelength in nanometers used at initialization.
 const INITIAL_WAVELENGTH = 400;
@@ -32,19 +34,22 @@ type PhotonSourceOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
 
 export default class PhotonSource {
 
-  // Allowed intensity range (normalized 0-1).
-  public static readonly INTENSITY_RANGE = new Range( 0, 1 );
+  // Allowed normalized source output range.
+  public static readonly NORMALIZED_OUTPUT_RANGE = new Range( 0, 1 );
 
   /**
-   * Controls photon emission rate as a normalized value.
-   * Higher values produce more photons per unit time.
+   * Controls the source output as a normalized value.
+   * The selected emission mode determines how this value maps to photons per second.
    */
-  public readonly intensityProperty: NumberProperty;
+  public readonly normalizedOutputProperty: NumberProperty;
 
   /**
-   * Intensity as a percentage (100 × normalized intensity), for UI and clients that prefer percent units.
+   * Source output as a percentage (100 × normalized output), for UI and clients that prefer percent units.
    */
-  public readonly intensityPercentProperty: TReadOnlyProperty<number>;
+  public readonly normalizedOutputPercentProperty: TReadOnlyProperty<number>;
+
+  // Derived photon emission rate for the current normalized source output and emission mode.
+  public readonly photonRateProperty: TReadOnlyProperty<number>;
 
   /**
    * Wavelength of emitted photons.
@@ -53,24 +58,24 @@ export default class PhotonSource {
   public readonly wavelengthProperty: NumberProperty;
 
   /**
-   * Creates a photon source with its own intensity and wavelength Properties.
+   * Creates a photon source with its own source output and wavelength Properties.
    */
   public constructor( providedOptions: PhotonSourceOptions ) {
     const tandem = providedOptions.tandem;
 
-    this.intensityProperty = new NumberProperty( INITIAL_INTENSITY, {
-      range: PhotonSource.INTENSITY_RANGE,
-      tandem: tandem.createTandem( 'intensityProperty' ),
-      phetioDocumentation: 'Normalized light intensity from 0 to 1'
+    this.normalizedOutputProperty = new NumberProperty( INITIAL_NORMALIZED_OUTPUT, {
+      range: PhotonSource.NORMALIZED_OUTPUT_RANGE,
+      tandem: tandem.createTandem( 'normalizedOutputProperty' ),
+      phetioDocumentation: 'Normalized photon source output from 0 to 1, interpreted by the selected emission mode'
     } );
 
-    this.intensityPercentProperty = new DerivedProperty(
-      [ this.intensityProperty ],
-      intensity => 100 * intensity,
+    this.normalizedOutputPercentProperty = new DerivedProperty(
+      [ this.normalizedOutputProperty ],
+      normalizedOutput => 100 * normalizedOutput,
       {
-        tandem: tandem.createTandem( 'intensityPercentProperty' ),
+        tandem: tandem.createTandem( 'normalizedOutputPercentProperty' ),
         phetioValueType: NumberIO,
-        phetioDocumentation: 'Light intensity as a percentage from 0 to 100'
+        phetioDocumentation: 'Photon source output as a percentage from 0 to 100'
       }
     );
 
@@ -79,13 +84,44 @@ export default class PhotonSource {
       tandem: tandem.createTandem( 'wavelengthProperty' ),
       phetioDocumentation: 'Wavelength of emitted photons in nanometers'
     } );
+
+    this.photonRateProperty = new DerivedProperty(
+      [
+        this.normalizedOutputProperty,
+        this.wavelengthProperty,
+        PhotoelectricEffectPreferences.photonCountModeEnabledProperty
+      ],
+      ( normalizedOutput, wavelength, photonCountModeEnabled ) => normalizedOutputToPhotonRate(
+        normalizedOutput,
+        wavelength,
+        photonCountModeEnabled
+      ),
+      {
+        tandem: tandem.createTandem( 'photonRateProperty' ),
+        phetioValueType: NumberIO,
+        phetioFeatured: true,
+        phetioDocumentation: 'Photon emission rate in photons per second'
+      }
+    );
   }
 
   /**
-   * Resets intensity and wavelength to their initial values.
+   * Gets the photon emission rate for an arbitrary normalized source output, using the current wavelength
+   * and selected emission mode.
+   */
+  public getPhotonRateForNormalizedOutput( normalizedOutput: number ): number {
+    return normalizedOutputToPhotonRate(
+      normalizedOutput,
+      this.wavelengthProperty.value,
+      PhotoelectricEffectPreferences.photonCountModeEnabledProperty.value
+    );
+  }
+
+  /**
+   * Resets source output and wavelength to their initial values.
    */
   public reset(): void {
-    this.intensityProperty.reset();
+    this.normalizedOutputProperty.reset();
     this.wavelengthProperty.reset();
   }
 }

@@ -31,8 +31,8 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
    */
   public constructor( model: ExperimentModel, providedOptions: IntensityCurrentGraphAssemblyNodeOptions ) {
 
-    // Intensity domain from PhotonSource model state.
-    const xRange = PhotonSource.INTENSITY_RANGE;
+    // Graph remains labeled as intensity, but the source control value is represented as normalized output.
+    const xRange = PhotonSource.NORMALIZED_OUTPUT_RANGE;
 
     // Preset y-axis domains used by zoom controls (most zoomed-in to most zoomed-out after sorting).
     const yZoomRanges = [

@@ -77,7 +77,7 @@ export default class ExperimentScreenView extends PhotoelectricEffectScreenView 
     this.addChild( voltageNumberControl );
 
     this.pdomPlayAreaNode.pdomOrder = [
-      this.photonSourcePanel,
+      this.photonSourceControl,
       this.materialsComboBox,
       voltageNumberControl,
       graphsVBox

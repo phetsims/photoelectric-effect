@@ -30,7 +30,8 @@ import Battery from './Battery.js';
 import Collector from './Collector.js';
 import Electron, { type ElectronStateObject } from './Electron.js';
 import Material, { MaterialType } from './Material.js';
-import { intensityToPhotonRate, wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
+import PhotoelectricEffectPreferences from './PhotoelectricEffectPreferences.js';
+import { wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon, { type PhotonStateObject } from './Photon.js';
 import PhotonSource from './PhotonSource.js';
 import Target from './Target.js';
@@ -93,7 +94,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   public readonly resetEmitter = new Emitter();
 
   // Accumulates fractional photon emissions between steps.
-  // Physics-wise, the light intensity defines a continuous photon flux (photons/second), while the model
+  // Physics-wise, the photon source defines a continuous photon flux (photons/second), while the model
   // emits discrete photons each step. The accumulator carries the fractional remainder so the time-integrated
   // photon count matches the continuous flux and does not drift with the chosen time step.
   private photonEmissionAccumulator = 0;
@@ -154,12 +155,12 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     this.currentProperty = new DerivedProperty(
       [
         this.battery.voltageProperty,
-        this.photonSource.intensityProperty,
+        this.photonSource.photonRateProperty,
         this.photonSource.wavelengthProperty,
         this.target.workFunctionProperty
       ],
-      ( voltage, intensity, wavelength, workFunction ) => {
-        return this.getCurrentForSystem( voltage, intensity, wavelength, workFunction );
+      ( voltage, photonsPerSecond, wavelength, workFunction ) => {
+        return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction );
       },
       {
         tandem: tandem.createTandem( 'currentProperty' ),
@@ -184,6 +185,13 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       phetioFeatured: true,
       tandem: tandem.createTandem( 'showHighestEnergyOnlyProperty' ),
       phetioDocumentation: 'Whether only highest-energy electron emissions are shown'
+    } );
+
+    PhotoelectricEffectPreferences.photonCountModeEnabledProperty.lazyLink( () => {
+
+      // The accumulator stores fractional photons in the previous emission mode's rate scale. Clear it so toggling
+      // between intensity and photon-count modes starts the next discrete emission count from the new rate only.
+      this.photonEmissionAccumulator = 0;
     } );
   }
 
@@ -251,10 +259,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
    * Emits new photons based on source intensity and elapsed time.
    */
   private emitPhotons( dt: number ): void {
-    const photonRate = intensityToPhotonRate(
-      this.photonSource.intensityProperty.value,
-      this.photonSource.wavelengthProperty.value
-    );
+    const photonRate = this.photonSource.photonRateProperty.value;
     const totalPhotons = this.photonEmissionAccumulator + photonRate * dt;
     const wholePhotons = Math.floor( totalPhotons );
     this.photonEmissionAccumulator = totalPhotons - wholePhotons;
@@ -360,28 +365,27 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
    * Computes the analytic current for the voltage, with other variables from the current system.
    */
   public getCurrentForVoltage( voltage: number ): number {
-    const intensity = this.photonSource.intensityProperty.value;
+    const photonsPerSecond = this.photonSource.photonRateProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
-    return this.getCurrentForSystem( voltage, intensity, wavelength, workFunction );
+    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction );
   }
 
   /**
-   * Get the analytic current for the provided intensity, with other variables from the current system.
-   * @param intensity
+   * Get the analytic current for the provided normalized source output, with other variables from the current system.
    */
-  public getCurrentForIntensity( intensity: number ): number {
+  public getCurrentForNormalizedOutput( normalizedOutput: number ): number {
     const voltage = this.battery.voltageProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
-    return this.getCurrentForSystem( voltage, intensity, wavelength, workFunction );
+    const photonsPerSecond = this.photonSource.getPhotonRateForNormalizedOutput( normalizedOutput );
+    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction );
   }
 
   /**
    * Computes the analytic current expected for the given conditions.
    */
-  private getCurrentForSystem( voltage: number, intensity: number, wavelength: number, workFunction: number ): number {
-    const photonsPerSecond = intensityToPhotonRate( intensity, wavelength );
+  private getCurrentForSystem( voltage: number, photonsPerSecond: number, wavelength: number, workFunction: number ): number {
 
     // Compute how much photon energy exceeds the work function; this bounds emission likelihood.
     const photonEnergyBeyondWorkFunction = wavelengthToEnergy( wavelength ) - workFunction;

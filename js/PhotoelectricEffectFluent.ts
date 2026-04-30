@@ -61,6 +61,7 @@ addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty
 addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
+addToMapIfDefined( 'photonRate_label', 'photonRate.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
@@ -74,6 +75,8 @@ addToMapIfDefined( 'preferences_mysteryMaterial2Label', 'preferences.mysteryMate
 addToMapIfDefined( 'preferences_mysteryMaterialDescription', 'preferences.mysteryMaterialDescriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionLabel', 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionDescription', 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' );
+addToMapIfDefined( 'preferences_photonCountModeLabel', 'preferences.photonCountModeLabelStringProperty' );
+addToMapIfDefined( 'preferences_photonCountModeDescription', 'preferences.photonCountModeDescriptionStringProperty' );
 
 // A function that creates contents for a new Fluent file, which will be needed if any string changes.
 const createFluentFile = (): string => {
@@ -147,6 +150,12 @@ const PhotoelectricEffectFluent = {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.labelStringProperty' ),
     percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.percentReadoutPatternStringProperty' )
   },
+  photonRate: {
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'photonRate.labelStringProperty' )
+  },
+  sourceOutput: {
+    percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'sourceOutput.percentReadoutPatternStringProperty' )
+  },
   wavelength: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' ),
     valueReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.valueReadoutPatternStringProperty' )
@@ -171,7 +180,9 @@ const PhotoelectricEffectFluent = {
     mysteryMaterial2LabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial2LabelStringProperty' ),
     mysteryMaterialDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialDescriptionStringProperty' ),
     mysteryMaterialWorkFunctionLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' ),
-    mysteryMaterialWorkFunctionDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' )
+    mysteryMaterialWorkFunctionDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' ),
+    photonCountModeLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonCountModeLabelStringProperty' ),
+    photonCountModeDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonCountModeDescriptionStringProperty' )
   }
 };
 

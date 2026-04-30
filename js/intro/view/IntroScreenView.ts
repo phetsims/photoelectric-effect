@@ -48,7 +48,7 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     } );
 
     this.pdomPlayAreaNode.pdomOrder = [
-      this.photonSourcePanel,
+      this.photonSourceControl,
       this.materialsComboBox,
       representationRadioButtonGroup
     ];

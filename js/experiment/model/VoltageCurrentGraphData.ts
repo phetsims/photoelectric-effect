@@ -21,7 +21,7 @@ export default class VoltageCurrentGraphData extends GraphData {
       model.battery.voltageProperty,
       voltage => new Vector2( voltage, model.getCurrentForVoltage( voltage ) ),
       [
-        model.photonSource.intensityProperty,
+        model.photonSource.photonRateProperty,
         model.wavelengthProperty,
         model.target.materialProperty,
         model.target.workFunctionProperty

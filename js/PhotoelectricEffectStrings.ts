@@ -66,6 +66,12 @@ type StringsType = {
     'labelStringProperty': LocalizedStringProperty;
     'percentReadoutPatternStringProperty': LocalizedStringProperty;
   };
+  'photonRate': {
+    'labelStringProperty': LocalizedStringProperty;
+  };
+  'sourceOutput': {
+    'percentReadoutPatternStringProperty': LocalizedStringProperty;
+  };
   'wavelength': {
     'labelStringProperty': LocalizedStringProperty;
     'valueReadoutPatternStringProperty': LocalizedStringProperty;
@@ -90,6 +96,8 @@ type StringsType = {
     'mysteryMaterialDescriptionStringProperty': LocalizedStringProperty;
     'mysteryMaterialWorkFunctionLabelStringProperty': LocalizedStringProperty;
     'mysteryMaterialWorkFunctionDescriptionStringProperty': LocalizedStringProperty;
+    'photonCountModeLabelStringProperty': LocalizedStringProperty;
+    'photonCountModeDescriptionStringProperty': LocalizedStringProperty;
   }
 };
 

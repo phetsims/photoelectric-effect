@@ -40,6 +40,13 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
     public: true,
     type: 'number',
     defaultValue: 5
+  },
+
+  // todo: @design, do you want to keep this? Should it be public?
+  // Whether the photon source control directly sets the photon emission rate.
+  photonCountMode: {
+    public: true,
+    type: 'flag'
   }
 } );
 

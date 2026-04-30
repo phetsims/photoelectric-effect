@@ -16,6 +16,7 @@ import WithOptional from '../../../../phet-core/js/types/WithOptional.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectMysteryMaterials from '../model/PhotoelectricEffectMysteryMaterials.js';
 import MysteryMaterialPreferencesControls from './MysteryMaterialPreferencesControls.js';
+import PhotonCountModeControl from './PhotonCountModeControl.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -42,7 +43,12 @@ export default class PhotoelectricEffectPreferencesNode extends PreferencesPanel
       options.tandem.createTandem( 'mysteryMaterial2Controls' )
     );
 
+    const photonCountModeControl = new PhotonCountModeControl( {
+      tandem: options.tandem.createTandem( 'photonCountModeControl' )
+    } );
+
     options.content = [
+      photonCountModeControl,
       mysteryMaterial2Controls
     ];
 

@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Panel with light intensity and wavelength controls for the photon source.
+ * Panel with source output and wavelength controls for the photon source.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -14,20 +14,20 @@ import { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
-import GradientBackplateIntensitySlider from './GradientBackplateIntensitySlider.js';
 import LabeledWavelengthNumberControl from './LabeledWavelengthNumberControl.js';
+import PhotonSourceOutputSlider from './PhotonSourceOutputSlider.js';
 
 type SelfOptions = EmptySelfOptions;
 
-type IntensityAndWavelengthControlOptions =
+type PhotonSourceControlOptions =
   SelfOptions &
   NodeBoundsBasedTranslationOptions &
   PickRequired<PanelOptions, 'tandem'>;
 
-export default class IntensityAndWavelengthControl extends Panel {
+export default class PhotonSourceControl extends Panel {
 
-  public constructor( photonSource: PhotonSource, providedOptions: IntensityAndWavelengthControlOptions ) {
-    const options = optionize<IntensityAndWavelengthControlOptions, SelfOptions, PanelOptions>()( {
+  public constructor( photonSource: PhotonSource, providedOptions: PhotonSourceControlOptions ) {
+    const options = optionize<PhotonSourceControlOptions, SelfOptions, PanelOptions>()( {
       stroke: 'black',
       lineWidth: 3,
       cornerRadius: 4,
@@ -36,12 +36,12 @@ export default class IntensityAndWavelengthControl extends Panel {
       isDisposable: false
     }, providedOptions );
 
-    const intensitySlider = new GradientBackplateIntensitySlider(
-      photonSource.intensityProperty,
-      photonSource.intensityPercentProperty,
+    const outputSlider = new PhotonSourceOutputSlider(
+      photonSource.normalizedOutputProperty,
+      photonSource.normalizedOutputPercentProperty,
       photonSource.wavelengthProperty,
       {
-        tandem: options.tandem.createTandem( 'intensitySlider' )
+        tandem: options.tandem.createTandem( 'outputSlider' )
       }
     );
 
@@ -53,7 +53,7 @@ export default class IntensityAndWavelengthControl extends Panel {
       spacing: 12,
       align: 'center',
       children: [
-        intensitySlider,
+        outputSlider,
         wavelengthNumberControl
       ]
     } );
