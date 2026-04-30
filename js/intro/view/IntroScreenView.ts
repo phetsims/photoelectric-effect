@@ -15,7 +15,7 @@ import CircuitNode from '../../common/view/CircuitNode.js';
 import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
 import IntroModel from '../model/IntroModel.js';
 import GroundedCircuitNode from './GroundedCircuitNode.js';
-import SceneRadioButtonGroup from './SceneRadioButtonGroup.js';
+import RepresentationRadioButtonGroup from './RepresentationRadioButtonGroup.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -34,7 +34,7 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     this.backgroundNode.addChild( new GroundedCircuitNode( this.modelViewTransform, {
       visibleProperty: DerivedProperty.valueEqualsConstant( model.representationProperty, 'grounded' )
     } ) );
-    const representationRadioButtonGroup = new SceneRadioButtonGroup( model.representationProperty, {
+    const representationRadioButtonGroup = new RepresentationRadioButtonGroup( model.representationProperty, {
       tandem: options.tandem.createTandem( 'representationRadioButtonGroup' )
     } );
     this.addChild( representationRadioButtonGroup );

@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Control for switching the Intro screen between grounded and circuit scenes.
+ * Control for switching the Intro screen between grounded and circuit representations.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -19,13 +19,13 @@ import type { IntroRepresentation } from '../model/IntroModel.js';
 
 type SelfOptions = EmptySelfOptions;
 
-export type SceneRadioButtonGroupOptions = SelfOptions & PickRequired<RectangularRadioButtonGroupOptions, 'tandem'>;
+export type RepresentationRadioButtonGroupOptions = SelfOptions & PickRequired<RectangularRadioButtonGroupOptions, 'tandem'>;
 
-export default class SceneRadioButtonGroup extends RectangularRadioButtonGroup<IntroRepresentation> {
+export default class RepresentationRadioButtonGroup extends RectangularRadioButtonGroup<IntroRepresentation> {
 
-  public constructor( sceneProperty: PhetioProperty<IntroRepresentation>, providedOptions: SceneRadioButtonGroupOptions ) {
+  public constructor( representationProperty: PhetioProperty<IntroRepresentation>, providedOptions: RepresentationRadioButtonGroupOptions ) {
 
-    const options = optionize<SceneRadioButtonGroupOptions, SelfOptions, RectangularRadioButtonGroupOptions>()( {
+    const options = optionize<RepresentationRadioButtonGroupOptions, SelfOptions, RectangularRadioButtonGroupOptions>()( {
 
       // RectangularRadioButtonGroupOptions
       orientation: 'horizontal',
@@ -54,6 +54,6 @@ export default class SceneRadioButtonGroup extends RectangularRadioButtonGroup<I
       }
     ];
 
-    super( sceneProperty, items, options );
+    super( representationProperty, items, options );
   }
 }
