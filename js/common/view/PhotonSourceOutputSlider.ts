@@ -148,6 +148,8 @@ export default class PhotonSourceOutputSlider extends Node {
     const backplateBounds = outputGradientRectangle.bounds;
     outputLabel.boundsProperty.link( outputLabelBounds => {
       const layoutBoundsLocal = outputLabelBounds.union( backplateBounds );
+      outputLabel.centerX = outputGradientRectangle.centerX;
+      outputLabel.bottom = outputGradientRectangle.top - LABEL_SLIDER_SPACING;
 
       affirm( layoutBoundsLocal.isValid(), 'Bounds should be valid before overriding local bounds' );
       this.setLocalBounds( layoutBoundsLocal );

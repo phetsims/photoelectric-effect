@@ -46,7 +46,8 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
   // Whether the photon source control directly sets the photon emission rate.
   photonCountMode: {
     public: true,
-    type: 'flag'
+    type: 'boolean',
+    defaultValue: true
   }
 } );
 
