@@ -24,8 +24,10 @@ import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
+import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
+import { wavelengthToEnergy } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
@@ -228,6 +230,26 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
       { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
+
+    if ( phet.chipper.queryParameters.dev ) {
+      const devWorkFunctionStringProperty = new DerivedProperty( [ model.target.workFunctionProperty ],
+        workFunction => `Work Function: ${toFixed( workFunction, 2 )} eV` );
+      const devWorkFunctionPlusDepthStringProperty = new DerivedProperty( [ model.target.workFunctionProperty ],
+        workFunction => `Work Function + Depth: ${toFixed( workFunction + Material.TOTAL_ENERGY_DEPTH, 2 )} eV` );
+      const devPhotonEnergyStringProperty = new DerivedProperty( [ model.wavelengthProperty ],
+        wavelength => `Photon Energy: ${toFixed( wavelengthToEnergy( wavelength ), 2 )} eV` );
+
+      this.addChild( new VBox( {
+        align: 'left',
+        spacing: 3,
+        children: [
+          new Text( devWorkFunctionStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
+          new Text( devWorkFunctionPlusDepthStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
+          new Text( devPhotonEnergyStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } )
+        ],
+        leftTop: intensityAndWavelengthControl.rightTop
+      } ) );
+    }
   }
 
   /**
