@@ -75,8 +75,8 @@ addToMapIfDefined( 'preferences_mysteryMaterial2Label', 'preferences.mysteryMate
 addToMapIfDefined( 'preferences_mysteryMaterialDescription', 'preferences.mysteryMaterialDescriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionLabel', 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionDescription', 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' );
-addToMapIfDefined( 'preferences_photonCountModeLabel', 'preferences.photonCountModeLabelStringProperty' );
-addToMapIfDefined( 'preferences_photonCountModeDescription', 'preferences.photonCountModeDescriptionStringProperty' );
+addToMapIfDefined( 'preferences_photonModeLabel', 'preferences.photonModeLabelStringProperty' );
+addToMapIfDefined( 'preferences_photonModeDescription', 'preferences.photonModeDescriptionStringProperty' );
 
 // A function that creates contents for a new Fluent file, which will be needed if any string changes.
 const createFluentFile = (): string => {
@@ -181,8 +181,8 @@ const PhotoelectricEffectFluent = {
     mysteryMaterialDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialDescriptionStringProperty' ),
     mysteryMaterialWorkFunctionLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' ),
     mysteryMaterialWorkFunctionDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' ),
-    photonCountModeLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonCountModeLabelStringProperty' ),
-    photonCountModeDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonCountModeDescriptionStringProperty' )
+    photonModeLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonModeLabelStringProperty' ),
+    photonModeDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonModeDescriptionStringProperty' )
   }
 };
 

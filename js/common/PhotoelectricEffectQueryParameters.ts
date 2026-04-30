@@ -9,6 +9,7 @@
 
 import logGlobal from '../../../phet-core/js/logGlobal.js';
 import { QueryStringMachine } from '../../../query-string-machine/js/QueryStringMachineModule.js';
+import { PhotonModeValues } from './model/PhotonMode.js';
 
 const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
 
@@ -44,10 +45,11 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
 
   // todo: @design, do you want to keep this? Should it be public?
   // Whether the photon source control directly sets the photon emission rate.
-  photonCountMode: {
+  photonMode: {
     public: true,
-    type: 'boolean',
-    defaultValue: true
+    type: 'string',
+    validValues: PhotonModeValues,
+    defaultValue: 'count'
   }
 } );
 

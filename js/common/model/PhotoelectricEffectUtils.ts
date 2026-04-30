@@ -11,6 +11,7 @@
 import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
+import type { PhotonMode } from './PhotonMode.js';
 
 // hc constant in eV*nm for wavelength-energy conversions.
 const PHOTON_ENERGY_CONSTANT = 1240;
@@ -74,13 +75,14 @@ export const intensityToPhotonRate = ( intensity: number, wavelength: number ): 
 export const normalizedOutputToPhotonRate = (
   normalizedOutput: number,
   wavelength: number,
-  photonCountModeEnabled: boolean
+  photonMode: PhotonMode
 ): number => {
 
   // Sanity check.
   const clampedNormalizedOutput = Math.max( 0, Math.min( normalizedOutput, 1 ) );
-  return photonCountModeEnabled ? clampedNormalizedOutput * PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND :
-                                  intensityToPhotonRate( clampedNormalizedOutput, wavelength );
+  return photonMode === 'count' ? clampedNormalizedOutput * PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND :
+         photonMode === 'intensity' ? intensityToPhotonRate( clampedNormalizedOutput, wavelength ) :
+         ( () => { throw new Error( `Unrecognized photonMode: ${photonMode}` ); } )();
 };
 
 /**

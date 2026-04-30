@@ -89,12 +89,12 @@ export default class PhotonSource {
       [
         this.normalizedOutputProperty,
         this.wavelengthProperty,
-        PhotoelectricEffectPreferences.photonCountModeEnabledProperty
+        PhotoelectricEffectPreferences.photonModeProperty
       ],
-      ( normalizedOutput, wavelength, photonCountModeEnabled ) => normalizedOutputToPhotonRate(
+      ( normalizedOutput, wavelength, photonMode ) => normalizedOutputToPhotonRate(
         normalizedOutput,
         wavelength,
-        photonCountModeEnabled
+        photonMode
       ),
       {
         tandem: tandem.createTandem( 'photonRateProperty' ),
@@ -113,7 +113,7 @@ export default class PhotonSource {
     return normalizedOutputToPhotonRate(
       normalizedOutput,
       this.wavelengthProperty.value,
-      PhotoelectricEffectPreferences.photonCountModeEnabledProperty.value
+      PhotoelectricEffectPreferences.photonModeProperty.value
     );
   }
 

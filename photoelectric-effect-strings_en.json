@@ -172,10 +172,10 @@
   "preferences.mysteryMaterialWorkFunctionDescription": {
     "value": "Set the work function of the mystery material."
   },
-  "preferences.photonCountModeLabel": {
-    "value": "Photon Count"
+  "preferences.photonModeLabel": {
+    "value": "Photon Mode"
   },
-  "preferences.photonCountModeDescription": {
-    "value": "When enabled, the photon source output controls the number of emitted photons instead of light intensity."
+  "preferences.photonModeDescription": {
+    "value": "Switches the photon source output between photon count and light intensity."
   }
 }

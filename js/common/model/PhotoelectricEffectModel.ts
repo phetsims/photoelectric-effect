@@ -187,7 +187,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       phetioDocumentation: 'Whether only highest-energy electron emissions are shown'
     } );
 
-    PhotoelectricEffectPreferences.photonCountModeEnabledProperty.lazyLink( () => {
+    PhotoelectricEffectPreferences.photonModeProperty.lazyLink( () => {
 
       // The accumulator stores fractional photons in the previous emission mode's rate scale. Clear it so toggling
       // between intensity and photon-count modes starts the next discrete emission count from the new rate only.

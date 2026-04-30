@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * PhotonCountModeControl toggles whether the photon source output controls normalized intensity or photon rate.
+ * PhotonModeControl toggles how the photon source output maps to photon emission rate.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -16,20 +16,20 @@ import ToggleSwitch from '../../../../sun/js/ToggleSwitch.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectPreferences from '../model/PhotoelectricEffectPreferences.js';
 
-type PhotonCountModeControlOptions = WithRequired<PreferencesControlOptions, 'tandem'>;
+type PhotonModeControlOptions = WithRequired<PreferencesControlOptions, 'tandem'>;
 
-export default class PhotonCountModeControl extends PreferencesControl {
+export default class PhotonModeControl extends PreferencesControl {
 
-  public constructor( providedOptions: PhotonCountModeControlOptions ) {
+  public constructor( providedOptions: PhotonModeControlOptions ) {
 
-    const toggleSwitch = new ToggleSwitch( PhotoelectricEffectPreferences.photonCountModeEnabledProperty, false, true, {
+    const toggleSwitch = new ToggleSwitch( PhotoelectricEffectPreferences.photonModeProperty, 'intensity', 'count', {
       tandem: providedOptions.tandem.createTandem( 'toggleSwitch' ),
-      accessibleName: PhotoelectricEffectFluent.preferences.photonCountModeLabelStringProperty
+      accessibleName: PhotoelectricEffectFluent.preferences.photonModeLabelStringProperty
     } );
 
     super( combineOptions<PreferencesControlOptions>( {
-      labelNode: new Text( PhotoelectricEffectFluent.preferences.photonCountModeLabelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
-      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.photonCountModeDescriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
+      labelNode: new Text( PhotoelectricEffectFluent.preferences.photonModeLabelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
+      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.photonModeDescriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
       controlNode: toggleSwitch,
       visiblePropertyOptions: {
         phetioFeatured: true

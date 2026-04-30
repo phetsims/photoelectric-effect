@@ -26,7 +26,7 @@ export default class IntensityCurrentGraphData extends GraphData {
         model.wavelengthProperty,
         model.target.materialProperty,
         model.target.workFunctionProperty,
-        PhotoelectricEffectPreferences.photonCountModeEnabledProperty
+        PhotoelectricEffectPreferences.photonModeProperty
       ],
       model.resetEmitter,
       combineOptions<GraphDataOptions>( {}, providedOptions, {

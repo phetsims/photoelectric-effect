@@ -96,8 +96,8 @@ type StringsType = {
     'mysteryMaterialDescriptionStringProperty': LocalizedStringProperty;
     'mysteryMaterialWorkFunctionLabelStringProperty': LocalizedStringProperty;
     'mysteryMaterialWorkFunctionDescriptionStringProperty': LocalizedStringProperty;
-    'photonCountModeLabelStringProperty': LocalizedStringProperty;
-    'photonCountModeDescriptionStringProperty': LocalizedStringProperty;
+    'photonModeLabelStringProperty': LocalizedStringProperty;
+    'photonModeDescriptionStringProperty': LocalizedStringProperty;
   }
 };
 

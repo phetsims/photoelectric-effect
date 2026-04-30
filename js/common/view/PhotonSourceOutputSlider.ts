@@ -80,11 +80,15 @@ export default class PhotonSourceOutputSlider extends Node {
 
     const outputLabelStringProperty = new DerivedProperty(
       [
-        PhotoelectricEffectPreferences.photonCountModeEnabledProperty,
+        PhotoelectricEffectPreferences.photonModeProperty,
         PhotoelectricEffectFluent.intensity.labelStringProperty,
         PhotoelectricEffectFluent.photonRate.labelStringProperty
       ],
-      ( photonCountModeEnabled, intensityLabel, photonRateLabel ) => photonCountModeEnabled ? photonRateLabel : intensityLabel
+      ( photonMode, intensityLabel, photonRateLabel ) => {
+        return photonMode === 'count' ? photonRateLabel :
+               photonMode === 'intensity' ? intensityLabel :
+               ( () => { throw new Error( `Unrecognized photonMode: ${photonMode}` ); } )();
+      }
     );
 
     const outputLabel = new Text( outputLabelStringProperty, {
@@ -146,10 +150,11 @@ export default class PhotonSourceOutputSlider extends Node {
     // dynamic locales). The logical bounds includes the backplate rectangle and the output label,
     // but excludes the output readout for layout purposes when used in panels.
     const backplateBounds = outputGradientRectangle.bounds;
-    outputLabel.boundsProperty.link( outputLabelBounds => {
-      const layoutBoundsLocal = outputLabelBounds.union( backplateBounds );
+    outputLabel.boundsProperty.link( () => {
       outputLabel.centerX = outputGradientRectangle.centerX;
       outputLabel.bottom = outputGradientRectangle.top - LABEL_SLIDER_SPACING;
+
+      const layoutBoundsLocal = outputLabel.bounds.union( backplateBounds );
 
       affirm( layoutBoundsLocal.isValid(), 'Bounds should be valid before overriding local bounds' );
       this.setLocalBounds( layoutBoundsLocal );
