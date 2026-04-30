@@ -58,6 +58,11 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
   // Controls for electron rendering and behavior, for layout and visibility control in subclasses.
   protected readonly electronVisibilityControls: VBox;
 
+  // For pdom order
+  private readonly controlAreaPDOMOrder: Node[];
+  private readonly photonSourcePanel: Node;
+  private readonly materialsComboBox: Node;
+
   public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
     const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
@@ -77,7 +82,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       new Vector2( 250, this.layoutBounds.centerY + 40 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
-    const materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
+    this.materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
       left: this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
       top: this.layoutBounds.centerY,
       tandem: options.tandem.createTandem( 'materialsComboBox' )
@@ -104,17 +109,20 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           decimalPlaces: 1
         },
         visibleProperty: customMaterialSelectedProperty,
-        centerTop: materialsComboBox.centerBottom.plusXY( 0, 25 ),
+        centerTop: this.materialsComboBox.centerBottom.plusXY( 0, 25 ),
         tandem: options.tandem.createTandem( 'workFunctionControl' )
       }
     );
 
-    const intensityAndWavelengthControl = new IntensityAndWavelengthControl( model.photonSource, {
+    /**
+     * Create the photon/light source and accompanying control panel.
+     */
+    this.photonSourcePanel = new IntensityAndWavelengthControl( model.photonSource, {
       rightTop: new Vector2(
         this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x,
         this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
       ),
-      tandem: options.tandem.createTandem( 'intensityAndWavelengthControl' )
+      tandem: options.tandem.createTandem( 'photonSourcePanel' )
     } );
 
     this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty, {
@@ -132,7 +140,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // create the S regardless of height difference.
     const S_BEND = 200;
     const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
-    const photonSourceWireEnd = intensityAndWavelengthControl.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
+    const photonSourceWireEnd = this.photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
     const photonSourceWireNode = new Path( new Shape()
       .moveToPoint( photonSourceWireStart )
       .cubicCurveToPoint(
@@ -147,6 +155,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // Added in this order for proper z-layering.
     this.addChild( photonSourceWireNode );
     this.addChild( lightSourceNode );
+    this.addChild( this.photonSourcePanel );
 
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
@@ -196,10 +205,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     } );
 
-    this.addChild( materialsComboBox );
+    this.addChild( this.materialsComboBox );
     this.addChild( workFunctionControl );
     this.addChild( this.electronVisibilityControls );
-    this.addChild( intensityAndWavelengthControl );
     this.addChild( this.ammeterDisplayPanel );
 
     const resetAllButton = new ResetAllButton( {
@@ -231,6 +239,13 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
 
+    this.controlAreaPDOMOrder = [
+      showElectronsCheckbox,
+      highestEnergyOnlyCheckbox,
+      playPauseStepButtonGroup,
+      resetAllButton
+    ]
+
     if ( phet.chipper.queryParameters.dev ) {
       const devWorkFunctionStringProperty = new DerivedProperty( [ model.target.workFunctionProperty ],
         workFunction => `Work Function: ${toFixed( workFunction, 2 )} eV` );
@@ -247,15 +262,19 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           new Text( devWorkFunctionPlusDepthStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
           new Text( devPhotonEnergyStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } )
         ],
-        leftTop: intensityAndWavelengthControl.rightTop
+        leftTop: this.photonSourcePanel.rightTop
       } ) );
     }
   }
 
-  protected setScreenPDOMOrder(): void {
+  protected setScreenPDOMOrder( circuitControls: Node[], graphs: Node[] ): void {
     this.pdomPlayAreaNode.setPDOMOrder( [
-
+      this.photonSourcePanel,
+      this.materialsComboBox,
+      ...circuitControls,
+      ...graphs
     ] );
+    this.pdomControlAreaNode.setPDOMOrder( this.controlAreaPDOMOrder );
   }
 
   /**

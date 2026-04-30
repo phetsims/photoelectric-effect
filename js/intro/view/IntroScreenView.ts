@@ -46,5 +46,7 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
       this.electronVisibilityControls.visible = representation === 'circuit';
       this.ammeterDisplayPanel.visible = representation === 'circuit';
     } );
+
+    this.setScreenPDOMOrder( [ sceneRadioButtonGroup ], [] );
   }
 }

@@ -75,5 +75,6 @@ export default class ExperimentScreenView extends PhotoelectricEffectScreenView 
 
     this.addChild( graphsVBox );
     this.addChild( voltageNumberControl );
+    this.setScreenPDOMOrder( [ voltageNumberControl ], [ graphsVBox ] );
   }
 }
