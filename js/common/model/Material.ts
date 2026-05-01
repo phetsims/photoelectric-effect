@@ -26,6 +26,9 @@ export class MaterialType extends EnumerationValue {
   // All of the work functions for the following MaterialTypes are ReadOnly.
 
   // TODO: Do we want to protect against mutability here?
+  // TODO @design: Do we want to protect against phet-io changes to these work function values?
+  //   Luckily, the way we reset materials should prevent these values from being reset if they are customized
+  //   with phet-io.
   public static readonly SODIUM = new MaterialType( 2.3 );
   public static readonly COPPER = new MaterialType( 4.7 );
   public static readonly CALCIUM = new MaterialType( 2.9 );
