@@ -6,12 +6,19 @@
  * TODO: @design, are you OK with all of these materials being globals (state shared across all screens,
  *   not reset from ResetAllButton, will have different location in the phetio tree, and so on...)
  *
- * PREFERENCES_MYSTERY_MATERIAL_1 and _2 are user-configurable via the Preferences dialog. Its work function
+ * TODO: Now that mystery material 1 acts more like a "typical" material (always enabled, static work function),
+ *   should it still live in this file? Is this file for "globals" or "mystery" materials?
+ * PREFERENCES_MYSTERY_MATERIAL_1 is always enabled and its work function cannot change from Preferences,
+ * but it can change from PhET-iO.
+ *
+ * PREFERENCES_MYSTERY_MATERIAL_2 is enabled and user-configurable via the Preferences dialog. Its work function
  * is exposed through PhotoelectricEffectPreferences and persists across sessions.
  *
  * PHET_IO_MYSTERY_MATERIAL_1 through _3 are reserved for PhET-iO clients (e.g. Studio)
  * who need additional controllable mystery materials. Their work functions are set exclusively
- * through the PhET-iO API and are not configurable in the sim UI.
+ * through the PhET-iO API and are not configurable in the sim UI. They are hidden unless explicitly
+ * enabled with PhET-iO.
+ * TODO: Make sure that layout is good when all possible materials are enabled. We are low on vertical space.
  *
  * All mystery materials are passed down to the sim's screens via photoelectric-effect-main.ts.
  *
@@ -26,7 +33,7 @@ import Material, { MaterialType } from './Material.js';
 const PREFERENCES_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial1' ),
   labelKey: 'mystery1',
-  enabled: false
+  enabled: true
 } );
 const PREFERENCES_MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial2' ),
