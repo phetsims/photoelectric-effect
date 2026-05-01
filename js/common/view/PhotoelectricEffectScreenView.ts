@@ -59,9 +59,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
   protected readonly electronVisibilityControls: VBox;
 
   // For pdom order
-  private readonly controlAreaPDOMOrder: Node[];
-  private readonly photonSourcePanel: Node;
-  private readonly materialsComboBox: Node;
+  protected readonly photonSourcePanel: Node;
+  protected readonly materialsComboBox: Node;
 
   public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
@@ -239,7 +238,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
 
-    this.controlAreaPDOMOrder = [
+    // PDOM order for controls. It is up to subclasses to set the pdom order for the
+    // play area.
+    this.pdomControlAreaNode.pdomOrder = [
       showElectronsCheckbox,
       highestEnergyOnlyCheckbox,
       playPauseStepButtonGroup,
@@ -267,15 +268,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     }
   }
 
-  protected setScreenPDOMOrder( circuitControls: Node[], graphs: Node[] ): void {
-    this.pdomPlayAreaNode.setPDOMOrder( [
-      this.photonSourcePanel,
-      this.materialsComboBox,
-      ...circuitControls,
-      ...graphs
-    ] );
-    this.pdomControlAreaNode.setPDOMOrder( this.controlAreaPDOMOrder );
-  }
 
   /**
    * Resets the view.

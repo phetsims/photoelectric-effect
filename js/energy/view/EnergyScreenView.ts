@@ -23,7 +23,6 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
   public constructor( model: EnergyModel, providedOptions: EnergyScreenViewOptions ) {
     super( model, providedOptions );
 
-    // TODO: Define order for screen specific components
-    this.setScreenPDOMOrder( [], [] );
+    // TODO: Define PDOM order for screen specific components
   }
 }

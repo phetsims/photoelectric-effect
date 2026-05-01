@@ -47,6 +47,10 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
       this.ammeterDisplayPanel.visible = representation === 'circuit';
     } );
 
-    this.setScreenPDOMOrder( [ sceneRadioButtonGroup ], [] );
+    this.pdomPlayAreaNode.pdomOrder = [
+      this.photonSourcePanel,
+      this.materialsComboBox,
+      sceneRadioButtonGroup
+    ];
   }
 }
