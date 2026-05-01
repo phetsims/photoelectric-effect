@@ -12,7 +12,7 @@ import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import ToggleSwitch from '../../../../sun/js/ToggleSwitch.js';
+import ToggleSwitch, { ToggleSwitchOptions } from '../../../../sun/js/ToggleSwitch.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectPreferences from '../model/PhotoelectricEffectPreferences.js';
 
@@ -22,10 +22,20 @@ export default class PhotonModeControl extends PreferencesControl {
 
   public constructor( providedOptions: PhotonModeControlOptions ) {
 
-    const toggleSwitch = new ToggleSwitch( PhotoelectricEffectPreferences.photonModeProperty, 'intensity', 'count', {
-      tandem: providedOptions.tandem.createTandem( 'toggleSwitch' ),
-      accessibleName: PhotoelectricEffectFluent.preferences.photonModeLabelStringProperty
-    } );
+    // TODO: Create a subclass for preferences toggle switch in joist? Or factor one
+    //  out in this sim? This combineOPtions appears twice currently. May not be worth it.
+    const toggleSwitch = new ToggleSwitch(
+      PhotoelectricEffectPreferences.photonModeProperty,
+      'intensity',
+      'count', combineOptions<ToggleSwitchOptions>(
+        {},
+        {
+          tandem: providedOptions.tandem.createTandem( 'toggleSwitch' ),
+          accessibleName: PhotoelectricEffectFluent.preferences.photonModeLabelStringProperty
+        },
+        PreferencesDialogConstants.TOGGLE_SWITCH_OPTIONS
+      )
+    );
 
     super( combineOptions<PreferencesControlOptions>( {
       labelNode: new Text( PhotoelectricEffectFluent.preferences.photonModeLabelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),

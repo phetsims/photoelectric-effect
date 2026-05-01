@@ -15,7 +15,7 @@ import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import ToggleSwitch from '../../../../sun/js/ToggleSwitch.js';
+import ToggleSwitch, { ToggleSwitchOptions } from '../../../../sun/js/ToggleSwitch.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type MysteryMaterialControlOptions = WithRequired<PreferencesControlOptions, 'tandem'>;
@@ -33,10 +33,18 @@ export default class MysteryMaterialControl extends PreferencesControl {
     providedOptions: MysteryMaterialControlOptions
   ) {
 
-    const toggleSwitch = new ToggleSwitch( enabledProperty, false, true, {
-      tandem: providedOptions.tandem.createTandem( 'toggleSwitch' ),
-      accessibleName: labelStringProperty
-    } );
+    const toggleSwitch = new ToggleSwitch(
+      enabledProperty,
+      false,
+      true, combineOptions<ToggleSwitchOptions>(
+        {},
+        {
+          tandem: providedOptions.tandem.createTandem( 'toggleSwitch' ),
+          accessibleName: labelStringProperty
+        },
+        PreferencesDialogConstants.TOGGLE_SWITCH_OPTIONS
+      )
+    );
 
     super( combineOptions<PreferencesControlOptions>( {
       labelNode: new Text( labelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
