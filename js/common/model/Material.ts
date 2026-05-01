@@ -29,14 +29,14 @@ export class MaterialType extends EnumerationValue {
   public static readonly SODIUM = new MaterialType( 2.3 );
   public static readonly COPPER = new MaterialType( 4.7 );
   public static readonly CALCIUM = new MaterialType( 2.9 );
-  public static readonly MAGNESIUM = new MaterialType( 3.7 );
   public static readonly PLATINUM = new MaterialType( 6.3 );
   public static readonly ZINC = new MaterialType( 4.3 );
 
   // Mystery materials are for teachers and phet-io clients. The work function will only be set from
   // preferences or with a PhET-iO customization. As such, simulation reset should not affect the
   // workFunctionProperty of mystery materials.
-  public static readonly MYSTERY = new MaterialType( 5 );
+  // This work function value matches "Magnesium", matching the behavior of "Mystery" material from the java.
+  public static readonly MYSTERY = new MaterialType( 3.7 );
 
   // Controllable by the student, the custom material will have a work function control right in the
   // simulation. Reset should set the workFunctionProperty back to its initial value.

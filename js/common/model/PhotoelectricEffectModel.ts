@@ -131,7 +131,6 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       new Material( MaterialType.SODIUM, { tandem: materialsTandem.createTandem( 'sodium' ) } ),
       new Material( MaterialType.COPPER, { tandem: materialsTandem.createTandem( 'copper' ) } ),
       new Material( MaterialType.CALCIUM, { tandem: materialsTandem.createTandem( 'calcium' ) } ),
-      new Material( MaterialType.MAGNESIUM, { tandem: materialsTandem.createTandem( 'magnesium' ) } ),
       new Material( MaterialType.PLATINUM, { tandem: materialsTandem.createTandem( 'platinum' ) } ),
       new Material( MaterialType.ZINC, { tandem: materialsTandem.createTandem( 'zinc' ) } )
     ];

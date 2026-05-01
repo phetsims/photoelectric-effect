@@ -30,7 +30,6 @@ const MATERIAL_TYPE_LABELS = new Map<MaterialType, TReadOnlyProperty<string>>( [
   [ MaterialType.SODIUM, PhotoelectricEffectFluent.materials.sodiumStringProperty ],
   [ MaterialType.COPPER, PhotoelectricEffectFluent.materials.copperStringProperty ],
   [ MaterialType.CALCIUM, PhotoelectricEffectFluent.materials.calciumStringProperty ],
-  [ MaterialType.MAGNESIUM, PhotoelectricEffectFluent.materials.magnesiumStringProperty ],
   [ MaterialType.PLATINUM, PhotoelectricEffectFluent.materials.platinumStringProperty ],
   [ MaterialType.ZINC, PhotoelectricEffectFluent.materials.zincStringProperty ],
   [ MaterialType.CUSTOM, PhotoelectricEffectFluent.materials.customStringProperty ],

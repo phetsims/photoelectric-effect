@@ -31,7 +31,6 @@ addToMapIfDefined( 'screen_energy', 'screen.energyStringProperty' );
 addToMapIfDefined( 'materials_sodium', 'materials.sodiumStringProperty' );
 addToMapIfDefined( 'materials_copper', 'materials.copperStringProperty' );
 addToMapIfDefined( 'materials_calcium', 'materials.calciumStringProperty' );
-addToMapIfDefined( 'materials_magnesium', 'materials.magnesiumStringProperty' );
 addToMapIfDefined( 'materials_platinum', 'materials.platinumStringProperty' );
 addToMapIfDefined( 'materials_zinc', 'materials.zincStringProperty' );
 addToMapIfDefined( 'materials_custom', 'materials.customStringProperty' );
@@ -103,7 +102,6 @@ const PhotoelectricEffectFluent = {
     sodiumStringProperty: _.get( PhotoelectricEffectStrings, 'materials.sodiumStringProperty' ),
     copperStringProperty: _.get( PhotoelectricEffectStrings, 'materials.copperStringProperty' ),
     calciumStringProperty: _.get( PhotoelectricEffectStrings, 'materials.calciumStringProperty' ),
-    magnesiumStringProperty: _.get( PhotoelectricEffectStrings, 'materials.magnesiumStringProperty' ),
     platinumStringProperty: _.get( PhotoelectricEffectStrings, 'materials.platinumStringProperty' ),
     zincStringProperty: _.get( PhotoelectricEffectStrings, 'materials.zincStringProperty' ),
     customStringProperty: _.get( PhotoelectricEffectStrings, 'materials.customStringProperty' ),

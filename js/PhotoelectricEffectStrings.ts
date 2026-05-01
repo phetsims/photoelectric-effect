@@ -24,7 +24,6 @@ type StringsType = {
     'sodiumStringProperty': LocalizedStringProperty;
     'copperStringProperty': LocalizedStringProperty;
     'calciumStringProperty': LocalizedStringProperty;
-    'magnesiumStringProperty': LocalizedStringProperty;
     'platinumStringProperty': LocalizedStringProperty;
     'zincStringProperty': LocalizedStringProperty;
     'customStringProperty': LocalizedStringProperty;
