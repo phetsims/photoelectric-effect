@@ -245,7 +245,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       highestEnergyOnlyCheckbox,
       playPauseStepButtonGroup,
       resetAllButton
-    ]
+    ];
 
     if ( phet.chipper.queryParameters.dev ) {
       const devWorkFunctionStringProperty = new DerivedProperty( [ model.target.workFunctionProperty ],
