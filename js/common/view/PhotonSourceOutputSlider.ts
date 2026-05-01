@@ -138,8 +138,8 @@ export default class PhotonSourceOutputSlider extends Node {
     outputReadout.centerY = outputGradientRectangle.centerY;
 
     // Update gradient for the backplate when selected wavelength changes.
+    const gradientWidth = outputGradientRectangle.rectWidth;
     wavelengthProperty.link( wavelength => {
-      const gradientWidth = outputGradientRectangle.rectWidth;
       const endColor = wavelengthToIntensityGradientEndColor( wavelength );
       outputGradientRectangle.fill = new LinearGradient( 0, 0, gradientWidth, 0 )
         .addColorStop( 0, Color.BLACK )
