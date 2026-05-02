@@ -91,12 +91,6 @@
       },
       "snapshotSaved": {
         "value": "Saved!"
-      },
-      "snapshotsGalleryButtonAccessibleName": {
-        "value": "View saved snapshots"
-      },
-      "snapshotsGalleryButtonAccessibleHelpText": {
-        "value": "Opens a dialog with a plot of each saved snapshot."
       }
     }
   },
@@ -129,9 +123,6 @@
   "sourceOutput.percentReadoutPattern": {
     "value": "{{value}} %"
   },
-  "wavelength.label": {
-    "value": "Wavelength (nm)"
-  },
   "wavelength.valueReadoutPattern": {
     "value": "{{value}} nm"
   },
@@ -144,6 +135,202 @@
   "current.readoutPattern": {
     "value": "{{value}} mA"
   },
+  "preferences.mysteryMaterial1Label": {
+    "value": "Mystery Material 1"
+  },
+  "preferences.mysteryMaterial2Label": {
+    "value": "Mystery Material 2"
+  },
+  "preferences.mysteryMaterialDescription": {
+    "value": "When enabled, adds a mystery material with a configurable work function to the available materials."
+  },
+  "preferences.mysteryMaterialWorkFunctionLabel": {
+    "value": "Work Function (eV)"
+  },
+  "preferences.mysteryMaterialWorkFunctionDescription": {
+    "value": "Set the work function of the mystery material."
+  },
+  "a11y": {
+    "introScreen": {
+      "screenSummary": {
+        "playArea": {
+          "value": "PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target. Choose a target material and adjust the light's intensity and wavelength to explore the photoelectric effect. Toggle between a circuit and grounded representation."
+        },
+        "controlArea": {
+          "value": "PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons. There are also time controls and a button to reset the simulation."
+        },
+        "currentDetails": {
+          "leadingParagraph": {
+            "value": "Currently:"
+          }
+        },
+        "interactionHint": {
+          "value": "PLACEHOLDER Choose a material and adjust the wavelength to start exploring."
+        }
+      }
+    },
+    "experimentScreen": {
+      "screenSummary": {
+        "playArea": {
+          "value": "PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target. Choose a target material and adjust the light's intensity and wavelength. A voltage control sets the battery voltage across the circuit. Three graphs show relationships between intensity, frequency, and voltage versus current."
+        },
+        "controlArea": {
+          "value": "PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons. There are also time controls and a button to reset the simulation."
+        },
+        "currentDetails": {
+          "leadingParagraph": {
+            "value": "Currently:"
+          }
+        },
+        "interactionHint": {
+          "value": "PLACEHOLDER Choose a material and adjust the wavelength to start exploring."
+        }
+      }
+    },
+    "photonSourcePanel": {
+      "accessibleHeading": {
+        "value": "PLACEHOLDER Photon Source"
+      },
+      "intensitySlider": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Intensity"
+        }
+      },
+      "wavelengthNumberControl": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Wavelength"
+        }
+      }
+    },
+    "ammeterDisplayPanel": {
+      "accessibleName": {
+        "value": "PLACEHOLDER Ammeter"
+      }
+    },
+    "materialsComboBox": {
+      "accessibleName": {
+        "value": "PLACEHOLDER Material"
+      }
+    },
+    "representationRadioButtonGroup": {
+      "accessibleName": {
+        "value": "PLACEHOLDER Representation"
+      },
+      "groundedRadioButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Grounded"
+        }
+      },
+      "circuitRadioButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Circuit"
+        }
+      }
+    },
+    "voltageNumberControl": {
+      "accessibleName": {
+        "value": "PLACEHOLDER Voltage"
+      }
+    },
+    "intensityCurrentGraphNode": {
+      "accessibleHeading": {
+        "value": "PLACEHOLDER Intensity vs Current Graph"
+      },
+      "expandCollapseButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER expand/collapse"
+        }
+      },
+      "infoButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Information"
+        }
+      },
+      "cameraButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Save Snapshot"
+        }
+      },
+      "trashButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Clear Snapshots"
+        }
+      },
+      "snapshotsGalleryButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER View saved snapshots"
+        },
+        "accessibleHelpText": {
+          "value": "PLACEHOLDER Opens a dialog with a plot of each saved snapshot."
+        }
+      }
+    },
+    "frequencyEnergyGraphNode": {
+      "accessibleHeading": {
+        "value": "PLACEHOLDER Frequency vs Energy Graph"
+      },
+      "expandCollapseButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER expand/collapse"
+        }
+      },
+      "infoButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Information"
+        }
+      },
+      "cameraButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Save Snapshot"
+        }
+      },
+      "trashButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Clear Snapshots"
+        }
+      },
+      "snapshotsGalleryButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER View saved snapshots"
+        },
+        "accessibleHelpText": {
+          "value": "PLACEHOLDER Opens a dialog with a plot of each saved snapshot."
+        }
+      }
+    },
+    "voltageCurrentGraphNode": {
+      "accessibleHeading": {
+        "value": "PLACEHOLDER Voltage vs Current Graph"
+      },
+      "expandCollapseButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER expand/collapse"
+        }
+      },
+      "infoButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Information"
+        }
+      },
+      "cameraButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Save Snapshot"
+        }
+      },
+      "trashButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER Clear Snapshots"
+        }
+      },
+      "snapshotsGalleryButton": {
+        "accessibleName": {
+          "value": "PLACEHOLDER View saved snapshots"
+        },
+        "accessibleHelpText": {
+          "value": "PLACEHOLDER Opens a dialog with a plot of each saved snapshot."
+        }
+      }
+    }
   "debugLegend.title": {
     "value": "Legend:"
   },

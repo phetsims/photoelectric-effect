@@ -9,7 +9,9 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
+import ScreenSummaryContent from '../../../../joist/js/ScreenSummaryContent.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import CircuitNode from '../../common/view/CircuitNode.js';
 import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
@@ -24,7 +26,14 @@ type IntroScreenViewOptions = SelfOptions & ScreenViewOptions;
 export default class IntroScreenView extends PhotoelectricEffectScreenView {
 
   public constructor( model: IntroModel, providedOptions: IntroScreenViewOptions ) {
-    const options = optionize<IntroScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
+    const options = optionize<IntroScreenViewOptions, SelfOptions, ScreenViewOptions>()( {
+      screenSummaryContent: new ScreenSummaryContent( {
+        playAreaContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.playAreaStringProperty,
+        controlAreaContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.controlAreaStringProperty,
+        currentDetailsContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.currentDetails.leadingParagraphStringProperty,
+        interactionHintContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.interactionHintStringProperty
+      } )
+    }, providedOptions );
     super( model, options );
 
     // Add circuit as background. The type of circuit is determined by the representationRadioButtonGroup

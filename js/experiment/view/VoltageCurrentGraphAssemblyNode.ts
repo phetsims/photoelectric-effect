@@ -47,6 +47,13 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
         gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
         fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty
       },
+      accessibleHeading: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
+      expandCollapseButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty,
+      infoButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.infoButton.accessibleNameStringProperty,
+      cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty,
+      trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.trashButton.accessibleNameStringProperty,
+      snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,
+      snapshotsGalleryButtonAccessibleHelpTextProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty,
       tandem: providedOptions.tandem
     };
 

@@ -58,7 +58,8 @@ export default class MaterialsComboBox extends ComboBox<Material> {
    */
   public constructor( materialProperty: Property<Material>, materials: Material[], listParent: Node, providedOptions: MaterialsComboBoxOptions ) {
     const options = optionize<MaterialsComboBoxOptions, SelfOptions, ComboBoxOptions>()( {
-      isDisposable: false
+      isDisposable: false,
+      accessibleName: PhotoelectricEffectFluent.a11y.materialsComboBox.accessibleNameStringProperty
     }, providedOptions );
 
     const comboBoxItems: ComboBoxItem<Material>[] = materials.map( material => {

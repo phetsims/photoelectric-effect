@@ -12,11 +12,11 @@
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Range from '../../../../dot/js/Range.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
 import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
@@ -30,7 +30,6 @@ import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidSha
 import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
 import GraphInfoDialog from './GraphInfoDialog.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
@@ -61,6 +60,14 @@ type SelfOptions = {
 
   // Nested options forwarded to GraphPlotAreaNode.
   graphPlotAreaNodeOptions?: GraphPlotAreaNodeOptions;
+
+  // Accessible names for each button in the right-side column.
+  expandCollapseButtonAccessibleNameProperty: TReadOnlyProperty<string>;
+  infoButtonAccessibleNameProperty: TReadOnlyProperty<string>;
+  cameraButtonAccessibleNameProperty: TReadOnlyProperty<string>;
+  trashButtonAccessibleNameProperty: TReadOnlyProperty<string>;
+  snapshotsGalleryButtonAccessibleNameProperty: TReadOnlyProperty<string>;
+  snapshotsGalleryButtonAccessibleHelpTextProperty: TReadOnlyProperty<string>;
 };
 
 export type GraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
@@ -88,8 +95,9 @@ export default class GraphAssemblyNode extends Node {
     yZoomRanges: Range[],
     providedOptions: GraphAssemblyNodeOptions
   ) {
-    const options = optionize<GraphAssemblyNodeOptions, StrictOmit<SelfOptions, 'graphPlotAreaNodeOptions'>, NodeOptions>()( {
-      isDisposable: false
+    const options = optionize<GraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {
+      isDisposable: false,
+      graphPlotAreaNodeOptions: {}
     }, providedOptions );
 
     const tandem = options.tandem;
@@ -140,7 +148,8 @@ export default class GraphAssemblyNode extends Node {
             GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN -
             GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET,
       top: plotRectangle.top + GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN,
-      tandem: tandem.createTandem( 'expandCollapseButton' )
+      tandem: tandem.createTandem( 'expandCollapseButton' ),
+      accessibleName: options.expandCollapseButtonAccessibleNameProperty
     } );
 
     // Uses a square size so mixed button implementations share a consistent visual footprint.
@@ -171,12 +180,14 @@ export default class GraphAssemblyNode extends Node {
       xMargin: actionButtonOptions.xMargin,
       yMargin: actionButtonOptions.yMargin,
       listener: () => infoDialog.show(),
-      tandem: tandem.createTandem( 'infoButton' )
+      tandem: tandem.createTandem( 'infoButton' ),
+      accessibleName: options.infoButtonAccessibleNameProperty
     } );
 
     const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
       listener: () => graphData.clearSnapshots(),
-      tandem: tandem.createTandem( 'trashButton' )
+      tandem: tandem.createTandem( 'trashButton' ),
+      accessibleName: options.trashButtonAccessibleNameProperty
     } ) );
 
     const snapshotsGalleryButton = new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
@@ -189,8 +200,8 @@ export default class GraphAssemblyNode extends Node {
         [ graphData.snapshotsCountProperty ],
         count => count > 0
       ),
-      accessibleName: PhotoelectricEffectFluent.experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty,
-      accessibleHelpText: PhotoelectricEffectFluent.experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty,
+      accessibleName: options.snapshotsGalleryButtonAccessibleNameProperty,
+      accessibleHelpText: options.snapshotsGalleryButtonAccessibleHelpTextProperty,
       tandem: tandem.createTandem( 'snapshotsGalleryButton' )
     } ) );
 
@@ -204,7 +215,8 @@ export default class GraphAssemblyNode extends Node {
           enabledProperty: new DerivedProperty( [ graphData.snapshotsCountProperty ], count => {
             return count < GraphData.MAX_SNAPSHOTS;
           } ),
-          tandem: tandem.createTandem( 'cameraButton' )
+          tandem: tandem.createTandem( 'cameraButton' ),
+          accessibleName: options.cameraButtonAccessibleNameProperty
         } ) ),
         infoButton,
         trashButton

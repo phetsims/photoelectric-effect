@@ -15,6 +15,7 @@ import RectangularRadioButtonGroup, { RectangularRadioButtonGroupItem, Rectangul
 import circuit_svg from '../../../images/circuit_svg.js';
 import ground_svg from '../../../images/ground_svg.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import type { IntroRepresentation } from '../model/IntroModel.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -36,6 +37,7 @@ export default class RepresentationRadioButtonGroup extends RectangularRadioButt
         minWidth: 64,
         minHeight: 64
       },
+      accessibleName: PhotoelectricEffectFluent.a11y.representationRadioButtonGroup.accessibleNameStringProperty,
 
       // Component should exist for life of simulation.
       isDisposable: false
@@ -45,12 +47,18 @@ export default class RepresentationRadioButtonGroup extends RectangularRadioButt
       {
         value: 'grounded',
         createNode: () => new Image( ground_svg ),
-        tandemName: 'groundedRadioButton'
+        tandemName: 'groundedRadioButton',
+        options: {
+          accessibleName: PhotoelectricEffectFluent.a11y.representationRadioButtonGroup.groundedRadioButton.accessibleNameStringProperty
+        }
       },
       {
         value: 'circuit',
         createNode: () => new Image( circuit_svg ),
-        tandemName: 'circuitRadioButton'
+        tandemName: 'circuitRadioButton',
+        options: {
+          accessibleName: PhotoelectricEffectFluent.a11y.representationRadioButtonGroup.circuitRadioButton.accessibleNameStringProperty
+        }
       }
     ];
 

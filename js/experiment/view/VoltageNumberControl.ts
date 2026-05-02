@@ -32,6 +32,7 @@ export default class VoltageNumberControl extends NumberControl {
       model.battery.voltageProperty.range,
       combineOptions<NumberControlOptions>( {
         delta: 0.01,
+        accessibleName: PhotoelectricEffectFluent.a11y.voltageNumberControl.accessibleNameStringProperty,
         titleNodeOptions: {
           font: PhotoelectricEffectConstants.CONTENT_FONT
         },

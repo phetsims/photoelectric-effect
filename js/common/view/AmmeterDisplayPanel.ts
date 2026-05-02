@@ -42,7 +42,8 @@ export default class AmmeterDisplayPanel extends Panel {
       align: 'center',
       xMargin: 10,
       yMargin: 8,
-      isDisposable: false
+      isDisposable: false,
+      accessibleName: PhotoelectricEffectFluent.a11y.ammeterDisplayPanel.accessibleNameStringProperty
     }, providedOptions );
 
     const microampCurrentProperty = new DerivedProperty( [ currentProperty ], current => ampsToMilliAmps( current ) );

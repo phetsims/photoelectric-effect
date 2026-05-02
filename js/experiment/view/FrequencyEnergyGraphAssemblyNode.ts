@@ -50,6 +50,13 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
         gridYSpacing: 0.25,
         fill: PhotoelectricEffectColors.frequencyEnergyGraphFillColorProperty
       },
+      accessibleHeading: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty,
+      expandCollapseButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.expandCollapseButton.accessibleNameStringProperty,
+      infoButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.infoButton.accessibleNameStringProperty,
+      cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.cameraButton.accessibleNameStringProperty,
+      trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.trashButton.accessibleNameStringProperty,
+      snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,
+      snapshotsGalleryButtonAccessibleHelpTextProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty,
       tandem: providedOptions.tandem
     };
 

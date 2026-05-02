@@ -40,8 +40,6 @@ experiment:
 
     snapshotsDialogTitle: 'Saved snapshots'
     snapshotSaved: 'Saved!'
-    snapshotsGalleryButtonAccessibleName: 'View saved snapshots'
-    snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
 
 showElectrons: 'Show Electrons'
 highestEnergyOnly: 'Highest Energy Only'
@@ -50,7 +48,6 @@ spectrumTrack:
   uvLabel: 'UV'
   irLabel: 'IR'
 
-# FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'
 intensity.label: 'Intensity'
 intensity.percentReadoutPattern: '{{value}} %'
@@ -61,16 +58,113 @@ wavelength.valueReadoutPattern: '{{value}} nm'
 voltage.label: 'Voltage'
 current.label: 'Current'
 current.readoutPattern: '{{value}} mA'
-debugLegend.title: 'Legend:'
-debugLegend.photons: 'Yellow = photons'
-debugLegend.electrons: 'Cyan = electrons'
-debugLegend.target: 'Red outline = target'
-debugLegend.collector: 'Blue outline = collector'
 
 preferences:
   mysteryMaterial:
     label: 'Add Second mystery material'
     description: 'Additional target material option with customizable work function value.'
+
+a11y:
+
+  # Intro screen summary
+  introScreen:
+    screenSummary:
+      playArea: >-
+        PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target.
+        Choose a target material and adjust the light's intensity and wavelength to explore the photoelectric effect.
+        Toggle between a circuit and grounded representation.
+      controlArea: >-
+        PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons.
+        There are also time controls and a button to reset the simulation.
+      currentDetails:
+        leadingParagraph: 'Currently:'
+      interactionHint: PLACEHOLDER Choose a material and adjust the wavelength to start exploring.
+
+  # Experiment screen summary
+  experimentScreen:
+    screenSummary:
+      playArea: >-
+        PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target.
+        Choose a target material and adjust the light's intensity and wavelength.
+        A voltage control sets the battery voltage across the circuit.
+        Three graphs show relationships between intensity, frequency, and voltage versus current.
+      controlArea: >-
+        PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons.
+        There are also time controls and a button to reset the simulation.
+      currentDetails:
+        leadingParagraph: 'Currently:'
+      interactionHint: PLACEHOLDER Choose a material and adjust the wavelength to start exploring.
+
+  # Photon source panel and its inner controls
+  photonSourcePanel:
+    accessibleHeading: PLACEHOLDER Photon Source
+    intensitySlider:
+      accessibleName: PLACEHOLDER Intensity
+    wavelengthNumberControl:
+      accessibleName: PLACEHOLDER Wavelength
+
+  # Ammeter current readout
+  ammeterDisplayPanel:
+    accessibleName: PLACEHOLDER Ammeter
+
+  # Material selection
+  materialsComboBox:
+    accessibleName: PLACEHOLDER Material
+
+  # Intro screen: representation toggle
+  representationRadioButtonGroup:
+    accessibleName: PLACEHOLDER Representation
+    groundedRadioButton:
+      accessibleName: PLACEHOLDER Grounded
+    circuitRadioButton:
+      accessibleName: PLACEHOLDER Circuit
+
+  # Experiment screen: battery voltage control
+  voltageNumberControl:
+    accessibleName: PLACEHOLDER Voltage
+
+  # Experiment screen: graphs
+  intensityCurrentGraphNode:
+    accessibleHeading: PLACEHOLDER Intensity vs Current Graph
+    expandCollapseButton:
+      accessibleName: PLACEHOLDER expand/collapse
+    infoButton:
+      accessibleName: PLACEHOLDER Information
+    cameraButton:
+      accessibleName: PLACEHOLDER Save Snapshot
+    trashButton:
+      accessibleName: PLACEHOLDER Clear Snapshots
+    snapshotsGalleryButton:
+      accessibleName: PLACEHOLDER View saved snapshots
+      accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
+  frequencyEnergyGraphNode:
+    accessibleHeading: PLACEHOLDER Frequency vs Energy Graph
+    expandCollapseButton:
+      accessibleName: PLACEHOLDER expand/collapse
+    infoButton:
+      accessibleName: PLACEHOLDER Information
+    cameraButton:
+      accessibleName: PLACEHOLDER Save Snapshot
+    trashButton:
+      accessibleName: PLACEHOLDER Clear Snapshots
+    snapshotsGalleryButton:
+      accessibleName: PLACEHOLDER View saved snapshots
+      accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
+  voltageCurrentGraphNode:
+    accessibleHeading: PLACEHOLDER Voltage vs Current Graph
+    expandCollapseButton:
+      accessibleName: PLACEHOLDER expand/collapse
+    infoButton:
+      accessibleName: PLACEHOLDER Information
+    cameraButton:
+      accessibleName: PLACEHOLDER Save Snapshot
+    trashButton:
+      accessibleName: PLACEHOLDER Clear Snapshots
+    snapshotsGalleryButton:
+      accessibleName: PLACEHOLDER View saved snapshots
+      accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
+
+
 
     # TODO: @design What should these be?
     workFunction:

@@ -7,6 +7,7 @@
 
 import FluentLibrary from '../../chipper/js/browser-and-node/FluentLibrary.js';
 import FluentComment from '../../chipper/js/browser/FluentComment.js';
+import FluentConstant from '../../chipper/js/browser/FluentConstant.js';
 import FluentContainer from '../../chipper/js/browser/FluentContainer.js';
 import photoelectricEffect from './photoelectricEffect.js';
 import PhotoelectricEffectStrings from './PhotoelectricEffectStrings.js';
@@ -53,8 +54,6 @@ addToMapIfDefined( 'experiment_graph_infoDialogTitle', 'experiment.graph.infoDia
 addToMapIfDefined( 'experiment_graph_infoDialogPlaceholder', 'experiment.graph.infoDialogPlaceholderStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsDialogTitle', 'experiment.graph.snapshotsDialogTitleStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotSaved', 'experiment.graph.snapshotSavedStringProperty' );
-addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleName', 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' );
-addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' );
 addToMapIfDefined( 'showElectrons', 'showElectronsStringProperty' );
 addToMapIfDefined( 'highestEnergyOnly', 'highestEnergyOnlyStringProperty' );
 addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
@@ -65,17 +64,50 @@ addToMapIfDefined( 'photonRate_label', 'photonRate.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
-addToMapIfDefined( 'debugLegend_title', 'debugLegend.titleStringProperty' );
-addToMapIfDefined( 'debugLegend_photons', 'debugLegend.photonsStringProperty' );
-addToMapIfDefined( 'debugLegend_electrons', 'debugLegend.electronsStringProperty' );
-addToMapIfDefined( 'debugLegend_target', 'debugLegend.targetStringProperty' );
-addToMapIfDefined( 'debugLegend_collector', 'debugLegend.collectorStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_label', 'preferences.mysteryMaterial.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_description', 'preferences.mysteryMaterial.descriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_label', 'preferences.mysteryMaterial.workFunction.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_description', 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' );
 addToMapIfDefined( 'preferences_photonMode_label', 'preferences.photonMode.labelStringProperty' );
 addToMapIfDefined( 'preferences_photonMode_description', 'preferences.photonMode.descriptionStringProperty' );
+addToMapIfDefined( 'a11y_introScreen_screenSummary_playArea', 'a11y.introScreen.screenSummary.playAreaStringProperty' );
+addToMapIfDefined( 'a11y_introScreen_screenSummary_controlArea', 'a11y.introScreen.screenSummary.controlAreaStringProperty' );
+addToMapIfDefined( 'a11y_introScreen_screenSummary_currentDetails_leadingParagraph', 'a11y.introScreen.screenSummary.currentDetails.leadingParagraphStringProperty' );
+addToMapIfDefined( 'a11y_introScreen_screenSummary_interactionHint', 'a11y.introScreen.screenSummary.interactionHintStringProperty' );
+addToMapIfDefined( 'a11y_experimentScreen_screenSummary_playArea', 'a11y.experimentScreen.screenSummary.playAreaStringProperty' );
+addToMapIfDefined( 'a11y_experimentScreen_screenSummary_controlArea', 'a11y.experimentScreen.screenSummary.controlAreaStringProperty' );
+addToMapIfDefined( 'a11y_experimentScreen_screenSummary_currentDetails_leadingParagraph', 'a11y.experimentScreen.screenSummary.currentDetails.leadingParagraphStringProperty' );
+addToMapIfDefined( 'a11y_experimentScreen_screenSummary_interactionHint', 'a11y.experimentScreen.screenSummary.interactionHintStringProperty' );
+addToMapIfDefined( 'a11y_photonSourcePanel_accessibleHeading', 'a11y.photonSourcePanel.accessibleHeadingStringProperty' );
+addToMapIfDefined( 'a11y_photonSourcePanel_intensitySlider_accessibleName', 'a11y.photonSourcePanel.intensitySlider.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_photonSourcePanel_wavelengthNumberControl_accessibleName', 'a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_ammeterDisplayPanel_accessibleName', 'a11y.ammeterDisplayPanel.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_materialsComboBox_accessibleName', 'a11y.materialsComboBox.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_representationRadioButtonGroup_accessibleName', 'a11y.representationRadioButtonGroup.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_representationRadioButtonGroup_groundedRadioButton_accessibleName', 'a11y.representationRadioButtonGroup.groundedRadioButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_representationRadioButtonGroup_circuitRadioButton_accessibleName', 'a11y.representationRadioButtonGroup.circuitRadioButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_voltageNumberControl_accessibleName', 'a11y.voltageNumberControl.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_intensityCurrentGraphNode_accessibleHeading', 'a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty' );
+addToMapIfDefined( 'a11y_intensityCurrentGraphNode_expandCollapseButton_accessibleName', 'a11y.intensityCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_intensityCurrentGraphNode_infoButton_accessibleName', 'a11y.intensityCurrentGraphNode.infoButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_intensityCurrentGraphNode_cameraButton_accessibleName', 'a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_intensityCurrentGraphNode_trashButton_accessibleName', 'a11y.intensityCurrentGraphNode.trashButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_intensityCurrentGraphNode_snapshotsGalleryButton_accessibleName', 'a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_intensityCurrentGraphNode_snapshotsGalleryButton_accessibleHelpText', 'a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' );
+addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_accessibleHeading', 'a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty' );
+addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_expandCollapseButton_accessibleName', 'a11y.frequencyEnergyGraphNode.expandCollapseButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_infoButton_accessibleName', 'a11y.frequencyEnergyGraphNode.infoButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_cameraButton_accessibleName', 'a11y.frequencyEnergyGraphNode.cameraButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_trashButton_accessibleName', 'a11y.frequencyEnergyGraphNode.trashButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_snapshotsGalleryButton_accessibleName', 'a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_snapshotsGalleryButton_accessibleHelpText', 'a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_accessibleHeading', 'a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_expandCollapseButton_accessibleName', 'a11y.voltageCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_infoButton_accessibleName', 'a11y.voltageCurrentGraphNode.infoButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_cameraButton_accessibleName', 'a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_trashButton_accessibleName', 'a11y.voltageCurrentGraphNode.trashButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleName', 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleHelpText', 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' );
 
 // A function that creates contents for a new Fluent file, which will be needed if any string changes.
 const createFluentFile = (): string => {
@@ -130,9 +162,7 @@ const PhotoelectricEffectFluent = {
       infoDialogTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.infoDialogTitleStringProperty' ),
       infoDialogPlaceholderStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.infoDialogPlaceholderStringProperty' ),
       snapshotsDialogTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsDialogTitleStringProperty' ),
-      snapshotSavedStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotSavedStringProperty' ),
-      snapshotsGalleryButtonAccessibleNameStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' ),
-      snapshotsGalleryButtonAccessibleHelpTextStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' )
+      snapshotSavedStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotSavedStringProperty' )
     }
   },
   showElectronsStringProperty: _.get( PhotoelectricEffectStrings, 'showElectronsStringProperty' ),
@@ -143,7 +173,6 @@ const PhotoelectricEffectFluent = {
   },
   _comment_2: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
   workFunction: {
-    _comment_0: new FluentComment( {"comment":"FOR DEBUGGING","associatedKey":"workFunction.label"} ),
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'workFunction.labelStringProperty' )
   },
   intensity: {
@@ -157,7 +186,6 @@ const PhotoelectricEffectFluent = {
     percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'sourceOutput.percentReadoutPatternStringProperty' )
   },
   wavelength: {
-    labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' ),
     valueReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.valueReadoutPatternStringProperty' )
   },
   voltage: {
@@ -167,14 +195,127 @@ const PhotoelectricEffectFluent = {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' ),
     readoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'current.readoutPatternStringProperty' )
   },
-  debugLegend: {
-    titleStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.titleStringProperty' ),
-    photonsStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.photonsStringProperty' ),
-    electronsStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.electronsStringProperty' ),
-    targetStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.targetStringProperty' ),
-    collectorStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.collectorStringProperty' )
-  },
   preferences: {
+    _comment_0: new FluentComment( {"comment":"Preferences PLACEHOLDERS","associatedKey":"preferences.mysteryMaterial1Label"} ),
+    mysteryMaterial1LabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial1LabelStringProperty' ),
+    mysteryMaterial2LabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial2LabelStringProperty' ),
+    mysteryMaterialDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialDescriptionStringProperty' ),
+    mysteryMaterialWorkFunctionLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' ),
+    mysteryMaterialWorkFunctionDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' )
+  },
+  a11y: {
+    _comment_0: new FluentComment( {"comment":"Intro screen summary","associatedKey":"introScreen"} ),
+    introScreen: {
+      screenSummary: {
+        playAreaStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_introScreen_screenSummary_playArea', _.get( PhotoelectricEffectStrings, 'a11y.introScreen.screenSummary.playAreaStringProperty' ) ),
+        controlAreaStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_introScreen_screenSummary_controlArea', _.get( PhotoelectricEffectStrings, 'a11y.introScreen.screenSummary.controlAreaStringProperty' ) ),
+        currentDetails: {
+          leadingParagraphStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_introScreen_screenSummary_currentDetails_leadingParagraph', _.get( PhotoelectricEffectStrings, 'a11y.introScreen.screenSummary.currentDetails.leadingParagraphStringProperty' ) )
+        },
+        interactionHintStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_introScreen_screenSummary_interactionHint', _.get( PhotoelectricEffectStrings, 'a11y.introScreen.screenSummary.interactionHintStringProperty' ) )
+      }
+    },
+    _comment_1: new FluentComment( {"comment":"Experiment screen summary","associatedKey":"experimentScreen"} ),
+    experimentScreen: {
+      screenSummary: {
+        playAreaStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_experimentScreen_screenSummary_playArea', _.get( PhotoelectricEffectStrings, 'a11y.experimentScreen.screenSummary.playAreaStringProperty' ) ),
+        controlAreaStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_experimentScreen_screenSummary_controlArea', _.get( PhotoelectricEffectStrings, 'a11y.experimentScreen.screenSummary.controlAreaStringProperty' ) ),
+        currentDetails: {
+          leadingParagraphStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_experimentScreen_screenSummary_currentDetails_leadingParagraph', _.get( PhotoelectricEffectStrings, 'a11y.experimentScreen.screenSummary.currentDetails.leadingParagraphStringProperty' ) )
+        },
+        interactionHintStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_experimentScreen_screenSummary_interactionHint', _.get( PhotoelectricEffectStrings, 'a11y.experimentScreen.screenSummary.interactionHintStringProperty' ) )
+      }
+    },
+    _comment_2: new FluentComment( {"comment":"Photon source panel and its inner controls","associatedKey":"photonSourcePanel"} ),
+    photonSourcePanel: {
+      accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourcePanel_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.photonSourcePanel.accessibleHeadingStringProperty' ) ),
+      intensitySlider: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourcePanel_intensitySlider_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.photonSourcePanel.intensitySlider.accessibleNameStringProperty' ) )
+      },
+      wavelengthNumberControl: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourcePanel_wavelengthNumberControl_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty' ) )
+      }
+    },
+    _comment_3: new FluentComment( {"comment":"Ammeter current readout","associatedKey":"ammeterDisplayPanel"} ),
+    ammeterDisplayPanel: {
+      accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_ammeterDisplayPanel_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.ammeterDisplayPanel.accessibleNameStringProperty' ) )
+    },
+    _comment_4: new FluentComment( {"comment":"Material selection","associatedKey":"materialsComboBox"} ),
+    materialsComboBox: {
+      accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_materialsComboBox_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.materialsComboBox.accessibleNameStringProperty' ) )
+    },
+    _comment_5: new FluentComment( {"comment":"Intro screen: representation toggle","associatedKey":"representationRadioButtonGroup"} ),
+    representationRadioButtonGroup: {
+      accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_representationRadioButtonGroup_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.representationRadioButtonGroup.accessibleNameStringProperty' ) ),
+      groundedRadioButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_representationRadioButtonGroup_groundedRadioButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.representationRadioButtonGroup.groundedRadioButton.accessibleNameStringProperty' ) )
+      },
+      circuitRadioButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_representationRadioButtonGroup_circuitRadioButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.representationRadioButtonGroup.circuitRadioButton.accessibleNameStringProperty' ) )
+      }
+    },
+    _comment_6: new FluentComment( {"comment":"Experiment screen: battery voltage control","associatedKey":"voltageNumberControl"} ),
+    voltageNumberControl: {
+      accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageNumberControl_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageNumberControl.accessibleNameStringProperty' ) )
+    },
+    _comment_7: new FluentComment( {"comment":"Experiment screen: graphs","associatedKey":"intensityCurrentGraphNode"} ),
+    intensityCurrentGraphNode: {
+      accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty' ) ),
+      expandCollapseButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_expandCollapseButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' ) )
+      },
+      infoButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_infoButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.infoButton.accessibleNameStringProperty' ) )
+      },
+      cameraButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_cameraButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty' ) )
+      },
+      trashButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_trashButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.trashButton.accessibleNameStringProperty' ) )
+      },
+      snapshotsGalleryButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_snapshotsGalleryButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' ) ),
+        accessibleHelpTextStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_snapshotsGalleryButton_accessibleHelpText', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' ) )
+      }
+    },
+    frequencyEnergyGraphNode: {
+      accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty' ) ),
+      expandCollapseButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_expandCollapseButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.expandCollapseButton.accessibleNameStringProperty' ) )
+      },
+      infoButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_infoButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.infoButton.accessibleNameStringProperty' ) )
+      },
+      cameraButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_cameraButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.cameraButton.accessibleNameStringProperty' ) )
+      },
+      trashButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_trashButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.trashButton.accessibleNameStringProperty' ) )
+      },
+      snapshotsGalleryButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_snapshotsGalleryButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' ) ),
+        accessibleHelpTextStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_snapshotsGalleryButton_accessibleHelpText', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' ) )
+      }
+    },
+    voltageCurrentGraphNode: {
+      accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty' ) ),
+      expandCollapseButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_expandCollapseButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' ) )
+      },
+      infoButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_infoButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.infoButton.accessibleNameStringProperty' ) )
+      },
+      cameraButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_cameraButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty' ) )
+      },
+      trashButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_trashButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.trashButton.accessibleNameStringProperty' ) )
+      },
+      snapshotsGalleryButton: {
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' ) ),
+        accessibleHelpTextStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleHelpText', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' ) )
+      }
+    }
     mysteryMaterial: {
       labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.labelStringProperty' ),
       descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.descriptionStringProperty' ),

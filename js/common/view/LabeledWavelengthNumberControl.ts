@@ -109,6 +109,7 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
     super( wavelengthProperty, {
       isDisposable: false,
       range: wavelengthProperty.range,
+      accessibleName: PhotoelectricEffectFluent.a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty,
       layoutFunction: layoutFunction,
       titleNodeOptions: {
         tandem: Tandem.OPT_OUT // because layoutFunction omits the title

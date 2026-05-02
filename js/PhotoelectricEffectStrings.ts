@@ -49,8 +49,6 @@ type StringsType = {
       'infoDialogPlaceholderStringProperty': LocalizedStringProperty;
       'snapshotsDialogTitleStringProperty': LocalizedStringProperty;
       'snapshotSavedStringProperty': LocalizedStringProperty;
-      'snapshotsGalleryButtonAccessibleNameStringProperty': LocalizedStringProperty;
-      'snapshotsGalleryButtonAccessibleHelpTextStringProperty': LocalizedStringProperty;
     }
   };
   'showElectronsStringProperty': LocalizedStringProperty;
@@ -73,7 +71,6 @@ type StringsType = {
     'percentReadoutPatternStringProperty': LocalizedStringProperty;
   };
   'wavelength': {
-    'labelStringProperty': LocalizedStringProperty;
     'valueReadoutPatternStringProperty': LocalizedStringProperty;
   };
   'voltage': {
@@ -83,14 +80,118 @@ type StringsType = {
     'labelStringProperty': LocalizedStringProperty;
     'readoutPatternStringProperty': LocalizedStringProperty;
   };
-  'debugLegend': {
-    'titleStringProperty': LocalizedStringProperty;
-    'photonsStringProperty': LocalizedStringProperty;
-    'electronsStringProperty': LocalizedStringProperty;
-    'targetStringProperty': LocalizedStringProperty;
-    'collectorStringProperty': LocalizedStringProperty;
-  };
   'preferences': {
+    'mysteryMaterial1LabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterial2LabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterialDescriptionStringProperty': LocalizedStringProperty;
+    'mysteryMaterialWorkFunctionLabelStringProperty': LocalizedStringProperty;
+    'mysteryMaterialWorkFunctionDescriptionStringProperty': LocalizedStringProperty;
+  };
+  'a11y': {
+    'introScreen': {
+      'screenSummary': {
+        'playAreaStringProperty': LocalizedStringProperty;
+        'controlAreaStringProperty': LocalizedStringProperty;
+        'currentDetails': {
+          'leadingParagraphStringProperty': LocalizedStringProperty;
+        };
+        'interactionHintStringProperty': LocalizedStringProperty;
+      }
+    };
+    'experimentScreen': {
+      'screenSummary': {
+        'playAreaStringProperty': LocalizedStringProperty;
+        'controlAreaStringProperty': LocalizedStringProperty;
+        'currentDetails': {
+          'leadingParagraphStringProperty': LocalizedStringProperty;
+        };
+        'interactionHintStringProperty': LocalizedStringProperty;
+      }
+    };
+    'photonSourcePanel': {
+      'accessibleHeadingStringProperty': LocalizedStringProperty;
+      'intensitySlider': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'wavelengthNumberControl': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      }
+    };
+    'ammeterDisplayPanel': {
+      'accessibleNameStringProperty': LocalizedStringProperty;
+    };
+    'materialsComboBox': {
+      'accessibleNameStringProperty': LocalizedStringProperty;
+    };
+    'representationRadioButtonGroup': {
+      'accessibleNameStringProperty': LocalizedStringProperty;
+      'groundedRadioButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'circuitRadioButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      }
+    };
+    'voltageNumberControl': {
+      'accessibleNameStringProperty': LocalizedStringProperty;
+    };
+    'intensityCurrentGraphNode': {
+      'accessibleHeadingStringProperty': LocalizedStringProperty;
+      'expandCollapseButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'infoButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'cameraButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'trashButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'snapshotsGalleryButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+        'accessibleHelpTextStringProperty': LocalizedStringProperty;
+      }
+    };
+    'frequencyEnergyGraphNode': {
+      'accessibleHeadingStringProperty': LocalizedStringProperty;
+      'expandCollapseButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'infoButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'cameraButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'trashButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'snapshotsGalleryButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+        'accessibleHelpTextStringProperty': LocalizedStringProperty;
+      }
+    };
+    'voltageCurrentGraphNode': {
+      'accessibleHeadingStringProperty': LocalizedStringProperty;
+      'expandCollapseButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'infoButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'cameraButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'trashButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
+      'snapshotsGalleryButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+        'accessibleHelpTextStringProperty': LocalizedStringProperty;
+      }
+    }
     'mysteryMaterial': {
       'labelStringProperty': LocalizedStringProperty;
       'descriptionStringProperty': LocalizedStringProperty;

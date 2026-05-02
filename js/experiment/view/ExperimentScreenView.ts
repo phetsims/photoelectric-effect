@@ -9,7 +9,9 @@
  */
 
 import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
+import ScreenSummaryContent from '../../../../joist/js/ScreenSummaryContent.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import CircuitNode from '../../common/view/CircuitNode.js';
@@ -29,7 +31,14 @@ export default class ExperimentScreenView extends PhotoelectricEffectScreenView 
 
   public constructor( model: ExperimentModel, providedOptions: ExperimentScreenViewOptions ) {
 
-    const options = optionize<ExperimentScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
+    const options = optionize<ExperimentScreenViewOptions, SelfOptions, ScreenViewOptions>()( {
+      screenSummaryContent: new ScreenSummaryContent( {
+        playAreaContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.playAreaStringProperty,
+        controlAreaContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.controlAreaStringProperty,
+        currentDetailsContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.currentDetails.leadingParagraphStringProperty,
+        interactionHintContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.interactionHintStringProperty
+      } )
+    }, providedOptions );
 
     super( model, options );
 

@@ -55,6 +55,13 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
         },
         fill: PhotoelectricEffectColors.intensityCurrentGraphFillColorProperty
       },
+      accessibleHeading: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty,
+      expandCollapseButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty,
+      infoButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.infoButton.accessibleNameStringProperty,
+      cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty,
+      trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.trashButton.accessibleNameStringProperty,
+      snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,
+      snapshotsGalleryButtonAccessibleHelpTextProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty,
       tandem: providedOptions.tandem
     };
 

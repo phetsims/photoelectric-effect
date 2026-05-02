@@ -14,6 +14,8 @@ import { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import GradientBackplateIntensitySlider from './GradientBackplateIntensitySlider.js';
 import LabeledWavelengthNumberControl from './LabeledWavelengthNumberControl.js';
 import PhotonSourceOutputSlider from './PhotonSourceOutputSlider.js';
 
@@ -33,7 +35,8 @@ export default class PhotonSourceControl extends Panel {
       cornerRadius: 4,
       fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
       align: 'center',
-      isDisposable: false
+      isDisposable: false,
+      accessibleHeading: PhotoelectricEffectFluent.a11y.photonSourcePanel.accessibleHeadingStringProperty
     }, providedOptions );
 
     const outputSlider = new PhotonSourceOutputSlider(
