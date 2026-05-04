@@ -64,6 +64,10 @@ const GRID_LINE_OPTIONS = {
 // Gap between the chart/ticks and axis labels.
 const AXIS_LABEL_MARGIN = 6;
 
+// Fixed gutters reserved for tick labels so axis-label placement stays stable across zoom levels.
+const X_AXIS_TICK_LABEL_GUTTER = 12;
+const Y_AXIS_TICK_LABEL_GUTTER = 22;
+
 // Tick mark length extending away from chart edges.
 const TICK_MARK_EXTENT = 8;
 
@@ -268,11 +272,9 @@ export default class GraphPlotAreaNode extends Node {
     );
     GraphPlotAreaNode.updateAxisLabelPositions(
       this.plotBounds,
-      chartViewHeight,
       options.yAxisLabelYOffset,
       xAxisLabelText,
-      yAxisLabelText,
-      this.tickSets
+      yAxisLabelText
     );
 
     const chartContentNode = new Node( {
@@ -348,11 +350,9 @@ export default class GraphPlotAreaNode extends Node {
         [ this.tickSets.yTickLabelSet ];
       GraphPlotAreaNode.updateAxisLabelPositions(
         this.plotBounds,
-        chartViewHeight,
         options.yAxisLabelYOffset,
         xAxisLabelText,
-        yAxisLabelText,
-        this.tickSets
+        yAxisLabelText
       );
 
       previousTickSets.xTickLabelSet.dispose();
@@ -552,20 +552,16 @@ export default class GraphPlotAreaNode extends Node {
    */
   private static updateAxisLabelPositions(
     chartBounds: Bounds2,
-    chartHeight: number,
     yAxisLabelYOffset: number,
     xAxisLabelText: RichText | null,
-    yAxisLabelText: RichText | null,
-    activeTickSets: TickSetGroup
+    yAxisLabelText: RichText | null
   ): void {
-    const xTickLabelOffset = activeTickSets.xTickLabelSet.bounds.bottom - chartHeight;
-    const yTickLabelOffset = -activeTickSets.yTickLabelSet.bounds.left;
     if ( xAxisLabelText ) {
-      xAxisLabelText.centerTop = chartBounds.centerBottom.plusXY( 0, AXIS_LABEL_MARGIN + xTickLabelOffset );
+      xAxisLabelText.centerTop = chartBounds.centerBottom.plusXY( 0, AXIS_LABEL_MARGIN + X_AXIS_TICK_LABEL_GUTTER );
     }
     if ( yAxisLabelText ) {
       yAxisLabelText.rightCenter = chartBounds.leftCenter
-        .minusXY( AXIS_LABEL_MARGIN + yTickLabelOffset, 0 )
+        .minusXY( AXIS_LABEL_MARGIN + Y_AXIS_TICK_LABEL_GUTTER, 0 )
         .plusXY( 0, yAxisLabelYOffset );
     }
   }
