@@ -19,11 +19,12 @@ import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js
 import Range from '../../../../dot/js/Range.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import MagnifyingGlassZoomButtonGroup from '../../../../scenery-phet/js/MagnifyingGlassZoomButtonGroup.js';
+import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
+import ColorConstants from '../../../../sun/js/ColorConstants.js';
 import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
 import type { GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
@@ -88,23 +89,25 @@ export default class GraphSnapshotsDialog extends Dialog {
     } );
 
     const zoomButtonGroup = new MagnifyingGlassZoomButtonGroup( zoomLevelProperty, {
-      orientation: 'horizontal',
+      applyZoomIn: currentZoom => currentZoom - 1,
+      applyZoomOut: currentZoom => currentZoom + 1,
+      orientation: 'vertical',
       spacing: 5,
       magnifyingGlassNodeOptions: {
-        glassRadius: 10.5
+        glassRadius: 9
       },
       buttonOptions: {
-        baseColor: PhotoelectricEffectColors.screenBackgroundColorProperty
+        baseColor: ColorConstants.LIGHT_BLUE
       },
       tandem: tandem.createTandem( 'zoomButtonGroup' )
     } );
 
-    const contentVBox = new VBox( {
-      spacing: 12,
-      align: 'center',
+    const contentHBox = new HBox( {
+      spacing: 10,
+      align: 'bottom',
       children: [
-        plotsGridBox,
-        zoomButtonGroup
+        zoomButtonGroup,
+        plotsGridBox
       ]
     } );
 
@@ -149,7 +152,7 @@ export default class GraphSnapshotsDialog extends Dialog {
 
     updateSnapshotPlots();
 
-    super( contentVBox, {
+    super( contentHBox, {
       title: titleText,
       xSpacing: PhotoelectricEffectConstants.DIALOG_SPACING,
       cornerRadius: PhotoelectricEffectConstants.DIALOG_CORNER_RADIUS,
