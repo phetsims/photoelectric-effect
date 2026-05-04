@@ -4,10 +4,12 @@
  * Dialog listing each stored GraphData snapshot as its own chart. Chart ranges are initialized from the parent
  * graph's active zoom level whenever the dialog is opened and can then be adjusted directly in the dialog.
  *
- * Plot nodes are created once and reused so open/close cycles avoid repeated node allocation and disposal.
- * The GridBox always allocates all snapshot slots; unused slots stay hidden via visibility. Snapshot charts share the
- * same GraphPlotAreaNode options as the parent graph (ranges, labels, grid, line styling) but omit the current-point
- * scatter layer.
+ * Snapshot rows are created once and reused so open/close cycles avoid repeated node allocation and disposal.
+ * Each row contains a snapshot number, a legend area (material, wavelength, intensity), and a plot node.
+ * The VBox keeps a fixed child order; the last row is the only one whose plot shows x-axis tick labels. Snapshots map
+ * to rows so the last stored snapshot always uses that labeled bottom row, while earlier snapshots use rows above it.
+ * Unused slots stay hidden via visibility. Snapshot charts share the same GraphPlotAreaNode options as the parent
+ * graph (ranges, labels, grid, line styling) but omit the current-point scatter layer.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -17,7 +19,6 @@ import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js
 import Range from '../../../../dot/js/Range.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import MagnifyingGlassZoomButtonGroup from '../../../../scenery-phet/js/MagnifyingGlassZoomButtonGroup.js';
-import GridBox from '../../../../scenery/js/layout/nodes/GridBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Dialog from '../../../../sun/js/Dialog.js';
@@ -26,7 +27,8 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
-import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
+import type { GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
+import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
 
 export default class GraphSnapshotsDialog extends Dialog {
 
@@ -49,20 +51,33 @@ export default class GraphSnapshotsDialog extends Dialog {
   ) {
 
     const snapshotPlotOptions = combineOptions<GraphPlotAreaNodeOptions>( {}, graphPlotAreaNodeOptions, {
-      showCurrentPointMarker: false
+
+      // The current data point is not shown on snapshots.
+      showCurrentPointMarker: false,
+
+      // Plots in this dialog take up most of the screen, and do not
+      // have the full rectangular border so they appear more joined.
+      chartViewWidth: 600,
+      showXLabels: false,
+      borderStyle: 'line'
     } );
 
-    const snapshotPlotNodes: GraphPlotAreaNode[] = [];
-    _.times( GraphData.MAX_SNAPSHOTS, () => {
-      snapshotPlotNodes.push( new GraphPlotAreaNode( xRange, yZoomRanges, snapshotPlotOptions ) );
+    // The bottom-most plot will have x labels, to label all stacked plots.
+    const labeledSnapshotPlotOptions = combineOptions<GraphPlotAreaNodeOptions>( {}, snapshotPlotOptions, {
+      showXLabels: true
     } );
 
-    const plotsGridBox = new GridBox( {
-      autoColumns: 2,
-      xSpacing: 16,
-      ySpacing: 16,
-      xAlign: 'left',
-      children: snapshotPlotNodes
+    const snapshotRows: GraphSnapshotRowNode[] = [];
+    _.times( GraphData.MAX_SNAPSHOTS, index => {
+
+      // The final plot shows x labels (lining them up for all stacked plots).
+      const plotOptions = index === GraphData.MAX_SNAPSHOTS - 1 ? labeledSnapshotPlotOptions : snapshotPlotOptions;
+      snapshotRows.push( new GraphSnapshotRowNode( xRange, yZoomRanges, plotOptions ) );
+    } );
+
+    const plotsGridBox = new VBox( {
+      spacing: 4,
+      children: snapshotRows
     } );
 
     const zoomLevelProperty = new NumberProperty( parentZoomLevelProperty.value, {
@@ -97,26 +112,32 @@ export default class GraphSnapshotsDialog extends Dialog {
       maxWidth: PhotoelectricEffectConstants.DIALOG_MAX_CONTENT_WIDTH
     } );
 
-    // Redraw snapshots. Only plots with data are displayed.
+    /**
+     * Redraw snapshot rows from model data. Rows remain in a fixed VBox order where the last row has the plot with
+     * x-axis labels. Iterating backward assigns snapshots from newest to oldest, so the newest snapshot always lands
+     * on the labeled bottom row.
+     */
     const updateSnapshotPlots = () => {
       const snapshots = graphData.getSnapshots();
+      let snapshotIndex = snapshots.length - 1;
 
-      snapshotPlotNodes.forEach( ( plotNode, i ) => {
-        const hasSnapshot = i < snapshots.length;
-        plotNode.visible = hasSnapshot;
+      for ( let rowIndex = snapshotRows.length - 1; rowIndex >= 0; rowIndex-- ) {
+        const snapshotRowNode = snapshotRows[ rowIndex ];
 
-        if ( hasSnapshot ) {
-          plotNode.setLineDataSet( [ ...snapshots[ i ] ] );
+        // Fill rows bottom-to-top with available snapshots.
+        if ( snapshotIndex >= 0 ) {
+          snapshotRowNode.setSnapshot( snapshotIndex + 1, snapshots[ snapshotIndex ] );
+          snapshotIndex--;
         }
         else {
-          plotNode.setLineDataSet( [] );
+          snapshotRowNode.clearSnapshot();
         }
-      } );
+      }
     };
 
     zoomLevelProperty.link( zoomLevel => {
-      snapshotPlotNodes.forEach( plotNode => {
-        plotNode.zoomLevelProperty.value = zoomLevel;
+      snapshotRows.forEach( snapshotRowNode => {
+        snapshotRowNode.setZoomLevel( zoomLevel );
       } );
     } );
 
@@ -132,6 +153,7 @@ export default class GraphSnapshotsDialog extends Dialog {
       xSpacing: PhotoelectricEffectConstants.DIALOG_SPACING,
       cornerRadius: PhotoelectricEffectConstants.DIALOG_CORNER_RADIUS,
       ySpacing: PhotoelectricEffectConstants.DIALOG_SPACING,
+      titleAlign: 'left',
       isDisposable: false,
       tandem: tandem,
       phetioReadOnly: true,

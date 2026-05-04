@@ -90,7 +90,7 @@ type BinData = {
 export default class GraphData extends PhetioObject {
 
   // Upper bound on snapshots; captureSnapshot asserts the stored count stays below this before adding another.
-  public static readonly MAX_SNAPSHOTS = 4;
+  public static readonly MAX_SNAPSHOTS = 3;
 
   // Bin width in chart x model units.
   private readonly binWidth: number;

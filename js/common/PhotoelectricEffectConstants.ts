@@ -130,7 +130,7 @@ export default class PhotoelectricEffectConstants {
   // Fonts
   //------------------------------------------------------------
   // Title font shared by dialogs.
-  public static readonly DIALOG_TITLE_FONT = new PhetFont( { size: 18, weight: 'bold' } );
+  public static readonly DIALOG_TITLE_FONT = new PhetFont( { size: 24, weight: 'bold' } );
 
   // Font for subsection titles in control panels (e.g. photon source intensity label).
   public static readonly PANEL_TITLE_FONT = new PhetFont( 18 );

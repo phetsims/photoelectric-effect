@@ -114,7 +114,7 @@ export default class GraphAssemblyNode extends Node {
     this.graphPlotAreaNode = new GraphPlotAreaNode( xRange, yZoomRanges, graphPlotAreaNodeOptions );
 
     // Layout for UI components will be relative to this chart rectangle area.
-    const plotRectangle = this.graphPlotAreaNode.plotRectangle;
+    const plotBounds = this.graphPlotAreaNode.plotBounds;
 
     // A readout for the number of snapshots taken and remaining.
     const snapshotCountReadoutText = new Text(
@@ -133,21 +133,21 @@ export default class GraphAssemblyNode extends Node {
     } );
 
     // Manual constraints keep the labels in the same place as strings change.
-    ManualConstraint.create( plotContentNode, [ snapshotCountReadoutText, plotRectangle ], ( readout, rect ) => {
-      readout.right = rect.right - SNAPSHOT_READOUT_MARGIN;
-      readout.top = rect.top + SNAPSHOT_READOUT_MARGIN;
+    ManualConstraint.create( plotContentNode, [ snapshotCountReadoutText ], readout => {
+      readout.right = plotBounds.right - SNAPSHOT_READOUT_MARGIN;
+      readout.top = plotBounds.top + SNAPSHOT_READOUT_MARGIN;
     } );
-    ManualConstraint.create( plotContentNode, [ snapshotSavedMessageNode, plotRectangle ], ( savedMessageNode, rect ) => {
-      savedMessageNode.centerX = rect.centerX;
-      savedMessageNode.top = rect.top + SNAPSHOT_SAVED_MESSAGE_MARGIN;
+    ManualConstraint.create( plotContentNode, [ snapshotSavedMessageNode ], savedMessageNode => {
+      savedMessageNode.centerX = plotBounds.centerX;
+      savedMessageNode.top = plotBounds.top + SNAPSHOT_SAVED_MESSAGE_MARGIN;
     } );
 
     const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
       sideLength: 18,
-      left: plotRectangle.left +
+      left: plotBounds.left +
             GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN -
             GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET,
-      top: plotRectangle.top + GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN,
+      top: plotBounds.top + GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN,
       tandem: tandem.createTandem( 'expandCollapseButton' ),
       accessibleName: options.expandCollapseButtonAccessibleNameProperty
     } );

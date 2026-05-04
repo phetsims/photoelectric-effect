@@ -19,14 +19,17 @@ import LinePlot, { type LinePlotOptions } from '../../../../bamboo/js/LinePlot.j
 import ScatterPlot, { type ScatterPlotOptions } from '../../../../bamboo/js/ScatterPlot.js';
 import TickLabelSet from '../../../../bamboo/js/TickLabelSet.js';
 import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
+import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Range from '../../../../dot/js/Range.js';
 import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import Shape from '../../../../kite/js/Shape.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Orientation from '../../../../phet-core/js/Orientation.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
+import Line from '../../../../scenery/js/nodes/Line.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
@@ -34,6 +37,11 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import type TColor from '../../../../scenery/js/util/TColor.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+
+// Type to customize the border of the plot.
+// rectangle - a full rectangle outlines the chart area
+// line - a line along the bottom of the chart area
+type BorderStyle = 'rectangle' | 'line';
 
 type TickSetGroup = {
   xTickLabelSet: TickLabelSet;
@@ -102,6 +110,12 @@ type GraphPlotAreaSelfOptions = {
 
   // When true, a scatter plot marks the current operating point above the line; when false, no scatter layer is created.
   showCurrentPointMarker?: boolean;
+
+  // Set false to hide all x-axis labels and ticks.
+  showXLabels?: boolean;
+
+  // Controls the outline style of the border, see type for more information.
+  borderStyle?: BorderStyle;
 };
 
 export type GraphPlotAreaNodeOptions = GraphPlotAreaSelfOptions &
@@ -121,8 +135,8 @@ export default class GraphPlotAreaNode extends Node {
   // Single-point scatter plot marking the current operating point; omitted when showCurrentPointMarker is false.
   private readonly currentPointPlot: ScatterPlot | null = null;
 
-  // Chart border; exposed for outer layout (expand button alignment).
-  public readonly plotRectangle: Rectangle;
+  // exposed for outer layout, like for buttons or other plots
+  public readonly plotBounds: Bounds2;
 
   // Tick/label groups for the active zoom level; replaced and disposed when zoom changes.
   private tickSets: TickSetGroup;
@@ -162,6 +176,9 @@ export default class GraphPlotAreaNode extends Node {
         lineJoin: 'round'
       },
       showCurrentPointMarker: true,
+      showXLabels: true,
+      borderStyle: 'rectangle',
+
       isDisposable: false
     }, providedOptions );
 
@@ -189,17 +206,22 @@ export default class GraphPlotAreaNode extends Node {
       modelYRange: GraphPlotAreaNode.getPaddedRange( initialYRange, rangePaddingFractionY )
     } );
 
-    this.plotRectangle = new Rectangle( 0, 0, chartViewWidth, chartViewHeight, {
+    this.plotBounds = new Bounds2( 0, 0, chartViewWidth, chartViewHeight );
+
+    const borderNode = options.borderStyle === 'rectangle' ? new Rectangle( this.plotBounds, {
       stroke: 'black',
       cornerXRadius: 0,
       cornerYRadius: 0
+    } ) : new Line( 0, chartViewHeight, chartViewWidth, chartViewHeight, {
+      stroke: 'black',
+      lineWidth: 2
     } );
 
     // Masks the chart interior so ticks remain visible outside while plot layers render on a white background.
     const tickMaskRectangle = new Rectangle( 0, 0, chartViewWidth, chartViewHeight, {
       fill: 'white'
     } );
-    const chartContentClipArea = this.plotRectangle.getShape();
+    const chartContentClipArea = Shape.bounds( this.plotBounds );
 
     // TODO: @design, do we want to adjust the grid lines with zoom?
     const gridLineSet = new Node( {
@@ -226,9 +248,11 @@ export default class GraphPlotAreaNode extends Node {
       children: this.currentPointPlot ? [ this.linePlot, this.currentPointPlot ] : [ this.linePlot ]
     } );
 
-    const xAxisLabelText = options.xAxisLabelStringProperty ? new RichText( options.xAxisLabelStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT
-    } ) : null;
+    const xAxisLabelText = ( options.showXLabels && options.xAxisLabelStringProperty ) ?
+                           new RichText( options.xAxisLabelStringProperty, {
+                             font: PhotoelectricEffectConstants.READOUT_FONT,
+                             visible: options.showXLabels
+                           } ) : null;
 
     const yAxisLabelText = options.yAxisLabelStringProperty ? new RichText( options.yAxisLabelStringProperty, {
       font: PhotoelectricEffectConstants.READOUT_FONT,
@@ -243,7 +267,7 @@ export default class GraphPlotAreaNode extends Node {
       options.yTickLabelFormatter
     );
     GraphPlotAreaNode.updateAxisLabelPositions(
-      this.plotRectangle,
+      this.plotBounds,
       chartViewHeight,
       options.yAxisLabelYOffset,
       xAxisLabelText,
@@ -260,17 +284,15 @@ export default class GraphPlotAreaNode extends Node {
     } );
 
     const tickMarkNode = new Node( {
-      children: [
-        this.tickSets.xTickMarkSet,
-        this.tickSets.yTickMarkSet
-      ]
+      children: options.showXLabels ?
+        [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ] :
+        [ this.tickSets.yTickMarkSet ]
     } );
 
     const tickLabelNode = new Node( {
-      children: [
-        this.tickSets.xTickLabelSet,
-        this.tickSets.yTickLabelSet
-      ]
+      children: options.showXLabels ?
+        [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ] :
+        [ this.tickSets.yTickLabelSet ]
     } );
 
     // Layer order keeps ticks outside the clipped chart while data and grid stay within the plot rectangle.
@@ -278,7 +300,7 @@ export default class GraphPlotAreaNode extends Node {
       tickMarkNode,
       tickMaskRectangle,
       chartContentNode,
-      this.plotRectangle,
+      borderNode,
       tickLabelNode
     ];
     if ( xAxisLabelText ) {
@@ -314,10 +336,14 @@ export default class GraphPlotAreaNode extends Node {
         options.yTickLabelFormatter
       );
       chartContentNode.children = [ gridLineSet, plotLayer ];
-      tickMarkNode.children = [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ];
-      tickLabelNode.children = [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ];
+      tickMarkNode.children = options.showXLabels ?
+        [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ] :
+        [ this.tickSets.yTickMarkSet ];
+      tickLabelNode.children = options.showXLabels ?
+        [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ] :
+        [ this.tickSets.yTickLabelSet ];
       GraphPlotAreaNode.updateAxisLabelPositions(
-        this.plotRectangle,
+        this.plotBounds,
         chartViewHeight,
         options.yAxisLabelYOffset,
         xAxisLabelText,
@@ -498,7 +524,7 @@ export default class GraphPlotAreaNode extends Node {
    * Positions optional axis labels so they sit outside ticks and track the current tick label bounds.
    */
   private static updateAxisLabelPositions(
-    chartRectangle: Rectangle,
+    chartBounds: Bounds2,
     chartHeight: number,
     yAxisLabelYOffset: number,
     xAxisLabelText: RichText | null,
@@ -508,10 +534,10 @@ export default class GraphPlotAreaNode extends Node {
     const xTickLabelOffset = activeTickSets.xTickLabelSet.bounds.bottom - chartHeight;
     const yTickLabelOffset = -activeTickSets.yTickLabelSet.bounds.left;
     if ( xAxisLabelText ) {
-      xAxisLabelText.centerTop = chartRectangle.centerBottom.plusXY( 0, AXIS_LABEL_MARGIN + xTickLabelOffset );
+      xAxisLabelText.centerTop = chartBounds.centerBottom.plusXY( 0, AXIS_LABEL_MARGIN + xTickLabelOffset );
     }
     if ( yAxisLabelText ) {
-      yAxisLabelText.rightCenter = chartRectangle.leftCenter
+      yAxisLabelText.rightCenter = chartBounds.leftCenter
         .minusXY( AXIS_LABEL_MARGIN + yTickLabelOffset, 0 )
         .plusXY( 0, yAxisLabelYOffset );
     }
