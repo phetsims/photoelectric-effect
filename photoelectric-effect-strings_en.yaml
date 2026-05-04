@@ -24,9 +24,9 @@ materials:
 # Experiment graphs
 experiment:
   graph:
-    voltageCurrentTitle: 'Voltage vs Current'
-    intensityCurrentTitle: 'Intensity vs Current'
-    frequencyEnergyTitle: 'Frequency vs Energy'
+    voltageCurrentTitle: 'Voltage vs. Current'
+    intensityCurrentTitle: 'Intensity vs. Current'
+    frequencyEnergyTitle: 'Frequency vs. Energy'
     actionButton: 'Graph action'
     voltageAxisLabel: 'Voltage (V)'
     currentAxisLabel: 'Current (uA)'

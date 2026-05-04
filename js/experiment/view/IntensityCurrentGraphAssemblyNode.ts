@@ -46,8 +46,6 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
       graphPlotAreaNodeOptions: {
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.intensityAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
-        gridXSpacing: 0.25,
-        gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
         xTickLabelFormatter: value => {
           const scaledValue = value * 100;
           const isInteger = Math.abs( scaledValue - roundSymmetric( scaledValue ) ) < 1e-6;

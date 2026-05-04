@@ -50,6 +50,11 @@ type TickSetGroup = {
   yTickMarkSet: TickMarkSet;
 };
 
+type GridLineSetGroup = {
+  verticalGridLineSet: GridLineSet;
+  horizontalGridLineSet: GridLineSet;
+};
+
 // Shared visual style for chart grid lines.
 const GRID_LINE_OPTIONS = {
   stroke: 'rgb( 220, 220, 220 )',
@@ -86,12 +91,6 @@ type GraphPlotAreaSelfOptions = {
 
   // Additional vertical offset applied to the Y-axis label (view coordinates).
   yAxisLabelYOffset?: number;
-
-  // Horizontal grid spacing in model units.
-  gridXSpacing?: number;
-
-  // Vertical grid spacing in model units.
-  gridYSpacing?: number;
 
   // Optional formatter for x-axis tick labels.
   xTickLabelFormatter?: null | ( ( value: number ) => string );
@@ -141,6 +140,9 @@ export default class GraphPlotAreaNode extends Node {
   // Tick/label groups for the active zoom level; replaced and disposed when zoom changes.
   private tickSets: TickSetGroup;
 
+  // Grid-line sets for the active zoom level; replaced and disposed when zoom changes.
+  private gridLineSets: GridLineSetGroup;
+
   // Updates chart ranges and recreated tick sets when zoom level changes.
   private readonly zoomLevelObserver: ( zoomLevel: number ) => void;
 
@@ -164,8 +166,6 @@ export default class GraphPlotAreaNode extends Node {
       xAxisLabelStringProperty: null,
       yAxisLabelStringProperty: null,
       yAxisLabelYOffset: 0,
-      gridXSpacing: 0.2,
-      gridYSpacing: 0.2,
       xTickLabelFormatter: null,
       yTickLabelFormatter: null,
       rangePaddingFraction: 0.05,
@@ -223,12 +223,12 @@ export default class GraphPlotAreaNode extends Node {
     } );
     const chartContentClipArea = Shape.bounds( this.plotBounds );
 
-    // TODO: @design, do we want to adjust the grid lines with zoom?
-    const gridLineSet = new Node( {
+    this.gridLineSets = GraphPlotAreaNode.createGridLineSets( this.chartTransform, xRange, initialYRange );
+    const gridLineSetNode = new Node( {
       clipArea: chartContentClipArea,
       children: [
-        new GridLineSet( this.chartTransform, Orientation.VERTICAL, options.gridYSpacing, GRID_LINE_OPTIONS ),
-        new GridLineSet( this.chartTransform, Orientation.HORIZONTAL, options.gridXSpacing, GRID_LINE_OPTIONS )
+        this.gridLineSets.verticalGridLineSet,
+        this.gridLineSets.horizontalGridLineSet
       ]
     } );
 
@@ -278,7 +278,7 @@ export default class GraphPlotAreaNode extends Node {
     const chartContentNode = new Node( {
       clipArea: chartContentClipArea,
       children: [
-        gridLineSet,
+        gridLineSetNode,
         plotLayer
       ]
     } );
@@ -327,6 +327,7 @@ export default class GraphPlotAreaNode extends Node {
 
       // Dispose previous sets after swapping to avoid detached scenery/bamboo nodes lingering in memory.
       const previousTickSets = this.tickSets;
+      const previousGridLineSets = this.gridLineSets;
 
       this.tickSets = GraphPlotAreaNode.createTickSets(
         this.chartTransform,
@@ -335,7 +336,10 @@ export default class GraphPlotAreaNode extends Node {
         options.xTickLabelFormatter,
         options.yTickLabelFormatter
       );
-      chartContentNode.children = [ gridLineSet, plotLayer ];
+      this.gridLineSets = GraphPlotAreaNode.createGridLineSets( this.chartTransform, xRange, yRange );
+      gridLineSetNode.children = [ this.gridLineSets.verticalGridLineSet, this.gridLineSets.horizontalGridLineSet ];
+
+      chartContentNode.children = [ gridLineSetNode, plotLayer ];
       tickMarkNode.children = options.showXLabels ?
         [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ] :
         [ this.tickSets.yTickMarkSet ];
@@ -355,6 +359,8 @@ export default class GraphPlotAreaNode extends Node {
       previousTickSets.yTickLabelSet.dispose();
       previousTickSets.xTickMarkSet.dispose();
       previousTickSets.yTickMarkSet.dispose();
+      previousGridLineSets.verticalGridLineSet.dispose();
+      previousGridLineSets.horizontalGridLineSet.dispose();
     };
     this.zoomLevelProperty.lazyLink( this.zoomLevelObserver );
   }
@@ -455,6 +461,25 @@ export default class GraphPlotAreaNode extends Node {
   }
 
   /**
+   * Creates grid line sets whose spacing matches the tick spacing for each axis.
+   * In this design, spacing is derived from the active displayed ranges (not from chartTransform alone), so these
+   * sets must be recreated whenever zoom changes.
+   */
+  private static createGridLineSets(
+    chartTransform: ChartTransform,
+    xRange: Range,
+    yRange: Range
+  ): GridLineSetGroup {
+    const xSpacing = GraphPlotAreaNode.createTickSpacing( xRange );
+    const ySpacing = GraphPlotAreaNode.createTickSpacing( yRange );
+
+    return {
+      verticalGridLineSet: new GridLineSet( chartTransform, Orientation.VERTICAL, ySpacing, GRID_LINE_OPTIONS ),
+      horizontalGridLineSet: new GridLineSet( chartTransform, Orientation.HORIZONTAL, xSpacing, GRID_LINE_OPTIONS )
+    };
+  }
+
+  /**
    * Creates a label factory that only labels the min, midpoint, and max ticks of a range.
    */
   private static createEdgeLabel( range: Range, formatter: ( ( value: number ) => string ) | null ): ( value: number ) => Text | null {
@@ -475,6 +500,8 @@ export default class GraphPlotAreaNode extends Node {
 
   /**
    * Creates tick marks and labels for both chart axes for one zoom range preset.
+   * In this design, tick spacing and labeled values are derived from the active displayed ranges, so these sets must
+   * be recreated whenever zoom changes.
    */
   private static createTickSets(
     chartTransform: ChartTransform,

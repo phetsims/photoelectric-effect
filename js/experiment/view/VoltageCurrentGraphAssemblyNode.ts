@@ -43,8 +43,6 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
       graphPlotAreaNodeOptions: {
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
-        gridXSpacing: 2,
-        gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
         fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty
       },
       accessibleHeading: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
