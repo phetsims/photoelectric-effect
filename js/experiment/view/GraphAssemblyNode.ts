@@ -87,12 +87,14 @@ export default class GraphAssemblyNode extends Node {
    * @param graphData - Source of live samples, snapshots, and current operating-point state.
    * @param xRange - Shared x range used for all zoom levels in this plot.
    * @param yZoomRanges - Zoom presets for the y axis, from any order (sorted internally by span).
+   * @param snapshotsDialogTitleStringProperty - Localized title shown in this graph's snapshots dialog.
    * @param providedOptions - Node options plus graph-plot-area configuration forwarded to child components.
    */
   public constructor(
     graphData: GraphData,
     xRange: Range,
     yZoomRanges: Range[],
+    snapshotsDialogTitleStringProperty: TReadOnlyProperty<string>,
     providedOptions: GraphAssemblyNodeOptions
   ) {
     const options = optionize<GraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {
@@ -171,6 +173,7 @@ export default class GraphAssemblyNode extends Node {
       this.graphPlotAreaNode.zoomLevelProperty,
       xRange,
       yZoomRanges,
+      snapshotsDialogTitleStringProperty,
       graphPlotAreaNodeOptions
     );
 

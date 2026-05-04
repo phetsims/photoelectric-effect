@@ -65,6 +65,12 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
       tandem: providedOptions.tandem
     };
 
-    super( model.intensityCurrentGraphData, xRange, yZoomRanges, graphOptions );
+    super(
+      model.intensityCurrentGraphData,
+      xRange,
+      yZoomRanges,
+      PhotoelectricEffectFluent.experiment.graph.intensityCurrentTitleStringProperty,
+      graphOptions
+    );
   }
 }

@@ -25,7 +25,6 @@ import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData from '../model/GraphData.js';
 import type { GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
@@ -39,6 +38,7 @@ export default class GraphSnapshotsDialog extends Dialog {
    *                                  dialog is shown sets the initial zoom level for charts in this dialog.
    * @param xRange - Shared x range used by each snapshot plot.
    * @param yZoomRanges - Y zoom presets used by each snapshot plot.
+   * @param titleStringProperty - Localized title string shown in this dialog header.
    * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
    */
   public constructor(
@@ -47,6 +47,7 @@ export default class GraphSnapshotsDialog extends Dialog {
     parentZoomLevelProperty: TReadOnlyProperty<number>,
     xRange: Range,
     yZoomRanges: Range[],
+    titleStringProperty: TReadOnlyProperty<string>,
     graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions
   ) {
 
@@ -107,7 +108,7 @@ export default class GraphSnapshotsDialog extends Dialog {
       ]
     } );
 
-    const titleText = new Text( PhotoelectricEffectFluent.experiment.graph.snapshotsDialogTitleStringProperty, {
+    const titleText = new Text( titleStringProperty, {
       font: PhotoelectricEffectConstants.DIALOG_TITLE_FONT,
       maxWidth: PhotoelectricEffectConstants.DIALOG_MAX_CONTENT_WIDTH
     } );

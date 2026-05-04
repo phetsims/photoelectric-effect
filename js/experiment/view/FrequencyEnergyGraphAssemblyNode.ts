@@ -60,6 +60,12 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
       tandem: providedOptions.tandem
     };
 
-    super( model.frequencyEnergyGraphData, xRange, yZoomRanges, graphOptions );
+    super(
+      model.frequencyEnergyGraphData,
+      xRange,
+      yZoomRanges,
+      PhotoelectricEffectFluent.experiment.graph.frequencyEnergyTitleStringProperty,
+      graphOptions
+    );
   }
 }

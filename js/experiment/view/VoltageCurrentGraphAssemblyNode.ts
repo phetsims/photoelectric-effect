@@ -57,6 +57,12 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
       tandem: providedOptions.tandem
     };
 
-    super( model.voltageCurrentGraphData, xRange, yZoomRanges, graphOptions );
+    super(
+      model.voltageCurrentGraphData,
+      xRange,
+      yZoomRanges,
+      PhotoelectricEffectFluent.experiment.graph.voltageCurrentTitleStringProperty,
+      graphOptions
+    );
   }
 }
