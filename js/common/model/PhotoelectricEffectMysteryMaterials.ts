@@ -8,6 +8,8 @@
  *
  * TODO: Now that mystery material 1 acts more like a "typical" material (always enabled, static work function),
  *   should it still live in this file? Is this file for "globals" or "mystery" materials?
+ * TODO: @design - to answer the above, how would you like phet-io customization to work? Should a single Property
+ *   drive the work function for mystery material on all screens? If so, it should stay here.
  * PREFERENCES_MYSTERY_MATERIAL_1 is always enabled and its work function cannot change from Preferences,
  * but it can change from PhET-iO.
  *
