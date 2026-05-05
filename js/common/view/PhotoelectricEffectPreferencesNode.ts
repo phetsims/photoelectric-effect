@@ -34,13 +34,11 @@ export default class PhotoelectricEffectPreferencesNode extends PreferencesPanel
       fill: 'white'
     }, providedOptions );
 
-    // TODO: Now that there is only one of these, consider deleting class MysteryMaterialPreferencesControls
-    //   and inlining here. But the design of Preferences is still a work in progress so come back to this.
-    const mysteryMaterial2Controls = new MysteryMaterialPreferencesControls(
+    const mysteryMaterialControls = new MysteryMaterialPreferencesControls(
       PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_2.enabledProperty,
       PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_2.workFunctionProperty,
       PhotoelectricEffectFluent.preferences.mysteryMaterial.labelStringProperty,
-      options.tandem.createTandem( 'mysteryMaterial2Controls' )
+      options.tandem.createTandem( 'mysteryMaterialControls' )
     );
 
     const photonModeControl = new PhotonModeControl( {
@@ -49,7 +47,7 @@ export default class PhotoelectricEffectPreferencesNode extends PreferencesPanel
 
     options.content = [
       photonModeControl,
-      mysteryMaterial2Controls
+      mysteryMaterialControls
     ];
 
     super( options );
