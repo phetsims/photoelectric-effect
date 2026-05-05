@@ -65,7 +65,10 @@ export default class GraphSnapshotsDialog extends Dialog {
       chartViewWidth: 600,
       showXLabels: false,
       borderStyle: 'line',
-      xTickCount: 10,
+
+      // TODO: @design What should these be, and do we need to customize it per plot?
+      //   17 ticks creates nice divisions for the largest range (voltage)
+      xTickCount: 17,
       yTickCount: 5
     } );
 
