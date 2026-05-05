@@ -13,7 +13,6 @@ import Range from '../../../../dot/js/Range.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import type { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -65,9 +64,7 @@ export default class AmmeterDisplayPanel extends Panel {
     );
 
     const currentLabel = new Text( PhotoelectricEffectFluent.current.labelStringProperty, {
-
-      // TODO: replace with an entry from the constants file
-      font: new PhetFont( 16 ),
+      font: PhotoelectricEffectConstants.CONTENT_FONT,
       maxWidth: 120
     } );
 

@@ -12,7 +12,6 @@ import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberControl, { type NumberControlOptions } from '../../../../scenery-phet/js/NumberControl.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -34,9 +33,7 @@ export default class VoltageNumberControl extends NumberControl {
       combineOptions<NumberControlOptions>( {
         delta: 0.01,
         titleNodeOptions: {
-
-          // TODO: Use new PhetFont in constants when available in main
-          font: new PhetFont( 16 )
+          font: PhotoelectricEffectConstants.CONTENT_FONT
         },
         layoutFunction: NumberControl.createLayoutFunction1( {
           arrowButtonsXSpacing: 0
