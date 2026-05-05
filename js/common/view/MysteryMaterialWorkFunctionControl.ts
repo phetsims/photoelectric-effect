@@ -29,7 +29,7 @@ export default class MysteryMaterialWorkFunctionControl extends PreferencesContr
    */
   public constructor( workFunctionProperty: NumberProperty, providedOptions: MysteryMaterialWorkFunctionControlOptions ) {
 
-    // TODO: Do we want to add a title?
+    // TODO: @design Do we want to add a title?
     const numberControl = new NumberControl( '', workFunctionProperty, Material.WORK_FUNCTION_RANGE, {
       delta: 0.1,
       numberDisplayOptions: {

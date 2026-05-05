@@ -18,7 +18,7 @@ import type ReadOnlyProperty from '../../../../axon/js/ReadOnlyProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import TModel from '../../../../joist/js/TModel.js';
-import optionize from '../../../../phet-core/js/optionize.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
@@ -36,11 +36,7 @@ import Photon, { type PhotonStateObject } from './Photon.js';
 import PhotonSource from './PhotonSource.js';
 import Target from './Target.js';
 
-type SelfOptions = {
-
-  // TODO add options that are specific to PhotoelectricEffectModel here
-};
-
+type SelfOptions = EmptySelfOptions;
 export type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
 
 type CustomMaterialsFactory = ( tandem: Tandem ) => Material[];
@@ -149,7 +145,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     } );
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
-    this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X, tandem.createTandem( 'collector' ) );
+    this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X );
     this.battery = new Battery( tandem.createTandem( 'battery' ) );
 
     this.currentProperty = new DerivedProperty(

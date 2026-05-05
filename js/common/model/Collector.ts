@@ -8,9 +8,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Tandem from '../../../../tandem/js/Tandem.js';
 import Electron from './Electron.js';
-import Particle from './Particle.js';
 
 export default class Collector {
 
@@ -18,18 +16,8 @@ export default class Collector {
    * Creates a collector plate at the given x position.
    *
    * @param x - X position of the collector plate center in model coordinates.
-   * @param _tandem (TODO, unused for now)
    */
-  public constructor( public readonly x: number, _tandem: Tandem ) {
-  }
-
-  /**
-   * Handles a particle collision with the collector.
-   * Called when a particle intersects the collector x position.
-   */
-  public particleCollisions( _particle: Particle ): void {
-
-    //TODO implement collector collision behavior
+  public constructor( public readonly x: number ) {
   }
 
   /**
