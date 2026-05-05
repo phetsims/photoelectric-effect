@@ -54,6 +54,9 @@ addToMapIfDefined( 'experiment_graph_infoDialogTitle', 'experiment.graph.infoDia
 addToMapIfDefined( 'experiment_graph_infoDialogPlaceholder', 'experiment.graph.infoDialogPlaceholderStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsDialogTitle', 'experiment.graph.snapshotsDialogTitleStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotSaved', 'experiment.graph.snapshotSavedStringProperty' );
+addToMapIfDefined( 'experiment_graph_materialLabel', 'experiment.graph.materialLabelStringProperty' );
+addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleName', 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' );
+addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' );
 addToMapIfDefined( 'photonQuantity_single', 'photonQuantity.singleStringProperty' );
 addToMapIfDefined( 'photonQuantity_burst', 'photonQuantity.burstStringProperty' );
 addToMapIfDefined( 'photonQuantity_fire', 'photonQuantity.fireStringProperty' );
@@ -165,7 +168,11 @@ const PhotoelectricEffectFluent = {
       infoDialogTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.infoDialogTitleStringProperty' ),
       infoDialogPlaceholderStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.infoDialogPlaceholderStringProperty' ),
       snapshotsDialogTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsDialogTitleStringProperty' ),
-      snapshotSavedStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotSavedStringProperty' )
+      snapshotSavedStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotSavedStringProperty' ),
+      materialLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.materialLabelStringProperty' ),
+      snapshotLabelValuePatternStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotLabelValuePatternStringProperty' ),
+      snapshotsGalleryButtonAccessibleNameStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' ),
+      snapshotsGalleryButtonAccessibleHelpTextStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' )
     }
   },
   photonQuantity: {
@@ -198,7 +205,8 @@ const PhotoelectricEffectFluent = {
     valueReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.valueReadoutPatternStringProperty' )
   },
   voltage: {
-    labelStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.labelStringProperty' )
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.labelStringProperty' ),
+    valueReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'voltage.valueReadoutPatternStringProperty' )
   },
   current: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' ),

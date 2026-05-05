@@ -40,6 +40,10 @@ experiment:
 
     snapshotsDialogTitle: 'Saved snapshots'
     snapshotSaved: 'Saved!'
+    materialLabel: 'Material'
+    snapshotLabelValuePattern: '{{label}}: {{value}}'
+    snapshotsGalleryButtonAccessibleName: 'View saved snapshots'
+    snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
 
 photonQuantity:
   single: 'Single'
@@ -61,6 +65,7 @@ sourceOutput.percentReadoutPattern: '{{value}} %'
 wavelength.label: 'Wavelength (nm)'
 wavelength.valueReadoutPattern: '{{value}} nm'
 voltage.label: 'Voltage'
+voltage.valueReadoutPattern: '{{value}} V'
 current.label: 'Current'
 current.readoutPattern: '{{value}} mA'
 

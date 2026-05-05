@@ -36,6 +36,7 @@ export default class FrequencyEnergyGraphData extends GraphData {
     super(
       model.photonSource.wavelengthProperty,
       createDataPointAtFrequency,
+      model,
       [
 
         // Changing the material changes the relationship and should clear teh data. Customizing the work

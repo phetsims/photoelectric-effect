@@ -68,6 +68,7 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
       xRange,
       yZoomRanges,
       PhotoelectricEffectFluent.experiment.graph.intensityCurrentTitleStringProperty,
+      [ 'wavelength', 'voltage' ],
       graphOptions
     );
   }

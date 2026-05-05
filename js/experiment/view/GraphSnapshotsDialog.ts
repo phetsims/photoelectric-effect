@@ -5,7 +5,7 @@
  * graph's active zoom level whenever the dialog is opened and can then be adjusted directly in the dialog.
  *
  * Snapshot rows are created once and reused so open/close cycles avoid repeated node allocation and disposal.
- * Each row contains a snapshot number, a legend area (material, wavelength, intensity), and a plot node.
+ * Each row contains a snapshot number, a plot node, and three metadata legend lines.
  * The VBox keeps a fixed child order; the last row is the only one whose plot shows x-axis tick labels. Snapshots map
  * to rows so the last stored snapshot always uses that labeled bottom row, while earlier snapshots use rows above it.
  * Unused slots stay hidden via visibility. Snapshot charts share the same GraphPlotAreaNode options as the parent
@@ -27,6 +27,7 @@ import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
+import type { GraphSnapshotMetadataFieldPair } from '../model/GraphSnapshot.js';
 import type { GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
 
@@ -41,6 +42,7 @@ export default class GraphSnapshotsDialog extends Dialog {
    * @param yZoomRanges - Y zoom presets used by each snapshot plot.
    * @param titleStringProperty - Localized title string shown in this dialog header.
    * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
+   * @param metadataFields - Field ordering for the second and third legend lines (material is always first).
    */
   public constructor(
     tandem: Tandem,
@@ -49,7 +51,8 @@ export default class GraphSnapshotsDialog extends Dialog {
     xRange: Range,
     yZoomRanges: Range[],
     titleStringProperty: TReadOnlyProperty<string>,
-    graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions
+    graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions,
+    metadataFields: GraphSnapshotMetadataFieldPair
   ) {
 
     const snapshotPlotOptions = combineOptions<GraphPlotAreaNodeOptions>( {}, graphPlotAreaNodeOptions, {
@@ -74,7 +77,7 @@ export default class GraphSnapshotsDialog extends Dialog {
 
       // The final plot shows x labels (lining them up for all stacked plots).
       const plotOptions = index === GraphData.MAX_SNAPSHOTS - 1 ? labeledSnapshotPlotOptions : snapshotPlotOptions;
-      snapshotRows.push( new GraphSnapshotRowNode( xRange, yZoomRanges, plotOptions ) );
+      snapshotRows.push( new GraphSnapshotRowNode( xRange, yZoomRanges, plotOptions, metadataFields ) );
     } );
 
     const plotsGridBox = new VBox( {

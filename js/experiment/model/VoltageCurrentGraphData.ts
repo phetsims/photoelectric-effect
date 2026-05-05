@@ -20,6 +20,7 @@ export default class VoltageCurrentGraphData extends GraphData {
     super(
       model.battery.voltageProperty,
       voltage => new Vector2( voltage, model.getCurrentForVoltage( voltage ) ),
+      model,
       [
         model.photonSource.photonRateProperty,
         model.wavelengthProperty,

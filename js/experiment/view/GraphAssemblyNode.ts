@@ -31,6 +31,7 @@ import RectangularPushButton, { RectangularPushButtonOptions } from '../../../..
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
+import type { GraphSnapshotMetadataFieldPair } from '../model/GraphSnapshot.js';
 import GraphInfoDialog from './GraphInfoDialog.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 import GraphSnapshotSavedMessageNode from './GraphSnapshotSavedMessageNode.js';
@@ -88,6 +89,7 @@ export default class GraphAssemblyNode extends Node {
    * @param xRange - Shared x range used for all zoom levels in this plot.
    * @param yZoomRanges - Zoom presets for the y axis, from any order (sorted internally by span).
    * @param snapshotsDialogTitleStringProperty - Localized title shown in this graph's snapshots dialog.
+   * @param snapshotMetadataFields - Fields for the second and third snapshot legend lines in the snapshots dialog.
    * @param providedOptions - Node options plus graph-plot-area configuration forwarded to child components.
    */
   public constructor(
@@ -95,6 +97,7 @@ export default class GraphAssemblyNode extends Node {
     xRange: Range,
     yZoomRanges: Range[],
     snapshotsDialogTitleStringProperty: TReadOnlyProperty<string>,
+    snapshotMetadataFields: GraphSnapshotMetadataFieldPair,
     providedOptions: GraphAssemblyNodeOptions
   ) {
     const options = optionize<GraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {
@@ -174,7 +177,8 @@ export default class GraphAssemblyNode extends Node {
       xRange,
       yZoomRanges,
       snapshotsDialogTitleStringProperty,
-      graphPlotAreaNodeOptions
+      graphPlotAreaNodeOptions,
+      snapshotMetadataFields
     );
 
     const infoButton = new InfoButton( {

@@ -29,7 +29,7 @@ import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js
 import Range from '../../../../dot/js/Range.js';
 import { clamp } from '../../../../dot/js/util/clamp.js';
 import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
-import Vector2, { Vector2StateObject } from '../../../../dot/js/Vector2.js';
+import Vector2 from '../../../../dot/js/Vector2.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
@@ -41,6 +41,8 @@ import IOType from '../../../../tandem/js/types/IOType.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectQueryParameters from '../../common/PhotoelectricEffectQueryParameters.js';
+import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
+import GraphSnapshot, { GraphSnapshotMetadata, type GraphSnapshotStateObject } from './GraphSnapshot.js';
 
 type SelfOptions = {
 
@@ -74,8 +76,8 @@ type GraphDataStateObject = {
   // Preserves sweep continuity after state restore.
   previousDrivingBinIndex: number | null;
 
-  // Snapshot copies are user-saved historical series, so preserve their exact points.
-  snapshots: Vector2StateObject[][];
+  // Snapshot copies are user-saved historical series, so preserve their exact points and metadata.
+  snapshots: GraphSnapshotStateObject[];
 };
 
 type BinData = {
@@ -107,8 +109,11 @@ export default class GraphData extends PhetioObject {
   // Most recent driving bin index, used to reveal all bins between previous and current positions.
   private previousDrivingBinIndex: number | null = null;
 
-  // Deep-copied point arrays captured via captureSnapshot(); each inner array is not mutated after it is stored.
-  private readonly snapshots: Vector2[][] = [];
+  // Deep-copied snapshot series and metadata captured via captureSnapshot(); each snapshot is read-only after storage.
+  private readonly snapshots: GraphSnapshot[] = [];
+
+  // Shared model state source for snapshot metadata captured at save time.
+  private readonly model: PhotoelectricEffectModel;
 
   // Fires after reveal state changes or after clear() removes revealed samples, so views can read
   // getDataPoints() and update plots.
@@ -128,6 +133,7 @@ export default class GraphData extends PhetioObject {
    *   for every canonical bin center during recomputation, and also for currentPointProperty after applying
    *   the driving-value -> chart-x mapping. Keeping this callback in chart-x coordinates ensures one consistent
    *   curve definition for both deterministic bins and the latest-point marker.
+   * @param model - Source of shared snapshot metadata values captured with each saved snapshot.
    * @param clearDependencies - Properties to watch so that changing any of them clears the series. Provide every
    *   model input that affects the interpretation of the axes except the drivingProperty itself, otherwise old points\
    *   would stay on screen and imply a single curve even though the underlying relationship or experimental
@@ -138,6 +144,7 @@ export default class GraphData extends PhetioObject {
   public constructor(
     drivingProperty: NumberProperty,
     createDataPointAtChartX: ( chartX: number ) => Vector2,
+    model: PhotoelectricEffectModel,
     clearDependencies: Readonly<TReadOnlyProperty<IntentionalAny>[]>,
     resetEmitter: TReadOnlyEmitter,
     providedOptions: GraphDataOptions
@@ -152,6 +159,7 @@ export default class GraphData extends PhetioObject {
     }, providedOptions );
 
     super( options );
+    this.model = model;
 
     affirm( Number.isInteger( options.binCount ) && options.binCount > 1,
       'binCount must be an integer greater than 1' );
@@ -218,10 +226,9 @@ export default class GraphData extends PhetioObject {
   }
 
   /**
-   * Immutable snapshot series in capture order. Do not mutate the returned arrays or points; the model treats each
-   * snapshot as read-only after it is stored.
+   * Immutable snapshot series in capture order. Do not mutate returned snapshots, point arrays, or metadata.
    */
-  public getSnapshots(): ReadonlyArray<ReadonlyArray<Vector2>> {
+  public getSnapshots(): ReadonlyArray<GraphSnapshot> {
     return this.snapshots;
   }
 
@@ -242,8 +249,16 @@ export default class GraphData extends PhetioObject {
    */
   public captureSnapshot(): void {
     affirm( this.snapshots.length < GraphData.MAX_SNAPSHOTS, 'snapshot storage is full' );
-    const snapshot = this.getDataPoints().map( point => new Vector2( point.x, point.y ) );
-    this.snapshots.push( snapshot );
+    this.snapshots.push( new GraphSnapshot(
+      this.getDataPoints().map( point => new Vector2( point.x, point.y ) ),
+      new GraphSnapshotMetadata(
+        this.model.target.materialProperty.value.materialType,
+        this.model.target.materialProperty.value.labelKey,
+        this.model.wavelengthProperty.value,
+        this.model.photonSource.normalizedOutputPercentProperty.value,
+        this.model.battery.voltageProperty.value
+      )
+    ) );
     this.syncSnapshotsCountProperty();
   }
 
@@ -260,10 +275,10 @@ export default class GraphData extends PhetioObject {
   /**
    * Restores user-saved snapshot series from PhET-iO state.
    */
-  private setSnapshotsFromStateObjects( snapshots: Vector2StateObject[][] ): void {
+  private setSnapshotsFromStateObjects( snapshots: GraphSnapshotStateObject[] ): void {
     this.snapshots.length = 0;
     snapshots.forEach( snapshot => {
-      this.snapshots.push( snapshot.map( point => Vector2.fromStateObject( point ) ) );
+      this.snapshots.push( GraphSnapshot.fromStateObject( snapshot ) );
     } );
     this.syncSnapshotsCountProperty();
   }
@@ -364,7 +379,7 @@ export default class GraphData extends PhetioObject {
     return {
       revealedBinIndices: this.getRevealedBinIndices(),
       previousDrivingBinIndex: this.previousDrivingBinIndex,
-      snapshots: this.snapshots.map( snapshot => snapshot.map( point => point.toStateObject() ) )
+      snapshots: this.snapshots.map( snapshot => snapshot.toStateObject() )
     };
   }
 
@@ -380,11 +395,14 @@ export default class GraphData extends PhetioObject {
 
   /**
    * PhET-iO state schema.
+   *
+   * Top-level serialized GraphData structure used by GraphDataIO. Live curve y-values are not serialized because they
+   * are deterministic for the current model state; only reveal continuity and snapshots are persisted.
    */
   private static readonly GRAPH_DATA_STATE_SCHEMA = {
     revealedBinIndices: ArrayIO( NumberIO ),
     previousDrivingBinIndex: NullableIO( NumberIO ),
-    snapshots: ArrayIO( ArrayIO( Vector2.Vector2IO ) )
+    snapshots: ArrayIO( GraphSnapshot.GRAPH_SNAPSHOT_IO )
   };
 
   /**

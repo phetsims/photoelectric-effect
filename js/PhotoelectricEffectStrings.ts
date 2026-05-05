@@ -49,6 +49,10 @@ type StringsType = {
       'infoDialogPlaceholderStringProperty': LocalizedStringProperty;
       'snapshotsDialogTitleStringProperty': LocalizedStringProperty;
       'snapshotSavedStringProperty': LocalizedStringProperty;
+      'materialLabelStringProperty': LocalizedStringProperty;
+      'snapshotLabelValuePatternStringProperty': LocalizedStringProperty;
+      'snapshotsGalleryButtonAccessibleNameStringProperty': LocalizedStringProperty;
+      'snapshotsGalleryButtonAccessibleHelpTextStringProperty': LocalizedStringProperty;
     }
   };
   'photonQuantity': {
@@ -81,6 +85,7 @@ type StringsType = {
   };
   'voltage': {
     'labelStringProperty': LocalizedStringProperty;
+    'valueReadoutPatternStringProperty': LocalizedStringProperty;
   };
   'current': {
     'labelStringProperty': LocalizedStringProperty;

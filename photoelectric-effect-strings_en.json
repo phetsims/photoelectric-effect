@@ -54,13 +54,13 @@
   "experiment": {
     "graph": {
       "voltageCurrentTitle": {
-        "value": "Voltage vs Current"
+        "value": "Voltage vs. Current"
       },
       "intensityCurrentTitle": {
-        "value": "Intensity vs Current"
+        "value": "Intensity vs. Current"
       },
       "frequencyEnergyTitle": {
-        "value": "Frequency vs Energy"
+        "value": "Frequency vs. Energy"
       },
       "actionButton": {
         "value": "Graph action"
@@ -91,6 +91,18 @@
       },
       "snapshotSaved": {
         "value": "Saved!"
+      },
+      "materialLabel": {
+        "value": "Material"
+      },
+      "snapshotLabelValuePattern": {
+        "value": "{{label}}: {{value}}"
+      },
+      "snapshotsGalleryButtonAccessibleName": {
+        "value": "View saved snapshots"
+      },
+      "snapshotsGalleryButtonAccessibleHelpText": {
+        "value": "Opens a dialog with a plot of each saved snapshot."
       }
     }
   },
@@ -142,6 +154,9 @@
   },
   "voltage.label": {
     "value": "Voltage"
+  },
+  "voltage.valueReadoutPattern": {
+    "value": "{{value}} V"
   },
   "current.label": {
     "value": "Current"
