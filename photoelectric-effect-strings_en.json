@@ -69,7 +69,7 @@
         "value": "Voltage (V)"
       },
       "currentAxisLabel": {
-        "value": "Current (uA)"
+        "value": "Current (mA)"
       },
       "intensityAxisLabel": {
         "value": "Intensity (%)"

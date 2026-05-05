@@ -29,7 +29,7 @@ experiment:
     frequencyEnergyTitle: 'Frequency vs. Energy'
     actionButton: 'Graph action'
     voltageAxisLabel: 'Voltage (V)'
-    currentAxisLabel: 'Current (uA)'
+    currentAxisLabel: 'Current (mA)'
     intensityAxisLabel: 'Intensity (%)'
     frequencyAxisLabel: 'Frequency (x10<sup>15</sup> Hz)'
     energyAxisLabel: 'Electron KE<sub>max</sub> (ev)'

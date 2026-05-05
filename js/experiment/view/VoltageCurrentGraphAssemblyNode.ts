@@ -8,11 +8,13 @@
  */
 
 import Range from '../../../../dot/js/Range.js';
+import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import { ampsToMilliAmps } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import GraphAssemblyNode, { type GraphAssemblyNodeOptions } from './GraphAssemblyNode.js';
@@ -43,7 +45,11 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
       graphPlotAreaNodeOptions: {
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
-        fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty
+        fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty,
+
+        // TODO: @design - what units are these in? Mockup shows microamps in label but I think display is in
+        //   miliamps.
+        yTickLabelFormatter: value => toFixed( ampsToMilliAmps( value ), 0 )
       },
       accessibleHeading: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
       expandCollapseButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty,
