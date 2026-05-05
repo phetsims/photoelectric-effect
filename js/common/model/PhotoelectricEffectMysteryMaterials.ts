@@ -20,7 +20,6 @@
  * who need additional controllable mystery materials. Their work functions are set exclusively
  * through the PhET-iO API and are not configurable in the sim UI. They are hidden unless explicitly
  * enabled with PhET-iO.
- * TODO: Make sure that layout is good when all possible materials are enabled. We are low on vertical space.
  *
  * All mystery materials are passed down to the sim's screens via photoelectric-effect-main.ts.
  *
