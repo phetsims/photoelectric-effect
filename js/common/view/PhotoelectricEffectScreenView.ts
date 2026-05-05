@@ -251,6 +251,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         workFunction => `Work Function + Depth: ${toFixed( workFunction + Material.TOTAL_ENERGY_DEPTH, 2 )} eV` );
       const devPhotonEnergyStringProperty = new DerivedProperty( [ model.wavelengthProperty ],
         wavelength => `Photon Energy: ${toFixed( wavelengthToEnergy( wavelength ), 2 )} eV` );
+      const devCurrentStringProperty = new DerivedProperty( [ model.currentProperty ],
+        current => `Current: ${current} A` );
 
       this.addChild( new VBox( {
         align: 'left',
@@ -258,7 +260,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         children: [
           new Text( devWorkFunctionStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
           new Text( devWorkFunctionPlusDepthStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
-          new Text( devPhotonEnergyStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } )
+          new Text( devPhotonEnergyStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
+          new Text( devCurrentStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } )
         ],
         leftTop: this.photonSourceControl.rightTop
       } ) );
