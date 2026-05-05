@@ -23,9 +23,8 @@ import IOType from '../../../../tandem/js/types/IOType.js';
 
 export class MaterialType extends EnumerationValue {
 
-  // All of the work functions for the following MaterialTypes are ReadOnly.
-
-  // TODO: Do we want to protect against mutability here?
+  // All of the work functions for the following MaterialTypes cannot be set by the user, but they
+  // could be customized with phet-io.
   // TODO @design: Do we want to protect against phet-io changes to these work function values?
   //   Luckily, the way we reset materials should prevent these values from being reset if they are customized
   //   with phet-io.
@@ -72,7 +71,6 @@ export type MaterialOptions = SelfOptions & PickRequired<PhetioObjectOptions, 't
 
 export default class Material extends PhetioObject {
 
-  // TODO: Is this where these should live?
   // Number of sub-levels used to distribute absorption depth.
   public static readonly NUM_SUB_LEVELS = 20;
 
@@ -144,7 +142,6 @@ export default class Material extends PhetioObject {
     this.workFunctionProperty.reset();
   }
 
-  // TODO: We need to test this with the state wrapper and studio.
   public static readonly MaterialIO = new IOType<Material, MaterialStateObject>( 'MaterialIO', {
     valueType: Material,
     stateSchema: {

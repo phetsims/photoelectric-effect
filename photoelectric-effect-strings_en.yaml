@@ -72,7 +72,7 @@ preferences:
     label: 'Add Second mystery material'
     description: 'Additional target material option with customizable work function value.'
 
-    # TODO: What should these be?
+    # TODO: @design What should these be?
     workFunction:
       label: 'Mystery Material Work Function (eV)'
       description: 'Set the work function of the mystery material.'
