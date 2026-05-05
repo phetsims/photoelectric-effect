@@ -39,7 +39,7 @@ export default class PhotoelectricEffectPreferencesNode extends PreferencesPanel
     const mysteryMaterial2Controls = new MysteryMaterialPreferencesControls(
       PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_2.enabledProperty,
       PhotoelectricEffectMysteryMaterials.PREFERENCES_MYSTERY_MATERIAL_2.workFunctionProperty,
-      PhotoelectricEffectFluent.preferences.mysteryMaterial2LabelStringProperty,
+      PhotoelectricEffectFluent.preferences.mysteryMaterial.labelStringProperty,
       options.tandem.createTandem( 'mysteryMaterial2Controls' )
     );
 

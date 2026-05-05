@@ -91,13 +91,18 @@ type StringsType = {
     'collectorStringProperty': LocalizedStringProperty;
   };
   'preferences': {
-    'mysteryMaterial1LabelStringProperty': LocalizedStringProperty;
-    'mysteryMaterial2LabelStringProperty': LocalizedStringProperty;
-    'mysteryMaterialDescriptionStringProperty': LocalizedStringProperty;
-    'mysteryMaterialWorkFunctionLabelStringProperty': LocalizedStringProperty;
-    'mysteryMaterialWorkFunctionDescriptionStringProperty': LocalizedStringProperty;
-    'photonModeLabelStringProperty': LocalizedStringProperty;
-    'photonModeDescriptionStringProperty': LocalizedStringProperty;
+    'mysteryMaterial': {
+      'labelStringProperty': LocalizedStringProperty;
+      'descriptionStringProperty': LocalizedStringProperty;
+      'workFunction': {
+        'labelStringProperty': LocalizedStringProperty;
+        'descriptionStringProperty': LocalizedStringProperty;
+      }
+    };
+    'photonMode': {
+      'labelStringProperty': LocalizedStringProperty;
+      'descriptionStringProperty': LocalizedStringProperty;
+    }
   }
 };
 

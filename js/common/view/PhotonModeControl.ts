@@ -31,15 +31,15 @@ export default class PhotonModeControl extends PreferencesControl {
         {},
         {
           tandem: providedOptions.tandem.createTandem( 'toggleSwitch' ),
-          accessibleName: PhotoelectricEffectFluent.preferences.photonModeLabelStringProperty
+          accessibleName: PhotoelectricEffectFluent.preferences.photonMode.labelStringProperty
         },
         PreferencesDialogConstants.TOGGLE_SWITCH_OPTIONS
       )
     );
 
     super( combineOptions<PreferencesControlOptions>( {
-      labelNode: new Text( PhotoelectricEffectFluent.preferences.photonModeLabelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
-      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.photonModeDescriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
+      labelNode: new Text( PhotoelectricEffectFluent.preferences.photonMode.labelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
+      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.photonMode.descriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
       controlNode: toggleSwitch,
       visiblePropertyOptions: {
         phetioFeatured: true

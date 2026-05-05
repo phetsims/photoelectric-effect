@@ -157,25 +157,30 @@
   "debugLegend.collector": {
     "value": "Blue outline = collector"
   },
-  "preferences.mysteryMaterial1Label": {
-    "value": "Mystery Material 1"
-  },
-  "preferences.mysteryMaterial2Label": {
-    "value": "Mystery Material 2"
-  },
-  "preferences.mysteryMaterialDescription": {
-    "value": "When enabled, adds a mystery material with a configurable work function to the available materials."
-  },
-  "preferences.mysteryMaterialWorkFunctionLabel": {
-    "value": "Work Function (eV)"
-  },
-  "preferences.mysteryMaterialWorkFunctionDescription": {
-    "value": "Set the work function of the mystery material."
-  },
-  "preferences.photonModeLabel": {
-    "value": "Photon Mode"
-  },
-  "preferences.photonModeDescription": {
-    "value": "Switches the photon source output between photon count and light intensity."
+  "preferences": {
+    "mysteryMaterial": {
+      "label": {
+        "value": "Add Second mystery material"
+      },
+      "description": {
+        "value": "Additional target material option with customizable work function value."
+      },
+      "workFunction": {
+        "label": {
+          "value": "Mystery Material Work Function (eV)"
+        },
+        "description": {
+          "value": "Set the work function of the mystery material."
+        }
+      }
+    },
+    "photonMode": {
+      "label": {
+        "value": "Control light source intensity"
+      },
+      "description": {
+        "value": "Number of photons depends on frequency of the light."
+      }
+    }
   }
 }

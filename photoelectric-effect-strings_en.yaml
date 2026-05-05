@@ -66,11 +66,15 @@ debugLegend.electrons: 'Cyan = electrons'
 debugLegend.target: 'Red outline = target'
 debugLegend.collector: 'Blue outline = collector'
 
-# Preferences PLACEHOLDERS
-preferences.mysteryMaterial1Label: 'Mystery Material 1'
-preferences.mysteryMaterial2Label: 'Mystery Material 2'
-preferences.mysteryMaterialDescription: 'When enabled, adds a mystery material with a configurable work function to the available materials.'
-preferences.mysteryMaterialWorkFunctionLabel: 'Work Function (eV)'
-preferences.mysteryMaterialWorkFunctionDescription: 'Set the work function of the mystery material.'
-preferences.photonModeLabel: 'Photon Mode'
-preferences.photonModeDescription: 'Switches the photon source output between photon count and light intensity.'
+preferences:
+  mysteryMaterial:
+    label: 'Add Second mystery material'
+    description: 'Additional target material option with customizable work function value.'
+
+    # TODO: What should these be?
+    workFunction:
+      label: 'Mystery Material Work Function (eV)'
+      description: 'Set the work function of the mystery material.'
+  photonMode:
+    label: 'Control light source intensity'
+    description: 'Number of photons depends on frequency of the light.'

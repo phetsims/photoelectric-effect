@@ -70,13 +70,12 @@ addToMapIfDefined( 'debugLegend_photons', 'debugLegend.photonsStringProperty' );
 addToMapIfDefined( 'debugLegend_electrons', 'debugLegend.electronsStringProperty' );
 addToMapIfDefined( 'debugLegend_target', 'debugLegend.targetStringProperty' );
 addToMapIfDefined( 'debugLegend_collector', 'debugLegend.collectorStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterial1Label', 'preferences.mysteryMaterial1LabelStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterial2Label', 'preferences.mysteryMaterial2LabelStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterialDescription', 'preferences.mysteryMaterialDescriptionStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionLabel', 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterialWorkFunctionDescription', 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' );
-addToMapIfDefined( 'preferences_photonModeLabel', 'preferences.photonModeLabelStringProperty' );
-addToMapIfDefined( 'preferences_photonModeDescription', 'preferences.photonModeDescriptionStringProperty' );
+addToMapIfDefined( 'preferences_mysteryMaterial_label', 'preferences.mysteryMaterial.labelStringProperty' );
+addToMapIfDefined( 'preferences_mysteryMaterial_description', 'preferences.mysteryMaterial.descriptionStringProperty' );
+addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_label', 'preferences.mysteryMaterial.workFunction.labelStringProperty' );
+addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_description', 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' );
+addToMapIfDefined( 'preferences_photonMode_label', 'preferences.photonMode.labelStringProperty' );
+addToMapIfDefined( 'preferences_photonMode_description', 'preferences.photonMode.descriptionStringProperty' );
 
 // A function that creates contents for a new Fluent file, which will be needed if any string changes.
 const createFluentFile = (): string => {
@@ -142,6 +141,7 @@ const PhotoelectricEffectFluent = {
     uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
     irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )
   },
+  _comment_2: new FluentComment( {"comment":"TODO: What should these be?","associatedKey":"workFunction"} ),
   workFunction: {
     _comment_0: new FluentComment( {"comment":"FOR DEBUGGING","associatedKey":"workFunction.label"} ),
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'workFunction.labelStringProperty' )
@@ -175,14 +175,19 @@ const PhotoelectricEffectFluent = {
     collectorStringProperty: _.get( PhotoelectricEffectStrings, 'debugLegend.collectorStringProperty' )
   },
   preferences: {
-    _comment_0: new FluentComment( {"comment":"Preferences PLACEHOLDERS","associatedKey":"preferences.mysteryMaterial1Label"} ),
-    mysteryMaterial1LabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial1LabelStringProperty' ),
-    mysteryMaterial2LabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial2LabelStringProperty' ),
-    mysteryMaterialDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialDescriptionStringProperty' ),
-    mysteryMaterialWorkFunctionLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' ),
-    mysteryMaterialWorkFunctionDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' ),
-    photonModeLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonModeLabelStringProperty' ),
-    photonModeDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonModeDescriptionStringProperty' )
+    mysteryMaterial: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.labelStringProperty' ),
+      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.descriptionStringProperty' ),
+      _comment_0: new FluentComment( {"comment":"TODO: What should these be?","associatedKey":"workFunction"} ),
+      workFunction: {
+        labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.workFunction.labelStringProperty' ),
+        descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' )
+      }
+    },
+    photonMode: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonMode.labelStringProperty' ),
+      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonMode.descriptionStringProperty' )
+    }
   }
 };
 

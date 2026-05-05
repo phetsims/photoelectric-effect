@@ -39,8 +39,8 @@ export default class MysteryMaterialWorkFunctionControl extends PreferencesContr
     } );
 
     super( combineOptions<PreferencesControlOptions>( {
-      labelNode: new Text( PhotoelectricEffectFluent.preferences.mysteryMaterialWorkFunctionLabelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
-      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.mysteryMaterialWorkFunctionDescriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
+      labelNode: new Text( PhotoelectricEffectFluent.preferences.mysteryMaterial.labelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
+      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.mysteryMaterial.descriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
       controlNode: numberControl,
       visiblePropertyOptions: {
         phetioFeatured: true

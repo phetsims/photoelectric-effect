@@ -48,7 +48,7 @@ export default class MysteryMaterialControl extends PreferencesControl {
 
     super( combineOptions<PreferencesControlOptions>( {
       labelNode: new Text( labelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
-      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.mysteryMaterialDescriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
+      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.mysteryMaterial.descriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
       controlNode: toggleSwitch,
       visiblePropertyOptions: {
         phetioFeatured: true
