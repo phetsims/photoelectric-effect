@@ -109,8 +109,6 @@ export default class Target {
     if ( highestEnergyOnly ) {
 
       // Java simple mode emits only when the selected sub-level is the highest-energy band.
-      // TODO: See https://github.com/phetsims/photoelectric-effect/issues/33
-      // TODO: @design, what is next for this issue?
       energyAfterCollision = dotRandom.nextInt( Material.NUM_SUB_LEVELS ) === 0 ?
                              photonEnergy - workFunction :
                              Number.NEGATIVE_INFINITY;
