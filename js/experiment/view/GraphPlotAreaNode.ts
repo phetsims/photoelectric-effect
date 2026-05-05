@@ -81,6 +81,10 @@ export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT = 136;
 // Font for numeric tick labels on experiment graphs.
 const EXPERIMENT_GRAPH_TICK_LABEL_FONT = new PhetFont( 10 );
 
+// Default major tick counts (including min/max endpoints).
+const DEFAULT_X_TICK_COUNT = 5;
+const DEFAULT_Y_TICK_COUNT = 5;
+
 type GraphPlotAreaSelfOptions = {
 
   // View size of the plot area in scenery coordinates.
@@ -101,6 +105,12 @@ type GraphPlotAreaSelfOptions = {
 
   // Optional formatter for y-axis tick labels.
   yTickLabelFormatter?: null | ( ( value: number ) => string );
+
+  // Number of major ticks (including min/max) along the x axis.
+  xTickCount?: number;
+
+  // Number of major ticks (including min/max) along the y axis.
+  yTickCount?: number;
 
   // Base fractional padding applied to model ranges to create visual inset.
   rangePaddingFraction?: number;
@@ -172,6 +182,8 @@ export default class GraphPlotAreaNode extends Node {
       yAxisLabelYOffset: 0,
       xTickLabelFormatter: null,
       yTickLabelFormatter: null,
+      xTickCount: DEFAULT_X_TICK_COUNT,
+      yTickCount: DEFAULT_Y_TICK_COUNT,
       rangePaddingFraction: 0.05,
       fill: 'black',
       linePlotOptions: {
@@ -227,7 +239,13 @@ export default class GraphPlotAreaNode extends Node {
     } );
     const chartContentClipArea = Shape.bounds( this.plotBounds );
 
-    this.gridLineSets = GraphPlotAreaNode.createGridLineSets( this.chartTransform, xRange, initialYRange );
+    this.gridLineSets = GraphPlotAreaNode.createGridLineSets(
+      this.chartTransform,
+      xRange,
+      initialYRange,
+      options.xTickCount,
+      options.yTickCount
+    );
     const gridLineSetNode = new Node( {
       clipArea: chartContentClipArea,
       children: [
@@ -267,6 +285,8 @@ export default class GraphPlotAreaNode extends Node {
       this.chartTransform,
       xRange,
       initialYRange,
+      options.xTickCount,
+      options.yTickCount,
       options.xTickLabelFormatter,
       options.yTickLabelFormatter
     );
@@ -335,10 +355,18 @@ export default class GraphPlotAreaNode extends Node {
         this.chartTransform,
         xRange,
         yRange,
+        options.xTickCount,
+        options.yTickCount,
         options.xTickLabelFormatter,
         options.yTickLabelFormatter
       );
-      this.gridLineSets = GraphPlotAreaNode.createGridLineSets( this.chartTransform, xRange, yRange );
+      this.gridLineSets = GraphPlotAreaNode.createGridLineSets(
+        this.chartTransform,
+        xRange,
+        yRange,
+        options.xTickCount,
+        options.yTickCount
+      );
       gridLineSetNode.children = [ this.gridLineSets.verticalGridLineSet, this.gridLineSets.horizontalGridLineSet ];
 
       chartContentNode.children = [ gridLineSetNode, plotLayer ];
@@ -456,8 +484,8 @@ export default class GraphPlotAreaNode extends Node {
   /**
    * Creates evenly spaced major tick intervals for a displayed range.
    */
-  private static createTickSpacing( range: Range ): number {
-    return range.getLength() / 10;
+  private static createTickSpacing( range: Range, tickCount: number ): number {
+    return range.getLength() / ( Math.max( tickCount, 2 ) - 1 );
   }
 
   /**
@@ -468,10 +496,12 @@ export default class GraphPlotAreaNode extends Node {
   private static createGridLineSets(
     chartTransform: ChartTransform,
     xRange: Range,
-    yRange: Range
+    yRange: Range,
+    xTickCount: number,
+    yTickCount: number
   ): GridLineSetGroup {
-    const xSpacing = GraphPlotAreaNode.createTickSpacing( xRange );
-    const ySpacing = GraphPlotAreaNode.createTickSpacing( yRange );
+    const xSpacing = GraphPlotAreaNode.createTickSpacing( xRange, xTickCount );
+    const ySpacing = GraphPlotAreaNode.createTickSpacing( yRange, yTickCount );
 
     return {
       verticalGridLineSet: new GridLineSet( chartTransform, Orientation.VERTICAL, ySpacing, GRID_LINE_OPTIONS ),
@@ -507,11 +537,13 @@ export default class GraphPlotAreaNode extends Node {
     chartTransform: ChartTransform,
     xRange: Range,
     yRange: Range,
+    xTickCount: number,
+    yTickCount: number,
     xTickLabelFormatter: ( ( value: number ) => string ) | null,
     yTickLabelFormatter: ( ( value: number ) => string ) | null
   ): TickSetGroup {
-    const xSpacing = GraphPlotAreaNode.createTickSpacing( xRange );
-    const ySpacing = GraphPlotAreaNode.createTickSpacing( yRange );
+    const xSpacing = GraphPlotAreaNode.createTickSpacing( xRange, xTickCount );
+    const ySpacing = GraphPlotAreaNode.createTickSpacing( yRange, yTickCount );
 
     const xTickLabelSet = new TickLabelSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
       edge: 'min',

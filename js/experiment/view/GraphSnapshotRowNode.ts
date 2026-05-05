@@ -46,14 +46,14 @@ export default class GraphSnapshotRowNode extends HBox {
   /**
    * @param xRange - Shared x-axis range for the embedded plot.
    * @param yZoomRanges - Per-zoom-level y-axis ranges used by the plot area.
-   * @param plotOptions - Rendering options for the plot area.
    * @param metadataFields - Ordered fields shown on the second and third legend lines.
+   * @param plotOptions - Rendering options for the plot area.
    */
   public constructor(
     xRange: Range,
     yZoomRanges: Range[],
-    plotOptions: GraphPlotAreaNodeOptions,
-    metadataFields: GraphSnapshotMetadataFieldPair
+    metadataFields: GraphSnapshotMetadataFieldPair,
+    plotOptions: GraphPlotAreaNodeOptions
   ) {
     const snapshotNumberText = new Text( '', {
       font: PhotoelectricEffectConstants.CONTENT_FONT

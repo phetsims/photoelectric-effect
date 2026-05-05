@@ -41,8 +41,8 @@ export default class GraphSnapshotsDialog extends Dialog {
    * @param xRange - Shared x range used by each snapshot plot.
    * @param yZoomRanges - Y zoom presets used by each snapshot plot.
    * @param titleStringProperty - Localized title string shown in this dialog header.
-   * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
    * @param metadataFields - Field ordering for the second and third legend lines (material is always first).
+   * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
    */
   public constructor(
     tandem: Tandem,
@@ -51,8 +51,8 @@ export default class GraphSnapshotsDialog extends Dialog {
     xRange: Range,
     yZoomRanges: Range[],
     titleStringProperty: TReadOnlyProperty<string>,
-    graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions,
-    metadataFields: GraphSnapshotMetadataFieldPair
+    metadataFields: GraphSnapshotMetadataFieldPair,
+    graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions
   ) {
 
     const snapshotPlotOptions = combineOptions<GraphPlotAreaNodeOptions>( {}, graphPlotAreaNodeOptions, {
@@ -64,7 +64,9 @@ export default class GraphSnapshotsDialog extends Dialog {
       // have the full rectangular border so they appear more joined.
       chartViewWidth: 600,
       showXLabels: false,
-      borderStyle: 'line'
+      borderStyle: 'line',
+      xTickCount: 10,
+      yTickCount: 5
     } );
 
     // The bottom-most plot will have x labels, to label all stacked plots.
@@ -77,7 +79,7 @@ export default class GraphSnapshotsDialog extends Dialog {
 
       // The final plot shows x labels (lining them up for all stacked plots).
       const plotOptions = index === GraphData.MAX_SNAPSHOTS - 1 ? labeledSnapshotPlotOptions : snapshotPlotOptions;
-      snapshotRows.push( new GraphSnapshotRowNode( xRange, yZoomRanges, plotOptions, metadataFields ) );
+      snapshotRows.push( new GraphSnapshotRowNode( xRange, yZoomRanges, metadataFields, plotOptions ) );
     } );
 
     const plotsGridBox = new VBox( {

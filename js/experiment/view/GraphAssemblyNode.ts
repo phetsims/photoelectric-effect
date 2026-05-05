@@ -177,8 +177,8 @@ export default class GraphAssemblyNode extends Node {
       xRange,
       yZoomRanges,
       snapshotsDialogTitleStringProperty,
-      graphPlotAreaNodeOptions,
-      snapshotMetadataFields
+      snapshotMetadataFields,
+      graphPlotAreaNodeOptions
     );
 
     const infoButton = new InfoButton( {
