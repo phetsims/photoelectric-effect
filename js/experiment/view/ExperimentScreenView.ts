@@ -9,7 +9,7 @@
  */
 
 import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
-import optionize from '../../../../phet-core/js/optionize.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import CircuitNode from '../../common/view/CircuitNode.js';
@@ -21,9 +21,7 @@ import IntensityCurrentGraphAssemblyNode from './IntensityCurrentGraphAssemblyNo
 import VoltageCurrentGraphAssemblyNode from './VoltageCurrentGraphAssemblyNode.js';
 import VoltageNumberControl from './VoltageNumberControl.js';
 
-type SelfOptions = {
-  //TODO add options that are specific to ExperimentScreenView here
-};
+type SelfOptions = EmptySelfOptions;
 
 type ExperimentScreenViewOptions = SelfOptions & ScreenViewOptions;
 
