@@ -61,12 +61,12 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
 
       const uvText = new Text( PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty, {
         font: PhotoelectricEffectConstants.READOUT_FONT,
-        maxWidth: 50
+        maxWidth: 75
       } );
 
       const irText = new Text( PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty, {
         font: PhotoelectricEffectConstants.READOUT_FONT,
-        maxWidth: 50
+        maxWidth: 18
       } );
 
       const sliderWrapper = new Node( {
@@ -78,10 +78,6 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
         const trackRangeLength = wavelengthRange.getLength();
         const trackLeft = slider.x + 1; // + 1 to account for slider track lineWidth
         const trackCenterY = slider.top + TRACK_SIZE.height / 2 + 1; // + 1 to account for slider track lineWidth
-
-        const labelMaxHeight = 0.75 * TRACK_SIZE.height;
-        uvText.maxHeight = labelMaxHeight;
-        irText.maxHeight = labelMaxHeight;
 
         uvText.centerX = trackLeft +
                          TRACK_SIZE.width * ( VisibleColor.MIN_WAVELENGTH - wavelengthRange.min ) / trackRangeLength / 2;

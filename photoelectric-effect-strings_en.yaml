@@ -46,8 +46,9 @@ experiment:
 showElectrons: 'Show Electrons'
 highestEnergyOnly: 'Highest Energy Only'
 
-spectrumTrack.uvLabel: 'UV'
-spectrumTrack.irLabel: 'IR'
+spectrumTrack:
+  uvLabel: 'UV'
+  irLabel: 'IR'
 
 # FOR DEBUGGING
 workFunction.label: 'Work Function (eV)'

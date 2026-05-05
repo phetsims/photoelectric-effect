@@ -106,11 +106,13 @@
   "highestEnergyOnly": {
     "value": "Highest Energy Only"
   },
-  "spectrumTrack.uvLabel": {
-    "value": "UV"
-  },
-  "spectrumTrack.irLabel": {
-    "value": "IR"
+  "spectrumTrack": {
+    "uvLabel": {
+      "value": "UV"
+    },
+    "irLabel": {
+      "value": "IR"
+    }
   },
   "workFunction.label": {
     "value": "Work Function (eV)"
