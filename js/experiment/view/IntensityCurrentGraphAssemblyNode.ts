@@ -14,6 +14,7 @@ import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotonSource from '../../common/model/PhotonSource.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
@@ -52,9 +53,7 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode
           const isInteger = Math.abs( scaledValue - roundSymmetric( scaledValue ) ) < 1e-6;
           return toFixed( scaledValue, isInteger ? 0 : 2 );
         },
-
-        // TODO: Move this to PhotoelectricEffectColors.ts
-        fill: '#4B853E'
+        fill: PhotoelectricEffectColors.intensityCurrentGraphFillColorProperty
       },
       tandem: providedOptions.tandem
     };

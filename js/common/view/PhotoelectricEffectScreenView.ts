@@ -1,7 +1,11 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * TODO Describe this class and its responsibilities.
+ * Base view shared by all photoelectric-effect screens.
+ *
+ * Owns the common circuit/play-area transform and shared controls (photon source, materials selection, electron
+ * visibility controls, current readout, transport controls, and reset). Subclasses add screen-specific graphing and
+ * play-area content while reusing this layout and PDOM wiring.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -13,7 +17,7 @@ import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import Shape from '../../../../kite/js/Shape.js';
-import optionize from '../../../../phet-core/js/optionize.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
@@ -37,10 +41,7 @@ import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
 import PhotonSourceControl from './PhotonSourceControl.js';
 
-type SelfOptions = {
-  //TODO add options that are specific to PhotoelectricEffectScreenView here
-};
-
+type SelfOptions = EmptySelfOptions;
 type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class PhotoelectricEffectScreenView extends ScreenView {
@@ -209,7 +210,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const resetAllButton = new ResetAllButton( {
       listener: () => {
         model.reset();
-        this.reset();
       },
       right: this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
       bottom: this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN,
@@ -263,14 +263,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         leftTop: this.photonSourceControl.rightTop
       } ) );
     }
-  }
-
-
-  /**
-   * Resets the view.
-   */
-  public reset(): void {
-    //TODO
   }
 
   /**

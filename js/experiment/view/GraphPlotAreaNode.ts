@@ -33,7 +33,6 @@ import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import type TColor from '../../../../scenery/js/util/TColor.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
 type TickSetGroup = {
@@ -163,10 +162,6 @@ export default class GraphPlotAreaNode extends Node {
         lineJoin: 'round'
       },
       showCurrentPointMarker: true,
-
-      // TODO: Consider tandems, but instinct is to opt out because this is a purely visual rendering of the
-      //   plotted area (no buttons, no state, no data).
-      tandem: Tandem.OPT_OUT,
       isDisposable: false
     }, providedOptions );
 
@@ -299,8 +294,7 @@ export default class GraphPlotAreaNode extends Node {
 
     this.zoomLevelProperty = new NumberProperty( 1, {
       range: new Range( 1, this.yZoomRanges.length ),
-      numberType: 'Integer',
-      tandem: options.tandem.createTandem( 'zoomLevelProperty' )
+      numberType: 'Integer'
     } );
 
     this.zoomLevelObserver = ( zoomLevel: number ) => {

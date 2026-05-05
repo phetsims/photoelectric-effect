@@ -1,10 +1,12 @@
 // Copyright 2024-2026, University of Colorado Boulder
 
 /**
- * TODO: describe file
+ * GroundedCircuitNode renders the Intro screen's simplified grounded target plate.
+ *
+ * This node composes the target plate artwork with a fixed ground-wire path so Intro can show a grounded
+ * configuration without the full experiment-screen circuit assembly.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
- *
  */
 
 import Shape from '../../../../kite/js/Shape.js';
@@ -20,7 +22,6 @@ type SelfOptions = EmptySelfOptions;
 type GroundedCircuitNodeOptions = SelfOptions & StrictOmit<NodeOptions, 'children'>;
 
 export default class GroundedCircuitNode extends Node {
-
   public constructor( modelViewTransform: ModelViewTransform2, providedOptions: GroundedCircuitNodeOptions ) {
     const targetPlate = CircuitFactory.createPlateWithMaterial( {
       rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 )

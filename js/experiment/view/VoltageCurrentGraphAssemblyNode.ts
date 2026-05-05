@@ -12,6 +12,7 @@ import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import GraphAssemblyNode, { type GraphAssemblyNodeOptions } from './GraphAssemblyNode.js';
@@ -44,9 +45,7 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
         gridXSpacing: 2,
         gridYSpacing: PhotoelectricEffectConstants.MAX_CURRENT / 4,
-
-        // TODO: Move this to PhotoelectricEffectColors.ts
-        fill: '#E03722'
+        fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty
       },
       tandem: providedOptions.tandem
     };

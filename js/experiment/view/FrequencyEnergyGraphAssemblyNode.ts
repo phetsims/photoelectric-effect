@@ -11,6 +11,7 @@ import Range from '../../../../dot/js/Range.js';
 import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import GraphAssemblyNode, { type GraphAssemblyNodeOptions } from './GraphAssemblyNode.js';
@@ -47,9 +48,7 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
         yAxisLabelYOffset: 10,
         gridXSpacing: 0.25,
         gridYSpacing: 0.25,
-
-        // TODO: Move this to PhotoelectricEffectColors.ts
-        fill: '#7090F5'
+        fill: PhotoelectricEffectColors.frequencyEnergyGraphFillColorProperty
       },
       tandem: providedOptions.tandem
     };

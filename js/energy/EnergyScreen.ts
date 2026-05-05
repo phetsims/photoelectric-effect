@@ -9,17 +9,14 @@
  */
 
 import Screen, { ScreenOptions } from '../../../joist/js/Screen.js';
-import optionize from '../../../phet-core/js/optionize.js';
+import optionize, { EmptySelfOptions } from '../../../phet-core/js/optionize.js';
 import Material from '../common/model/Material.js';
 import PhotoelectricEffectColors from '../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../PhotoelectricEffectFluent.js';
 import EnergyModel from './model/EnergyModel.js';
 import EnergyScreenView from './view/EnergyScreenView.js';
 
-type SelfOptions = {
-  //TODO add options that are specific to EnergyScreen here
-};
-
+type SelfOptions = EmptySelfOptions;
 type EnergyScreenOptions = SelfOptions & ScreenOptions;
 
 export default class EnergyScreen extends Screen<EnergyModel, EnergyScreenView> {
@@ -28,10 +25,6 @@ export default class EnergyScreen extends Screen<EnergyModel, EnergyScreenView> 
 
     const options = optionize<EnergyScreenOptions, SelfOptions, ScreenOptions>()( {
       name: PhotoelectricEffectFluent.screen.energyStringProperty,
-
-      //TODO add default values for optional SelfOptions here
-
-      //TODO add default values for optional ScreenOptions here
       backgroundColorProperty: PhotoelectricEffectColors.screenBackgroundColorProperty
     }, providedOptions );
 

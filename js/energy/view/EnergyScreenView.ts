@@ -9,13 +9,11 @@
  */
 
 import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
+import { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
 import EnergyModel from '../model/EnergyModel.js';
 
-type SelfOptions = {
-  //TODO add options that are specific to EnergyScreenView here
-};
-
+type SelfOptions = EmptySelfOptions;
 type EnergyScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class EnergyScreenView extends PhotoelectricEffectScreenView {

@@ -75,4 +75,19 @@ export default class PhotoelectricEffectColors {
   public static readonly ammeterPanelFillColorProperty = new ProfileColorProperty( photoelectricEffect, 'ammeterPanelFill', {
     default: '#eab253'
   } );
+
+  public static readonly frequencyEnergyGraphFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'frequencyEnergyGraphFillColor', {
+      default: '#7090F5'
+    } );
+
+  public static readonly intensityCurrentGraphFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'intensityCurrentGraphFillColor', {
+      default: '#4B853E'
+    } );
+
+  public static readonly voltageCurrentGraphFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'voltageCurrentGraphFillColor', {
+      default: '#E03722'
+    } );
 }
