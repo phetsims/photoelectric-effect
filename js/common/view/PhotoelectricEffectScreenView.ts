@@ -13,7 +13,7 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
-import Bounds2 from '../../../../dot/js/Bounds2.js';
+import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import Shape from '../../../../kite/js/Shape.js';
@@ -25,15 +25,13 @@ import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
-import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
-import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
-import { wavelengthToEnergy } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
 import CircuitNode from './CircuitNode.js';
 import LightSourceNode from './LightSourceNode.js';
@@ -265,13 +263,5 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
    */
   public override step( _dt: number ): void {
     this.particleCanvasNode.step();
-  }
-
-  private createBoundsRectangle( bounds: Bounds2, stroke: string ): Rectangle {
-    return new Rectangle( bounds, {
-      stroke: stroke,
-      lineWidth: 1,
-      fill: null
-    } );
   }
 }
