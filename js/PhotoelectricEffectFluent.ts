@@ -141,7 +141,7 @@ const PhotoelectricEffectFluent = {
     uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
     irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )
   },
-  _comment_2: new FluentComment( {"comment":"TODO: What should these be?","associatedKey":"workFunction"} ),
+  _comment_2: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
   workFunction: {
     _comment_0: new FluentComment( {"comment":"FOR DEBUGGING","associatedKey":"workFunction.label"} ),
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'workFunction.labelStringProperty' )
@@ -178,7 +178,7 @@ const PhotoelectricEffectFluent = {
     mysteryMaterial: {
       labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.labelStringProperty' ),
       descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.descriptionStringProperty' ),
-      _comment_0: new FluentComment( {"comment":"TODO: What should these be?","associatedKey":"workFunction"} ),
+      _comment_0: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
       workFunction: {
         labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.workFunction.labelStringProperty' ),
         descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' )
