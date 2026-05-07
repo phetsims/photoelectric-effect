@@ -243,11 +243,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
    * Returns true when the electron is absorbed by the collector.
    */
   protected handleElectronCollectorCollision( electron: Electron ): boolean {
-    const absorbed = this.collector.isHitByElectron( electron );
-    if ( absorbed ) {
-      console.log( 'HIT DETECTED!' );
-    }
-    return absorbed;
+    return this.collector.isHitByElectron( electron );
   }
 
   /**

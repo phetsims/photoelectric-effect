@@ -14,6 +14,7 @@
  * @author Marla Schulz (PhET Interactive Simulations)
  */
 
+import VisibleColor from '../../../scenery-phet/js/VisibleColor.js';
 import ProfileColorProperty from '../../../scenery/js/util/ProfileColorProperty.js';
 import photoelectricEffect from '../photoelectricEffect.js';
 
@@ -31,6 +32,22 @@ export default class PhotoelectricEffectColors {
   public static readonly photonColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonColor', {
       default: 'purple'
     } );
+
+  public static readonly photonOrbInnerColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonOrbInnerColor', {
+    default: 'rgba(255, 255, 255, 0.7)'
+  } );
+
+  public static readonly photonVisibleSparkleColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonVisibleSparkleColor', {
+    default: 'rgba(255, 255, 255, 0.4)'
+  } );
+
+  public static readonly photonUVSparkleColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonUVSparkleColor', {
+    default: VisibleColor.wavelengthToColor( 400 )
+  } );
+
+  public static readonly photonIRSparkleColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonIRSparkleColor', {
+    default: VisibleColor.wavelengthToColor( 715 )
+  } );
 
   public static readonly electronColorProperty = new ProfileColorProperty( photoelectricEffect, 'electronColor', {
     default: 'cyan'

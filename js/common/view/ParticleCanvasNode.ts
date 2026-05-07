@@ -6,18 +6,21 @@
  * @author Marla Schulz (PhET Interactive Simulations)
  */
 
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import { toRadians } from '../../../../dot/js/util/toRadians.js';
 import { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
+import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
 import CanvasNode, { CanvasNodeOptions } from '../../../../scenery/js/nodes/CanvasNode.js';
 import Color from '../../../../scenery/js/util/Color.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Electron from '../model/Electron.js';
 import Particle from '../model/Particle.js';
+import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import Photon from '../model/Photon.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 
-const PHOTON_RADIUS = 3.5;
+const PHOTON_RADIUS = 10;
 const ELECTRON_RADIUS = 2.5;
 
 type SelfOptions = EmptySelfOptions;
@@ -36,7 +39,7 @@ export default class ParticleCanvasNode extends CanvasNode {
   }
 
   public override paintCanvas( context: CanvasRenderingContext2D ): void {
-    this.drawParticles( context, this.photons, PHOTON_RADIUS, PhotoelectricEffectColors.photonColorProperty.value );
+    this.drawPhotons( context );
 
     if ( this.showElectronsProperty.value ) {
       this.drawParticles( context, this.electrons, ELECTRON_RADIUS, PhotoelectricEffectColors.electronColorProperty.value );
@@ -61,4 +64,71 @@ export default class ParticleCanvasNode extends CanvasNode {
   public step(): void {
     this.invalidatePaint();
   }
+
+  // Photons match the style of PhotonNode in Models of the Hydrogen Atom. They must be drawn on canvas for
+  // performance. There is an orb surrounded by a halo gradient, and a sparkle of two pairs of crosshair ellipses.
+  // The halo and orb colors are based on the wavelength of the photon, and the sparkle color is based on whether
+  // the wavelength is visible, UV, or IR.
+  private drawPhotons( context: CanvasRenderingContext2D ): void {
+    this.photons.forEach( photon => {
+      const x = this.modelViewTransform.modelToViewX( photon.position.x );
+      const y = this.modelViewTransform.modelToViewY( photon.position.y );
+      const baseColor = wavelengthToColor( photon.wavelength );
+
+      // Halo: wavelength color at 40% fading to transparent at edge
+      const haloGradient = context.createRadialGradient( x, y, 0, x, y, PHOTON_RADIUS );
+      haloGradient.addColorStop( 0.4, baseColor.toCSS() );
+      haloGradient.addColorStop( 1, baseColor.withAlpha( 0 ).toCSS() );
+      context.beginPath();
+      context.arc( x, y, PHOTON_RADIUS, 0, 2 * Math.PI );
+      context.fillStyle = haloGradient;
+      context.fill();
+
+      // Orb: white-core gradient fading to wavelength color
+      const orbRadius = 0.5 * PHOTON_RADIUS;
+      const orbGradient = context.createRadialGradient( x, y, 0, x, y, orbRadius );
+      orbGradient.addColorStop( 0.25, PhotoelectricEffectColors.photonOrbInnerColorProperty.value.toCSS() );
+      orbGradient.addColorStop( 1, baseColor.withAlpha( 0.5 ).toCSS() );
+      context.beginPath();
+      context.arc( x, y, orbRadius, 0, 2 * Math.PI );
+      context.fillStyle = orbGradient;
+      context.fill();
+
+      // Sparkle: two pairs of crosshair ellipses, offset by 45 degrees
+      const sparkleRadius = 0.575 * PHOTON_RADIUS;
+      const sparkleColor = getSparkleColor( photon.wavelength );
+      drawCrosshairs( context, x, y, sparkleRadius, sparkleColor, toRadians( 18 ) );
+      drawCrosshairs( context, x, y, 0.7 * sparkleRadius, sparkleColor, toRadians( 63 ) );
+    } );
+  }
+}
+
+// The sparkle will be one color for visible wavelengths and different colors for UV and IR, so that it is visible
+// even when the orb and halo are very faint.
+function getSparkleColor( wavelength: number ): string {
+  if ( wavelength < VisibleColor.MIN_WAVELENGTH ) {
+    return PhotoelectricEffectColors.photonUVSparkleColorProperty.value.toCSS();
+  }
+  else if ( wavelength > VisibleColor.MAX_WAVELENGTH ) {
+    return PhotoelectricEffectColors.photonIRSparkleColorProperty.value.toCSS();
+  }
+  else {
+    return PhotoelectricEffectColors.photonVisibleSparkleColorProperty.value.toCSS();
+  }
+}
+
+// The crosshairs are two ellipses that intersect. Used to create the "sparkle" of the photon drawing.
+function drawCrosshairs( context: CanvasRenderingContext2D, cx: number, cy: number,
+                         radius: number, color: string, rotation: number ): void {
+  context.fillStyle = color;
+
+  // Horizontal ellipse
+  context.beginPath();
+  context.ellipse( cx, cy, radius, 0.1 * radius, rotation, 0, 2 * Math.PI );
+  context.fill();
+
+  // Vertical ellipse (90-degree rotation of the horizontal)
+  context.beginPath();
+  context.ellipse( cx, cy, 0.1 * radius, radius, rotation, 0, 2 * Math.PI );
+  context.fill();
 }
