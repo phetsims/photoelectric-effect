@@ -15,24 +15,9 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
 
   // Whether the mystery material is initially enabled.
   // TODO: @design, do we want to keep this?
-  mysteryMaterial1Enabled: {
-    public: true,
-    type: 'flag'
-  },
-
-  // Whether the mystery material is initially enabled.
-  // TODO: @design, do we want to keep this?
   mysteryMaterial2Enabled: {
     public: true,
     type: 'flag'
-  },
-
-  // TODO: @design, Do we want to keep this?
-  // Initial work function (in eV) mystery material 1.
-  mysteryMaterial1WorkFunction: {
-    public: true,
-    type: 'number',
-    defaultValue: 5
   },
 
   // TODO: @design, Do we want to keep this?
