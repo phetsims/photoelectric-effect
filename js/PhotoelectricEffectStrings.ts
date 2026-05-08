@@ -60,6 +60,15 @@ type StringsType = {
     'burstStringProperty': LocalizedStringProperty;
     'fireStringProperty': LocalizedStringProperty;
   };
+  'energy': {
+    'graph': {
+      'legend': {
+        'potentialEnergyStringProperty': LocalizedStringProperty;
+        'photonEnergyStringProperty': LocalizedStringProperty;
+        'kineticEnergyStringProperty': LocalizedStringProperty;
+      }
+    }
+  };
   'showElectronsStringProperty': LocalizedStringProperty;
   'highestEnergyOnlyStringProperty': LocalizedStringProperty;
   'spectrumTrack': {

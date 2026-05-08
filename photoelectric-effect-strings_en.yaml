@@ -50,6 +50,14 @@ photonQuantity:
   burst: 'Burst'
   fire: 'Fire'
 
+# Energy graphs
+energy:
+  graph:
+    legend:
+      potentialEnergy: 'Potential Energy'
+      photonEnergy: 'Photon Energy'
+      kineticEnergy: 'Kinetic Energy'
+
 showElectrons: 'Show Electrons'
 highestEnergyOnly: 'Highest Energy Only'
 

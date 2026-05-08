@@ -60,6 +60,9 @@ addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 
 addToMapIfDefined( 'photonQuantity_single', 'photonQuantity.singleStringProperty' );
 addToMapIfDefined( 'photonQuantity_burst', 'photonQuantity.burstStringProperty' );
 addToMapIfDefined( 'photonQuantity_fire', 'photonQuantity.fireStringProperty' );
+addToMapIfDefined( 'energy_graph_legend_potentialEnergy', 'energy.graph.legend.potentialEnergyStringProperty' );
+addToMapIfDefined( 'energy_graph_legend_photonEnergy', 'energy.graph.legend.photonEnergyStringProperty' );
+addToMapIfDefined( 'energy_graph_legend_kineticEnergy', 'energy.graph.legend.kineticEnergyStringProperty' );
 addToMapIfDefined( 'showElectrons', 'showElectronsStringProperty' );
 addToMapIfDefined( 'highestEnergyOnly', 'highestEnergyOnlyStringProperty' );
 addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
@@ -136,6 +139,7 @@ const PhotoelectricEffectFluent = {
     introStringProperty: _.get( PhotoelectricEffectStrings, 'screen.introStringProperty' ),
     _comment_0: new FluentComment( {"comment":"Experiment graphs","associatedKey":"experiment"} ),
     experimentStringProperty: _.get( PhotoelectricEffectStrings, 'screen.experimentStringProperty' ),
+    _comment_1: new FluentComment( {"comment":"Energy graphs","associatedKey":"energy"} ),
     energyStringProperty: _.get( PhotoelectricEffectStrings, 'screen.energyStringProperty' )
   },
   materials: {
@@ -180,13 +184,23 @@ const PhotoelectricEffectFluent = {
     burstStringProperty: _.get( PhotoelectricEffectStrings, 'photonQuantity.burstStringProperty' ),
     fireStringProperty: _.get( PhotoelectricEffectStrings, 'photonQuantity.fireStringProperty' )
   },
+  _comment_2: new FluentComment( {"comment":"Energy graphs","associatedKey":"energy"} ),
+  energy: {
+    graph: {
+      legend: {
+        potentialEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.potentialEnergyStringProperty' ),
+        photonEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.photonEnergyStringProperty' ),
+        kineticEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.kineticEnergyStringProperty' )
+      }
+    }
+  },
   showElectronsStringProperty: _.get( PhotoelectricEffectStrings, 'showElectronsStringProperty' ),
   highestEnergyOnlyStringProperty: _.get( PhotoelectricEffectStrings, 'highestEnergyOnlyStringProperty' ),
   spectrumTrack: {
     uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
     irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )
   },
-  _comment_2: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
+  _comment_3: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
   workFunction: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'workFunction.labelStringProperty' )
   },

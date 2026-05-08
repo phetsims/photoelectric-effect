@@ -18,6 +18,7 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 import MaterialsComboBox from '../../common/view/MaterialsComboBox.js';
 import GroundedCircuitNode from '../../intro/view/GroundedCircuitNode.js';
 import EnergyModel from '../model/EnergyModel.js';
+import EnergyGraphAccordionBox from './EnergyGraphAccordionBox.js';
 import EnergyLightSourceNode from './EnergyLightSourceNode.js';
 import EnergyPhotonSourcePanel from './EnergyPhotonSourcePanel.js';
 
@@ -77,6 +78,14 @@ export default class EnergyScreenView extends ScreenView {
     this.addChild( photonSourceWireNode );
     this.addChild( photonSourcePanel );
     this.addChild( lightSourceNode );
+
+    const energyGraphAccordionBox = new EnergyGraphAccordionBox( {
+      right: this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      top: this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN,
+      tandem: options.tandem.createTandem( 'energyGraphAccordionBox' )
+    } );
+
+    this.addChild( energyGraphAccordionBox );
 
     const resetAllButton = new ResetAllButton( {
       listener: () => {

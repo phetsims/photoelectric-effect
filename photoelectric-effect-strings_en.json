@@ -117,6 +117,21 @@
       "value": "Fire"
     }
   },
+  "energy": {
+    "graph": {
+      "legend": {
+        "potentialEnergy": {
+          "value": "Potential Energy"
+        },
+        "photonEnergy": {
+          "value": "Photon Energy"
+        },
+        "kineticEnergy": {
+          "value": "Kinetic Energy"
+        }
+      }
+    }
+  },
   "showElectrons": {
     "value": "Show Electrons"
   },

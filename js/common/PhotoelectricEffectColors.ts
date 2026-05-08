@@ -107,4 +107,22 @@ export default class PhotoelectricEffectColors {
     photoelectricEffect, 'voltageCurrentGraphFillColor', {
       default: '#E03722'
     } );
+
+  // Color for potential energy in the Energy screen graph.
+  public static readonly potentialEnergyGraphColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'potentialEnergyGraphColor', {
+      default: '#417e23'
+    } );
+
+  // Color for photon energy in the Energy screen graph.
+  public static readonly photonEnergyGraphColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'photonEnergyGraphColor', {
+      default: '#974075'
+    } );
+
+  // Color for kinetic energy in the Energy screen graph.
+  public static readonly kineticEnergyGraphColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'kineticEnergyGraphColor', {
+      default: '#2a29f5'
+    } );
 }
