@@ -125,4 +125,10 @@ export default class PhotoelectricEffectColors {
     photoelectricEffect, 'kineticEnergyGraphColor', {
       default: '#2a29f5'
     } );
+
+  // Color for the conduction band in the Energy screen energy diagram.
+  public static readonly conductionBandEnergyDiagramColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'conductionBandEnergyDiagramColor', {
+      default: '#5fabd7'
+    } );
 }
