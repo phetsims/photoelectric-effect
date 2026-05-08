@@ -32,6 +32,10 @@ const MATERIAL_LABEL_KEY_OVERRIDES: Record<string, TReadOnlyProperty<string>> = 
   mystery5: PhotoelectricEffectFluent.materials.mystery5StringProperty
 };
 
+/**
+ * Gets the display label for a material, preferring label-key overrides and then falling back
+ * to the material type.
+ */
 const getMaterialLabelStringProperty = ( materialType: MaterialType, materialLabelKey: string | null ): TReadOnlyProperty<string> => {
   const labelStringProperty = materialLabelKey !== null ?
                               MATERIAL_LABEL_KEY_OVERRIDES[ materialLabelKey ] :
