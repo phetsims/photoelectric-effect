@@ -374,12 +374,6 @@ export default class GraphPlotAreaNode extends Node {
       tickLabelNode.children = options.showXLabels ?
         [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ] :
         [ this.tickSets.yTickLabelSet ];
-      GraphPlotAreaNode.updateAxisLabelPositions(
-        this.plotBounds,
-        options.yAxisLabelYOffset,
-        xAxisLabelText,
-        yAxisLabelText
-      );
 
       previousTickSets.xTickLabelSet.dispose();
       previousTickSets.yTickLabelSet.dispose();
