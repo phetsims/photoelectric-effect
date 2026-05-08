@@ -37,10 +37,10 @@ export default class FrequencyEnergyGraphData extends GraphData {
       model.photonSource.wavelengthProperty,
       createDataPointAtFrequency,
       [
-        model.target.materialProperty,
 
-        // TODO: @design Should the work function clear the frequency/energy data? Its efectively like changing the
-        //   material, so I wasn't sure.
+        // Changing the material changes the relationship and should clear teh data. Customizing the work
+        // function is effectively changing the material.
+        model.target.materialProperty,
         model.target.workFunctionProperty
       ],
       model.resetEmitter,
