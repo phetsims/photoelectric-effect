@@ -3,12 +3,9 @@
 /**
  * PhotoelectricEffectMysteryMaterials defines all global mystery material instances for the sim.
  *
- * TODO: Now that mystery material 1 acts more like a "typical" material (always enabled, static work function),
- *   should it still live in this file? Is this file for "globals" or "mystery" materials?
- * TODO: @design - to answer the above, how would you like phet-io customization to work? Should a single Property
- *   drive the work function for mystery material on all screens? If so, it should stay here.
  * PREFERENCES_MYSTERY_MATERIAL_1 is always enabled and its work function cannot change from Preferences,
- * but it can change from PhET-iO.
+ * but it can change from PhET-iO. It is still global and when the work function is changed, it applies to
+ * all screens.
  *
  * PREFERENCES_MYSTERY_MATERIAL_2 is enabled and user-configurable via the Preferences dialog. Its work function
  * is exposed through PhotoelectricEffectPreferences and persists across sessions.
@@ -27,7 +24,6 @@
 import Tandem from '../../../../tandem/js/Tandem.js';
 import Material, { MaterialType } from './Material.js';
 
-// The mystery materials whose work functions are user-configurable via the Preferences dialog.
 const PREFERENCES_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial1' ),
   labelKey: 'mystery1',
@@ -38,8 +34,6 @@ const PREFERENCES_MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
   labelKey: 'mystery2',
   enabled: false
 } );
-
-// Mystery materials reserved for PhET-iO client control. Work functions are not exposed in the sim UI.
 const PHET_IO_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial1' ),
   labelKey: 'mystery3',
