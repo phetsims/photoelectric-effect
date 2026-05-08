@@ -4,8 +4,6 @@
  * Particle-based photoelectric effect model.
  * Owns the photon and electron collections and computes analytic current.
  *
- * TODO: @design Review PhET-iO documentation strings with the design team.
- *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -122,8 +120,6 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     const customMaterials = createCustomMaterials ? createCustomMaterials( materialsTandem ) : [];
 
     const standardMaterials = [
-
-      // TODO @design, is this the right tandem Name for materials?
       new Material( MaterialType.SODIUM, { tandem: materialsTandem.createTandem( 'sodium' ) } ),
       new Material( MaterialType.COPPER, { tandem: materialsTandem.createTandem( 'copper' ) } ),
       new Material( MaterialType.CALCIUM, { tandem: materialsTandem.createTandem( 'calcium' ) } ),
