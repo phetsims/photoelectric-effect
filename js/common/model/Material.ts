@@ -119,12 +119,8 @@ export default class Material extends PhetioObject {
    */
   public readonly enabledProperty: BooleanProperty;
 
-  // TODO: @design How is this going to work? Will different mystery/custom materials have different
-  //   ranges? If so, we need to assign this to each type or maybe even each Material instance.
-  //   For now, this is convenient because we can use one range for every work function Property
-  //   and know that it will be available when we create UI components.
   // Range for the work function of the material in eV.
-  public static readonly WORK_FUNCTION_RANGE = new Range( 1.5, 7 );
+  public static readonly WORK_FUNCTION_RANGE = new Range( 1, 10 );
 
   /**
    * Creates a material instance with its own work function Property.
