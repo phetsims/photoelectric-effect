@@ -60,7 +60,7 @@ const SNAPSHOT_SAVED_MESSAGE_MARGIN = 4;
 type SelfOptions = {
 
   // Nested options forwarded to GraphPlotAreaNode.
-  graphPlotAreaNodeOptions?: GraphPlotAreaNodeOptions;
+  graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions;
 
   // Accessible names for each button in the right-side column.
   expandCollapseButtonAccessibleNameProperty: TReadOnlyProperty<string>;
@@ -101,12 +101,11 @@ export default class GraphAssemblyNode extends Node {
     providedOptions: GraphAssemblyNodeOptions
   ) {
     const options = optionize<GraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {
-      isDisposable: false,
-      graphPlotAreaNodeOptions: {}
+      isDisposable: false
     }, providedOptions );
 
     const tandem = options.tandem;
-    const graphPlotAreaNodeOptions = options.graphPlotAreaNodeOptions ?? {};
+    const graphPlotAreaNodeOptions = options.graphPlotAreaNodeOptions;
 
     super( options );
 

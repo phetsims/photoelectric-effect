@@ -91,11 +91,11 @@ type GraphPlotAreaSelfOptions = {
   chartViewWidth?: number;
   chartViewHeight?: number;
 
-  // Optional X-axis label centered beneath the chart. Null hides the label.
-  xAxisLabelStringProperty?: TReadOnlyProperty<string> | null;
+  // X-axis label centered beneath the chart.
+  xAxisLabelStringProperty: TReadOnlyProperty<string>;
 
-  // Optional Y-axis label rotated along the left side of the chart. Null hides the label.
-  yAxisLabelStringProperty?: TReadOnlyProperty<string> | null;
+  // Y-axis label rotated along the left side of the chart.
+  yAxisLabelStringProperty: TReadOnlyProperty<string>;
 
   // Additional vertical offset applied to the Y-axis label (view coordinates).
   yAxisLabelYOffset?: number;
@@ -174,11 +174,13 @@ export default class GraphPlotAreaNode extends Node {
     providedOptions: GraphPlotAreaNodeOptions
   ) {
 
-    const options = optionize<GraphPlotAreaNodeOptions, GraphPlotAreaSelfOptions, NodeOptions>()( {
+    const options = optionize<
+      GraphPlotAreaNodeOptions,
+      StrictOmit<GraphPlotAreaSelfOptions, 'xAxisLabelStringProperty' | 'yAxisLabelStringProperty'>,
+      NodeOptions
+    >()( {
       chartViewWidth: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH,
       chartViewHeight: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT,
-      xAxisLabelStringProperty: null,
-      yAxisLabelStringProperty: null,
       yAxisLabelYOffset: 0,
       xTickLabelFormatter: null,
       yTickLabelFormatter: null,
@@ -270,16 +272,14 @@ export default class GraphPlotAreaNode extends Node {
       children: this.currentPointPlot ? [ this.linePlot, this.currentPointPlot ] : [ this.linePlot ]
     } );
 
-    const xAxisLabelText = ( options.showXLabels && options.xAxisLabelStringProperty ) ?
-                           new RichText( options.xAxisLabelStringProperty, {
-                             font: PhotoelectricEffectConstants.READOUT_FONT,
-                             visible: options.showXLabels
-                           } ) : null;
+    const xAxisLabelText = new RichText( options.xAxisLabelStringProperty, {
+      font: PhotoelectricEffectConstants.READOUT_FONT
+    } );
 
-    const yAxisLabelText = options.yAxisLabelStringProperty ? new RichText( options.yAxisLabelStringProperty, {
+    const yAxisLabelText = new RichText( options.yAxisLabelStringProperty, {
       font: PhotoelectricEffectConstants.READOUT_FONT,
       rotation: -Math.PI / 2
-    } ) : null;
+    } );
 
     this.tickSets = GraphPlotAreaNode.createTickSets(
       this.chartTransform,
@@ -325,12 +325,10 @@ export default class GraphPlotAreaNode extends Node {
       borderNode,
       tickLabelNode
     ];
-    if ( xAxisLabelText ) {
+    if ( options.showXLabels ) {
       chartChildren.push( xAxisLabelText );
     }
-    if ( yAxisLabelText ) {
-      chartChildren.push( yAxisLabelText );
-    }
+    chartChildren.push( yAxisLabelText );
 
     this.addChild( new Node( {
       children: chartChildren
@@ -585,16 +583,12 @@ export default class GraphPlotAreaNode extends Node {
   private static updateAxisLabelPositions(
     chartBounds: Bounds2,
     yAxisLabelYOffset: number,
-    xAxisLabelText: RichText | null,
-    yAxisLabelText: RichText | null
+    xAxisLabelText: RichText,
+    yAxisLabelText: RichText
   ): void {
-    if ( xAxisLabelText ) {
-      xAxisLabelText.centerTop = chartBounds.centerBottom.plusXY( 0, AXIS_LABEL_MARGIN + X_AXIS_TICK_LABEL_GUTTER );
-    }
-    if ( yAxisLabelText ) {
-      yAxisLabelText.rightCenter = chartBounds.leftCenter
-        .minusXY( AXIS_LABEL_MARGIN + Y_AXIS_TICK_LABEL_GUTTER, 0 )
-        .plusXY( 0, yAxisLabelYOffset );
-    }
+    xAxisLabelText.centerTop = chartBounds.centerBottom.plusXY( 0, AXIS_LABEL_MARGIN + X_AXIS_TICK_LABEL_GUTTER );
+    yAxisLabelText.rightCenter = chartBounds.leftCenter
+      .minusXY( AXIS_LABEL_MARGIN + Y_AXIS_TICK_LABEL_GUTTER, 0 )
+      .plusXY( 0, yAxisLabelYOffset );
   }
 }
