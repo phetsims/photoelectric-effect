@@ -178,10 +178,10 @@
     },
     "photonMode": {
       "label": {
-        "value": "Control light source intensity"
+        "value": "Normalize intensity"
       },
       "description": {
-        "value": "Number of photons depends on frequency of the light."
+        "value": "When intensity is normalized, number of photons emitted is independent of photon wavelength."
       }
     }
   }

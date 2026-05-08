@@ -77,5 +77,5 @@ preferences:
       label: 'Mystery Material Work Function (eV)'
       description: 'Set the work function of the mystery material.'
   photonMode:
-    label: 'Control light source intensity'
-    description: 'Number of photons depends on frequency of the light.'
+    label: 'Normalize intensity'
+    description: 'When intensity is normalized, number of photons emitted is independent of photon wavelength.'
