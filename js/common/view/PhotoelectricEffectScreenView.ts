@@ -193,15 +193,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       )
     } );
 
-    // When electrons become invisible, the "highest energy only" is not relevant and becomes unavailable.
-    // Reset to false so that it is clearly not selected in the UI.
-    // TODO: @design is this behavior correct?
-    model.showElectronsProperty.link( showElectrons => {
-      if ( !showElectrons ) {
-        model.showHighestEnergyOnlyProperty.value = false;
-      }
-    } );
-
     this.addChild( this.materialsComboBox );
     this.addChild( workFunctionControl );
     this.addChild( this.electronVisibilityControls );
