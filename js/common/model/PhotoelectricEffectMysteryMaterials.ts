@@ -3,9 +3,6 @@
 /**
  * PhotoelectricEffectMysteryMaterials defines all global mystery material instances for the sim.
  *
- * TODO: @design, are you OK with all of these materials being globals (state shared across all screens,
- *   not reset from ResetAllButton, will have different location in the phetio tree, and so on...)
- *
  * TODO: Now that mystery material 1 acts more like a "typical" material (always enabled, static work function),
  *   should it still live in this file? Is this file for "globals" or "mystery" materials?
  * TODO: @design - to answer the above, how would you like phet-io customization to work? Should a single Property
