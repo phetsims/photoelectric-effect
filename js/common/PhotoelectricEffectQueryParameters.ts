@@ -14,13 +14,11 @@ import { PhotonModeValues } from './model/PhotonMode.js';
 const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
 
   // Whether the mystery material is initially enabled.
-  // TODO: @design, do we want to keep this?
   mysteryMaterial2Enabled: {
     public: true,
     type: 'flag'
   },
 
-  // TODO: @design, Do we want to keep this?
   // Initial work function (in eV) for mystery material 2.
   mysteryMaterial2WorkFunction: {
     public: true,
@@ -28,7 +26,6 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
     defaultValue: 5
   },
 
-  // todo: @design, do you want to keep this? Should it be public?
   // Whether the photon source control directly sets the photon emission rate.
   photonMode: {
     public: true,
