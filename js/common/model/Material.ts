@@ -21,37 +21,58 @@ import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioO
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 
+type MaterialTypeOptions = {
+
+  // Whether the material's work function is read-only through PhET-iO. Defaults to true because most material
+  // types represent fixed physical materials.
+  workFunctionPhetioReadOnly?: boolean;
+};
+
 export class MaterialType extends EnumerationValue {
 
-  // All of the work functions for the following MaterialTypes cannot be set by the user, but they
-  // could be customized with phet-io.
-  // TODO @design: Do we want to protect against phet-io changes to these work function values?
-  //   Luckily, the way we reset materials should prevent these values from being reset if they are customized
-  //   with phet-io.
+  // All of the work functions for the following MaterialTypes cannot be set by the user or PhET-iO.
   public static readonly SODIUM = new MaterialType( 2.3 );
   public static readonly COPPER = new MaterialType( 4.7 );
   public static readonly CALCIUM = new MaterialType( 2.9 );
   public static readonly PLATINUM = new MaterialType( 6.3 );
   public static readonly ZINC = new MaterialType( 4.3 );
 
-  // Mystery materials are for teachers and phet-io clients. The work function will only be set from
+  // Mystery materials are for teachers and PhET-iO clients. The work function will only be set from
   // preferences or with a PhET-iO customization. As such, simulation reset should not affect the
   // workFunctionProperty of mystery materials.
   // This work function value matches "Magnesium", matching the behavior of "Mystery" material from the java.
-  public static readonly MYSTERY = new MaterialType( 3.7 );
+  public static readonly MYSTERY = new MaterialType( 3.7, {
+    workFunctionPhetioReadOnly: false
+  } );
 
   // Controllable by the student, the custom material will have a work function control right in the
   // simulation. Reset should set the workFunctionProperty back to its initial value.
-  public static readonly CUSTOM = new MaterialType( 5 );
+  public static readonly CUSTOM = new MaterialType( 5, {
+    workFunctionPhetioReadOnly: false
+  } );
 
   // Must be defined after all values are declared.
   public static readonly enumeration = new Enumeration( MaterialType );
 
   /**
-   * @param workFunctionInitialValue - initial work function value in eV for this material type
+   * Whether the work function is read-only through PhET-iO.
    */
-  public constructor( public readonly workFunctionInitialValue: number ) {
+  public readonly workFunctionPhetioReadOnly: boolean;
+
+  /**
+   * Creates a material type with a default work-function value and PhET-iO mutability policy.
+   *
+   * @param workFunctionInitialValue - initial work function value in eV for this material type
+   * @param providedOptions
+   */
+  public constructor( public readonly workFunctionInitialValue: number, providedOptions?: MaterialTypeOptions ) {
     super();
+
+    const options = optionize<MaterialTypeOptions>()( {
+      workFunctionPhetioReadOnly: true
+    }, providedOptions );
+
+    this.workFunctionPhetioReadOnly = options.workFunctionPhetioReadOnly;
   }
 }
 
@@ -125,6 +146,7 @@ export default class Material extends PhetioObject {
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
       range: Material.WORK_FUNCTION_RANGE,
       tandem: options.tandem.createTandem( 'workFunctionProperty' ),
+      phetioReadOnly: materialType.workFunctionPhetioReadOnly,
       phetioDocumentation: 'Minimum energy, in electron volts, required to eject an electron from this material'
     } );
 
