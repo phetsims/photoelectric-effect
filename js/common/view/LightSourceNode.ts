@@ -25,14 +25,14 @@ const BODY_CORNER_RADIUS = 5;
 const LENS_WIDTH = PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH + 10;
 const LENS_HEIGHT = 30;
 
-// In view space (y-down), the beam direction angle is the negative of the model-space angle.
-// Subtracting π/2 gives the orientation of the lamp's long faces (perpendicular to beam).
-const LAMP_ROTATION = -PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE - Math.PI / 2;
-
 export default class LightSourceNode extends Node {
 
   // Center of the back face of the lamp body in ScreenView coordinates — the wire attachment point.
   public readonly cordAttachmentPoint: Vector2;
+
+  // In view space (y-down), the beam direction angle is the negative of the model-space angle.
+// Subtracting π/2 gives the orientation of the lamp's long faces (perpendicular to beam).
+  public static readonly LAMP_ROTATION = -PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE - Math.PI / 2;
 
   public constructor( beamStartCenter: Vector2 ) {
     super();
@@ -65,7 +65,7 @@ export default class LightSourceNode extends Node {
     // x/y places the aperture (local origin) at beamStartCenter in parent space.
     const container = new Node( {
       children: [ lens, body, aperture ],
-      rotation: LAMP_ROTATION,
+      rotation: LightSourceNode.LAMP_ROTATION,
       x: beamStartCenter.x,
       y: beamStartCenter.y
     } );
