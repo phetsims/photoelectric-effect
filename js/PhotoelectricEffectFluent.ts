@@ -66,10 +66,6 @@ addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_label', 'preferences.mysteryMaterial.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_description', 'preferences.mysteryMaterial.descriptionStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_label', 'preferences.mysteryMaterial.workFunction.labelStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_description', 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' );
-addToMapIfDefined( 'preferences_photonMode_label', 'preferences.photonMode.labelStringProperty' );
-addToMapIfDefined( 'preferences_photonMode_description', 'preferences.photonMode.descriptionStringProperty' );
 addToMapIfDefined( 'a11y_introScreen_screenSummary_playArea', 'a11y.introScreen.screenSummary.playAreaStringProperty' );
 addToMapIfDefined( 'a11y_introScreen_screenSummary_controlArea', 'a11y.introScreen.screenSummary.controlAreaStringProperty' );
 addToMapIfDefined( 'a11y_introScreen_screenSummary_currentDetails_leadingParagraph', 'a11y.introScreen.screenSummary.currentDetails.leadingParagraphStringProperty' );
@@ -108,6 +104,10 @@ addToMapIfDefined( 'a11y_voltageCurrentGraphNode_cameraButton_accessibleName', '
 addToMapIfDefined( 'a11y_voltageCurrentGraphNode_trashButton_accessibleName', 'a11y.voltageCurrentGraphNode.trashButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleName', 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleHelpText', 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_workFunction_label', 'a11y.voltageCurrentGraphNode.workFunction.labelStringProperty' );
+addToMapIfDefined( 'a11y_voltageCurrentGraphNode_workFunction_description', 'a11y.voltageCurrentGraphNode.workFunction.descriptionStringProperty' );
+addToMapIfDefined( 'a11y_photonMode_label', 'a11y.photonMode.labelStringProperty' );
+addToMapIfDefined( 'a11y_photonMode_description', 'a11y.photonMode.descriptionStringProperty' );
 
 // A function that creates contents for a new Fluent file, which will be needed if any string changes.
 const createFluentFile = (): string => {
@@ -186,6 +186,7 @@ const PhotoelectricEffectFluent = {
     percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'sourceOutput.percentReadoutPatternStringProperty' )
   },
   wavelength: {
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' ),
     valueReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.valueReadoutPatternStringProperty' )
   },
   voltage: {
@@ -196,12 +197,10 @@ const PhotoelectricEffectFluent = {
     readoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'current.readoutPatternStringProperty' )
   },
   preferences: {
-    _comment_0: new FluentComment( {"comment":"Preferences PLACEHOLDERS","associatedKey":"preferences.mysteryMaterial1Label"} ),
-    mysteryMaterial1LabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial1LabelStringProperty' ),
-    mysteryMaterial2LabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial2LabelStringProperty' ),
-    mysteryMaterialDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialDescriptionStringProperty' ),
-    mysteryMaterialWorkFunctionLabelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionLabelStringProperty' ),
-    mysteryMaterialWorkFunctionDescriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterialWorkFunctionDescriptionStringProperty' )
+    mysteryMaterial: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.labelStringProperty' ),
+      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.descriptionStringProperty' )
+    }
   },
   a11y: {
     _comment_0: new FluentComment( {"comment":"Intro screen summary","associatedKey":"introScreen"} ),
@@ -314,20 +313,16 @@ const PhotoelectricEffectFluent = {
       snapshotsGalleryButton: {
         accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' ) ),
         accessibleHelpTextStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleHelpText', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' ) )
-      }
-    }
-    mysteryMaterial: {
-      labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.labelStringProperty' ),
-      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.descriptionStringProperty' ),
+      },
       _comment_0: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
       workFunction: {
-        labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.workFunction.labelStringProperty' ),
-        descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' )
+        labelStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_workFunction_label', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.workFunction.labelStringProperty' ) ),
+        descriptionStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_workFunction_description', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.workFunction.descriptionStringProperty' ) )
       }
     },
     photonMode: {
-      labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonMode.labelStringProperty' ),
-      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.photonMode.descriptionStringProperty' )
+      labelStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonMode_label', _.get( PhotoelectricEffectStrings, 'a11y.photonMode.labelStringProperty' ) ),
+      descriptionStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonMode_description', _.get( PhotoelectricEffectStrings, 'a11y.photonMode.descriptionStringProperty' ) )
     }
   }
 };

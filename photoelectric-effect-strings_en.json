@@ -123,6 +123,9 @@
   "sourceOutput.percentReadoutPattern": {
     "value": "{{value}} %"
   },
+  "wavelength.label": {
+    "value": "Wavelength (nm)"
+  },
   "wavelength.valueReadoutPattern": {
     "value": "{{value}} nm"
   },
@@ -135,20 +138,15 @@
   "current.readoutPattern": {
     "value": "{{value}} mA"
   },
-  "preferences.mysteryMaterial1Label": {
-    "value": "Mystery Material 1"
-  },
-  "preferences.mysteryMaterial2Label": {
-    "value": "Mystery Material 2"
-  },
-  "preferences.mysteryMaterialDescription": {
-    "value": "When enabled, adds a mystery material with a configurable work function to the available materials."
-  },
-  "preferences.mysteryMaterialWorkFunctionLabel": {
-    "value": "Work Function (eV)"
-  },
-  "preferences.mysteryMaterialWorkFunctionDescription": {
-    "value": "Set the work function of the mystery material."
+  "preferences": {
+    "mysteryMaterial": {
+      "label": {
+        "value": "Add Second mystery material"
+      },
+      "description": {
+        "value": "Additional target material option with customizable work function value."
+      }
+    }
   },
   "a11y": {
     "introScreen": {
@@ -329,30 +327,6 @@
         "accessibleHelpText": {
           "value": "PLACEHOLDER Opens a dialog with a plot of each saved snapshot."
         }
-      }
-    }
-  "debugLegend.title": {
-    "value": "Legend:"
-  },
-  "debugLegend.photons": {
-    "value": "Yellow = photons"
-  },
-  "debugLegend.electrons": {
-    "value": "Cyan = electrons"
-  },
-  "debugLegend.target": {
-    "value": "Red outline = target"
-  },
-  "debugLegend.collector": {
-    "value": "Blue outline = collector"
-  },
-  "preferences": {
-    "mysteryMaterial": {
-      "label": {
-        "value": "Add Second mystery material"
-      },
-      "description": {
-        "value": "Additional target material option with customizable work function value."
       },
       "workFunction": {
         "label": {

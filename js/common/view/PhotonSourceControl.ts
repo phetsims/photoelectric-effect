@@ -12,10 +12,9 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import GradientBackplateIntensitySlider from './GradientBackplateIntensitySlider.js';
 import LabeledWavelengthNumberControl from './LabeledWavelengthNumberControl.js';
 import PhotonSourceOutputSlider from './PhotonSourceOutputSlider.js';
 

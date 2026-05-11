@@ -71,6 +71,7 @@ type StringsType = {
     'percentReadoutPatternStringProperty': LocalizedStringProperty;
   };
   'wavelength': {
+    'labelStringProperty': LocalizedStringProperty;
     'valueReadoutPatternStringProperty': LocalizedStringProperty;
   };
   'voltage': {
@@ -81,11 +82,10 @@ type StringsType = {
     'readoutPatternStringProperty': LocalizedStringProperty;
   };
   'preferences': {
-    'mysteryMaterial1LabelStringProperty': LocalizedStringProperty;
-    'mysteryMaterial2LabelStringProperty': LocalizedStringProperty;
-    'mysteryMaterialDescriptionStringProperty': LocalizedStringProperty;
-    'mysteryMaterialWorkFunctionLabelStringProperty': LocalizedStringProperty;
-    'mysteryMaterialWorkFunctionDescriptionStringProperty': LocalizedStringProperty;
+    'mysteryMaterial': {
+      'labelStringProperty': LocalizedStringProperty;
+      'descriptionStringProperty': LocalizedStringProperty;
+    }
   };
   'a11y': {
     'introScreen': {
@@ -190,11 +190,7 @@ type StringsType = {
       'snapshotsGalleryButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
         'accessibleHelpTextStringProperty': LocalizedStringProperty;
-      }
-    }
-    'mysteryMaterial': {
-      'labelStringProperty': LocalizedStringProperty;
-      'descriptionStringProperty': LocalizedStringProperty;
+      };
       'workFunction': {
         'labelStringProperty': LocalizedStringProperty;
         'descriptionStringProperty': LocalizedStringProperty;

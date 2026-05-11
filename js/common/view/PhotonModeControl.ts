@@ -23,7 +23,7 @@ export default class PhotonModeControl extends PreferencesControl {
   public constructor( providedOptions: PhotonModeControlOptions ) {
 
     // TODO: Create a subclass for preferences toggle switch in joist? Or factor one
-    //  out in this sim? This combineOPtions appears twice currently. May not be worth it.
+    //  out in this sim? This combineOptions appears twice currently. May not be worth it.
     const toggleSwitch = new ToggleSwitch(
       PhotoelectricEffectPreferences.photonModeProperty,
       'count',
@@ -31,15 +31,15 @@ export default class PhotonModeControl extends PreferencesControl {
         {},
         {
           tandem: providedOptions.tandem.createTandem( 'toggleSwitch' ),
-          accessibleName: PhotoelectricEffectFluent.preferences.photonMode.labelStringProperty
+          accessibleName: PhotoelectricEffectFluent.a11y.photonMode.labelStringProperty
         },
         PreferencesDialogConstants.TOGGLE_SWITCH_OPTIONS
       )
     );
 
     super( combineOptions<PreferencesControlOptions>( {
-      labelNode: new Text( PhotoelectricEffectFluent.preferences.photonMode.labelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
-      descriptionNode: new RichText( PhotoelectricEffectFluent.preferences.photonMode.descriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
+      labelNode: new Text( PhotoelectricEffectFluent.a11y.photonMode.labelStringProperty, PreferencesDialogConstants.CONTROL_LABEL_OPTIONS ),
+      descriptionNode: new RichText( PhotoelectricEffectFluent.a11y.photonMode.descriptionStringProperty, PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS ),
       controlNode: toggleSwitch,
       visiblePropertyOptions: {
         phetioFeatured: true
