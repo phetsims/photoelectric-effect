@@ -26,14 +26,12 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import LinearGradient from '../../../../scenery/js/util/LinearGradient.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import type { EnergyGraphSampleData, EnergyGraphSampleState } from '../model/EnergyGraphData.js';
+import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
-import type { EnergyBarGraphSampleData, EnergyBarGraphSampleState } from './EnergyBarGraphNode.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
-
-// Number of sample plots shown in the Energy diagram.
-const NUMBER_OF_SAMPLE_PLOTS = 3;
 
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 120;
@@ -70,7 +68,7 @@ export default class EnergyDiagramNode extends Node {
   // Shared custom graph decorations, regenerated when the work-function marker changes.
   private readonly graphDecorationNode: Node;
 
-  // Electron markers for samples 1, 2, and 3.
+  // Electron markers for the fixed set of recorded energy samples.
   private readonly sampleNodes: Node[];
 
   // Labels for the special y values shown on the graph.
@@ -105,13 +103,13 @@ export default class EnergyDiagramNode extends Node {
     this.chartTransform = new ChartTransform( {
       viewWidth: CHART_VIEW_WIDTH,
       viewHeight: CHART_VIEW_HEIGHT,
-      modelXRange: new Range( 0.5, 3.5 ),
+      modelXRange: new Range( 0.5, EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES + 0.5 ),
       modelYRange: EnergyGraphDisplayProperties.MODEL_Y_RANGE
     } );
 
     this.graphDecorationNode = new Node();
 
-    this.sampleNodes = _.times( NUMBER_OF_SAMPLE_PLOTS, () => new Node() );
+    this.sampleNodes = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, () => new Node() );
 
     const plotLayer = new Node( {
       children: [
@@ -136,7 +134,7 @@ export default class EnergyDiagramNode extends Node {
       rotation: -Math.PI / 2
     } );
 
-    const xLabels = _.times( NUMBER_OF_SAMPLE_PLOTS, sampleIndex => {
+    const xLabels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       const label = new Text( `${sampleIndex + 1}`, {
         font: PhotoelectricEffectConstants.CONTENT_FONT
       } );
@@ -178,8 +176,8 @@ export default class EnergyDiagramNode extends Node {
   /**
    * Sets or clears one sample plot. Null means there is no sample data yet.
    */
-  public setSampleData( sampleIndex: number, sampleState: EnergyBarGraphSampleState ): void {
-    assert && assert( sampleIndex >= 0 && sampleIndex < NUMBER_OF_SAMPLE_PLOTS, 'sampleIndex out of range' );
+  public setSampleData( sampleIndex: number, sampleState: EnergyGraphSampleState ): void {
+    assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
 
     if ( sampleState === null ) {
       this.sampleNodes[ sampleIndex ].children = [];
@@ -197,7 +195,7 @@ export default class EnergyDiagramNode extends Node {
    * Clears all sample plots.
    */
   public clearSampleData(): void {
-    for ( let sampleIndex = 0; sampleIndex < NUMBER_OF_SAMPLE_PLOTS; sampleIndex++ ) {
+    for ( let sampleIndex = 0; sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES; sampleIndex++ ) {
       this.setSampleData( sampleIndex, null );
     }
   }
@@ -317,7 +315,7 @@ export default class EnergyDiagramNode extends Node {
    */
   private static createSampleMarkers( chartTransform: ChartTransform,
                                       sampleIndex: number,
-                                      data: EnergyBarGraphSampleData ): Node[] {
+                                      data: EnergyGraphSampleData ): Node[] {
     const sampleCenterX = chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) );
 
     const initialEnergyMarker = new Circle( ELECTRON_MARKER_RADIUS, {

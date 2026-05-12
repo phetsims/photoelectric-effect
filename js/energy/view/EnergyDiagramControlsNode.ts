@@ -8,13 +8,14 @@
 
 import type BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import VBox, { type VBoxOptions } from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 
 type SelfOptions = EmptySelfOptions;
-type EnergyDiagramControlsNodeOptions = SelfOptions & VBoxOptions;
+type EnergyDiagramControlsNodeOptions = SelfOptions & VBoxOptions & PickRequired<VBoxOptions, 'tandem'>;
 
 // Vertical spacing between diagram controls.
 const CHECKBOX_SPACING = 10;
@@ -31,7 +32,7 @@ export default class EnergyDiagramControlsNode extends VBox {
 
   public constructor( labelsVisibleProperty: BooleanProperty,
                       workFunctionVisibleProperty: BooleanProperty,
-                      providedOptions?: EnergyDiagramControlsNodeOptions ) {
+                      providedOptions: EnergyDiagramControlsNodeOptions ) {
 
     const options = optionize<EnergyDiagramControlsNodeOptions, SelfOptions, VBoxOptions>()( {
       align: 'left',
@@ -46,7 +47,8 @@ export default class EnergyDiagramControlsNode extends VBox {
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
             boxWidth: CHECKBOX_BOX_WIDTH,
-            spacing: 4
+            spacing: 4,
+            tandem: providedOptions.tandem.createTandem( 'labelsCheckbox' )
           }
         ),
 
@@ -58,7 +60,8 @@ export default class EnergyDiagramControlsNode extends VBox {
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
             boxWidth: CHECKBOX_BOX_WIDTH,
-            spacing: 4
+            spacing: 4,
+            tandem: providedOptions.tandem.createTandem( 'workFunctionCheckbox' )
           }
         )
       ]

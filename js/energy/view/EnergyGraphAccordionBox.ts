@@ -10,17 +10,18 @@ import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import KeyboardListener from '../../../../scenery/js/listeners/KeyboardListener.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import KeyboardListener from '../../../../scenery/js/listeners/KeyboardListener.js';
 import Node, { type NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import AccordionBox, { AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import EnergyGraphData, { EnergyGraphSampleState } from '../model/EnergyGraphData.js';
 import type EnergyModel from '../model/EnergyModel.js';
-import EnergyBarGraphNode, { type EnergyBarGraphSampleState } from './EnergyBarGraphNode.js';
+import EnergyBarGraphNode from './EnergyBarGraphNode.js';
 import EnergyDiagramControlsNode from './EnergyDiagramControlsNode.js';
 import EnergyDiagramNode from './EnergyDiagramNode.js';
 import EnergyGraphDisplayModeRadioButtonGroup from './EnergyGraphDisplayModeRadioButtonGroup.js';
@@ -36,9 +37,6 @@ const GRAPH_SECTION_SPACING = 8;
 
 // Horizontal spacing between graph-specific controls and display mode controls.
 const BOTTOM_CONTROLS_SPACING = 24;
-
-// Number of sample plots shown in the Energy graph displays.
-const NUMBER_OF_SAMPLE_PLOTS = 3;
 
 // Random sample data range, in eV. These values match the fixed graph range used by the Energy graph views.
 const MIN_POTENTIAL_ENERGY = -8;
@@ -106,7 +104,8 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     const energyDiagramControlsNode = new EnergyDiagramControlsNode(
       displayProperties.diagramLabelsVisibleProperty,
       displayProperties.diagramWorkFunctionVisibleProperty, {
-        visibleProperty: energyDiagramVisibleProperty
+        visibleProperty: energyDiagramVisibleProperty,
+        tandem: options.tandem.createTandem( 'energyDiagramControlsNode' )
       } );
 
     const graphSpecificControlsNode = new Node( {
@@ -116,6 +115,17 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       ]
     } );
     energyDiagramControlsNode.center = barGraphControlsNode.center;
+
+    const syncGraphDisplays = () => {
+      for ( let sampleIndex = 0; sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES; sampleIndex++ ) {
+        const sampleState = model.energyGraphData.getSampleState( sampleIndex );
+
+        barGraphNode.setSampleData( sampleIndex, sampleState );
+        energyDiagramNode.setSampleData( sampleIndex, sampleState );
+      }
+    };
+    model.energyGraphData.dataChangedEmitter.addListener( syncGraphDisplays );
+    syncGraphDisplays();
 
     const bottomControlsNode = new HBox( {
       align: 'center',
@@ -142,12 +152,9 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       keys: [ 'r' ],
       overlapBehavior: 'allow',
       fire: () => {
-        for ( let sampleIndex = 0; sampleIndex < NUMBER_OF_SAMPLE_PLOTS; sampleIndex++ ) {
-          const sampleState = EnergyGraphAccordionBox.createRandomSampleState();
-
-          barGraphNode.setSampleData( sampleIndex, sampleState );
-          energyDiagramNode.setSampleData( sampleIndex, sampleState );
-        }
+        model.energyGraphData.setSampleStates(
+          _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, () => EnergyGraphAccordionBox.createRandomSampleState() )
+        );
       }
     } );
   }
@@ -155,7 +162,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
   /**
    * Creates temporary randomized sample data for graph development.
    */
-  private static createRandomSampleState(): EnergyBarGraphSampleState {
+  private static createRandomSampleState(): EnergyGraphSampleState {
     const potentialEnergy = MIN_POTENTIAL_ENERGY * dotRandom.nextDouble();
     const photonEnergy = MAX_PHOTON_ENERGY * dotRandom.nextDouble();
 

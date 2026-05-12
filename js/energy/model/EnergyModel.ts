@@ -12,6 +12,7 @@ import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import Material from '../../common/model/Material.js';
 import { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 import IntroModel from '../../intro/model/IntroModel.js';
+import EnergyGraphData from './EnergyGraphData.js';
 import EnergyGraphDisplayProperties from './EnergyGraphDisplayProperties.js';
 
 export default class EnergyModel extends IntroModel {
@@ -20,8 +21,16 @@ export default class EnergyModel extends IntroModel {
   // Properties that control Energy screen graph mode and diagram visibility.
   public readonly energyGraphDisplayProperties: EnergyGraphDisplayProperties;
 
+  // Recorded sample data shown by the Energy screen graph displays.
+  public readonly energyGraphData: EnergyGraphData;
+
   public constructor( mysteryMaterials: Material[], providedOptions: WithRequired<PhotoelectricEffectModelOptions, 'tandem'> ) {
     super( mysteryMaterials, providedOptions );
+
+    this.energyGraphData = new EnergyGraphData( {
+      tandem: providedOptions.tandem.createTandem( 'energyGraphData' ),
+      phetioDocumentation: 'Recorded sample data shown by the Energy screen graph displays'
+    } );
 
     this.emitSinglePhotonProperty = new BooleanProperty( false, {
       tandem: providedOptions.tandem.createTandem( 'emitSinglePhotonProperty' )
@@ -38,6 +47,7 @@ export default class EnergyModel extends IntroModel {
   public override reset(): void {
     super.reset();
 
+    this.energyGraphData.clear();
     this.energyGraphDisplayProperties.reset();
   }
 }

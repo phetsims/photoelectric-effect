@@ -23,23 +23,11 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import EnergyGraphData, { EnergyGraphSampleData, EnergyGraphSampleState } from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
-
-export type EnergyBarGraphSampleData = {
-  potentialEnergy: number;
-  photonEnergy: number;
-  kineticEnergy: number;
-};
-
-// A recorded sample can have energy data, or no data yet.
-export type EnergyBarGraphSampleState = EnergyBarGraphSampleData | null;
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
-
-// Number of sample plots shown in the Energy bar graph.
-// TODO: This will come from the model somewhere, as we will be tracking 3 electron events.
-const NUMBER_OF_SAMPLE_PLOTS = 3;
 
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 240;
@@ -70,7 +58,7 @@ export default class EnergyBarGraphNode extends Node {
   // Translates energy and sample coordinates into the shared chart view.
   private readonly chartTransform: ChartTransform;
 
-  // Bamboo plots for samples 1, 2, and 3.
+  // Bamboo plots for the fixed set of recorded energy samples.
   private readonly sampleBarPlots: BarPlot[];
 
   // Overlays for samples where no electron was ejected. Hidden for empty plots and normal bar plots.
@@ -100,7 +88,7 @@ export default class EnergyBarGraphNode extends Node {
     this.chartTransform = new ChartTransform( {
       viewWidth: CHART_VIEW_WIDTH,
       viewHeight: CHART_VIEW_HEIGHT,
-      modelXRange: new Range( 0.5, 3.5 ),
+      modelXRange: new Range( 0.5, EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES + 0.5 ),
       modelYRange: EnergyGraphDisplayProperties.MODEL_Y_RANGE
     } );
 
@@ -110,14 +98,14 @@ export default class EnergyBarGraphNode extends Node {
       fill: 'white'
     } );
 
-    this.sampleBarPlots = _.times( NUMBER_OF_SAMPLE_PLOTS, sampleIndex => {
+    this.sampleBarPlots = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       return new BarPlot( this.chartTransform, [], {
         barWidth: BAR_WIDTH,
         pointToPaintableFields: point => this.getBarPaintableOptions( sampleIndex, point )
       } );
     } );
 
-    this.noElectronEjectedPanels = _.times( NUMBER_OF_SAMPLE_PLOTS, sampleIndex => {
+    this.noElectronEjectedPanels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       return EnergyBarGraphNode.createNoElectronEjectedPanel(
         this.chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
         this.chartTransform.modelToViewY( NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y )
@@ -147,7 +135,7 @@ export default class EnergyBarGraphNode extends Node {
       rotation: -Math.PI / 2
     } );
 
-    const xLabels = _.times( NUMBER_OF_SAMPLE_PLOTS, sampleIndex => {
+    const xLabels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       const label = new Text( `${sampleIndex + 1}`, {
         font: PhotoelectricEffectConstants.CONTENT_FONT
       } );
@@ -191,8 +179,8 @@ export default class EnergyBarGraphNode extends Node {
    * Sets or clears one sample plot. Null means there is no sample data yet. A sample with zero kinetic energy means
    * that the photon did not eject an electron.
    */
-  public setSampleData( sampleIndex: number, sampleState: EnergyBarGraphSampleState ): void {
-    assert && assert( sampleIndex >= 0 && sampleIndex < NUMBER_OF_SAMPLE_PLOTS, 'sampleIndex out of range' );
+  public setSampleData( sampleIndex: number, sampleState: EnergyGraphSampleState ): void {
+    assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
 
     const noElectronEjected = sampleState !== null && sampleState.kineticEnergy === 0;
     this.noElectronEjectedPanels[ sampleIndex ].visible = noElectronEjected;
@@ -209,7 +197,7 @@ export default class EnergyBarGraphNode extends Node {
    * Clears all sample plots.
    */
   public clearSampleData(): void {
-    for ( let sampleIndex = 0; sampleIndex < NUMBER_OF_SAMPLE_PLOTS; sampleIndex++ ) {
+    for ( let sampleIndex = 0; sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES; sampleIndex++ ) {
       this.setSampleData( sampleIndex, null );
     }
   }
@@ -260,7 +248,7 @@ export default class EnergyBarGraphNode extends Node {
     } ) );
 
     // Draw the zero-energy reference as separate solid segments under each sample group.
-    _.times( NUMBER_OF_SAMPLE_PLOTS, sampleIndex => {
+    _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       const sampleCenterX = getSampleCenterX( sampleIndex );
 
       gridLines.push( new Line(
@@ -279,7 +267,7 @@ export default class EnergyBarGraphNode extends Node {
   /**
    * Creates the Bamboo data set for one sample, in the required energy order.
    */
-  private static createDataSet( sampleIndex: number, data: EnergyBarGraphSampleData ): Vector2[] {
+  private static createDataSet( sampleIndex: number, data: EnergyGraphSampleData ): Vector2[] {
     const centerX = getSampleCenterX( sampleIndex );
 
     return [
