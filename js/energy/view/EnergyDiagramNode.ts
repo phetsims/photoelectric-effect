@@ -40,25 +40,12 @@ const CHART_VIEW_HEIGHT = 360;
 // Horizontal layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
 
-// Energy level for the bottom of the conduction band, in eV.
-const CONDUCTION_BAND_BOTTOM = -8;
-
 // Marker and label layout.
 const ELECTRON_MARKER_RADIUS = 5;
 const Y_TICK_LABEL_MARGIN = 5;
-const X_LABEL_MARGIN = 5;
-const Y_AXIS_LABEL_MARGIN = 96;
 const WORK_FUNCTION_MARKER_X = CHART_VIEW_WIDTH + 14;
 const WORK_FUNCTION_MARKER_CAP_WIDTH = 12;
 const WORK_FUNCTION_MARKER_LINE_WIDTH = 2;
-const WORK_FUNCTION_LABEL_MARGIN = 4;
-const CONDUCTION_BAND_BRACKET_X = WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2;
-const CONDUCTION_BAND_LABEL_LINE_WRAP = 90;
-const CONDUCTION_BAND_LABEL_SPACING = 4;
-const CONDUCTION_BAND_BRACKET_MIN_LENGTH = 18;
-const CONDUCTION_BAND_BRACKET_VERTICAL_INSET = 6;
-const CONDUCTION_BAND_BRACKET_END_RADIUS = 3;
-const CONDUCTION_BAND_BRACKET_TIP_RADIUS = 4;
 
 export default class EnergyDiagramNode extends Node {
 
@@ -71,7 +58,8 @@ export default class EnergyDiagramNode extends Node {
   // Shaded region that represents the conduction band.
   private readonly conductionBandNode: Rectangle;
 
-  // Persistent graph decorations that can be repositioned as the work function changes.
+  // Persistent graph decorations that can be repositioned as the work function changes. These are created once
+  // to avoid disposing/reconstructing every change.
   private readonly energyAxisNode: ArrowNode;
   private readonly conductionBandBottomLine: Line;
   private readonly fermiLevelLine: Line;
@@ -83,10 +71,9 @@ export default class EnergyDiagramNode extends Node {
   private readonly conductionBandLabel: RichText;
 
   // BracketNode does not expose a way to mutate its shape, so it is replaced when its length changes.
-  // The label is reused across replacements because BracketNode.dispose() detaches but does not dispose it.
   private conductionBandBracket: BracketNode | null = null;
 
-  // Electron markers for the fixed set of recorded energy samples.
+  // Parent Nodes for electron markers for the fixed set of recorded energy samples.
   private readonly sampleNodes: Node[];
 
   // Labels for the special y values shown on the graph.
@@ -181,7 +168,7 @@ export default class EnergyDiagramNode extends Node {
     // TODO: i18n
     this.conductionBandLabel = new RichText( 'Conduction Band', {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
-      lineWrap: CONDUCTION_BAND_LABEL_LINE_WRAP
+      lineWrap: 90
     } );
 
     this.graphDecorationNode = new Node( {
@@ -234,7 +221,7 @@ export default class EnergyDiagramNode extends Node {
       } );
       label.centerTop = new Vector2(
         this.chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
-        CHART_VIEW_HEIGHT + X_LABEL_MARGIN
+        CHART_VIEW_HEIGHT + 5
       );
       return label;
     } );
@@ -248,7 +235,7 @@ export default class EnergyDiagramNode extends Node {
       ]
     } );
 
-    yAxisLabel.rightCenter = new Vector2( -Y_AXIS_LABEL_MARGIN, CHART_VIEW_HEIGHT / 2 );
+    yAxisLabel.rightCenter = new Vector2( -96, CHART_VIEW_HEIGHT / 2 );
 
     this.children = [
       new Node( {
@@ -287,21 +274,12 @@ export default class EnergyDiagramNode extends Node {
   }
 
   /**
-   * Clears all sample plots.
-   */
-  public clearSampleData(): void {
-    for ( let sampleIndex = 0; sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES; sampleIndex++ ) {
-      this.setSampleData( sampleIndex, null );
-    }
-  }
-
-  /**
    * Repositions graph decorations that depend on the active material's work function.
    */
   private updateGraphDecorations(): void {
     const zeroY = this.chartTransform.modelToViewY( 0 );
     const fermiLevelY = this.chartTransform.modelToViewY( -this.workFunctionProperty.value );
-    const conductionBandBottomY = this.chartTransform.modelToViewY( CONDUCTION_BAND_BOTTOM );
+    const conductionBandBottomY = this.chartTransform.modelToViewY( -8 );
 
     this.zeroTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, zeroY );
     this.fermiLevelTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, fermiLevelY );
@@ -330,28 +308,35 @@ export default class EnergyDiagramNode extends Node {
       WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2, zeroY
     );
     this.workFunctionLabel.leftCenter = new Vector2(
-      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2 + WORK_FUNCTION_LABEL_MARGIN,
+      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2 + 4,
       ( fermiLevelY + zeroY ) / 2
     );
 
+    // We must dispose and create a new BracketNode because it doesn't support shape changes once constructed.
     this.disposeConductionBandBracket();
 
+    const conductionBandBracketX = WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2;
+    const conductionBandBracketVerticalInset = 6;
+    const conductionBandBracketMinLength = 18;
+    const conductionBandBracketEndRadius = 3;
+    const conductionBandBracketTipRadius = 4;
+    const conductionBandBracketLabelSpacing = 4;
     this.conductionBandBracket = new BracketNode( {
       orientation: 'right',
       labelNode: this.conductionBandLabel,
       bracketLength: Math.max(
-        conductionBandBottomY - fermiLevelY - 2 * CONDUCTION_BAND_BRACKET_VERTICAL_INSET,
-        CONDUCTION_BAND_BRACKET_MIN_LENGTH
+        conductionBandBottomY - fermiLevelY - 2 * conductionBandBracketVerticalInset,
+        conductionBandBracketMinLength
       ),
-      bracketEndRadius: CONDUCTION_BAND_BRACKET_END_RADIUS,
-      bracketTipRadius: CONDUCTION_BAND_BRACKET_TIP_RADIUS,
+      bracketEndRadius: conductionBandBracketEndRadius,
+      bracketTipRadius: conductionBandBracketTipRadius,
       bracketStroke: PhotoelectricEffectColors.iconStrokeColorProperty,
       bracketLineWidth: 1.5,
-      spacing: CONDUCTION_BAND_LABEL_SPACING,
+      spacing: conductionBandBracketLabelSpacing,
       visibleProperty: this.labelsVisibleProperty
     } );
     this.conductionBandBracket.leftCenter = new Vector2(
-      CONDUCTION_BAND_BRACKET_X,
+      conductionBandBracketX,
       ( fermiLevelY + conductionBandBottomY ) / 2
     );
     this.graphDecorationNode.addChild( this.conductionBandBracket );

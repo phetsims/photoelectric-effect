@@ -9,10 +9,10 @@
 import type BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import PhetFont from '../../../../scenery-phet/js/PhetFont.js';
 import VBox, { type VBoxOptions } from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
 type SelfOptions = EmptySelfOptions;
 type EnergyDiagramControlsNodeOptions = SelfOptions & VBoxOptions & PickRequired<VBoxOptions, 'tandem'>;
@@ -23,7 +23,6 @@ const CHECKBOX_SPACING = 10;
 // Checkbox layout.
 const CHECKBOX_LABEL_MAX_WIDTH = 110;
 const CHECKBOX_BOX_WIDTH = 17;
-const CHECKBOX_LABEL_FONT = new PhetFont( 14 );
 
 /**
  * Stacks diagram-specific controls so they can be composed with shared graph controls in the accordion.
@@ -43,7 +42,7 @@ export default class EnergyDiagramControlsNode extends VBox {
         new Checkbox(
           labelsVisibleProperty,
           new Text( 'Labels', {
-            font: CHECKBOX_LABEL_FONT,
+            font: PhotoelectricEffectConstants.CONTENT_FONT,
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
             boxWidth: CHECKBOX_BOX_WIDTH,
@@ -56,7 +55,7 @@ export default class EnergyDiagramControlsNode extends VBox {
         new Checkbox(
           workFunctionVisibleProperty,
           new Text( 'Work Function', {
-            font: CHECKBOX_LABEL_FONT,
+            font: PhotoelectricEffectConstants.CONTENT_FONT,
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
             boxWidth: CHECKBOX_BOX_WIDTH,
