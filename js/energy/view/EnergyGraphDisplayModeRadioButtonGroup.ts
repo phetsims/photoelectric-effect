@@ -15,7 +15,7 @@ import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RectangularRadioButtonGroup, { RectangularRadioButtonGroupItem, RectangularRadioButtonGroupOptions } from '../../../../sun/js/buttons/RectangularRadioButtonGroup.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import type { EnergyGraphDisplayMode } from '../model/EnergyModel.js';
+import type { EnergyGraphDisplayMode } from '../model/EnergyGraphDisplayProperties.js';
 
 type SelfOptions = EmptySelfOptions;
 

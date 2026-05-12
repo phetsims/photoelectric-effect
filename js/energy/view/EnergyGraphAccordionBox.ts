@@ -51,17 +51,26 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       } )
     }, providedOptions );
 
+    const displayProperties = model.energyGraphDisplayProperties;
+
     const barGraphNode = new EnergyBarGraphNode( model.target.workFunctionProperty, {
-      visibleProperty: new DerivedProperty( [ model.energyGraphDisplayModeProperty ], displayMode => displayMode === 'barGraph' )
+      visibleProperty: new DerivedProperty(
+        [ displayProperties.displayModeProperty ],
+        displayMode => displayMode === 'barGraph'
+      )
     } );
 
     const energyDiagramNode = new EnergyDiagramNode(
       model.target.workFunctionProperty,
-      model.energyDiagramLabelsVisibleProperty,
-      model.energyDiagramWorkFunctionVisibleProperty,
+      displayProperties.diagramLabelsVisibleProperty,
+      displayProperties.diagramWorkFunctionVisibleProperty,
       {
-        visibleProperty: new DerivedProperty( [ model.energyGraphDisplayModeProperty ], displayMode => displayMode === 'energyDiagram' )
+        visibleProperty: new DerivedProperty(
+          [ displayProperties.displayModeProperty ],
+          displayMode => displayMode === 'energyDiagram'
+        )
       } );
+
     barGraphNode.left = energyDiagramNode.left;
 
     // Show the current operating point until EnergyModel owns a sample history for this graph.
@@ -91,9 +100,10 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       energyDiagramNode.setSampleData( 2, null );
     } );
 
-    const displayModeRadioButtonGroup = new EnergyGraphDisplayModeRadioButtonGroup( model.energyGraphDisplayModeProperty, {
-      tandem: options.tandem.createTandem( 'displayModeRadioButtonGroup' )
-    } );
+    const displayModeRadioButtonGroup = new EnergyGraphDisplayModeRadioButtonGroup(
+      displayProperties.displayModeProperty, {
+        tandem: options.tandem.createTandem( 'displayModeRadioButtonGroup' )
+      } );
 
     const graphDisplayNode = new Node( {
       children: [
