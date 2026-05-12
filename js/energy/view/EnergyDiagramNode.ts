@@ -13,11 +13,13 @@ import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
+import BracketNode from '../../../../scenery-phet/js/BracketNode.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import Circle from '../../../../scenery/js/nodes/Circle.js';
 import Line from '../../../../scenery/js/nodes/Line.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
+import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
@@ -47,8 +49,17 @@ const ELECTRON_MARKER_RADIUS = 5;
 const Y_TICK_LABEL_MARGIN = 5;
 const X_LABEL_MARGIN = 5;
 const Y_AXIS_LABEL_MARGIN = 96;
-const WORK_FUNCTION_MARKER_X = CHART_VIEW_WIDTH - 18;
+const WORK_FUNCTION_MARKER_X = CHART_VIEW_WIDTH + 14;
+const WORK_FUNCTION_MARKER_CAP_WIDTH = 12;
+const WORK_FUNCTION_MARKER_LINE_WIDTH = 2;
 const WORK_FUNCTION_LABEL_MARGIN = 4;
+const CONDUCTION_BAND_BRACKET_X = WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2;
+const CONDUCTION_BAND_LABEL_LINE_WRAP = 90;
+const CONDUCTION_BAND_LABEL_SPACING = 4;
+const CONDUCTION_BAND_BRACKET_MIN_LENGTH = 18;
+const CONDUCTION_BAND_BRACKET_VERTICAL_INSET = 6;
+const CONDUCTION_BAND_BRACKET_END_RADIUS = 3;
+const CONDUCTION_BAND_BRACKET_TIP_RADIUS = 4;
 
 export default class EnergyDiagramNode extends Node {
 
@@ -199,11 +210,35 @@ export default class EnergyDiagramNode extends Node {
         fill: PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty
       } );
 
+    // TODO: i18n
+    const conductionBandLabel = new RichText( 'Conduction Band', {
+      font: PhotoelectricEffectConstants.CONTENT_FONT,
+      lineWrap: CONDUCTION_BAND_LABEL_LINE_WRAP
+    } );
+
+    const conductionBandBracket = new BracketNode( {
+      orientation: 'right',
+      labelNode: conductionBandLabel,
+      bracketLength: Math.max(
+        conductionBandBottomY - fermiLevelY - 2 * CONDUCTION_BAND_BRACKET_VERTICAL_INSET,
+        CONDUCTION_BAND_BRACKET_MIN_LENGTH
+      ),
+      bracketEndRadius: CONDUCTION_BAND_BRACKET_END_RADIUS,
+      bracketTipRadius: CONDUCTION_BAND_BRACKET_TIP_RADIUS,
+      bracketStroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      bracketLineWidth: 1.5,
+      spacing: CONDUCTION_BAND_LABEL_SPACING
+    } );
+    conductionBandBracket.leftCenter = new Vector2(
+      CONDUCTION_BAND_BRACKET_X,
+      ( fermiLevelY + conductionBandBottomY ) / 2
+    );
+
     const workFunctionLabel = new Text( MathSymbols.PHI, {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
     workFunctionLabel.leftCenter = new Vector2(
-      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_LABEL_MARGIN,
+      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2 + WORK_FUNCTION_LABEL_MARGIN,
       ( fermiLevelY + zeroY ) / 2
     );
 
@@ -232,16 +267,24 @@ export default class EnergyDiagramNode extends Node {
         lineWidth: 1.5,
         lineDash: [ 8, 5 ]
       } ),
-      new ArrowNode( WORK_FUNCTION_MARKER_X, fermiLevelY, WORK_FUNCTION_MARKER_X, zeroY, {
-        fill: PhotoelectricEffectColors.iconStrokeColorProperty,
+      new Line( WORK_FUNCTION_MARKER_X, fermiLevelY, WORK_FUNCTION_MARKER_X, zeroY, {
         stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-        lineWidth: 1,
-        tailWidth: 1,
-        headWidth: 7,
-        headHeight: 7,
-        doubleHead: true
+        lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
       } ),
-      workFunctionLabel
+      new Line(
+        WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2, fermiLevelY,
+        WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2, fermiLevelY, {
+          stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+          lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
+        } ),
+      new Line(
+        WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2, zeroY,
+        WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2, zeroY, {
+          stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+          lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
+        } ),
+      workFunctionLabel,
+      conductionBandBracket
     ];
   }
 
