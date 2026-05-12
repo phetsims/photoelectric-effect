@@ -18,15 +18,20 @@ import Line from '../../../../scenery/js/nodes/Line.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import type { PaintableOptions } from '../../../../scenery/js/nodes/Paintable.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
+import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
+import Panel from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
-type EnergyBarGraphSampleData = {
+export type EnergyBarGraphSampleData = {
   potentialEnergy: number;
   photonEnergy: number;
   kineticEnergy: number;
 };
+
+// A recorded sample can have energy data, no data yet, or a photon that did not eject an electron.
+export type EnergyBarGraphSampleState = EnergyBarGraphSampleData | 'no-emit' | null;
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
@@ -44,8 +49,11 @@ const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
 const BAR_X_OFFSET = 0.18;
 const BAR_WIDTH = 9;
 
+// In-plot message shown when a sample exists, but the photon did not eject an electron. This is in model units.
+const NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y = 3.5;
+
 // Segmented zero-energy line layout. One segment is drawn for each sample so space remains between plots.
-// This is in model x coordinates.
+// This is in model units.
 const ZERO_ENERGY_LINE_HALF_WIDTH = 0.32;
 
 // Space around axis labels and sample labels.
@@ -68,6 +76,9 @@ export default class EnergyBarGraphNode extends Node {
 
   // Bamboo plots for samples 1, 2, and 3.
   private readonly sampleBarPlots: BarPlot[];
+
+  // Overlays for samples where no electron was ejected. Hidden for empty plots and normal bar plots.
+  private readonly noElectronEjectedPanels: Panel[];
 
   // Shared custom grid lines, regenerated when the work-function marker changes.
   private readonly gridLineNode: Node;
@@ -110,11 +121,19 @@ export default class EnergyBarGraphNode extends Node {
       } );
     } );
 
+    this.noElectronEjectedPanels = _.times( NUMBER_OF_SAMPLE_PLOTS, sampleIndex => {
+      return EnergyBarGraphNode.createNoElectronEjectedPanel(
+        this.chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
+        this.chartTransform.modelToViewY( NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y )
+      );
+    } );
+
     const plotLayer = new Node( {
       clipArea: plotRectangle.getShape(),
       children: [
         this.gridLineNode,
-        ...this.sampleBarPlots
+        ...this.sampleBarPlots,
+        ...this.noElectronEjectedPanels
       ]
     } );
 
@@ -169,12 +188,21 @@ export default class EnergyBarGraphNode extends Node {
   }
 
   /**
-   * Sets or clears data for one sample plot. Sample data is always rendered in potential, photon, kinetic order.
+   * Sets or clears one sample plot. Null means there is no sample data yet. The 'no-emit' state means the sample
+   * exists, but no electron was ejected.
    */
-  public setSampleData( sampleIndex: number, data: EnergyBarGraphSampleData | null ): void {
+  public setSampleData( sampleIndex: number, sampleState: EnergyBarGraphSampleState ): void {
     assert && assert( sampleIndex >= 0 && sampleIndex < NUMBER_OF_SAMPLE_PLOTS, 'sampleIndex out of range' );
 
-    this.sampleBarPlots[ sampleIndex ].setDataSet( data ? EnergyBarGraphNode.createDataSet( sampleIndex, data ) : [] );
+    const noElectronEjected = sampleState === 'no-emit';
+    this.noElectronEjectedPanels[ sampleIndex ].visible = noElectronEjected;
+
+    if ( sampleState === null || noElectronEjected ) {
+      this.sampleBarPlots[ sampleIndex ].setDataSet( [] );
+    }
+    else {
+      this.sampleBarPlots[ sampleIndex ].setDataSet( EnergyBarGraphNode.createDataSet( sampleIndex, sampleState ) );
+    }
   }
 
   /**
@@ -257,6 +285,30 @@ export default class EnergyBarGraphNode extends Node {
   }
 
   /**
+   * Creates the in-plot label for a sample that was recorded without electron emission.
+   */
+  private static createNoElectronEjectedPanel( centerX: number, centerY: number ): Panel {
+
+    // TODO: 18n
+    const text = new RichText( 'No electron ejected', {
+      font: PhotoelectricEffectConstants.READOUT_FONT,
+      lineWrap: 80
+    } );
+
+    const panel = new Panel( text, {
+      fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty.value,
+      cornerRadius: 4,
+      xMargin: 6,
+      yMargin: 6,
+      visible: false
+    } );
+    panel.center = new Vector2( centerX, centerY );
+
+    return panel;
+  }
+
+  /**
    * Determines bar colors from the fixed x order for a sample plot.
    */
   private getBarPaintableOptions( sampleIndex: number, point: Vector2 ): PaintableOptions {
@@ -265,8 +317,8 @@ export default class EnergyBarGraphNode extends Node {
     // Bars are ordered by x position within each sample group: potential on the left, photon in the center,
     // kinetic on the right.
     const fillProperty = point.x < centerX ? PhotoelectricEffectColors.potentialEnergyGraphColorProperty :
-                 point.x > centerX ? PhotoelectricEffectColors.kineticEnergyGraphColorProperty :
-                 PhotoelectricEffectColors.photonEnergyGraphColorProperty;
+                         point.x > centerX ? PhotoelectricEffectColors.kineticEnergyGraphColorProperty :
+                         PhotoelectricEffectColors.photonEnergyGraphColorProperty;
 
     return {
       fill: fillProperty,

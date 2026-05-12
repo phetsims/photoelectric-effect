@@ -96,7 +96,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
         photonEnergy: photonEnergy,
         kineticEnergy: kineticEnergy
       } );
-      barGraphNode.setSampleData( 1, null );
+      barGraphNode.setSampleData( 1, 'no-emit' );
       barGraphNode.setSampleData( 2, null );
     } );
 
