@@ -20,7 +20,6 @@ import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import RadialGradient from '../../../../scenery/js/util/RadialGradient.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import LightSourceNode from '../../common/view/LightSourceNode.js';
 
 // TODO: Currently this matches the width of the LightSourceNode in Intro and Experiment. Is that important or are the

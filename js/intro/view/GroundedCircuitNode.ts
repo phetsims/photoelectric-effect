@@ -35,8 +35,22 @@ export default class GroundedCircuitNode extends Node {
       lineWidth: 5
     } );
 
+    // The ground symbol shape is made of three lines that get narrower as they go further down.
+    const groundSymbolWidth = 60;
+    const symbolVerticalSpacing = 15;
+    const groundSymbolShape = new Shape().moveTo( targetPlate.left - 50 - groundSymbolWidth / 2, groundLinePath.bottom )
+      .lineTo( targetPlate.left - 50 + groundSymbolWidth / 2, groundLinePath.bottom )
+      .moveTo( targetPlate.left - 50 - groundSymbolWidth / 3, groundLinePath.bottom + symbolVerticalSpacing )
+      .lineTo( targetPlate.left - 50 + groundSymbolWidth / 3, groundLinePath.bottom + symbolVerticalSpacing )
+      .moveTo( targetPlate.left - 50 - groundSymbolWidth / 6, groundLinePath.bottom + symbolVerticalSpacing * 2 )
+      .lineTo( targetPlate.left - 50 + groundSymbolWidth / 6, groundLinePath.bottom + symbolVerticalSpacing * 2 );
+    const groundSymbolPath = new Path( groundSymbolShape, {
+      stroke: 'black',
+      lineWidth: 5
+    } );
+
     const options = optionize<GroundedCircuitNodeOptions, SelfOptions, NodeOptions>()( {
-      children: [ targetPlate, groundLinePath ]
+      children: [ targetPlate, groundLinePath, groundSymbolPath ]
     }, providedOptions );
     super( options );
   }
