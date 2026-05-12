@@ -79,7 +79,9 @@ export default class EnergyBarGraphNode extends Node {
 
   public constructor( workFunctionProperty: TReadOnlyProperty<number>, providedOptions: EnergyBarGraphNodeOptions ) {
 
-    const options = optionize<EnergyBarGraphNodeOptions, SelfOptions, NodeOptions>()( {}, providedOptions );
+    const options = optionize<EnergyBarGraphNodeOptions, SelfOptions, NodeOptions>()( {
+      isDisposable: false
+    }, providedOptions );
 
     super( options );
 

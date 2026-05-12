@@ -65,8 +65,26 @@ export default class EnergyDiagramNode extends Node {
   // Translates energy and sample coordinates into the shared chart view.
   private readonly chartTransform: ChartTransform;
 
-  // Shared custom graph decorations, regenerated when the work-function marker changes.
+  // Container for graph decorations that depend on the work function.
   private readonly graphDecorationNode: Node;
+
+  // Shaded region that represents the conduction band.
+  private readonly conductionBandNode: Rectangle;
+
+  // Persistent graph decorations that can be repositioned as the work function changes.
+  private readonly energyAxisNode: ArrowNode;
+  private readonly conductionBandBottomLine: Line;
+  private readonly fermiLevelLine: Line;
+  private readonly zeroEnergyLine: Line;
+  private readonly workFunctionMarkerLine: Line;
+  private readonly workFunctionMarkerFermiCap: Line;
+  private readonly workFunctionMarkerZeroCap: Line;
+  private readonly workFunctionLabel: Text;
+  private readonly conductionBandLabel: RichText;
+
+  // BracketNode does not expose a way to mutate its shape, so it is replaced when its length changes.
+  // The label is reused across replacements because BracketNode.dispose() detaches but does not dispose it.
+  private conductionBandBracket: BracketNode | null = null;
 
   // Electron markers for the fixed set of recorded energy samples.
   private readonly sampleNodes: Node[];
@@ -92,7 +110,9 @@ export default class EnergyDiagramNode extends Node {
                       workFunctionVisibleProperty: BooleanProperty,
                       providedOptions: EnergyDiagramNodeOptions ) {
 
-    const options = optionize<EnergyDiagramNodeOptions, SelfOptions, NodeOptions>()( {}, providedOptions );
+    const options = optionize<EnergyDiagramNodeOptions, SelfOptions, NodeOptions>()( {
+      isDisposable: false
+    }, providedOptions );
 
     super( options );
 
@@ -107,7 +127,81 @@ export default class EnergyDiagramNode extends Node {
       modelYRange: EnergyGraphDisplayProperties.MODEL_Y_RANGE
     } );
 
-    this.graphDecorationNode = new Node();
+    this.conductionBandNode = new Rectangle( 0, 0, CHART_VIEW_WIDTH, 0, {
+      fill: 'white'
+    } );
+
+    this.energyAxisNode = new ArrowNode( 0, CHART_VIEW_HEIGHT, 0, 0, {
+      fill: PhotoelectricEffectColors.iconStrokeColorProperty,
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: 1,
+      tailWidth: 1,
+      headWidth: 9,
+      headHeight: 9
+    } );
+
+    this.conductionBandBottomLine = new Line( 0, 0, CHART_VIEW_WIDTH, 0, {
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: 1.5,
+      lineDash: [ 2, 2 ]
+    } );
+
+    this.fermiLevelLine = new Line( 0, 0, CHART_VIEW_WIDTH, 0, {
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: 1.5,
+      lineDash: [ 2, 2 ]
+    } );
+
+    this.zeroEnergyLine = new Line( 0, 0, CHART_VIEW_WIDTH, 0, {
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: 1.5,
+      lineDash: [ 8, 5 ]
+    } );
+
+    this.workFunctionMarkerLine = new Line( 0, 0, 0, 0, {
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
+    } );
+
+    this.workFunctionMarkerFermiCap = new Line( 0, 0, 0, 0, {
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
+    } );
+
+    this.workFunctionMarkerZeroCap = new Line( 0, 0, 0, 0, {
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
+    } );
+
+    this.workFunctionLabel = new Text( MathSymbols.PHI, {
+      font: PhotoelectricEffectConstants.CONTENT_FONT,
+      visibleProperty: this.workFunctionVisibleProperty
+    } );
+
+    // TODO: i18n
+    this.conductionBandLabel = new RichText( 'Conduction Band', {
+      font: PhotoelectricEffectConstants.CONTENT_FONT,
+      lineWrap: CONDUCTION_BAND_LABEL_LINE_WRAP
+    } );
+
+    this.graphDecorationNode = new Node( {
+      children: [
+        this.conductionBandNode,
+        this.energyAxisNode,
+        this.conductionBandBottomLine,
+        this.fermiLevelLine,
+        this.zeroEnergyLine,
+        new Node( {
+          visibleProperty: this.workFunctionVisibleProperty,
+          children: [
+            this.workFunctionMarkerLine,
+            this.workFunctionMarkerFermiCap,
+            this.workFunctionMarkerZeroCap,
+            this.workFunctionLabel
+          ]
+        } )
+      ]
+    } );
 
     this.sampleNodes = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, () => new Node() );
 
@@ -174,12 +268,13 @@ export default class EnergyDiagramNode extends Node {
   }
 
   /**
-   * Sets or clears one sample plot. Null means there is no sample data yet.
+   * Sets or clears one sample plot. Null means there is no sample data yet. Zero kinetic energy means no electron
+   * was emitted, so the diagram shows no markers for that plot.
    */
   public setSampleData( sampleIndex: number, sampleState: EnergyGraphSampleState ): void {
     assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
 
-    if ( sampleState === null ) {
+    if ( sampleState === null || sampleState.kineticEnergy === 0 ) {
       this.sampleNodes[ sampleIndex ].children = [];
     }
     else {
@@ -201,8 +296,7 @@ export default class EnergyDiagramNode extends Node {
   }
 
   /**
-   * Repositions the y labels and regenerates the energy-level lines. The Fermi level depends on the active
-   * material, so these decorations are updated when the work function changes.
+   * Repositions graph decorations that depend on the active material's work function.
    */
   private updateGraphDecorations(): void {
     const zeroY = this.chartTransform.modelToViewY( 0 );
@@ -212,25 +306,39 @@ export default class EnergyDiagramNode extends Node {
     this.zeroTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, zeroY );
     this.fermiLevelTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, fermiLevelY );
 
-    const conductionBandNode = new Rectangle(
+    this.conductionBandNode.setRect(
       0,
       fermiLevelY,
       CHART_VIEW_WIDTH,
-      conductionBandBottomY - fermiLevelY, {
-        fill: new LinearGradient( 0, fermiLevelY, 0, conductionBandBottomY )
-          .addColorStop( 0, 'white' )
-          .addColorStop( 1, PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty )
-      } );
+      conductionBandBottomY - fermiLevelY
+    );
+    this.conductionBandNode.fill = new LinearGradient( 0, fermiLevelY, 0, conductionBandBottomY )
+      .addColorStop( 0, 'white' )
+      .addColorStop( 1, PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty );
 
-    // TODO: i18n
-    const conductionBandLabel = new RichText( 'Conduction Band', {
-      font: PhotoelectricEffectConstants.CONTENT_FONT,
-      lineWrap: CONDUCTION_BAND_LABEL_LINE_WRAP
-    } );
+    this.conductionBandBottomLine.setLine( 0, conductionBandBottomY, CHART_VIEW_WIDTH, conductionBandBottomY );
+    this.fermiLevelLine.setLine( 0, fermiLevelY, CHART_VIEW_WIDTH, fermiLevelY );
+    this.zeroEnergyLine.setLine( 0, zeroY, CHART_VIEW_WIDTH, zeroY );
 
-    const conductionBandBracket = new BracketNode( {
+    this.workFunctionMarkerLine.setLine( WORK_FUNCTION_MARKER_X, fermiLevelY, WORK_FUNCTION_MARKER_X, zeroY );
+    this.workFunctionMarkerFermiCap.setLine(
+      WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2, fermiLevelY,
+      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2, fermiLevelY
+    );
+    this.workFunctionMarkerZeroCap.setLine(
+      WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2, zeroY,
+      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2, zeroY
+    );
+    this.workFunctionLabel.leftCenter = new Vector2(
+      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2 + WORK_FUNCTION_LABEL_MARGIN,
+      ( fermiLevelY + zeroY ) / 2
+    );
+
+    this.disposeConductionBandBracket();
+
+    this.conductionBandBracket = new BracketNode( {
       orientation: 'right',
-      labelNode: conductionBandLabel,
+      labelNode: this.conductionBandLabel,
       bracketLength: Math.max(
         conductionBandBottomY - fermiLevelY - 2 * CONDUCTION_BAND_BRACKET_VERTICAL_INSET,
         CONDUCTION_BAND_BRACKET_MIN_LENGTH
@@ -242,71 +350,24 @@ export default class EnergyDiagramNode extends Node {
       spacing: CONDUCTION_BAND_LABEL_SPACING,
       visibleProperty: this.labelsVisibleProperty
     } );
-    conductionBandBracket.leftCenter = new Vector2(
+    this.conductionBandBracket.leftCenter = new Vector2(
       CONDUCTION_BAND_BRACKET_X,
       ( fermiLevelY + conductionBandBottomY ) / 2
     );
+    this.graphDecorationNode.addChild( this.conductionBandBracket );
+  }
 
-    const workFunctionLabel = new Text( MathSymbols.PHI, {
-      font: PhotoelectricEffectConstants.CONTENT_FONT,
-      visibleProperty: this.workFunctionVisibleProperty
-    } );
-    workFunctionLabel.leftCenter = new Vector2(
-      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2 + WORK_FUNCTION_LABEL_MARGIN,
-      ( fermiLevelY + zeroY ) / 2
-    );
-
-    const workFunctionMarkerNode = new Node( {
-      visibleProperty: this.workFunctionVisibleProperty,
-      children: [
-        new Line( WORK_FUNCTION_MARKER_X, fermiLevelY, WORK_FUNCTION_MARKER_X, zeroY, {
-          stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-          lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
-        } ),
-        new Line(
-          WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2, fermiLevelY,
-          WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2, fermiLevelY, {
-            stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-            lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
-          } ),
-        new Line(
-          WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2, zeroY,
-          WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2, zeroY, {
-            stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-            lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
-          } ),
-        workFunctionLabel
-      ]
-    } );
-
-    this.graphDecorationNode.children = [
-      conductionBandNode,
-      new ArrowNode( 0, CHART_VIEW_HEIGHT, 0, 0, {
-        fill: PhotoelectricEffectColors.iconStrokeColorProperty,
-        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-        lineWidth: 1,
-        tailWidth: 1,
-        headWidth: 9,
-        headHeight: 9
-      } ),
-      new Line( 0, conductionBandBottomY, CHART_VIEW_WIDTH, conductionBandBottomY, {
-        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-        lineWidth: 1.5,
-        lineDash: [ 2, 2 ]
-      } ),
-      new Line( 0, fermiLevelY, CHART_VIEW_WIDTH, fermiLevelY, {
-        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-        lineWidth: 1.5,
-        lineDash: [ 2, 2 ]
-      } ),
-      new Line( 0, zeroY, CHART_VIEW_WIDTH, zeroY, {
-        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-        lineWidth: 1.5,
-        lineDash: [ 8, 5 ]
-      } ),
-      workFunctionMarkerNode,
-      conductionBandBracket
-    ];
+  /**
+   * Disposes the generated conduction-band bracket before the next bracket is created.
+   * We typically create reusable Nodes to avoid disposal in this class, but BracketNode does not support
+   * changes once constructed.
+   */
+  private disposeConductionBandBracket(): void {
+    if ( this.conductionBandBracket ) {
+      this.graphDecorationNode.removeChild( this.conductionBandBracket );
+      this.conductionBandBracket.dispose();
+      this.conductionBandBracket = null;
+    }
   }
 
   /**
@@ -345,6 +406,9 @@ export default class EnergyDiagramNode extends Node {
   }
 
   public override dispose(): void {
+    this.disposeConductionBandBracket();
+    this.conductionBandLabel.dispose();
+
     this.workFunctionProperty.unlink( this.workFunctionListener );
     super.dispose();
     this.chartTransform.dispose();
