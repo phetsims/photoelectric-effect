@@ -1,0 +1,279 @@
+// Copyright 2026, University of Colorado Boulder
+
+/**
+ * Energy diagram display for the Energy screen. Each sample shows an electron's initial energy in the conduction
+ * band and its emitted kinetic energy above the zero-energy reference line.
+ *
+ * @author Jesse Greenberg (PhET Interactive Simulations)
+ */
+
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
+import Range from '../../../../dot/js/Range.js';
+import Vector2 from '../../../../dot/js/Vector2.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
+import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
+import Circle from '../../../../scenery/js/nodes/Circle.js';
+import Line from '../../../../scenery/js/nodes/Line.js';
+import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
+import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import type { EnergyBarGraphSampleData, EnergyBarGraphSampleState } from './EnergyBarGraphNode.js';
+
+type SelfOptions = EmptySelfOptions;
+export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
+
+// Number of sample plots shown in the Energy diagram.
+const NUMBER_OF_SAMPLE_PLOTS = 3;
+
+// View size of the shared chart rectangle.
+const CHART_VIEW_WIDTH = 150;
+const CHART_VIEW_HEIGHT = 200;
+
+// Horizontal layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
+const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
+
+// Fixed model range for the y-axis. Matches the bar graph scale so display modes remain visually stable.
+const MODEL_Y_RANGE = new Range( -8.5, 7 );
+
+// Energy level for the bottom of the conduction band, in eV.
+const CONDUCTION_BAND_BOTTOM = -8;
+
+// Marker and label layout.
+const ELECTRON_MARKER_RADIUS = 5;
+const Y_TICK_LABEL_MARGIN = 5;
+const X_LABEL_MARGIN = 5;
+const Y_AXIS_LABEL_MARGIN = 96;
+const WORK_FUNCTION_MARKER_X = CHART_VIEW_WIDTH - 18;
+const WORK_FUNCTION_LABEL_MARGIN = 4;
+
+export default class EnergyDiagramNode extends Node {
+
+  // Translates energy and sample coordinates into the shared chart view.
+  private readonly chartTransform: ChartTransform;
+
+  // Shared custom graph decorations, regenerated when the work-function marker changes.
+  private readonly graphDecorationNode: Node;
+
+  // Electron markers for samples 1, 2, and 3.
+  private readonly sampleNodes: Node[];
+
+  // Labels for the special y values shown on the graph.
+  private readonly zeroTickLabel: Text;
+  private readonly fermiLevelTickLabel: Text;
+
+  // Listener retained so it can be removed on disposal.
+  private readonly workFunctionListener: () => void;
+
+  // Work function source used for the Fermi level marker.
+  private readonly workFunctionProperty: TReadOnlyProperty<number>;
+
+  public constructor( workFunctionProperty: TReadOnlyProperty<number>, providedOptions: EnergyDiagramNodeOptions ) {
+
+    const options = optionize<EnergyDiagramNodeOptions, SelfOptions, NodeOptions>()( {}, providedOptions );
+
+    super( options );
+
+    this.workFunctionProperty = workFunctionProperty;
+
+    this.chartTransform = new ChartTransform( {
+      viewWidth: CHART_VIEW_WIDTH,
+      viewHeight: CHART_VIEW_HEIGHT,
+      modelXRange: new Range( 0.5, 3.5 ),
+      modelYRange: MODEL_Y_RANGE
+    } );
+
+    this.graphDecorationNode = new Node();
+
+    this.sampleNodes = _.times( NUMBER_OF_SAMPLE_PLOTS, () => new Node() );
+
+    const plotLayer = new Node( {
+      children: [
+        this.graphDecorationNode,
+        ...this.sampleNodes
+      ]
+    } );
+
+    this.zeroTickLabel = new Text( '0', {
+      font: PhotoelectricEffectConstants.CONTENT_FONT
+    } );
+
+    // TODO: i18n
+    this.fermiLevelTickLabel = new Text( 'Fermi Level', {
+      font: PhotoelectricEffectConstants.CONTENT_FONT
+    } );
+
+    // TODO: i18n
+    const yAxisLabel = new Text( 'Energy (eV)', {
+      font: PhotoelectricEffectConstants.CONTENT_FONT,
+      rotation: -Math.PI / 2
+    } );
+
+    const xLabels = _.times( NUMBER_OF_SAMPLE_PLOTS, sampleIndex => {
+      const label = new Text( `${sampleIndex + 1}`, {
+        font: PhotoelectricEffectConstants.CONTENT_FONT
+      } );
+      label.centerTop = new Vector2(
+        this.chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
+        CHART_VIEW_HEIGHT + X_LABEL_MARGIN
+      );
+      return label;
+    } );
+
+    const chartNode = new Node( {
+      children: [
+        plotLayer,
+        this.zeroTickLabel,
+        this.fermiLevelTickLabel,
+        ...xLabels
+      ]
+    } );
+
+    yAxisLabel.rightCenter = new Vector2( -Y_AXIS_LABEL_MARGIN, CHART_VIEW_HEIGHT / 2 );
+
+    this.children = [
+      new Node( {
+        children: [
+          yAxisLabel,
+          chartNode
+        ]
+      } )
+    ];
+
+    this.workFunctionListener = () => {
+      this.updateGraphDecorations();
+    };
+    workFunctionProperty.link( this.workFunctionListener );
+
+    this.updateGraphDecorations();
+  }
+
+  /**
+   * Sets or clears one sample plot. Null means there is no sample data yet. The 'no-emit' state means the sample
+   * exists, but no electron was ejected.
+   */
+  public setSampleData( sampleIndex: number, sampleState: EnergyBarGraphSampleState ): void {
+    assert && assert( sampleIndex >= 0 && sampleIndex < NUMBER_OF_SAMPLE_PLOTS, 'sampleIndex out of range' );
+
+    if ( sampleState === null || sampleState === 'no-emit' ) {
+      this.sampleNodes[ sampleIndex ].children = [];
+    }
+    else {
+      this.sampleNodes[ sampleIndex ].children = EnergyDiagramNode.createSampleMarkers(
+        this.chartTransform,
+        sampleIndex,
+        sampleState
+      );
+    }
+  }
+
+  /**
+   * Clears all sample plots.
+   */
+  public clearSampleData(): void {
+    for ( let sampleIndex = 0; sampleIndex < NUMBER_OF_SAMPLE_PLOTS; sampleIndex++ ) {
+      this.setSampleData( sampleIndex, null );
+    }
+  }
+
+  /**
+   * Repositions the y labels and regenerates the energy-level lines. The Fermi level depends on the active
+   * material, so these decorations are updated when the work function changes.
+   */
+  private updateGraphDecorations(): void {
+    const zeroY = this.chartTransform.modelToViewY( 0 );
+    const fermiLevelY = this.chartTransform.modelToViewY( -this.workFunctionProperty.value );
+    const conductionBandBottomY = this.chartTransform.modelToViewY( CONDUCTION_BAND_BOTTOM );
+
+    this.zeroTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, zeroY );
+    this.fermiLevelTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, fermiLevelY );
+
+    const conductionBandNode = new Rectangle(
+      0,
+      fermiLevelY,
+      CHART_VIEW_WIDTH,
+      conductionBandBottomY - fermiLevelY, {
+        fill: PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty
+      } );
+
+    const workFunctionLabel = new Text( MathSymbols.PHI, {
+      font: PhotoelectricEffectConstants.CONTENT_FONT
+    } );
+    workFunctionLabel.leftCenter = new Vector2(
+      WORK_FUNCTION_MARKER_X + WORK_FUNCTION_LABEL_MARGIN,
+      ( fermiLevelY + zeroY ) / 2
+    );
+
+    this.graphDecorationNode.children = [
+      conductionBandNode,
+      new ArrowNode( 0, CHART_VIEW_HEIGHT, 0, 0, {
+        fill: PhotoelectricEffectColors.iconStrokeColorProperty,
+        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+        lineWidth: 1,
+        tailWidth: 1,
+        headWidth: 9,
+        headHeight: 9
+      } ),
+      new Line( 0, conductionBandBottomY, CHART_VIEW_WIDTH, conductionBandBottomY, {
+        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+        lineWidth: 1.5,
+        lineDash: [ 2, 2 ]
+      } ),
+      new Line( 0, fermiLevelY, CHART_VIEW_WIDTH, fermiLevelY, {
+        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+        lineWidth: 1.5,
+        lineDash: [ 2, 2 ]
+      } ),
+      new Line( 0, zeroY, CHART_VIEW_WIDTH, zeroY, {
+        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+        lineWidth: 1.5,
+        lineDash: [ 8, 5 ]
+      } ),
+      new ArrowNode( WORK_FUNCTION_MARKER_X, fermiLevelY, WORK_FUNCTION_MARKER_X, zeroY, {
+        fill: PhotoelectricEffectColors.iconStrokeColorProperty,
+        stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+        lineWidth: 1,
+        tailWidth: 1,
+        headWidth: 7,
+        headHeight: 7,
+        doubleHead: true
+      } ),
+      workFunctionLabel
+    ];
+  }
+
+  /**
+   * Creates the markers for one sample. White marks the electron's initial energy in the conduction band and blue
+   * marks its emitted kinetic energy after photon collision.
+   */
+  private static createSampleMarkers( chartTransform: ChartTransform,
+                                      sampleIndex: number,
+                                      data: EnergyBarGraphSampleData ): Circle[] {
+    const sampleCenterX = chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) );
+
+    const initialEnergyMarker = new Circle( ELECTRON_MARKER_RADIUS, {
+      fill: 'white',
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: 1.5
+    } );
+    initialEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( data.potentialEnergy ) );
+
+    const emittedEnergyMarker = new Circle( ELECTRON_MARKER_RADIUS, {
+      fill: PhotoelectricEffectColors.kineticEnergyGraphColorProperty,
+      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
+      lineWidth: 1.5
+    } );
+    emittedEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( data.kineticEnergy ) );
+
+    return [ initialEnergyMarker, emittedEnergyMarker ];
+  }
+
+  public override dispose(): void {
+    this.workFunctionProperty.unlink( this.workFunctionListener );
+    super.dispose();
+    this.chartTransform.dispose();
+  }
+}
