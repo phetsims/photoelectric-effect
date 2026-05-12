@@ -44,7 +44,7 @@ const NUMBER_OF_SAMPLE_PLOTS = 3;
 
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 240;
-const CHART_VIEW_HEIGHT = 140;
+const CHART_VIEW_HEIGHT = 280;
 
 // Bar layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
@@ -69,10 +69,10 @@ const LEGEND_GRAPH_SPACING = 18;
 // Fixed model range for the y-axis. Keeps zero, grid lines, and bar scaling stable as material changes.
 // The lower bound is fixed so y positions remain stable when material changes.
 // The upper bound keeps the graph focused on the active energy bars.
-const MODEL_Y_RANGE = new Range( -8.5, 7 );
+const MODEL_Y_RANGE = new Range( -14, 10 );
 
 // Fixed energy reference lines.
-const GRID_LINE_VALUES = [ -4, -2, 2, 4, 6 ];
+const GRID_LINE_VALUES = [ -14, -12, -10, -8, -6, -4, -2, 2, 4, 6, 8, 10 ];
 
 export default class EnergyBarGraphNode extends Node {
 

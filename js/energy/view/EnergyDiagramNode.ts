@@ -38,13 +38,13 @@ const NUMBER_OF_SAMPLE_PLOTS = 3;
 
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 120;
-const CHART_VIEW_HEIGHT = 200;
+const CHART_VIEW_HEIGHT = 320;
 
 // Horizontal layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
 
 // Fixed model range for the y-axis. Matches the bar graph scale so display modes remain visually stable.
-const MODEL_Y_RANGE = new Range( -8.5, 7 );
+const MODEL_Y_RANGE = new Range( -14, 10 );
 
 // Energy level for the bottom of the conduction band, in eV.
 const CONDUCTION_BAND_BOTTOM = -8;
