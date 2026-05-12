@@ -14,7 +14,6 @@ import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
-import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Line from '../../../../scenery/js/nodes/Line.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import type { PaintableOptions } from '../../../../scenery/js/nodes/Paintable.js';
@@ -25,7 +24,6 @@ import Panel from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
-import EnergyGraphLegendNode from './EnergyGraphLegendNode.js';
 
 export type EnergyBarGraphSampleData = {
   potentialEnergy: number;
@@ -33,8 +31,8 @@ export type EnergyBarGraphSampleData = {
   kineticEnergy: number;
 };
 
-// A recorded sample can have energy data, no data yet, or a photon that did not eject an electron.
-export type EnergyBarGraphSampleState = EnergyBarGraphSampleData | 'no-emit' | null;
+// A recorded sample can have energy data, or no data yet.
+export type EnergyBarGraphSampleState = EnergyBarGraphSampleData | null;
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
@@ -45,7 +43,7 @@ const NUMBER_OF_SAMPLE_PLOTS = 3;
 
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 240;
-const CHART_VIEW_HEIGHT = 280;
+const CHART_VIEW_HEIGHT = 320;
 
 // Bar layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
@@ -53,7 +51,7 @@ const BAR_X_OFFSET = 0.18;
 const BAR_WIDTH = 9;
 
 // In-plot message shown when a sample exists, but the photon did not eject an electron. This is in model units.
-const NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y = 3.5;
+const NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y = 8.5;
 
 // Segmented zero-energy line layout. One segment is drawn for each sample so space remains between plots.
 // This is in model units.
@@ -64,11 +62,8 @@ const Y_TICK_LABEL_MARGIN = 5;
 const X_LABEL_MARGIN = 5;
 const Y_AXIS_LABEL_MARGIN = 34;
 
-// Vertical spacing between the graph legend and plot.
-const LEGEND_GRAPH_SPACING = 18;
-
-// Fixed energy reference lines.
-const GRID_LINE_VALUES = [ -14, -12, -10, -8, -6, -4, -2, 2, 4, 6, 8, 10 ];
+// Spacing between fixed energy reference lines, in eV.
+const GRID_LINE_SPACING = 2;
 
 export default class EnergyBarGraphNode extends Node {
 
@@ -182,16 +177,7 @@ export default class EnergyBarGraphNode extends Node {
       ]
     } );
 
-    this.children = [
-      new VBox( {
-        align: 'left',
-        spacing: LEGEND_GRAPH_SPACING,
-        children: [
-          new EnergyGraphLegendNode(),
-          graphNode
-        ]
-      } )
-    ];
+    this.children = [ graphNode ];
 
     this.workFunctionListener = () => {
       this.updateGraphDecorations();
@@ -202,16 +188,16 @@ export default class EnergyBarGraphNode extends Node {
   }
 
   /**
-   * Sets or clears one sample plot. Null means there is no sample data yet. The 'no-emit' state means the sample
-   * exists, but no electron was ejected.
+   * Sets or clears one sample plot. Null means there is no sample data yet. A sample with zero kinetic energy means
+   * that the photon did not eject an electron.
    */
   public setSampleData( sampleIndex: number, sampleState: EnergyBarGraphSampleState ): void {
     assert && assert( sampleIndex >= 0 && sampleIndex < NUMBER_OF_SAMPLE_PLOTS, 'sampleIndex out of range' );
 
-    const noElectronEjected = sampleState === 'no-emit';
+    const noElectronEjected = sampleState !== null && sampleState.kineticEnergy === 0;
     this.noElectronEjectedPanels[ sampleIndex ].visible = noElectronEjected;
 
-    if ( sampleState === null || noElectronEjected ) {
+    if ( sampleState === null ) {
       this.sampleBarPlots[ sampleIndex ].setDataSet( [] );
     }
     else {
@@ -256,10 +242,15 @@ export default class EnergyBarGraphNode extends Node {
       }
     };
 
-    // Static grid lines.
+    // Static grid lines. The zero-energy line is drawn separately as segmented solid lines.
     // TODO: These may not need to be redrawn every change. But putting here is simple. Reconsider once the
     //   look and feel of the plot is solidified.
-    GRID_LINE_VALUES.forEach( gridValue => addHorizontalGridLine( this.chartTransform.modelToViewY( gridValue ) ) );
+    const gridLineValues = _.range(
+      EnergyGraphDisplayProperties.MODEL_Y_RANGE.min,
+      EnergyGraphDisplayProperties.MODEL_Y_RANGE.max + GRID_LINE_SPACING,
+      GRID_LINE_SPACING
+    ).filter( gridLineValue => gridLineValue !== 0 );
+    gridLineValues.forEach( gridValue => addHorizontalGridLine( this.chartTransform.modelToViewY( gridValue ) ) );
 
     // Draw the dynamic work-function reference line across the full chart width.
     gridLines.push( new Line( 0, workFunctionY, CHART_VIEW_WIDTH, workFunctionY, {

@@ -8,8 +8,9 @@
  */
 
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
-import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import VBox, { type VBoxOptions } from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -17,6 +18,9 @@ import type TPaint from '../../../../scenery/js/util/TPaint.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+
+type SelfOptions = EmptySelfOptions;
+type EnergyGraphLegendNodeOptions = SelfOptions & VBoxOptions;
 
 // Size of the square color samples in the graph legend.
 const LEGEND_SWATCH_SIZE = 14;
@@ -29,8 +33,9 @@ const LEGEND_ITEM_SPACING = 6;
 
 export default class EnergyGraphLegendNode extends VBox {
 
-  public constructor() {
-    super( {
+  public constructor( providedOptions?: EnergyGraphLegendNodeOptions ) {
+
+    const options = optionize<EnergyGraphLegendNodeOptions, SelfOptions, VBoxOptions>()( {
       align: 'left',
       spacing: LEGEND_ROW_SPACING,
       children: [
@@ -47,7 +52,9 @@ export default class EnergyGraphLegendNode extends VBox {
           PhotoelectricEffectFluent.energy.graph.legend.kineticEnergyStringProperty
         )
       ]
-    } );
+    }, providedOptions );
+
+    super( options );
   }
 
   /**
