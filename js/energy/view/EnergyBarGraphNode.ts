@@ -14,6 +14,7 @@ import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
+import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Line from '../../../../scenery/js/nodes/Line.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import type { PaintableOptions } from '../../../../scenery/js/nodes/Paintable.js';
@@ -23,6 +24,7 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import EnergyGraphLegendNode from './EnergyGraphLegendNode.js';
 
 export type EnergyBarGraphSampleData = {
   potentialEnergy: number;
@@ -60,6 +62,9 @@ const ZERO_ENERGY_LINE_HALF_WIDTH = 0.32;
 const Y_TICK_LABEL_MARGIN = 5;
 const X_LABEL_MARGIN = 5;
 const Y_AXIS_LABEL_MARGIN = 34;
+
+// Vertical spacing between the graph legend and plot.
+const LEGEND_GRAPH_SPACING = 18;
 
 // Fixed model range for the y-axis. Keeps zero, grid lines, and bar scaling stable as material changes.
 // The lower bound is fixed so y positions remain stable when material changes.
@@ -174,9 +179,22 @@ export default class EnergyBarGraphNode extends Node {
 
     yAxisLabel.rightCenter = plotRectangle.leftCenter.minusXY( Y_AXIS_LABEL_MARGIN, 0 );
 
+    const graphNode = new Node( {
+      children: [
+        yAxisLabel,
+        chartNode
+      ]
+    } );
+
     this.children = [
-      yAxisLabel,
-      chartNode
+      new VBox( {
+        align: 'left',
+        spacing: LEGEND_GRAPH_SPACING,
+        children: [
+          new EnergyGraphLegendNode(),
+          graphNode
+        ]
+      } )
     ];
 
     this.workFunctionListener = () => {
