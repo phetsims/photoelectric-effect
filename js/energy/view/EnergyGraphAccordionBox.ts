@@ -7,8 +7,9 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import type PhetioProperty from '../../../../axon/js/PhetioProperty.js';
-import { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import Multilink from '../../../../axon/js/Multilink.js';
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
@@ -18,10 +19,12 @@ import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import type TPaint from '../../../../scenery/js/util/TPaint.js';
 import AccordionBox, { AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
+import { wavelengthToEnergy } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import type { EnergyGraphDisplayMode } from '../model/EnergyModel.js';
+import type EnergyModel from '../model/EnergyModel.js';
+import EnergyBarGraphNode from './EnergyBarGraphNode.js';
 import EnergyGraphDisplayModeRadioButtonGroup from './EnergyGraphDisplayModeRadioButtonGroup.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -39,19 +42,25 @@ const LEGEND_ROW_SPACING = 8;
 const LEGEND_ITEM_SPACING = 6;
 
 // Vertical spacing between the legend and graph display radio buttons.
-const CONTENT_SECTION_SPACING = 14;
+const CONTENT_SECTION_SPACING = 18;
+
+// Vertical spacing between the plot and display mode controls.
+const GRAPH_SECTION_SPACING = 8;
 
 export default class EnergyGraphAccordionBox extends AccordionBox {
 
-  public constructor( energyGraphDisplayModeProperty: PhetioProperty<EnergyGraphDisplayMode>,
-                      providedOptions: EnergyGraphAccordionBoxOptions ) {
+  public constructor( model: EnergyModel, providedOptions: EnergyGraphAccordionBoxOptions ) {
 
     const options = optionize<EnergyGraphAccordionBoxOptions, SelfOptions, AccordionBoxOptions>()( {
       isDisposable: false,
       buttonXMargin: 10,
       buttonYMargin: 10,
       contentXMargin: 10,
-      contentYMargin: 10
+      contentYMargin: 10,
+
+      titleNode: new Text( PhotoelectricEffectFluent.screen.energyStringProperty, {
+        font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
+      } )
     }, providedOptions );
 
     const legendNode = new VBox( {
@@ -73,16 +82,43 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       ]
     } );
 
-    const displayModeRadioButtonGroup = new EnergyGraphDisplayModeRadioButtonGroup( energyGraphDisplayModeProperty, {
+    const barGraphNode = new EnergyBarGraphNode( model.target.workFunctionProperty, {
+      visibleProperty: new DerivedProperty( [ model.energyGraphDisplayModeProperty ], displayMode => displayMode === 'barGraph' )
+    } );
+
+    // Show the current operating point until EnergyModel owns a sample history for this graph.
+    Multilink.multilink( [ model.wavelengthProperty, model.target.workFunctionProperty ], ( wavelength, workFunction ) => {
+      const potentialEnergy = -workFunction;
+      const photonEnergy = wavelengthToEnergy( wavelength );
+      const kineticEnergy = Math.max( 0, photonEnergy - workFunction );
+      barGraphNode.setSampleData( 0, {
+        potentialEnergy: potentialEnergy,
+        photonEnergy: photonEnergy,
+        kineticEnergy: kineticEnergy
+      } );
+      barGraphNode.setSampleData( 1, null );
+      barGraphNode.setSampleData( 2, null );
+    } );
+
+    const displayModeRadioButtonGroup = new EnergyGraphDisplayModeRadioButtonGroup( model.energyGraphDisplayModeProperty, {
       tandem: options.tandem.createTandem( 'displayModeRadioButtonGroup' )
     } );
 
-    super( new VBox( {
+    const graphControlsNode = new VBox( {
       align: 'center',
+      spacing: GRAPH_SECTION_SPACING,
+      children: [
+        barGraphNode,
+        displayModeRadioButtonGroup
+      ]
+    } );
+
+    super( new VBox( {
+      align: 'left',
       spacing: CONTENT_SECTION_SPACING,
       children: [
         legendNode,
-        displayModeRadioButtonGroup
+        graphControlsNode
       ]
     } ), options );
   }

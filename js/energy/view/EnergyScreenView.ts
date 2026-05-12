@@ -79,7 +79,7 @@ export default class EnergyScreenView extends ScreenView {
     this.addChild( photonSourcePanel );
     this.addChild( lightSourceNode );
 
-    const energyGraphAccordionBox = new EnergyGraphAccordionBox( model.energyGraphDisplayModeProperty, {
+    const energyGraphAccordionBox = new EnergyGraphAccordionBox( model, {
       right: this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
       top: this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN,
       tandem: options.tandem.createTandem( 'energyGraphAccordionBox' )
