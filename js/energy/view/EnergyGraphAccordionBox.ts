@@ -55,9 +55,13 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       visibleProperty: new DerivedProperty( [ model.energyGraphDisplayModeProperty ], displayMode => displayMode === 'barGraph' )
     } );
 
-    const energyDiagramNode = new EnergyDiagramNode( model.target.workFunctionProperty, {
-      visibleProperty: new DerivedProperty( [ model.energyGraphDisplayModeProperty ], displayMode => displayMode === 'energyDiagram' )
-    } );
+    const energyDiagramNode = new EnergyDiagramNode(
+      model.target.workFunctionProperty,
+      model.energyDiagramLabelsVisibleProperty,
+      model.energyDiagramWorkFunctionVisibleProperty,
+      {
+        visibleProperty: new DerivedProperty( [ model.energyGraphDisplayModeProperty ], displayMode => displayMode === 'energyDiagram' )
+      } );
     barGraphNode.left = energyDiagramNode.left;
 
     // Show the current operating point until EnergyModel owns a sample history for this graph.
