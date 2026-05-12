@@ -61,15 +61,8 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
 
     const displayProperties = model.energyGraphDisplayProperties;
 
-    const barGraphVisibleProperty = new DerivedProperty(
-      [ displayProperties.displayModeProperty ],
-      displayMode => displayMode === 'barGraph'
-    );
-
-    const energyDiagramVisibleProperty = new DerivedProperty(
-      [ displayProperties.displayModeProperty ],
-      displayMode => displayMode === 'energyDiagram'
-    );
+    const barGraphVisibleProperty = DerivedProperty.valueEqualsConstant( displayProperties.displayModeProperty, 'barGraph' );
+    const energyDiagramVisibleProperty = DerivedProperty.valueEqualsConstant( displayProperties.displayModeProperty, 'energyDiagram' );
 
     const barGraphNode = new EnergyBarGraphNode( model.target.workFunctionProperty, {
       visibleProperty: barGraphVisibleProperty
@@ -83,7 +76,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
         visibleProperty: energyDiagramVisibleProperty
       } );
 
-    barGraphNode.left = energyDiagramNode.left;
+    barGraphNode.centerX = energyDiagramNode.centerX;
 
     const displayModeRadioButtonGroup = new EnergyGraphDisplayModeRadioButtonGroup(
       displayProperties.displayModeProperty, {
@@ -116,7 +109,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     } );
     energyDiagramControlsNode.center = barGraphControlsNode.center;
 
-    const syncGraphDisplays = () => {
+    const updateGraphDisplays = () => {
       for ( let sampleIndex = 0; sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES; sampleIndex++ ) {
         const sampleState = model.energyGraphData.getSampleState( sampleIndex );
 
@@ -124,8 +117,8 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
         energyDiagramNode.setSampleData( sampleIndex, sampleState );
       }
     };
-    model.energyGraphData.dataChangedEmitter.addListener( syncGraphDisplays );
-    syncGraphDisplays();
+    model.energyGraphData.dataChangedEmitter.addListener( updateGraphDisplays );
+    updateGraphDisplays();
 
     const bottomControlsNode = new HBox( {
       align: 'center',
