@@ -67,7 +67,10 @@ export default class EnergyGraphData extends PhetioObject {
    * Replaces all recorded samples.
    */
   public setSampleStates( sampleStates: EnergyGraphSampleState[] ): void {
-    EnergyGraphData.validateSampleStates( sampleStates );
+    affirm(
+      sampleStates.length === EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES,
+      `EnergyGraphData state must have ${EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES} sample slots`
+    );
 
     this.sampleStates = sampleStates.map( sampleState => EnergyGraphData.copySampleState( sampleState ) );
     this.dataChangedEmitter.emit();
@@ -77,7 +80,8 @@ export default class EnergyGraphData extends PhetioObject {
    * Returns the recorded sample for one slot. Null means there is no sample data yet.
    */
   public getSampleState( sampleIndex: number ): EnergyGraphSampleState {
-    this.validateSampleIndex( sampleIndex );
+    affirm( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES,
+      'sampleIndex out of range' );
 
     const sampleState = this.sampleStates[ sampleIndex ];
     return EnergyGraphData.copySampleState( sampleState );
@@ -89,11 +93,6 @@ export default class EnergyGraphData extends PhetioObject {
   public clear(): void {
     this.sampleStates = EnergyGraphData.createEmptySampleStates();
     this.dataChangedEmitter.emit();
-  }
-
-  private validateSampleIndex( sampleIndex: number ): void {
-    affirm( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES,
-      'sampleIndex out of range' );
   }
 
   private static createEmptySampleStates(): EnergyGraphSampleState[] {
@@ -109,13 +108,6 @@ export default class EnergyGraphData extends PhetioObject {
       photonEnergy: sampleState.photonEnergy,
       kineticEnergy: sampleState.kineticEnergy
     };
-  }
-
-  private static validateSampleStates( sampleStates: EnergyGraphSampleState[] ): void {
-    affirm(
-      sampleStates.length === EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES,
-      `EnergyGraphData state must have ${EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES} sample slots`
-    );
   }
 
   /**
