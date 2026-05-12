@@ -15,6 +15,7 @@ import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.
 import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
 import BracketNode from '../../../../scenery-phet/js/BracketNode.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
+import ShadedSphereNode from '../../../../scenery-phet/js/ShadedSphereNode.js';
 import Circle from '../../../../scenery/js/nodes/Circle.js';
 import Line from '../../../../scenery/js/nodes/Line.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
@@ -289,12 +290,12 @@ export default class EnergyDiagramNode extends Node {
   }
 
   /**
-   * Creates the markers for one sample. White marks the electron's initial energy in the conduction band and blue
-   * marks its emitted kinetic energy after photon collision.
+   * Creates the electron markers for one sample. A white circle marks the electron's initial energy in the
+   * conduction band, and the shaded blue electron marks its emitted kinetic energy after photon collision.
    */
   private static createSampleMarkers( chartTransform: ChartTransform,
                                       sampleIndex: number,
-                                      data: EnergyBarGraphSampleData ): Circle[] {
+                                      data: EnergyBarGraphSampleData ): Node[] {
     const sampleCenterX = chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) );
 
     const initialEnergyMarker = new Circle( ELECTRON_MARKER_RADIUS, {
@@ -304,14 +305,23 @@ export default class EnergyDiagramNode extends Node {
     } );
     initialEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( data.potentialEnergy ) );
 
-    const emittedEnergyMarker = new Circle( ELECTRON_MARKER_RADIUS, {
-      fill: PhotoelectricEffectColors.kineticEnergyGraphColorProperty,
-      stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-      lineWidth: 1.5
-    } );
+    const emittedEnergyMarker = EnergyDiagramNode.createElectronMarker();
     emittedEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( data.kineticEnergy ) );
 
     return [ initialEnergyMarker, emittedEnergyMarker ];
+  }
+
+  /**
+   * Creates a shaded electron marker, matching the light direction used by ElectronNode in Models of the Hydrogen Atom.
+   */
+  private static createElectronMarker(): ShadedSphereNode {
+    return new ShadedSphereNode( 2 * ELECTRON_MARKER_RADIUS, {
+      mainColor: PhotoelectricEffectColors.electronBaseColorProperty,
+      highlightColor: PhotoelectricEffectColors.electronHighlightColorProperty,
+      highlightXOffset: 0,
+      highlightYOffset: 0.4,
+      isDisposable: false
+    } );
   }
 
   public override dispose(): void {
