@@ -8,6 +8,7 @@
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import StringUnionProperty from '../../../../axon/js/StringUnionProperty.js';
+import Range from '../../../../dot/js/Range.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 
 export type EnergyGraphDisplayMode = 'barGraph' | 'energyDiagram';
@@ -54,4 +55,7 @@ export default class EnergyGraphDisplayProperties {
     this.diagramLabelsVisibleProperty.reset();
     this.diagramWorkFunctionVisibleProperty.reset();
   }
+
+  // Fixed model range for energy graph y-axes. Keeps zero, grid lines, and scaling stable as material changes.
+  public static readonly MODEL_Y_RANGE = new Range( -14, 10 );
 }

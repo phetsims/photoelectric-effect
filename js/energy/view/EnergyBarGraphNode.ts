@@ -24,6 +24,7 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
 import EnergyGraphLegendNode from './EnergyGraphLegendNode.js';
 
 export type EnergyBarGraphSampleData = {
@@ -66,11 +67,6 @@ const Y_AXIS_LABEL_MARGIN = 34;
 // Vertical spacing between the graph legend and plot.
 const LEGEND_GRAPH_SPACING = 18;
 
-// Fixed model range for the y-axis. Keeps zero, grid lines, and bar scaling stable as material changes.
-// The lower bound is fixed so y positions remain stable when material changes.
-// The upper bound keeps the graph focused on the active energy bars.
-const MODEL_Y_RANGE = new Range( -14, 10 );
-
 // Fixed energy reference lines.
 const GRID_LINE_VALUES = [ -14, -12, -10, -8, -6, -4, -2, 2, 4, 6, 8, 10 ];
 
@@ -110,7 +106,7 @@ export default class EnergyBarGraphNode extends Node {
       viewWidth: CHART_VIEW_WIDTH,
       viewHeight: CHART_VIEW_HEIGHT,
       modelXRange: new Range( 0.5, 3.5 ),
-      modelYRange: MODEL_Y_RANGE
+      modelYRange: EnergyGraphDisplayProperties.MODEL_Y_RANGE
     } );
 
     this.gridLineNode = new Node();
