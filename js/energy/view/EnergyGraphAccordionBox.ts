@@ -7,19 +7,19 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import Multilink from '../../../../axon/js/Multilink.js';
+import dotRandom from '../../../../dot/js/dotRandom.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import KeyboardListener from '../../../../scenery/js/listeners/KeyboardListener.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import AccordionBox, { AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
-import { wavelengthToEnergy } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import type EnergyModel from '../model/EnergyModel.js';
-import EnergyBarGraphNode from './EnergyBarGraphNode.js';
+import EnergyBarGraphNode, { type EnergyBarGraphSampleState } from './EnergyBarGraphNode.js';
 import EnergyDiagramNode from './EnergyDiagramNode.js';
 import EnergyGraphDisplayModeRadioButtonGroup from './EnergyGraphDisplayModeRadioButtonGroup.js';
 
@@ -31,8 +31,12 @@ export type EnergyGraphAccordionBoxOptions =
 // Vertical spacing between the plot and display mode controls.
 const GRAPH_SECTION_SPACING = 8;
 
-// Temporary sample offset that demonstrates an electron starting below the Fermi level in the conduction band.
-const LOWER_CONDUCTION_BAND_SAMPLE_OFFSET = 1;
+// Number of sample plots shown in the Energy graph displays.
+const NUMBER_OF_SAMPLE_PLOTS = 3;
+
+// Random sample data range, in eV. These values match the fixed graph range used by the Energy graph views.
+const MIN_POTENTIAL_ENERGY = -8;
+const MAX_PHOTON_ENERGY = 7;
 
 export default class EnergyGraphAccordionBox extends AccordionBox {
 
@@ -73,33 +77,6 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
 
     barGraphNode.left = energyDiagramNode.left;
 
-    // Show the current operating point until EnergyModel owns a sample history for this graph.
-    Multilink.multilink( [ model.wavelengthProperty, model.target.workFunctionProperty ], ( wavelength, workFunction ) => {
-      const potentialEnergy = -workFunction;
-      const photonEnergy = wavelengthToEnergy( wavelength );
-      const kineticEnergy = Math.max( 0, photonEnergy - workFunction );
-      const sampleData = {
-        potentialEnergy: potentialEnergy,
-        photonEnergy: photonEnergy,
-        kineticEnergy: kineticEnergy
-      };
-      const lowerConductionBandPotentialEnergy = potentialEnergy - LOWER_CONDUCTION_BAND_SAMPLE_OFFSET;
-      const lowerConductionBandSampleData = {
-        potentialEnergy: lowerConductionBandPotentialEnergy,
-        photonEnergy: photonEnergy,
-        kineticEnergy: Math.max( 0.5, photonEnergy + lowerConductionBandPotentialEnergy )
-      };
-
-      barGraphNode.setSampleData( 0, sampleData );
-      energyDiagramNode.setSampleData( 0, sampleData );
-
-      barGraphNode.setSampleData( 1, lowerConductionBandSampleData );
-      energyDiagramNode.setSampleData( 1, lowerConductionBandSampleData );
-
-      barGraphNode.setSampleData( 2, null );
-      energyDiagramNode.setSampleData( 2, null );
-    } );
-
     const displayModeRadioButtonGroup = new EnergyGraphDisplayModeRadioButtonGroup(
       displayProperties.displayModeProperty, {
         tandem: options.tandem.createTandem( 'displayModeRadioButtonGroup' )
@@ -122,5 +99,37 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     } );
 
     super( graphControlsNode, options );
+
+    // TODO: Just for debugging until the model produces energy from events.
+    KeyboardListener.createGlobal( this, {
+      keys: [ 'r' ],
+      overlapBehavior: 'allow',
+      fire: () => {
+        for ( let sampleIndex = 0; sampleIndex < NUMBER_OF_SAMPLE_PLOTS; sampleIndex++ ) {
+          const sampleState = EnergyGraphAccordionBox.createRandomSampleState();
+
+          barGraphNode.setSampleData( sampleIndex, sampleState );
+          energyDiagramNode.setSampleData( sampleIndex, sampleState );
+        }
+      }
+    } );
+  }
+
+  /**
+   * Creates temporary randomized sample data for graph development.
+   */
+  private static createRandomSampleState(): EnergyBarGraphSampleState {
+    if ( dotRandom.nextDouble() < 0.15 ) {
+      return 'no-emit';
+    }
+
+    const potentialEnergy = MIN_POTENTIAL_ENERGY * dotRandom.nextDouble();
+    const photonEnergy = MAX_PHOTON_ENERGY * dotRandom.nextDouble();
+
+    return {
+      potentialEnergy: potentialEnergy,
+      photonEnergy: photonEnergy,
+      kineticEnergy: Math.max( 0, potentialEnergy + photonEnergy )
+    };
   }
 }
