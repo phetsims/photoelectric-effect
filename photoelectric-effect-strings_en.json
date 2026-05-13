@@ -94,6 +94,17 @@
       }
     }
   },
+  "photonQuantity": {
+    "single": {
+      "value": "Single"
+    },
+    "burst": {
+      "value": "Burst"
+    },
+    "fire": {
+      "value": "Fire"
+    }
+  },
   "showElectrons": {
     "value": "Show Electrons"
   },

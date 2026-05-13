@@ -51,6 +51,11 @@ type StringsType = {
       'snapshotSavedStringProperty': LocalizedStringProperty;
     }
   };
+  'photonQuantity': {
+    'singleStringProperty': LocalizedStringProperty;
+    'burstStringProperty': LocalizedStringProperty;
+    'fireStringProperty': LocalizedStringProperty;
+  };
   'showElectronsStringProperty': LocalizedStringProperty;
   'highestEnergyOnlyStringProperty': LocalizedStringProperty;
   'spectrumTrack': {

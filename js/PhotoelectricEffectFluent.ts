@@ -54,6 +54,9 @@ addToMapIfDefined( 'experiment_graph_infoDialogTitle', 'experiment.graph.infoDia
 addToMapIfDefined( 'experiment_graph_infoDialogPlaceholder', 'experiment.graph.infoDialogPlaceholderStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsDialogTitle', 'experiment.graph.snapshotsDialogTitleStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotSaved', 'experiment.graph.snapshotSavedStringProperty' );
+addToMapIfDefined( 'photonQuantity_single', 'photonQuantity.singleStringProperty' );
+addToMapIfDefined( 'photonQuantity_burst', 'photonQuantity.burstStringProperty' );
+addToMapIfDefined( 'photonQuantity_fire', 'photonQuantity.fireStringProperty' );
 addToMapIfDefined( 'showElectrons', 'showElectronsStringProperty' );
 addToMapIfDefined( 'highestEnergyOnly', 'highestEnergyOnlyStringProperty' );
 addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
@@ -164,6 +167,11 @@ const PhotoelectricEffectFluent = {
       snapshotsDialogTitleStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsDialogTitleStringProperty' ),
       snapshotSavedStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotSavedStringProperty' )
     }
+  },
+  photonQuantity: {
+    singleStringProperty: _.get( PhotoelectricEffectStrings, 'photonQuantity.singleStringProperty' ),
+    burstStringProperty: _.get( PhotoelectricEffectStrings, 'photonQuantity.burstStringProperty' ),
+    fireStringProperty: _.get( PhotoelectricEffectStrings, 'photonQuantity.fireStringProperty' )
   },
   showElectronsStringProperty: _.get( PhotoelectricEffectStrings, 'showElectronsStringProperty' ),
   highestEnergyOnlyStringProperty: _.get( PhotoelectricEffectStrings, 'highestEnergyOnlyStringProperty' ),

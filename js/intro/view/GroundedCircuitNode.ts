@@ -22,7 +22,7 @@ type SelfOptions = EmptySelfOptions;
 type GroundedCircuitNodeOptions = SelfOptions & StrictOmit<NodeOptions, 'children'>;
 
 export default class GroundedCircuitNode extends Node {
-  public constructor( modelViewTransform: ModelViewTransform2, providedOptions: GroundedCircuitNodeOptions ) {
+  public constructor( modelViewTransform: ModelViewTransform2, providedOptions?: GroundedCircuitNodeOptions ) {
     const targetPlate = CircuitFactory.createPlateWithMaterial( {
       rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 )
     } );

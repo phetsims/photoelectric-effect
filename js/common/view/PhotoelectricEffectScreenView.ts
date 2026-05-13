@@ -128,13 +128,13 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     // Light source node: aperture at local origin, placed at the beam-start view position.
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
-    const { node: lightSourceNode, cordAttachmentPoint } = this.createLightSourceNode( beamStartCenter );
+    const lightSourceNode = new LightSourceNode( beamStartCenter );
 
     // S-shaped wire from the back of the lamp to the right side of the control panel.
     // First control point of cubic curve below the start and second control point of cubic curve above the end
     // create the S regardless of height difference.
     const S_BEND = 200;
-    const photonSourceWireStart = cordAttachmentPoint;
+    const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
     const photonSourceWireEnd = this.photonSourceControl.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
     const photonSourceWireNode = new Path( new Shape()
       .moveToPoint( photonSourceWireStart )
@@ -233,6 +233,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       resetAllButton
     ];
 
+    // DEBUG INDICATORS:
     if ( phet.chipper.queryParameters.dev ) {
       const devWorkFunctionStringProperty = new DerivedProperty( [ model.target.workFunctionProperty ],
         workFunction => `Work Function: ${toFixed( workFunction, 2 )} eV` );
@@ -255,14 +256,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         leftTop: this.photonSourceControl.rightTop
       } ) );
     }
-  }
-
-  /**
-   * Creates the light source node placed at beamStartCenter. Subclasses can override to supply a different lamp.
-   */
-  protected createLightSourceNode( beamStartCenter: Vector2 ): { node: Node; cordAttachmentPoint: Vector2 } {
-    const node = new LightSourceNode( beamStartCenter );
-    return { node: node, cordAttachmentPoint: node.cordAttachmentPoint };
   }
 
   /**

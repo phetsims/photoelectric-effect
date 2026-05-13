@@ -41,6 +41,11 @@ experiment:
     snapshotsDialogTitle: 'Saved snapshots'
     snapshotSaved: 'Saved!'
 
+photonQuantity:
+  single: 'Single'
+  burst: 'Burst'
+  fire: 'Fire'
+
 showElectrons: 'Show Electrons'
 highestEnergyOnly: 'Highest Energy Only'
 
