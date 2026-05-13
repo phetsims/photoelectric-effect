@@ -9,62 +9,95 @@
  */
 
 import PatternStringProperty from '../../../../axon/js/PatternStringProperty.js';
-import TinyProperty from '../../../../axon/js/TinyProperty.js';
-import { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import StringProperty from '../../../../axon/js/StringProperty.js';
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import type Range from '../../../../dot/js/Range.js';
-import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import getMaterialLabelStringProperty from '../../common/view/getMaterialLabelStringProperty.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import GraphSnapshot, { type GraphSnapshotMetadataField, type GraphSnapshotMetadataFieldPair } from '../model/GraphSnapshot.js';
+import GraphSnapshot, { GraphSnapshotMetadata } from '../model/GraphSnapshot.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
-
-type DisposableStringProperty = TReadOnlyProperty<string> & { dispose: () => void };
 
 export default class GraphSnapshotRowNode extends HBox {
 
   // Left-side snapshot index shown for this row.
   private readonly snapshotNumberText: Text;
 
-  // Snapshot metadata entries shown in the legend area.
-  private readonly materialText: Text;
-  private readonly secondMetadataText: Text;
-  private readonly thirdMetadataText: Text;
-
-  // Field ordering for second and third metadata lines.
-  private readonly metadataFields: GraphSnapshotMetadataFieldPair;
-
   // Chart area for this snapshot row.
   private readonly plotNode: GraphPlotAreaNode;
 
-  // Disposable string properties created for the current row contents and disposed when content is replaced.
-  private readonly legendPatternStringProperties: DisposableStringProperty[];
+  // Row-local string Properties used by stable PatternStringProperties.
+  private readonly materialValueStringProperty: StringProperty;
+
+  // Snapshot and selected material label currently displayed by this row.
+  private displayedSnapshot: GraphSnapshot | null = null;
+  private materialLabelStringProperty: TReadOnlyProperty<string> | null = null;
+
+  // Stable listeners used when this row is reassigned to a different reusable snapshot slot.
+  private readonly updateValueStringsListener: () => void;
+  private readonly updatePlotListener: () => void;
 
   /**
    * @param xRange - Shared x-axis range for the embedded plot.
    * @param yZoomRanges - Per-zoom-level y-axis ranges used by the plot area.
-   * @param metadataFields - Ordered fields shown on the second and third legend lines.
+   * @param snapshotMetadata - Metadata properties and formatting functions used by the legend text.
    * @param plotOptions - Rendering options for the plot area.
    */
   public constructor(
     xRange: Range,
     yZoomRanges: Range[],
-    metadataFields: GraphSnapshotMetadataFieldPair,
+    snapshotMetadata: GraphSnapshotMetadata,
     plotOptions: GraphPlotAreaNodeOptions
   ) {
+
+    // These strings hold the value for each row in the snapshot.
+    const materialValueStringProperty = new StringProperty( '' );
+
+    // These strings hold the full localized row string for the snapshot, combining label with value.
+    const materialLegendStringProperty = GraphSnapshotRowNode.formatLabelValue(
+      PhotoelectricEffectFluent.experiment.graph.materialLabelStringProperty,
+      materialValueStringProperty
+    );
+    const secondLegendStringProperty = new PatternStringProperty(
+      PhotoelectricEffectFluent.experiment.graph.snapshotLabelValuePatternStringProperty,
+      {
+        label: snapshotMetadata.secondValueLabelProperty,
+        value: snapshotMetadata.secondValueProperty
+      },
+      {
+        maps: {
+          value: value => snapshotMetadata.formatSecondValue( value )
+        }
+      }
+    );
+    const thirdLegendStringProperty = new PatternStringProperty(
+      PhotoelectricEffectFluent.experiment.graph.snapshotLabelValuePatternStringProperty,
+      {
+        label: snapshotMetadata.thirdValueLabelProperty,
+        value: snapshotMetadata.thirdValueProperty
+      },
+      {
+        maps: {
+          value: value => snapshotMetadata.formatThirdValue( value )
+        }
+      }
+    );
+
+    // These Text nodes are created once. setDisplayedSnapshot updates the Properties that feed them when this row is
+    // assigned to a different snapshot slot.
     const snapshotNumberText = new Text( '', {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
-    const materialText = new Text( '', {
+    const materialText = new Text( materialLegendStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
-    const secondMetadataText = new Text( '', {
+    const secondMetadataText = new Text( secondLegendStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
-    const thirdMetadataText = new Text( '', {
+    const thirdMetadataText = new Text( thirdLegendStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
 
@@ -83,6 +116,7 @@ export default class GraphSnapshotRowNode extends HBox {
     super( {
       spacing: 10,
       align: 'top',
+      isDisposable: false,
       children: [
         snapshotNumberText,
         plotNode,
@@ -91,92 +125,31 @@ export default class GraphSnapshotRowNode extends HBox {
     } );
 
     this.snapshotNumberText = snapshotNumberText;
-    this.materialText = materialText;
-    this.secondMetadataText = secondMetadataText;
-    this.thirdMetadataText = thirdMetadataText;
     this.plotNode = plotNode;
-    this.metadataFields = metadataFields;
-    this.legendPatternStringProperties = [];
+    this.materialValueStringProperty = materialValueStringProperty;
+    this.updateValueStringsListener = this.updateValueStrings.bind( this );
+    this.updatePlotListener = this.updatePlot.bind( this );
   }
 
   /**
    * Displays one captured snapshot in this row.
    *
    * @param snapshotNumber - 1-based visible index for this snapshot.
-   * @param snapshot - Immutable snapshot to render.
+   * @param snapshot - Reusable snapshot slot to render.
    */
   public setSnapshot( snapshotNumber: number, snapshot: GraphSnapshot ): void {
-    this.materialText.setStringProperty( null );
-    this.secondMetadataText.setStringProperty( null );
-    this.thirdMetadataText.setStringProperty( null );
-    this.disposeLegendPatternStringProperties();
-
     this.visible = true;
-    this.plotNode.setLineDataSet( [ ...snapshot.points ] );
+    this.setDisplayedSnapshot( snapshot );
     this.snapshotNumberText.string = `${snapshotNumber}`;
-
-    const materialValueProperty = getMaterialLabelStringProperty(
-      snapshot.metadata.materialType,
-      snapshot.metadata.materialLabelKey
-    );
-    const materialLabelProperty = PhotoelectricEffectFluent.experiment.graph.materialLabelStringProperty;
-    const secondValueStringProperty = this.getMetadataValueString( this.metadataFields[ 0 ], snapshot );
-    const thirdValueStringProperty = this.getMetadataValueString( this.metadataFields[ 1 ], snapshot );
-    const materialLegendStringProperty = this.formatLabelValue( materialLabelProperty, materialValueProperty );
-    const secondLegendStringProperty = this.formatLabelValue(
-      this.getMetadataLabelStringProperty( this.metadataFields[ 0 ] ),
-      secondValueStringProperty
-    );
-    const thirdLegendStringProperty = this.formatLabelValue(
-      this.getMetadataLabelStringProperty( this.metadataFields[ 1 ] ),
-      thirdValueStringProperty
-    );
-
-    this.legendPatternStringProperties.push(
-      secondValueStringProperty,
-      thirdValueStringProperty,
-      materialLegendStringProperty,
-      secondLegendStringProperty,
-      thirdLegendStringProperty
-    );
-
-    this.setLegendText( materialLegendStringProperty, secondLegendStringProperty, thirdLegendStringProperty );
-  }
-
-  /**
-   * Updates all legend lines for this row.
-   *
-   * @param materialStringProperty - Text shown on the first legend line (material).
-   * @param secondMetadataStringProperty - Text shown on the second legend line.
-   * @param thirdMetadataStringProperty - Text shown on the third legend line.
-   */
-  public setLegendText(
-    materialStringProperty: TReadOnlyProperty<string>,
-    secondMetadataStringProperty: TReadOnlyProperty<string>,
-    thirdMetadataStringProperty: TReadOnlyProperty<string>
-  ): void {
-    this.materialText.setStringProperty( materialStringProperty );
-    this.secondMetadataText.setStringProperty( secondMetadataStringProperty );
-    this.thirdMetadataText.setStringProperty( thirdMetadataStringProperty );
   }
 
   /**
    * Hides this row and removes all previously shown values.
    */
   public clearSnapshot(): void {
-    this.materialText.setStringProperty( null );
-    this.secondMetadataText.setStringProperty( null );
-    this.thirdMetadataText.setStringProperty( null );
-    this.disposeLegendPatternStringProperties();
-
     this.visible = false;
-    this.plotNode.setLineDataSet( [] );
+    this.setDisplayedSnapshot( null );
     this.snapshotNumberText.string = '';
-  }
-
-  public override dispose(): void {
-    this.clearSnapshot();
-    super.dispose();
   }
 
   /**
@@ -189,29 +162,81 @@ export default class GraphSnapshotRowNode extends HBox {
   }
 
   /**
-   * Gets formatted metadata value text for the requested field.
+   * Replaces the snapshot this row observes. This keeps row dependencies scoped to the one displayed snapshot and the
+   * selected material label string Property.
    */
-  private getMetadataValueString( metadataField: GraphSnapshotMetadataField, snapshot: GraphSnapshot ): DisposableStringProperty {
-    return metadataField === 'wavelength' ? this.formatWavelength( snapshot.metadata.wavelength ) :
-           metadataField === 'intensity' ? this.formatIntensity( snapshot.metadata.intensity ) :
-           metadataField === 'voltage' ? this.formatVoltage( snapshot.metadata.voltage ) :
-           ( () => { throw new Error( `Unsupported metadata field: ${metadataField}` ); } )();
+  private setDisplayedSnapshot( snapshot: GraphSnapshot | null ): void {
+    if ( snapshot === this.displayedSnapshot ) {
+      this.updateValueStrings();
+      this.updatePlot();
+      return;
+    }
+
+    this.unlinkDisplayedSnapshot();
+    this.displayedSnapshot = snapshot;
+
+    if ( snapshot ) {
+      snapshot.metadata.materialTypeProperty.lazyLink( this.updateValueStringsListener );
+      snapshot.metadata.materialLabelKeyProperty.lazyLink( this.updateValueStringsListener );
+      snapshot.pointsProperty.lazyLink( this.updatePlotListener );
+    }
+
+    this.updateValueStrings();
+    this.updatePlot();
   }
 
   /**
-   * Gets the localized label for a metadata field.
+   * Unlinks listeners from the previously displayed snapshot and selected material label.
    */
-  private getMetadataLabelStringProperty( metadataField: GraphSnapshotMetadataField ): TReadOnlyProperty<string> {
-    return metadataField === 'wavelength' ? PhotoelectricEffectFluent.wavelength.labelStringProperty :
-           metadataField === 'intensity' ? PhotoelectricEffectFluent.intensity.labelStringProperty :
-           metadataField === 'voltage' ? PhotoelectricEffectFluent.voltage.labelStringProperty :
-           ( () => { throw new Error( `Unsupported metadata field: ${metadataField}` ); } )();
+  private unlinkDisplayedSnapshot(): void {
+    const snapshot = this.displayedSnapshot;
+    if ( snapshot ) {
+      snapshot.metadata.materialTypeProperty.unlink( this.updateValueStringsListener );
+      snapshot.metadata.materialLabelKeyProperty.unlink( this.updateValueStringsListener );
+      snapshot.pointsProperty.unlink( this.updatePlotListener );
+    }
+
+    if ( this.materialLabelStringProperty ) {
+      this.materialLabelStringProperty.unlink( this.updateValueStringsListener );
+      this.materialLabelStringProperty = null;
+    }
+  }
+
+  /**
+   * Updates row-local value strings from the current snapshot.
+   */
+  private updateValueStrings(): void {
+    const snapshot = this.displayedSnapshot;
+    const materialLabelStringProperty = snapshot === null ? null : getMaterialLabelStringProperty(
+      snapshot.metadata.materialTypeProperty.value,
+      snapshot.metadata.materialLabelKeyProperty.value
+    );
+
+    if ( materialLabelStringProperty !== this.materialLabelStringProperty ) {
+      if ( this.materialLabelStringProperty ) {
+        this.materialLabelStringProperty.unlink( this.updateValueStringsListener );
+      }
+      this.materialLabelStringProperty = materialLabelStringProperty;
+      if ( this.materialLabelStringProperty ) {
+        this.materialLabelStringProperty.lazyLink( this.updateValueStringsListener );
+      }
+    }
+
+    this.materialValueStringProperty.value = materialLabelStringProperty === null ? '' : materialLabelStringProperty.value;
+  }
+
+  /**
+   * Updates the embedded plot from the current snapshot.
+   */
+  private updatePlot(): void {
+    const snapshot = this.displayedSnapshot;
+    this.plotNode.setLineDataSet( snapshot === null ? [] : [ ...snapshot.pointsProperty.value ] );
   }
 
   /**
    * Formats one legend line using the shared "label: value" string pattern.
    */
-  private formatLabelValue( label: TReadOnlyProperty<string>, value: TReadOnlyProperty<string> | string ): PatternStringProperty<{
+  private static formatLabelValue( label: TReadOnlyProperty<string>, value: TReadOnlyProperty<string> | string ): PatternStringProperty<{
     label: TReadOnlyProperty<string>;
     value: TReadOnlyProperty<string> | string;
   }> {
@@ -222,47 +247,5 @@ export default class GraphSnapshotRowNode extends HBox {
         value: value
       }
     );
-  }
-
-  /**
-   * Formats wavelength readouts for legend display. Returns a Property for a more consistent interface
-   * with other values above.
-   */
-  private formatWavelength( wavelength: number ): DisposableStringProperty {
-    return new TinyProperty( toFixed( wavelength, 2 ) );
-  }
-
-  /**
-   * Formats intensity readouts with the localized percent pattern.
-   */
-  private formatIntensity( intensity: number ): PatternStringProperty<{ value: string }> {
-    return new PatternStringProperty(
-      PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty,
-      {
-        value: toFixed( intensity, 0 )
-      }
-    );
-  }
-
-  /**
-   * Formats voltage readouts with the localized voltage pattern.
-   */
-  private formatVoltage( voltage: number ): PatternStringProperty<{ value: string }> {
-    return new PatternStringProperty(
-      PhotoelectricEffectFluent.voltage.valueReadoutPatternStringProperty,
-      {
-        value: toFixed( voltage, 2 )
-      }
-    );
-  }
-
-  /**
-   * Disposes and clears string properties created for current legend content.
-   */
-  private disposeLegendPatternStringProperties(): void {
-    this.legendPatternStringProperties.forEach( patternStringProperty => {
-      patternStringProperty.dispose();
-    } );
-    this.legendPatternStringProperties.length = 0;
   }
 }

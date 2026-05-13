@@ -66,7 +66,6 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyNode {
       xRange,
       yZoomRanges,
       PhotoelectricEffectFluent.experiment.graph.voltageCurrentTitleStringProperty,
-      [ 'wavelength', 'intensity' ],
       graphOptions
     );
   }

@@ -27,7 +27,6 @@ import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
-import type { GraphSnapshotMetadataFieldPair } from '../model/GraphSnapshot.js';
 import type { GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
 
@@ -35,13 +34,12 @@ export default class GraphSnapshotsDialog extends Dialog {
 
   /**
    * @param tandem
-   * @param graphData - Model that owns live samples and immutable snapshot copies for this dialog.
+   * @param graphData - Model that owns live samples and reusable snapshot slots for this dialog.
    * @param parentZoomLevelProperty - 1-based zoom index from the parent graph's chart; its current value whenever the
    *                                  dialog is shown sets the initial zoom level for charts in this dialog.
    * @param xRange - Shared x range used by each snapshot plot.
    * @param yZoomRanges - Y zoom presets used by each snapshot plot.
    * @param titleStringProperty - Localized title string shown in this dialog header.
-   * @param metadataFields - Field ordering for the second and third legend lines (material is always first).
    * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
    */
   public constructor(
@@ -51,7 +49,6 @@ export default class GraphSnapshotsDialog extends Dialog {
     xRange: Range,
     yZoomRanges: Range[],
     titleStringProperty: TReadOnlyProperty<string>,
-    metadataFields: GraphSnapshotMetadataFieldPair,
     graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions
   ) {
 
@@ -77,12 +74,10 @@ export default class GraphSnapshotsDialog extends Dialog {
       showXLabels: true
     } );
 
-    const snapshotRows: GraphSnapshotRowNode[] = [];
-    _.times( GraphData.MAX_SNAPSHOTS, index => {
-
+    const snapshotRows = graphData.snapshots.map( ( snapshot, i ) => {
       // The final plot shows x labels (lining them up for all stacked plots).
-      const plotOptions = index === GraphData.MAX_SNAPSHOTS - 1 ? labeledSnapshotPlotOptions : snapshotPlotOptions;
-      snapshotRows.push( new GraphSnapshotRowNode( xRange, yZoomRanges, metadataFields, plotOptions ) );
+      const plotOptions = i === GraphData.MAX_SNAPSHOTS - 1 ? labeledSnapshotPlotOptions : snapshotPlotOptions;
+      return new GraphSnapshotRowNode( xRange, yZoomRanges, snapshot.metadata, plotOptions );
     } );
 
     const plotsGridBox = new VBox( {
@@ -133,8 +128,8 @@ export default class GraphSnapshotsDialog extends Dialog {
       const snapshots = graphData.getSnapshots();
       let snapshotIndex = snapshots.length - 1;
 
-      for ( let rowIndex = snapshotRows.length - 1; rowIndex >= 0; rowIndex-- ) {
-        const snapshotRowNode = snapshotRows[ rowIndex ];
+      for ( let snapshotRowIndex = snapshotRows.length - 1; snapshotRowIndex >= 0; snapshotRowIndex-- ) {
+        const snapshotRowNode = snapshotRows[ snapshotRowIndex ];
 
         // Fill rows bottom-to-top with available snapshots.
         if ( snapshotIndex >= 0 ) {

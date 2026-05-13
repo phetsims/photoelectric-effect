@@ -63,7 +63,6 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode 
       xRange,
       yZoomRanges,
       PhotoelectricEffectFluent.experiment.graph.frequencyEnergyTitleStringProperty,
-      [ 'intensity', 'voltage' ],
       graphOptions
     );
   }

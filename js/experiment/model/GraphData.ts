@@ -2,13 +2,13 @@
 
 /**
  * Owns deterministic binned chart samples for one experiment graph, and wires axon listeners to reveal state updates
- * when a driving NumberProperty changes. Clears when any dependency changes, and clear on model reset.
+ * when a driving NumberProperty changes. Clears when any dependency changes, and clears on model reset.
  *
  * Samples are stored in a fixed number of x-axis bins across xDomain (defaults to drivingProperty.range) so memory
  * stays bounded while sweeping the control. Bin y-values are deterministic for the current
  * model state, and a reveal mask tracks which bins have been swept by the driving control.
  *
- * Also stores a small number of immutable snapshot copies of the live series for later plotting.
+ * Also stores a small number of reusable snapshot slots for later plotting.
  *
  * The view syncs line history from dataChangedEmitter; points are not wrapped in Property or ObservableArray.
  * The current operating point for the latest-point marker syncs from currentPointProperty when the driving property
@@ -42,7 +42,7 @@ import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectQueryParameters from '../../common/PhotoelectricEffectQueryParameters.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
-import GraphSnapshot, { GraphSnapshotMetadata, type GraphSnapshotStateObject } from './GraphSnapshot.js';
+import GraphSnapshot, { type GraphSnapshotStateObject } from './GraphSnapshot.js';
 
 type SelfOptions = {
 
@@ -89,6 +89,13 @@ type BinData = {
   revealed: boolean;
 };
 
+//TODO:
+// type MetadataConfig = {
+//   value: number | null;
+//   labelProperty: TReadOnlyProperty<string>;
+//   formatValue: ( value: number ) => string;
+// };
+
 export default class GraphData extends PhetioObject {
 
   // Upper bound on snapshots; captureSnapshot asserts the stored count stays below this before adding another.
@@ -109,8 +116,8 @@ export default class GraphData extends PhetioObject {
   // Most recent driving bin index, used to reveal all bins between previous and current positions.
   private previousDrivingBinIndex: number | null = null;
 
-  // Deep-copied snapshot series and metadata captured via captureSnapshot(); each snapshot is read-only after storage.
-  private readonly snapshots: GraphSnapshot[] = [];
+  // Reusable snapshot slots. The leading snapshotsCountProperty.value slots are active.
+  public readonly snapshots: GraphSnapshot[];
 
   // Shared model state source for snapshot metadata captured at save time.
   private readonly model: PhotoelectricEffectModel;
@@ -123,9 +130,7 @@ export default class GraphData extends PhetioObject {
   public readonly currentPointProperty: Property<Vector2>;
 
   // Number of stored snapshots.
-  public readonly snapshotsCountProperty = new NumberProperty( 0, {
-    range: new Range( 0, GraphData.MAX_SNAPSHOTS )
-  } );
+  public readonly snapshotsCountProperty: NumberProperty;
 
   /**
    * @param drivingProperty - New values reveal bins along the sweep path.
@@ -134,8 +139,12 @@ export default class GraphData extends PhetioObject {
    *   the driving-value -> chart-x mapping. Keeping this callback in chart-x coordinates ensures one consistent
    *   curve definition for both deterministic bins and the latest-point marker.
    * @param model - Source of shared snapshot metadata values captured with each saved snapshot.
+   * @param secondMetadataValueProperty -
+   * @parama formatSecondMetadataValue
+   * @param thirdMetadataValueProperty -
+   * @param formatThirdMetadataValue
    * @param clearDependencies - Properties to watch so that changing any of them clears the series. Provide every
-   *   model input that affects the interpretation of the axes except the drivingProperty itself, otherwise old points\
+   *   model input that affects the interpretation of the axes except the drivingProperty itself, otherwise old points
    *   would stay on screen and imply a single curve even though the underlying relationship or experimental
    *   conditions have changed.
    * @param resetEmitter - Model reset clears live samples and all snapshots.
@@ -145,6 +154,12 @@ export default class GraphData extends PhetioObject {
     drivingProperty: NumberProperty,
     createDataPointAtChartX: ( chartX: number ) => Vector2,
     model: PhotoelectricEffectModel,
+    secondMetadataLabelProperty: TReadOnlyProperty<string>,
+    public readonly secondMetadataValueProperty: TReadOnlyProperty<number>,
+    formatSecondMetadataValue: ( value: number ) => string,
+    thirdMetadataLabelProperty: TReadOnlyProperty<string>,
+    public readonly thirdMetadataValueProperty: TReadOnlyProperty<number>,
+    formatThirdMetadataValue: ( value: number ) => string,
     clearDependencies: Readonly<TReadOnlyProperty<IntentionalAny>[]>,
     resetEmitter: TReadOnlyEmitter,
     providedOptions: GraphDataOptions
@@ -160,6 +175,13 @@ export default class GraphData extends PhetioObject {
 
     super( options );
     this.model = model;
+    this.snapshotsCountProperty = new NumberProperty( 0, {
+      range: new Range( 0, GraphData.MAX_SNAPSHOTS )
+    } );
+    this.snapshots = _.times( GraphData.MAX_SNAPSHOTS, () => new GraphSnapshot(
+      secondMetadataLabelProperty, formatSecondMetadataValue,
+      thirdMetadataLabelProperty, formatThirdMetadataValue )
+    );
 
     affirm( Number.isInteger( options.binCount ) && options.binCount > 1,
       'binCount must be an integer greater than 1' );
@@ -226,10 +248,10 @@ export default class GraphData extends PhetioObject {
   }
 
   /**
-   * Immutable snapshot series in capture order. Do not mutate returned snapshots, point arrays, or metadata.
+   * Active snapshot series in capture order.
    */
   public getSnapshots(): ReadonlyArray<GraphSnapshot> {
-    return this.snapshots;
+    return this.snapshots.slice( 0, this.snapshotsCountProperty.value );
   }
 
   /**
@@ -244,50 +266,42 @@ export default class GraphData extends PhetioObject {
   }
 
   /**
-   * Stores a deep copy of the current live series as a new snapshot. Asserts that fewer than GraphData.MAX_SNAPSHOTS
-   * are already stored (clear snapshots before capturing more).
+   * Stores a deep copy of the current live series in the next snapshot slot. Asserts that fewer than
+   * GraphData.MAX_SNAPSHOTS are already stored (clear snapshots before capturing more).
    */
   public captureSnapshot(): void {
-    affirm( this.snapshots.length < GraphData.MAX_SNAPSHOTS, 'snapshot storage is full' );
-    this.snapshots.push( new GraphSnapshot(
-      this.getDataPoints().map( point => new Vector2( point.x, point.y ) ),
-      new GraphSnapshotMetadata(
-        this.model.target.materialProperty.value.materialType,
-        this.model.target.materialProperty.value.labelKey,
-        this.model.wavelengthProperty.value,
-        this.model.photonSource.normalizedOutputPercentProperty.value,
-        this.model.battery.voltageProperty.value
-      )
-    ) );
-    this.syncSnapshotsCountProperty();
+    const snapshotIndex = this.snapshotsCountProperty.value;
+    affirm( snapshotIndex < GraphData.MAX_SNAPSHOTS, 'snapshot storage is full' );
+    this.snapshots[ snapshotIndex ].save( this.getDataPoints(), this.model.target.materialProperty,
+      this.secondMetadataValueProperty, this.thirdMetadataValueProperty );
+    this.snapshotsCountProperty.value = snapshotIndex + 1;
   }
 
   /**
    * Removes all snapshots and updates snapshotsCountProperty. Does not change the live series.
    */
   public clearSnapshots(): void {
-    if ( this.snapshots.length > 0 ) {
-      this.snapshots.length = 0;
-      this.syncSnapshotsCountProperty();
-    }
+    this.snapshots.forEach( snapshot => {
+      snapshot.clear();
+    } );
+    this.snapshotsCountProperty.value = 0;
   }
 
   /**
-   * Restores user-saved snapshot series from PhET-iO state.
+   * Restores user-saved snapshot series from PhET-iO state into the fixed reusable slots.
    */
   private setSnapshotsFromStateObjects( snapshots: GraphSnapshotStateObject[] ): void {
-    this.snapshots.length = 0;
-    snapshots.forEach( snapshot => {
-      this.snapshots.push( GraphSnapshot.fromStateObject( snapshot ) );
-    } );
-    this.syncSnapshotsCountProperty();
-  }
+    affirm( snapshots.length <= GraphData.MAX_SNAPSHOTS, 'too many snapshots in state' );
 
-  /**
-   * Sets snapshotsCountProperty from the current snapshot list length.
-   */
-  private syncSnapshotsCountProperty(): void {
-    this.snapshotsCountProperty.value = this.snapshots.length;
+    this.snapshots.forEach( snapshot => {
+      snapshot.clear();
+    } );
+
+    snapshots.forEach( ( snapshotStateObject, index ) => {
+      this.snapshots[ index ].applyState( snapshotStateObject );
+    } );
+
+    this.snapshotsCountProperty.value = snapshots.length;
   }
 
   /**
@@ -373,18 +387,18 @@ export default class GraphData extends PhetioObject {
   }
 
   /**
-   * Serializes graph reveal continuity and snapshot series for PhET-iO (bin y-values follow from current model state).
+   * Serializes graph reveal continuity for PhET-iO (bin y-values follow from current model state).
    */
   private toStateObject(): GraphDataStateObject {
     return {
       revealedBinIndices: this.getRevealedBinIndices(),
       previousDrivingBinIndex: this.previousDrivingBinIndex,
-      snapshots: this.snapshots.map( snapshot => snapshot.toStateObject() )
+      snapshots: this.getSnapshots().map( snapshot => snapshot.toStateObject() )
     };
   }
 
   /**
-   * Restores reveal mask, sweep continuity, and snapshots from PhET-iO state.
+   * Restores reveal mask, sweep continuity, and saved snapshots from PhET-iO state.
    */
   private applyState( stateObject: GraphDataStateObject ): void {
     this.previousDrivingBinIndex = stateObject.previousDrivingBinIndex;
@@ -397,12 +411,12 @@ export default class GraphData extends PhetioObject {
    * PhET-iO state schema.
    *
    * Top-level serialized GraphData structure used by GraphDataIO. Live curve y-values are not serialized because they
-   * are deterministic for the current model state; only reveal continuity and snapshots are persisted.
+   * are deterministic for the current model state; only reveal continuity and saved snapshots are persisted.
    */
   private static readonly GRAPH_DATA_STATE_SCHEMA = {
     revealedBinIndices: ArrayIO( NumberIO ),
     previousDrivingBinIndex: NullableIO( NumberIO ),
-    snapshots: ArrayIO( GraphSnapshot.GRAPH_SNAPSHOT_IO )
+    snapshots: ArrayIO( GraphSnapshot.GraphSnapshotIO )
   };
 
   /**

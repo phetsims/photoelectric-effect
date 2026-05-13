@@ -7,10 +7,13 @@
  */
 
 import Range from '../../../../dot/js/Range.js';
+import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
+import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import { frequencyToWavelength, wavelengthToEnergy, wavelengthToFrequency } from '../../common/model/PhotoelectricEffectUtils.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GraphData, { type GraphDataOptions, type GraphDataPhetioOptions } from './GraphData.js';
 
 export default class FrequencyEnergyGraphData extends GraphData {
@@ -37,6 +40,16 @@ export default class FrequencyEnergyGraphData extends GraphData {
       model.photonSource.wavelengthProperty,
       createDataPointAtFrequency,
       model,
+      PhotoelectricEffectFluent.intensity.labelStringProperty,
+      model.photonSource.normalizedOutputPercentProperty,
+      ( value: number ) => StringUtils.fillIn( PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty.value, {
+        value: toFixed( value, 0 )
+      } ),
+      PhotoelectricEffectFluent.voltage.labelStringProperty,
+      model.battery.voltageProperty,
+      ( value: number ) => StringUtils.fillIn( PhotoelectricEffectFluent.voltage.valueReadoutPatternStringProperty.value, {
+        value: toFixed( value, 2 )
+      } ),
       [
 
         // Changing the material changes the relationship and should clear teh data. Customizing the work
