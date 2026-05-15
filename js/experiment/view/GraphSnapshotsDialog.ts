@@ -77,7 +77,7 @@ export default class GraphSnapshotsDialog extends Dialog {
     const snapshotRows = graphData.snapshots.map( ( snapshot, i ) => {
       // The final plot shows x labels (lining them up for all stacked plots).
       const plotOptions = i === GraphData.MAX_SNAPSHOTS - 1 ? labeledSnapshotPlotOptions : snapshotPlotOptions;
-      return new GraphSnapshotRowNode( xRange, yZoomRanges, snapshot.metadata, plotOptions );
+      return new GraphSnapshotRowNode( xRange, yZoomRanges, i + 1, snapshot, plotOptions );
     } );
 
     const plotsGridBox = new VBox( {
@@ -125,21 +125,10 @@ export default class GraphSnapshotsDialog extends Dialog {
      * on the labeled bottom row.
      */
     const updateSnapshotPlots = () => {
-      const snapshots = graphData.getSnapshots();
-      let snapshotIndex = snapshots.length - 1;
-
-      for ( let snapshotRowIndex = snapshotRows.length - 1; snapshotRowIndex >= 0; snapshotRowIndex-- ) {
-        const snapshotRowNode = snapshotRows[ snapshotRowIndex ];
-
-        // Fill rows bottom-to-top with available snapshots.
-        if ( snapshotIndex >= 0 ) {
-          snapshotRowNode.setSnapshot( snapshotIndex + 1, snapshots[ snapshotIndex ] );
-          snapshotIndex--;
-        }
-        else {
-          snapshotRowNode.clearSnapshot();
-        }
-      }
+      const count = graphData.snapshotsCountProperty.value;
+      snapshotRows.forEach( ( snapshotRowNode, i ) => {
+        i < count ? snapshotRowNode.setSnapshot() : snapshotRowNode.clearSnapshot();
+      } );
     };
 
     zoomLevelProperty.link( zoomLevel => {
