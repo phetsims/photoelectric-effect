@@ -32,6 +32,14 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
     type: 'string',
     validValues: PhotonModeValues,
     defaultValue: 'count'
+  },
+
+  // Whether experiment graph data returns every deterministic bin instead of only bins revealed by interaction.
+  // This is just for testing, not sure if we want this feature for now. It may become a PreferencesDialog
+  // setting.
+  showAllGraphData: {
+    public: false,
+    type: 'flag'
   }
 } );
 

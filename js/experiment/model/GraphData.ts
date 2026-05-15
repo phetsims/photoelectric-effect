@@ -40,6 +40,7 @@ import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
+import PhotoelectricEffectQueryParameters from '../../common/PhotoelectricEffectQueryParameters.js';
 
 type SelfOptions = {
 
@@ -203,12 +204,13 @@ export default class GraphData extends PhetioObject {
   }
 
   /**
-   * Points in model/chart coordinates in ascending chart x (revealed bins only). Do not mutate; use clear() to empty.
+   * Points in model/chart coordinates in ascending chart x. By default, this returns revealed bins only.
+   * With ?showAllGraphData, this returns every deterministic bin. Do not mutate; use clear() to empty.
    */
   public getDataPoints(): ReadonlyArray<Vector2> {
     const dataPoints: Vector2[] = [];
     this.bins.forEach( bin => {
-      if ( bin.revealed ) {
+      if ( PhotoelectricEffectQueryParameters.showAllGraphData || bin.revealed ) {
         dataPoints.push( bin.dataPoint );
       }
     } );
