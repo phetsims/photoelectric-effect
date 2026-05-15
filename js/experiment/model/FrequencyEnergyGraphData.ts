@@ -14,7 +14,7 @@ import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import { frequencyToWavelength, wavelengthToEnergy, wavelengthToFrequency } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import GraphData, { type GraphDataOptions, type GraphDataPhetioOptions } from './GraphData.js';
+import GraphData, { type GraphDataOptions, type GraphDataPhetioOptions, type GraphMetadataConfig } from './GraphData.js';
 
 export default class FrequencyEnergyGraphData extends GraphData {
 
@@ -36,20 +36,27 @@ export default class FrequencyEnergyGraphData extends GraphData {
       return new Vector2( frequency, energy );
     };
 
+    const secondValueMetadata: GraphMetadataConfig = {
+      labelProperty: PhotoelectricEffectFluent.intensity.labelStringProperty,
+      valueProperty: model.photonSource.normalizedOutputPercentProperty,
+      formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty.value, {
+        value: toFixed( value, 0 )
+      } )
+    };
+    const thirdValueMetadata: GraphMetadataConfig = {
+      labelProperty: PhotoelectricEffectFluent.voltage.labelStringProperty,
+      valueProperty: model.battery.voltageProperty,
+      formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.voltage.valueReadoutPatternStringProperty.value, {
+        value: toFixed( value, 2 )
+      } )
+    };
+
     super(
       model.photonSource.wavelengthProperty,
       createDataPointAtFrequency,
       model,
-      PhotoelectricEffectFluent.intensity.labelStringProperty,
-      model.photonSource.normalizedOutputPercentProperty,
-      ( value: number ) => StringUtils.fillIn( PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty.value, {
-        value: toFixed( value, 0 )
-      } ),
-      PhotoelectricEffectFluent.voltage.labelStringProperty,
-      model.battery.voltageProperty,
-      ( value: number ) => StringUtils.fillIn( PhotoelectricEffectFluent.voltage.valueReadoutPatternStringProperty.value, {
-        value: toFixed( value, 2 )
-      } ),
+      secondValueMetadata,
+      thirdValueMetadata,
       [
 
         // Changing the material changes the relationship and should clear teh data. Customizing the work

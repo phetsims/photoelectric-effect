@@ -12,7 +12,7 @@ import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import GraphData, { type GraphDataOptions, type GraphDataPhetioOptions } from './GraphData.js';
+import GraphData, { type GraphDataOptions, type GraphDataPhetioOptions, type GraphMetadataConfig } from './GraphData.js';
 
 export default class VoltageCurrentGraphData extends GraphData {
 
@@ -20,18 +20,25 @@ export default class VoltageCurrentGraphData extends GraphData {
     model: PhotoelectricEffectModel,
     providedOptions: GraphDataPhetioOptions
   ) {
+    const secondValueMetadata: GraphMetadataConfig = {
+      labelProperty: PhotoelectricEffectFluent.wavelength.labelStringProperty,
+      valueProperty: model.wavelengthProperty,
+      formatValue: value => toFixed( value, 2 )
+    };
+    const thirdValueMetadata: GraphMetadataConfig = {
+      labelProperty: PhotoelectricEffectFluent.intensity.labelStringProperty,
+      valueProperty: model.photonSource.normalizedOutputPercentProperty,
+      formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty.value, {
+        value: toFixed( value, 0 )
+      } )
+    };
+
     super(
       model.battery.voltageProperty,
       voltage => new Vector2( voltage, model.getCurrentForVoltage( voltage ) ),
       model,
-      PhotoelectricEffectFluent.wavelength.labelStringProperty,
-      model.wavelengthProperty,
-      ( value: number ) => toFixed( value, 2 ),
-      PhotoelectricEffectFluent.intensity.labelStringProperty,
-      model.photonSource.normalizedOutputPercentProperty,
-      ( value: number ) => StringUtils.fillIn( PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty.value, {
-        value: toFixed( value, 0 )
-      } ),
+      secondValueMetadata,
+      thirdValueMetadata,
       [
         model.photonSource.photonRateProperty,
         model.wavelengthProperty,

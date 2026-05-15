@@ -66,6 +66,13 @@ export type GraphDataPhetioOptions =
 
 export type GraphDataOptions = SelfOptions & GraphDataPhetioOptions;
 
+// Bundles the label, value source, and display formatter for one metadata field captured with each snapshot.
+export type GraphMetadataConfig = {
+  labelProperty: TReadOnlyProperty<string>;
+  valueProperty: TReadOnlyProperty<number>;
+  formatValue: ( value: number ) => string;
+};
+
 // PhET-iO serialized state for experiment graph data.
 type GraphDataStateObject = {
 
@@ -86,12 +93,6 @@ type BinData = {
   revealed: boolean;
 };
 
-//TODO:
-// type MetadataConfig = {
-//   value: number | null;
-//   labelProperty: TReadOnlyProperty<string>;
-//   formatValue: ( value: number ) => string;
-// };
 
 export default class GraphData extends PhetioObject {
 
@@ -136,10 +137,8 @@ export default class GraphData extends PhetioObject {
    *   the driving-value -> chart-x mapping. Keeping this callback in chart-x coordinates ensures one consistent
    *   curve definition for both deterministic bins and the latest-point marker.
    * @param model - Source of shared snapshot metadata values captured with each saved snapshot.
-   * @param secondMetadataValueProperty -
-   * @parama formatSecondMetadataValue
-   * @param thirdMetadataValueProperty -
-   * @param formatThirdMetadataValue
+   * @param secondValueMetadata - Label, value source, and formatter for the second metadata field in each snapshot legend.
+   * @param thirdValueMetadata - Label, value source, and formatter for the third metadata field in each snapshot legend.
    * @param clearDependencies - Properties to watch so that changing any of them clears the series. Provide every
    *   model input that affects the interpretation of the axes except the drivingProperty itself, otherwise old points
    *   would stay on screen and imply a single curve even though the underlying relationship or experimental
@@ -151,12 +150,8 @@ export default class GraphData extends PhetioObject {
     drivingProperty: NumberProperty,
     createDataPointAtChartX: ( chartX: number ) => Vector2,
     model: PhotoelectricEffectModel,
-    secondMetadataLabelProperty: TReadOnlyProperty<string>,
-    public readonly secondMetadataValueProperty: TReadOnlyProperty<number>,
-    formatSecondMetadataValue: ( value: number ) => string,
-    thirdMetadataLabelProperty: TReadOnlyProperty<string>,
-    public readonly thirdMetadataValueProperty: TReadOnlyProperty<number>,
-    formatThirdMetadataValue: ( value: number ) => string,
+    private readonly secondValueMetadata: GraphMetadataConfig,
+    private readonly thirdValueMetadata: GraphMetadataConfig,
     clearDependencies: Readonly<TReadOnlyProperty<IntentionalAny>[]>,
     resetEmitter: TReadOnlyEmitter,
     providedOptions: GraphDataOptions
@@ -172,6 +167,8 @@ export default class GraphData extends PhetioObject {
 
     super( options );
     this.model = model;
+    this.secondValueMetadata = secondValueMetadata;
+    this.thirdValueMetadata = thirdValueMetadata;
     this.snapshotsCountProperty = new NumberProperty( 0, {
       range: new Range( 0, GraphData.MAX_SNAPSHOTS ),
       numberType: 'Integer',
@@ -180,8 +177,8 @@ export default class GraphData extends PhetioObject {
       phetioFeatured: true
     } );
     this.snapshots = _.times( GraphData.MAX_SNAPSHOTS, i => new GraphSnapshot(
-      secondMetadataLabelProperty, formatSecondMetadataValue,
-      thirdMetadataLabelProperty, formatThirdMetadataValue,
+      secondValueMetadata.labelProperty, secondValueMetadata.formatValue,
+      thirdValueMetadata.labelProperty, thirdValueMetadata.formatValue,
       { tandem: options.tandem.createTandem( `snapshot${i}` ) }
     ) );
 
@@ -275,7 +272,7 @@ export default class GraphData extends PhetioObject {
     const snapshotIndex = this.snapshotsCountProperty.value;
     affirm( snapshotIndex < GraphData.MAX_SNAPSHOTS, 'snapshot storage is full' );
     this.snapshots[ snapshotIndex ].save( this.getDataPoints(), this.model.target.materialProperty,
-      this.secondMetadataValueProperty, this.thirdMetadataValueProperty );
+      this.secondValueMetadata.valueProperty, this.thirdValueMetadata.valueProperty );
     this.snapshotsCountProperty.value = snapshotIndex + 1;
   }
 

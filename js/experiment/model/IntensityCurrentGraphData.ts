@@ -13,7 +13,7 @@ import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectPreferences from '../../common/model/PhotoelectricEffectPreferences.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import GraphData, { type GraphDataOptions, type GraphDataPhetioOptions } from './GraphData.js';
+import GraphData, { type GraphDataOptions, type GraphDataPhetioOptions, type GraphMetadataConfig } from './GraphData.js';
 
 export default class IntensityCurrentGraphData extends GraphData {
 
@@ -21,18 +21,25 @@ export default class IntensityCurrentGraphData extends GraphData {
     model: PhotoelectricEffectModel,
     providedOptions: GraphDataPhetioOptions
   ) {
+    const secondValueMetadata: GraphMetadataConfig = {
+      labelProperty: PhotoelectricEffectFluent.wavelength.labelStringProperty,
+      valueProperty: model.wavelengthProperty,
+      formatValue: value => toFixed( value, 2 )
+    };
+    const thirdValueMetadata: GraphMetadataConfig = {
+      labelProperty: PhotoelectricEffectFluent.voltage.labelStringProperty,
+      valueProperty: model.battery.voltageProperty,
+      formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.voltage.valueReadoutPatternStringProperty.value, {
+        value: toFixed( value, 2 )
+      } )
+    };
+
     super(
       model.photonSource.normalizedOutputProperty,
       normalizedOutput => new Vector2( normalizedOutput, model.getCurrentForNormalizedOutput( normalizedOutput ) ),
       model,
-      PhotoelectricEffectFluent.wavelength.labelStringProperty,
-      model.wavelengthProperty,
-      ( value: number ) => toFixed( value, 2 ),
-      PhotoelectricEffectFluent.voltage.labelStringProperty,
-      model.battery.voltageProperty,
-      ( value: number ) => StringUtils.fillIn( PhotoelectricEffectFluent.voltage.valueReadoutPatternStringProperty.value, {
-        value: toFixed( value, 2 )
-      } ),
+      secondValueMetadata,
+      thirdValueMetadata,
       [
         model.battery.voltageProperty,
         model.wavelengthProperty,
