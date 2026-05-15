@@ -65,6 +65,8 @@ const GRID_LINE_OPTIONS = {
 const AXIS_LABEL_MARGIN = 6;
 
 // Fixed gutters reserved for tick labels so axis-label placement stays stable across zoom levels.
+// TODO: These are hardcoded estimates — if a graph ever produces tick labels wider/taller than these values,
+//   axis labels will overlap the ticks. Consider deriving from actual tick label bounds if that happens.
 const X_AXIS_TICK_LABEL_GUTTER = 12;
 const Y_AXIS_TICK_LABEL_GUTTER = 22;
 
