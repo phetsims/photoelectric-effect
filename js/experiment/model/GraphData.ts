@@ -42,7 +42,7 @@ import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectQueryParameters from '../../common/PhotoelectricEffectQueryParameters.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
-import GraphSnapshot, { type GraphSnapshotStateObject } from './GraphSnapshot.js';
+import GraphSnapshot from './GraphSnapshot.js';
 
 type SelfOptions = {
 
@@ -75,9 +75,6 @@ type GraphDataStateObject = {
 
   // Preserves sweep continuity after state restore.
   previousDrivingBinIndex: number | null;
-
-  // Snapshot copies are user-saved historical series, so preserve their exact points and metadata.
-  snapshots: GraphSnapshotStateObject[];
 };
 
 type BinData = {
@@ -176,12 +173,17 @@ export default class GraphData extends PhetioObject {
     super( options );
     this.model = model;
     this.snapshotsCountProperty = new NumberProperty( 0, {
-      range: new Range( 0, GraphData.MAX_SNAPSHOTS )
+      range: new Range( 0, GraphData.MAX_SNAPSHOTS ),
+      numberType: 'Integer',
+      tandem: options.tandem.createTandem( 'snapshotsCountProperty' ),
+      phetioReadOnly: true,
+      phetioFeatured: true
     } );
-    this.snapshots = _.times( GraphData.MAX_SNAPSHOTS, () => new GraphSnapshot(
+    this.snapshots = _.times( GraphData.MAX_SNAPSHOTS, i => new GraphSnapshot(
       secondMetadataLabelProperty, formatSecondMetadataValue,
-      thirdMetadataLabelProperty, formatThirdMetadataValue )
-    );
+      thirdMetadataLabelProperty, formatThirdMetadataValue,
+      { tandem: options.tandem.createTandem( `snapshot${i}` ) }
+    ) );
 
     affirm( Number.isInteger( options.binCount ) && options.binCount > 1,
       'binCount must be an integer greater than 1' );
@@ -288,23 +290,6 @@ export default class GraphData extends PhetioObject {
   }
 
   /**
-   * Restores user-saved snapshot series from PhET-iO state into the fixed reusable slots.
-   */
-  private setSnapshotsFromStateObjects( snapshots: GraphSnapshotStateObject[] ): void {
-    affirm( snapshots.length <= GraphData.MAX_SNAPSHOTS, 'too many snapshots in state' );
-
-    this.snapshots.forEach( snapshot => {
-      snapshot.clear();
-    } );
-
-    snapshots.forEach( ( snapshotStateObject, index ) => {
-      this.snapshots[ index ].applyState( snapshotStateObject );
-    } );
-
-    this.snapshotsCountProperty.value = snapshots.length;
-  }
-
-  /**
    * Maps chart x to a bin index in [0, binCount - 1].
    */
   private chartXToBinIndex( chartX: number ): number {
@@ -392,18 +377,16 @@ export default class GraphData extends PhetioObject {
   private toStateObject(): GraphDataStateObject {
     return {
       revealedBinIndices: this.getRevealedBinIndices(),
-      previousDrivingBinIndex: this.previousDrivingBinIndex,
-      snapshots: this.getSnapshots().map( snapshot => snapshot.toStateObject() )
+      previousDrivingBinIndex: this.previousDrivingBinIndex
     };
   }
 
   /**
-   * Restores reveal mask, sweep continuity, and saved snapshots from PhET-iO state.
+   * Restores reveal mask and sweep continuity from PhET-iO state.
    */
   private applyState( stateObject: GraphDataStateObject ): void {
     this.previousDrivingBinIndex = stateObject.previousDrivingBinIndex;
     this.setRevealedBinIndices( stateObject.revealedBinIndices );
-    this.setSnapshotsFromStateObjects( stateObject.snapshots );
     this.dataChangedEmitter.emit();
   }
 
@@ -415,8 +398,7 @@ export default class GraphData extends PhetioObject {
    */
   private static readonly GRAPH_DATA_STATE_SCHEMA = {
     revealedBinIndices: ArrayIO( NumberIO ),
-    previousDrivingBinIndex: NullableIO( NumberIO ),
-    snapshots: ArrayIO( GraphSnapshot.GraphSnapshotIO )
+    previousDrivingBinIndex: NullableIO( NumberIO )
   };
 
   /**

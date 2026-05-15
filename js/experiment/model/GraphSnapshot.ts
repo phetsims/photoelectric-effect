@@ -1,8 +1,8 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Shared snapshot domain types, reusable model slot, and serialization for experiment graph history. GraphData owns a
- * fixed number of these slots and rewrites their Property values when users save or restore snapshots.
+ * Shared snapshot domain types and reusable model slot for experiment graph history. GraphData owns a fixed number
+ * of these slots and rewrites their Property values when users save or restore snapshots.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -11,11 +11,15 @@ import EnumerationProperty from '../../../../axon/js/EnumerationProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import Vector2, { type Vector2StateObject } from '../../../../dot/js/Vector2.js';
+import Vector2 from '../../../../dot/js/Vector2.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import Tandem from '../../../../tandem/js/Tandem.js';
 import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
-import IOType from '../../../../tandem/js/types/IOType.js';
+import NullableIO from '../../../../tandem/js/types/NullableIO.js';
+import StringIO from '../../../../tandem/js/types/StringIO.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
-
 
 /**
  * Metadata captured with each GraphSnapshot. It is tightly coupled with GraphSnapshot so it seems best to keep here
@@ -25,18 +29,15 @@ import Material, { MaterialType } from '../../common/model/Material.js';
 export class GraphSnapshotMetadata {
 
   // Canonical material identity for physics/state restoration and generic labeling.
-  //TODO: These need to be instrumented
-  public readonly materialTypeProperty = new EnumerationProperty( MaterialType.SODIUM );
+  public readonly materialTypeProperty: EnumerationProperty<MaterialType>;
 
   // Optional instance-level label override key (for example mystery1/mystery2) used to preserve the exact
   // displayed material label in snapshot rows when multiple materials share one MaterialType.
-  public readonly materialLabelKeyProperty = new Property<string | null>( null );
+  public readonly materialLabelKeyProperty: Property<string | null>;
 
   // Operating conditions captured when this metadata is saved.
-  //TODO: These need to be instrumented
-  public readonly secondValueProperty = new NumberProperty( 0 );
-  public readonly thirdValueProperty = new NumberProperty( 0 );
-
+  public readonly secondValueProperty: NumberProperty;
+  public readonly thirdValueProperty: NumberProperty;
 
   /**
    * Creates metadata with explicit initial values. These values are required because metadata is part of each serialized
@@ -44,12 +45,13 @@ export class GraphSnapshotMetadata {
    *
    * @param materialType - Canonical material identity.
    * @param materialLabelKey - Optional instance-level label override key for the material.
-   *
-   * // Each graph snapshot is tracking two separate values alongside the material. These can vary between
-   * @param secondValue - Captured wavelength value.
+   * @param secondValueLabelProperty
+   * @param secondValue - Captured second value.
    * @param formatSecondValue - Formatter for the second value shown in snapshot legends.
-   * @param thirdValue - Captured intensity value.
+   * @param thirdValueLabelProperty
+   * @param thirdValue - Captured third value.
    * @param formatThirdValue - Formatter for the third value shown in snapshot legends.
+   * @param tandem - Used to instrument the metadata Properties.
    */
   public constructor(
     materialType: MaterialType,
@@ -59,8 +61,27 @@ export class GraphSnapshotMetadata {
     public readonly formatSecondValue: ( value: number ) => string,
     public readonly thirdValueLabelProperty: TReadOnlyProperty<string>,
     thirdValue: number,
-    public readonly formatThirdValue: ( value: number ) => string
+    public readonly formatThirdValue: ( value: number ) => string,
+    tandem: Tandem
   ) {
+    this.materialTypeProperty = new EnumerationProperty( MaterialType.SODIUM, {
+      tandem: tandem.createTandem( 'materialTypeProperty' ),
+      phetioReadOnly: true
+    } );
+    this.materialLabelKeyProperty = new Property<string | null>( null, {
+      tandem: tandem.createTandem( 'materialLabelKeyProperty' ),
+      phetioValueType: NullableIO( StringIO ),
+      phetioReadOnly: true
+    } );
+    this.secondValueProperty = new NumberProperty( 0, {
+      tandem: tandem.createTandem( 'secondValueProperty' ),
+      phetioReadOnly: true
+    } );
+    this.thirdValueProperty = new NumberProperty( 0, {
+      tandem: tandem.createTandem( 'thirdValueProperty' ),
+      phetioReadOnly: true
+    } );
+
     this.setValues( materialType, materialLabelKey, secondValue, thirdValue );
   }
 
@@ -80,19 +101,16 @@ export class GraphSnapshotMetadata {
   }
 }
 
-// PhET-iO serialized form for one reusable GraphSnapshot slot.
-export type GraphSnapshotStateObject = {
-  points: Vector2StateObject[];
-};
+type GraphSnapshotOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
 
 /**
- * Reusable snapshot slot: sampled points plus captured model metadata. Scalar values are represented as Properties so
- * reused view rows can stay linked to one slot while PhET-iO state or user actions update that slot in place.
+ * Reusable snapshot slot: sampled points plus captured model metadata. Properties are individually instrumented so
+ * PhET-iO handles state save and restore automatically.
  */
-export default class GraphSnapshot {
+export default class GraphSnapshot extends PhetioObject {
 
   // Deep-copied data points captured for this snapshot slot.
-  public readonly pointsProperty = new Property<ReadonlyArray<Vector2>>( [] );
+  public readonly pointsProperty: Property<ReadonlyArray<Vector2>>;
 
   // Captured material identity and operating conditions for this snapshot slot.
   public readonly metadata: GraphSnapshotMetadata;
@@ -100,10 +118,28 @@ export default class GraphSnapshot {
   public constructor( secondValueLabelProperty: TReadOnlyProperty<string>,
                       formatSecondValue: ( value: number ) => string,
                       thirdValueLabelProperty: TReadOnlyProperty<string>,
-                      formatThirdValue: ( value: number ) => string ) {
+                      formatThirdValue: ( value: number ) => string,
+                      providedOptions: GraphSnapshotOptions ) {
+
+    const options = optionize<GraphSnapshotOptions, EmptySelfOptions, PhetioObjectOptions>()( {
+      phetioState: false,
+      isDisposable: false
+    }, providedOptions );
+
+    super( options );
+
+    this.pointsProperty = new Property<ReadonlyArray<Vector2>>( [], {
+      tandem: options.tandem.createTandem( 'pointsProperty' ),
+      phetioValueType: ArrayIO( Vector2.Vector2IO ),
+      phetioReadOnly: true,
+      phetioFeatured: true
+    } );
+
     this.metadata = new GraphSnapshotMetadata( MaterialType.SODIUM, null,
       secondValueLabelProperty, 0, formatSecondValue,
-      thirdValueLabelProperty, 0, formatThirdValue );
+      thirdValueLabelProperty, 0, formatThirdValue,
+      options.tandem
+    );
   }
 
   /**
@@ -132,32 +168,4 @@ export default class GraphSnapshot {
   public clear(): void {
     this.pointsProperty.value = [];
   }
-
-  /**
-   * Converts this snapshot slot to the PhET-iO state shape.
-   */
-  public toStateObject(): GraphSnapshotStateObject {
-    return {
-      points: this.pointsProperty.value.map( point => point.toStateObject() )
-    };
-  }
-
-  /**
-   * Restores this reusable slot from persisted state.
-   */
-  public applyState( stateObject: GraphSnapshotStateObject ): void {
-    this.pointsProperty.value = stateObject.points.map( point => Vector2.fromStateObject( point ) );
-  }
-
-  // Serialized structure for one full saved snapshot entry (points + metadata).
-  private static readonly GRAPH_SNAPSHOT_STATE_SCHEMA = {
-    points: ArrayIO( Vector2.Vector2IO )
-  };
-
-  // IOType for one saved snapshot. Snapshot slots are not PhET-iO components; GraphDataIO owns this aggregate state.
-  public static readonly GraphSnapshotIO = new IOType<GraphSnapshot, GraphSnapshotStateObject>( 'GraphSnapshotIO', {
-    valueType: GraphSnapshot,
-    stateSchema: GraphSnapshot.GRAPH_SNAPSHOT_STATE_SCHEMA,
-    toStateObject: snapshot => snapshot.toStateObject()
-  } );
 }
