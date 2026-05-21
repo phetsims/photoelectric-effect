@@ -7,6 +7,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import Multilink from '../../../../axon/js/Multilink.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import BarPlot from '../../../../bamboo/js/BarPlot.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
@@ -23,8 +24,9 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import EnergyGraphData, { EnergyGraphSampleData, EnergyGraphSampleState } from '../model/EnergyGraphData.js';
+import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
+import EnergyGraphSample, { type EnergyGraphSampleData } from '../model/EnergyGraphSample.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
@@ -178,30 +180,33 @@ export default class EnergyBarGraphNode extends Node {
   }
 
   /**
-   * Sets or clears one sample plot. Null means there is no sample data yet. A sample with zero kinetic energy means
-   * that the photon did not eject an electron.
+   * Links one persistent sample slot to its corresponding plot.
    */
-  public setSampleData( sampleIndex: number, sampleState: EnergyGraphSampleState ): void {
+  public setSample( sampleIndex: number, sample: EnergyGraphSample ): void {
     assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
 
-    const noElectronEjected = sampleState !== null && sampleState.kineticEnergy === 0;
-    this.noElectronEjectedPanels[ sampleIndex ].visible = noElectronEjected;
+    Multilink.multilink( [
+      sample.hasDataProperty,
+      sample.potentialEnergyProperty,
+      sample.photonEnergyProperty,
+      sample.kineticEnergyProperty
+    ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy ) => {
+      const noElectronEjected = hasData && kineticEnergy === 0;
+      this.noElectronEjectedPanels[ sampleIndex ].visible = noElectronEjected;
 
-    if ( sampleState === null ) {
-      this.sampleBarPlots[ sampleIndex ].setDataSet( [] );
-    }
-    else {
-      this.sampleBarPlots[ sampleIndex ].setDataSet( EnergyBarGraphNode.createDataSet( sampleIndex, sampleState ) );
-    }
-  }
+      if ( !hasData ) {
+        this.sampleBarPlots[ sampleIndex ].setDataSet( [] );
+      }
+      else {
 
-  /**
-   * Clears all sample plots.
-   */
-  public clearSampleData(): void {
-    for ( let sampleIndex = 0; sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES; sampleIndex++ ) {
-      this.setSampleData( sampleIndex, null );
-    }
+        // TODO: Why create new Nodes every change?
+        this.sampleBarPlots[ sampleIndex ].setDataSet( EnergyBarGraphNode.createDataSet( sampleIndex, {
+          potentialEnergy: potentialEnergy,
+          photonEnergy: photonEnergy,
+          kineticEnergy: kineticEnergy
+        } ) );
+      }
+    } );
   }
 
   /**

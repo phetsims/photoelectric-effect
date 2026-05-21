@@ -19,7 +19,8 @@ import AccordionBox, { AccordionBoxOptions } from '../../../../sun/js/AccordionB
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import EnergyGraphData, { EnergyGraphSampleState } from '../model/EnergyGraphData.js';
+import EnergyGraphData from '../model/EnergyGraphData.js';
+import type { EnergyGraphSampleData } from '../model/EnergyGraphSample.js';
 import type EnergyModel from '../model/EnergyModel.js';
 import EnergyBarGraphNode from './EnergyBarGraphNode.js';
 import EnergyDiagramControlsNode from './EnergyDiagramControlsNode.js';
@@ -109,16 +110,11 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     } );
     energyDiagramControlsNode.center = barGraphControlsNode.center;
 
-    const updateGraphDisplays = () => {
-      for ( let sampleIndex = 0; sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES; sampleIndex++ ) {
-        const sampleState = model.energyGraphData.getSampleState( sampleIndex );
-
-        barGraphNode.setSampleData( sampleIndex, sampleState );
-        energyDiagramNode.setSampleData( sampleIndex, sampleState );
-      }
-    };
-    model.energyGraphData.dataChangedEmitter.addListener( updateGraphDisplays );
-    updateGraphDisplays();
+    // Assign each data model to the view components.
+    model.energyGraphData.samples.forEach( ( sample, sampleIndex ) => {
+      barGraphNode.setSample( sampleIndex, sample );
+      energyDiagramNode.setSample( sampleIndex, sample );
+    } );
 
     const bottomControlsNode = new HBox( {
       align: 'center',
@@ -145,9 +141,15 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       keys: [ 'r' ],
       overlapBehavior: 'allow',
       fire: () => {
-        model.energyGraphData.setSampleStates(
-          _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, () => EnergyGraphAccordionBox.createRandomSampleState() )
-        );
+        _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
+          const sampleData = EnergyGraphAccordionBox.createRandomSampleData();
+          model.energyGraphData.setSampleData(
+            sampleIndex,
+            sampleData.potentialEnergy,
+            sampleData.photonEnergy,
+            sampleData.kineticEnergy
+          );
+        } );
       }
     } );
   }
@@ -155,7 +157,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
   /**
    * Creates temporary randomized sample data for graph development.
    */
-  private static createRandomSampleState(): EnergyGraphSampleState {
+  private static createRandomSampleData(): EnergyGraphSampleData {
     const potentialEnergy = MIN_POTENTIAL_ENERGY * dotRandom.nextDouble();
     const photonEnergy = MAX_PHOTON_ENERGY * dotRandom.nextDouble();
 

@@ -8,6 +8,7 @@
  */
 
 import type BooleanProperty from '../../../../axon/js/BooleanProperty.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
 import Range from '../../../../dot/js/Range.js';
@@ -26,9 +27,9 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import LinearGradient from '../../../../scenery/js/util/LinearGradient.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import type { EnergyGraphSampleData, EnergyGraphSampleState } from '../model/EnergyGraphData.js';
 import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
+import EnergyGraphSample, { type EnergyGraphSampleData } from '../model/EnergyGraphSample.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
@@ -255,22 +256,35 @@ export default class EnergyDiagramNode extends Node {
   }
 
   /**
-   * Sets or clears one sample plot. Null means there is no sample data yet. Zero kinetic energy means no electron
-   * was emitted, so the diagram shows no markers for that plot.
+   * Links one persistent sample slot to its corresponding markers.
    */
-  public setSampleData( sampleIndex: number, sampleState: EnergyGraphSampleState ): void {
+  public setSample( sampleIndex: number, sample: EnergyGraphSample ): void {
     assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
 
-    if ( sampleState === null || sampleState.kineticEnergy === 0 ) {
-      this.sampleNodes[ sampleIndex ].children = [];
-    }
-    else {
-      this.sampleNodes[ sampleIndex ].children = EnergyDiagramNode.createSampleMarkers(
-        this.chartTransform,
-        sampleIndex,
-        sampleState
-      );
-    }
+    // Creates a multilink to the various data Properties
+    Multilink.multilink( [
+      sample.hasDataProperty,
+      sample.potentialEnergyProperty,
+      sample.photonEnergyProperty,
+      sample.kineticEnergyProperty
+    ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy ) => {
+      if ( !hasData || kineticEnergy === 0 ) {
+        this.sampleNodes[ sampleIndex ].children = [];
+      }
+      else {
+
+        // TODO: Why create new Nodes every change?
+        this.sampleNodes[ sampleIndex ].children = EnergyDiagramNode.createSampleMarkers(
+          this.chartTransform,
+          sampleIndex,
+          {
+            potentialEnergy: potentialEnergy,
+            photonEnergy: photonEnergy,
+            kineticEnergy: kineticEnergy
+          }
+        );
+      }
+    } );
   }
 
   /**
