@@ -112,9 +112,6 @@ export type MaterialOptions = SelfOptions & PickRequired<PhetioObjectOptions, 't
 
 export default class Material extends PhetioObject {
 
-  // Number of sub-levels used to discretize the occupied band for per-photon electron emission.
-  public static readonly NUM_SUB_LEVELS = 20;
-
   // Range for the bandwidth in eV. Covers all six fixed metals plus the full custom range
   // from the physics reference Section 5.5.
   public static readonly BAND_WIDTH_RANGE = new Range( 0.5, 15 );
@@ -203,17 +200,16 @@ export default class Material extends PhetioObject {
   } );
 
   /**
-   * Chooses a random sub-level within the occupied band and returns the resulting electron kinetic energy.
-   * Sub-levels are evenly spaced across [φ, φ + bandwidth]; the chosen level determines the binding energy
-   * and therefore the KE of the ejected electron (KE = photonEnergy - bindingEnergy).
+   * Samples a binding energy uniformly across the occupied band [φ, φ + bandwidth] and returns the resulting
+   * electron kinetic energy (KE = photonEnergy - bindingEnergy). KE may be negative when the sampled level
+   * is inaccessible at the current photon energy; downstream emission logic treats those as no-emission.
    *
    * @param photonEnergy - energy of the incident photon, in eV
    * @param workFunction - work function (φ) of the target material, in eV
    * @param bandWidth - occupied-band width of the target material, in eV
    */
   public static energyAfterPhotonCollision( photonEnergy: number, workFunction: number, bandWidth: number ): number {
-    const level = dotRandom.nextInt( Material.NUM_SUB_LEVELS );
-    const energyRequired = workFunction + ( level * ( bandWidth / Material.NUM_SUB_LEVELS ) );
-    return photonEnergy - energyRequired;
+    const bindingEnergy = workFunction + dotRandom.nextDouble() * bandWidth;
+    return photonEnergy - bindingEnergy;
   }
 }
