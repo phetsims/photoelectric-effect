@@ -26,7 +26,7 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
-import EnergyGraphSample, { type EnergyGraphSampleData } from '../model/EnergyGraphSample.js';
+import EnergyGraphSample from '../model/EnergyGraphSample.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
@@ -59,6 +59,10 @@ export default class EnergyBarGraphNode extends Node {
 
   // Translates energy and sample coordinates into the shared chart view.
   private readonly chartTransform: ChartTransform;
+
+  // BarPlot keeps a reference to its data set, including each Vector2 in the array. Keep these arrays persistent
+  // so sample changes can mutate the existing Vector2 values before BarPlot.update() is called.
+  private readonly sampleDataSets: Vector2[][];
 
   // Bamboo plots for the fixed set of recorded energy samples.
   private readonly sampleBarPlots: BarPlot[];
@@ -102,8 +106,12 @@ export default class EnergyBarGraphNode extends Node {
       fill: 'white'
     } );
 
+    this.sampleDataSets = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
+      return EnergyBarGraphNode.createDataSet( sampleIndex );
+    } );
+
     this.sampleBarPlots = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
-      return new BarPlot( this.chartTransform, [], {
+      return new BarPlot( this.chartTransform, this.sampleDataSets[ sampleIndex ], {
         barWidth: BAR_WIDTH,
         pointToPaintableFields: point => this.getBarPaintableOptions( sampleIndex, point )
       } );
@@ -185,6 +193,10 @@ export default class EnergyBarGraphNode extends Node {
   public setSample( sampleIndex: number, sample: EnergyGraphSample ): void {
     assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
 
+    const sampleBarPlot = this.sampleBarPlots[ sampleIndex ];
+    const sampleDataSet = this.sampleDataSets[ sampleIndex ];
+    sample.hasDataProperty.linkAttribute( sampleBarPlot, 'visible' );
+
     Multilink.multilink( [
       sample.hasDataProperty,
       sample.potentialEnergyProperty,
@@ -194,18 +206,13 @@ export default class EnergyBarGraphNode extends Node {
       const noElectronEjected = hasData && kineticEnergy === 0;
       this.noElectronEjectedPanels[ sampleIndex ].visible = noElectronEjected;
 
-      if ( !hasData ) {
-        this.sampleBarPlots[ sampleIndex ].setDataSet( [] );
-      }
-      else {
-
-        // TODO: Why create new Nodes every change?
-        this.sampleBarPlots[ sampleIndex ].setDataSet( EnergyBarGraphNode.createDataSet( sampleIndex, {
-          potentialEnergy: potentialEnergy,
-          photonEnergy: photonEnergy,
-          kineticEnergy: kineticEnergy
-        } ) );
-      }
+      EnergyBarGraphNode.updateDataSet(
+        sampleDataSet,
+        potentialEnergy,
+        photonEnergy,
+        kineticEnergy
+      );
+      sampleBarPlot.update();
     } );
   }
 
@@ -272,16 +279,28 @@ export default class EnergyBarGraphNode extends Node {
   }
 
   /**
-   * Creates the Bamboo data set for one sample, in the required energy order.
+   * Creates the persistent Bamboo data set for one sample, in the required energy order.
    */
-  private static createDataSet( sampleIndex: number, data: EnergyGraphSampleData ): Vector2[] {
+  private static createDataSet( sampleIndex: number ): Vector2[] {
     const centerX = getSampleCenterX( sampleIndex );
 
     return [
-      new Vector2( centerX - BAR_X_OFFSET, data.potentialEnergy ),
-      new Vector2( centerX, data.photonEnergy ),
-      new Vector2( centerX + BAR_X_OFFSET, data.kineticEnergy )
+      new Vector2( centerX - BAR_X_OFFSET, 0 ),
+      new Vector2( centerX, 0 ),
+      new Vector2( centerX + BAR_X_OFFSET, 0 )
     ];
+  }
+
+  /**
+   * Updates one persistent Bamboo data set by mutating the Vector2 instances that BarPlot already references.
+   */
+  private static updateDataSet( dataSet: Vector2[],
+                                potentialEnergy: number,
+                                photonEnergy: number,
+                                kineticEnergy: number ): void {
+    dataSet[ 0 ].setY( potentialEnergy );
+    dataSet[ 1 ].setY( photonEnergy );
+    dataSet[ 2 ].setY( kineticEnergy );
   }
 
   /**

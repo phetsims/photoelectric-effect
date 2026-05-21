@@ -29,10 +29,16 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
-import EnergyGraphSample, { type EnergyGraphSampleData } from '../model/EnergyGraphSample.js';
+import EnergyGraphSample from '../model/EnergyGraphSample.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
+
+type SampleMarkerNodes = {
+  sampleNode: Node;
+  initialEnergyMarker: Circle;
+  emittedEnergyMarker: ShadedSphereNode;
+};
 
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 120;
@@ -74,8 +80,8 @@ export default class EnergyDiagramNode extends Node {
   // BracketNode does not expose a way to mutate its shape, so it is replaced when its length changes.
   private conductionBandBracket: BracketNode | null = null;
 
-  // Parent Nodes for electron markers for the fixed set of recorded energy samples.
-  private readonly sampleNodes: Node[];
+  // Electron markers for the fixed set of recorded energy samples.
+  private readonly sampleMarkerNodes: SampleMarkerNodes[];
 
   // Labels for the special y values shown on the graph.
   private readonly zeroTickLabel: Text;
@@ -191,12 +197,14 @@ export default class EnergyDiagramNode extends Node {
       ]
     } );
 
-    this.sampleNodes = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, () => new Node() );
+    this.sampleMarkerNodes = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
+      return EnergyDiagramNode.createSampleMarkerNodes( this.chartTransform, sampleIndex );
+    } );
 
     const plotLayer = new Node( {
       children: [
         this.graphDecorationNode,
-        ...this.sampleNodes
+        ...this.sampleMarkerNodes.map( sampleMarkerNodes => sampleMarkerNodes.sampleNode )
       ]
     } );
 
@@ -261,29 +269,20 @@ export default class EnergyDiagramNode extends Node {
   public setSample( sampleIndex: number, sample: EnergyGraphSample ): void {
     assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
 
-    // Creates a multilink to the various data Properties
-    Multilink.multilink( [
-      sample.hasDataProperty,
-      sample.potentialEnergyProperty,
-      sample.photonEnergyProperty,
-      sample.kineticEnergyProperty
-    ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy ) => {
-      if ( !hasData || kineticEnergy === 0 ) {
-        this.sampleNodes[ sampleIndex ].children = [];
-      }
-      else {
+    const sampleMarkerNodes = this.sampleMarkerNodes[ sampleIndex ];
+    sample.hasDataProperty.linkAttribute( sampleMarkerNodes.sampleNode, 'visible' );
 
-        // TODO: Why create new Nodes every change?
-        this.sampleNodes[ sampleIndex ].children = EnergyDiagramNode.createSampleMarkers(
-          this.chartTransform,
-          sampleIndex,
-          {
-            potentialEnergy: potentialEnergy,
-            photonEnergy: photonEnergy,
-            kineticEnergy: kineticEnergy
-          }
-        );
-      }
+    Multilink.multilink( [
+      sample.potentialEnergyProperty,
+      sample.kineticEnergyProperty
+    ], ( potentialEnergy, kineticEnergy ) => {
+      EnergyDiagramNode.updateSampleMarkerPositions(
+        this.chartTransform,
+        sampleIndex,
+        sampleMarkerNodes,
+        potentialEnergy,
+        kineticEnergy
+      );
     } );
   }
 
@@ -370,12 +369,11 @@ export default class EnergyDiagramNode extends Node {
   }
 
   /**
-   * Creates the electron markers for one sample. A white circle marks the electron's initial energy in the
-   * conduction band, and the shaded blue electron marks its emitted kinetic energy after photon collision.
+   * Creates the electron markers for one sample slot. A white circle marks the electron's initial energy in the
+   * conduction band, and the shaded blue electron marks its emitted kinetic energy after photon collision. The
+   * markers are retained and repositioned as sample Properties change.
    */
-  private static createSampleMarkers( chartTransform: ChartTransform,
-                                      sampleIndex: number,
-                                      data: EnergyGraphSampleData ): Node[] {
+  private static createSampleMarkerNodes( chartTransform: ChartTransform, sampleIndex: number ): SampleMarkerNodes {
     const sampleCenterX = chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) );
 
     const initialEnergyMarker = new Circle( ELECTRON_MARKER_RADIUS, {
@@ -383,12 +381,39 @@ export default class EnergyDiagramNode extends Node {
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
       lineWidth: 1.5
     } );
-    initialEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( data.potentialEnergy ) );
 
     const emittedEnergyMarker = EnergyDiagramNode.createElectronMarker();
-    emittedEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( data.kineticEnergy ) );
 
-    return [ initialEnergyMarker, emittedEnergyMarker ];
+    const sampleMarkerNodes: SampleMarkerNodes = {
+      sampleNode: new Node( {
+        visible: false,
+        children: [ initialEnergyMarker, emittedEnergyMarker ]
+      } ),
+      initialEnergyMarker: initialEnergyMarker,
+      emittedEnergyMarker: emittedEnergyMarker
+    };
+
+    initialEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( 0 ) );
+    emittedEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( 0 ) );
+
+    return sampleMarkerNodes;
+  }
+
+  /**
+   * Repositions persistent marker Nodes for one sample slot.
+   */
+  private static updateSampleMarkerPositions( chartTransform: ChartTransform,
+                                              sampleIndex: number,
+                                              sampleMarkerNodes: SampleMarkerNodes,
+                                              potentialEnergy: number,
+                                              kineticEnergy: number ): void {
+    const sampleCenterX = chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) );
+
+    sampleMarkerNodes.initialEnergyMarker.center = new Vector2(
+      sampleCenterX,
+      chartTransform.modelToViewY( potentialEnergy )
+    );
+    sampleMarkerNodes.emittedEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( kineticEnergy ) );
   }
 
   /**
