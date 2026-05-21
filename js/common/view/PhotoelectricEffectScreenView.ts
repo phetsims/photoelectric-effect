@@ -237,8 +237,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     if ( phet.chipper.queryParameters.dev ) {
       const devWorkFunctionStringProperty = new DerivedProperty( [ model.target.workFunctionProperty ],
         workFunction => `Work Function: ${toFixed( workFunction, 2 )} eV` );
-      const devWorkFunctionPlusDepthStringProperty = new DerivedProperty( [ model.target.workFunctionProperty ],
-        workFunction => `Work Function + Depth: ${toFixed( workFunction + Material.TOTAL_ENERGY_DEPTH, 2 )} eV` );
+      const devWorkFunctionPlusDepthStringProperty = new DerivedProperty(
+        [ model.target.workFunctionProperty, model.target.bandWidthProperty ],
+        ( workFunction, bandWidth ) => `Work Function + Band Width: ${toFixed( workFunction + bandWidth, 2 )} eV` );
       const devPhotonEnergyStringProperty = new DerivedProperty( [ model.wavelengthProperty ],
         wavelength => `Photon Energy: ${toFixed( wavelengthToEnergy( wavelength ), 2 )} eV` );
       const devCurrentStringProperty = new DerivedProperty( [ model.currentProperty ],

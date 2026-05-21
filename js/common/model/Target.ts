@@ -41,6 +41,11 @@ export default class Target {
   public readonly workFunctionProperty: DynamicProperty<number, number, Material>;
 
   /**
+   * Convenience property for the active material's occupied-band width.
+   */
+  public readonly bandWidthProperty: DynamicProperty<number, number, Material>;
+
+  /**
    * X position of the target plate center in model coordinates.
    * Used for collision detection with incoming photons and emitted electrons.
    */
@@ -66,6 +71,10 @@ export default class Target {
 
     this.workFunctionProperty = new DynamicProperty( this.materialProperty, {
       derive: 'workFunctionProperty'
+    } );
+
+    this.bandWidthProperty = new DynamicProperty( this.materialProperty, {
+      derive: 'bandWidthProperty'
     } );
 
     this.x = PhotoelectricEffectConstants.TARGET_X;
@@ -105,20 +114,22 @@ export default class Target {
     const photonEnergy = photon.getEnergy();
     const workFunction = this.workFunctionProperty.value;
 
-    let energyAfterCollision = 0;
+    let energyAfterCollision;
     if ( highestEnergyOnly ) {
 
-      // Java simple mode emits only when the selected sub-level is the highest-energy band.
-      energyAfterCollision = dotRandom.nextInt( Material.NUM_SUB_LEVELS ) === 0 ?
+      // Eject from the Fermi level only (maximum KE), but use the same accessible band fraction
+      // probability as the normal path so the visual electron rate still reflects the bandwidth.
+      const bandWidth = this.bandWidthProperty.value;
+      const accessibleBandFraction = Math.min( 1, Math.max( 0, ( photonEnergy - workFunction ) / bandWidth ) );
+      energyAfterCollision = dotRandom.nextDouble() < accessibleBandFraction ?
                              photonEnergy - workFunction :
                              Number.NEGATIVE_INFINITY;
     }
     else {
-      energyAfterCollision = Material.energyAfterPhotonCollision( photonEnergy, workFunction );
+      energyAfterCollision = Material.energyAfterPhotonCollision(
+        photonEnergy, workFunction, this.bandWidthProperty.value
+      );
     }
-
-    let electron: Electron | null = null;
-
 
     const speed = Electron.determineNewElectronSpeed( energyAfterCollision );
     let angle = 0;
@@ -130,9 +141,7 @@ export default class Target {
     const velocity = new Vector2( speed * Math.cos( angle ), speed * Math.sin( angle ) );
     const emissionY = this.getPhotonTargetCrossingY( photon );
     const emissionPosition = new Vector2( this.x + Target.EMISSION_OFFSET, emissionY );
-    electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), energyAfterCollision );
-
-    return electron;
+    return new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), energyAfterCollision );
   }
 
   /**

@@ -26,29 +26,37 @@ type MaterialTypeOptions = {
   // Whether the material's work function is read-only through PhET-iO. Defaults to true because most material
   // types represent fixed physical materials.
   workFunctionPhetioReadOnly?: boolean;
+
+  // Whether the material's band width is read-only through PhET-iO. Defaults to true for all fixed materials.
+  bandWidthPhetioReadOnly?: boolean;
 };
 
 export class MaterialType extends EnumerationValue {
 
-  // All of the work functions for the following MaterialTypes cannot be set by the user or PhET-iO.
-  public static readonly SODIUM = new MaterialType( 2.3 );
-  public static readonly COPPER = new MaterialType( 4.7 );
-  public static readonly CALCIUM = new MaterialType( 2.9 );
-  public static readonly PLATINUM = new MaterialType( 6.3 );
-  public static readonly ZINC = new MaterialType( 4.3 );
+  // Work functions (φ, eV) and occupied-band widths as prescribed by design.
+  // Bandwidth is the effective range of binding energies available for photoemission, measured downward from
+  // the Fermi level. It determines both the KE spread of ejected electrons and where the I-vs-f curve saturates.
+  public static readonly SODIUM = new MaterialType( 2.3, 3.2 );
+  public static readonly COPPER = new MaterialType( 4.7, 9.0 );
+  public static readonly CALCIUM = new MaterialType( 2.9, 4.6 );
+  public static readonly PLATINUM = new MaterialType( 6.3, 9.5 );
+  public static readonly ZINC = new MaterialType( 4.3, 9.5 );
 
   // Mystery materials are for teachers and PhET-iO clients. The work function will only be set from
   // preferences or with a PhET-iO customization. As such, simulation reset should not affect the
   // workFunctionProperty of mystery materials.
-  // This work function value matches "Magnesium", matching the behavior of "Mystery" material from the java.
-  public static readonly MYSTERY = new MaterialType( 3.7, {
-    workFunctionPhetioReadOnly: false
+  // Work function and bandwidth match Magnesium (φ=3.7 eV, bandWidth=7.1 eV) to mirror the java behavior.
+  public static readonly MYSTERY = new MaterialType( 3.7, 7.1, {
+    workFunctionPhetioReadOnly: false,
+    bandWidthPhetioReadOnly: false
   } );
 
-  // Controllable by the student, the custom material will have a work function control right in the
-  // simulation. Reset should set the workFunctionProperty back to its initial value.
-  public static readonly CUSTOM = new MaterialType( 5, {
-    workFunctionPhetioReadOnly: false
+  // Controllable by the student, the custom material will have work function and bandwidth controls right
+  // in the simulation. Reset should restore both properties to their initial values.
+  // Defaults and range from the physics reference Section 5.5.
+  public static readonly CUSTOM = new MaterialType( 5, 5.0, {
+    workFunctionPhetioReadOnly: false,
+    bandWidthPhetioReadOnly: false
   } );
 
   // Must be defined after all values are declared.
@@ -60,19 +68,31 @@ export class MaterialType extends EnumerationValue {
   public readonly workFunctionPhetioReadOnly: boolean;
 
   /**
-   * Creates a material type with a default work-function value and PhET-iO mutability policy.
+   * Whether the bandwidth is read-only through PhET-iO.
+   */
+  public readonly bandWidthPhetioReadOnly: boolean;
+
+  /**
+   * Creates a material type with physics parameters and PhET-iO mutability policy.
    *
-   * @param workFunctionInitialValue - initial work function value in eV for this material type
+   * @param workFunctionInitialValue - minimum energy to eject an electron from the Fermi level, in eV (φ)
+   * @param bandWidthInitialValue - effective occupied-band width available for photoemission, in eV
    * @param providedOptions
    */
-  public constructor( public readonly workFunctionInitialValue: number, providedOptions?: MaterialTypeOptions ) {
+  public constructor(
+    public readonly workFunctionInitialValue: number,
+    public readonly bandWidthInitialValue: number,
+    providedOptions?: MaterialTypeOptions
+  ) {
     super();
 
     const options = optionize<MaterialTypeOptions>()( {
-      workFunctionPhetioReadOnly: true
+      workFunctionPhetioReadOnly: true,
+      bandWidthPhetioReadOnly: true
     }, providedOptions );
 
     this.workFunctionPhetioReadOnly = options.workFunctionPhetioReadOnly;
+    this.bandWidthPhetioReadOnly = options.bandWidthPhetioReadOnly;
   }
 }
 
@@ -92,11 +112,12 @@ export type MaterialOptions = SelfOptions & PickRequired<PhetioObjectOptions, 't
 
 export default class Material extends PhetioObject {
 
-  // Number of sub-levels used to distribute absorption depth.
+  // Number of sub-levels used to discretize the occupied band for per-photon electron emission.
   public static readonly NUM_SUB_LEVELS = 20;
 
-  // Total depth, in eV, over which absorption levels are distributed.
-  public static readonly TOTAL_ENERGY_DEPTH = 4;
+  // Range for the bandwidth in eV. Covers all six fixed metals plus the full custom range
+  // from the physics reference Section 5.5.
+  public static readonly BAND_WIDTH_RANGE = new Range( 0.5, 15 );
 
   /**
    * Material type for this instance.
@@ -113,6 +134,12 @@ export default class Material extends PhetioObject {
    * Used alongside photon energy to decide when emission occurs.
    */
   public readonly workFunctionProperty: NumberProperty;
+
+  /**
+   * Effective occupied-band width for this material, in eV.
+   * Controls the spread of ejected-electron kinetic energies and the saturation point of the I-vs-f curve.
+   */
+  public readonly bandWidthProperty: NumberProperty;
 
   /**
    * Controls whether this material is available for selection in the UI.
@@ -146,6 +173,13 @@ export default class Material extends PhetioObject {
       phetioDocumentation: 'Minimum energy, in electron volts, required to eject an electron from this material'
     } );
 
+    this.bandWidthProperty = new NumberProperty( materialType.bandWidthInitialValue, {
+      range: Material.BAND_WIDTH_RANGE,
+      tandem: options.tandem.createTandem( 'bandWidthProperty' ),
+      phetioReadOnly: materialType.bandWidthPhetioReadOnly,
+      phetioDocumentation: 'Effective occupied-band width, in eV, available for photoemission'
+    } );
+
     // TODO: @design (phet-io) All EnabledProperty instances are featured. Do we want that for all Materials?
     this.enabledProperty = new EnabledProperty( options.enabled, {
       tandem: options.tandem.createTandem( EnabledProperty.TANDEM_NAME ),
@@ -154,10 +188,11 @@ export default class Material extends PhetioObject {
   }
 
   /**
-   * Resets the work function to its initial value.
+   * Resets the work function and bandwidth to their initial values.
    */
   public reset(): void {
     this.workFunctionProperty.reset();
+    this.bandWidthProperty.reset();
   }
 
   public static readonly MaterialIO = new IOType<Material, MaterialStateObject>( 'MaterialIO', {
@@ -168,13 +203,17 @@ export default class Material extends PhetioObject {
   } );
 
   /**
-   * Chooses a random sub-level and subtracts the corresponding energy requirement.
-   * This mirrors the legacy model by spreading absorbed energy across discrete levels.
+   * Chooses a random sub-level within the occupied band and returns the resulting electron kinetic energy.
+   * Sub-levels are evenly spaced across [φ, φ + bandwidth]; the chosen level determines the binding energy
+   * and therefore the KE of the ejected electron (KE = photonEnergy - bindingEnergy).
+   *
+   * @param photonEnergy - energy of the incident photon, in eV
+   * @param workFunction - work function (φ) of the target material, in eV
+   * @param bandWidth - occupied-band width of the target material, in eV
    */
-  public static energyAfterPhotonCollision( photonEnergy: number, workFunction: number ): number {
+  public static energyAfterPhotonCollision( photonEnergy: number, workFunction: number, bandWidth: number ): number {
     const level = dotRandom.nextInt( Material.NUM_SUB_LEVELS );
-    const energyRequired = workFunction + ( level * ( Material.TOTAL_ENERGY_DEPTH /
-                                                      Material.NUM_SUB_LEVELS ) );
+    const energyRequired = workFunction + ( level * ( bandWidth / Material.NUM_SUB_LEVELS ) );
     return photonEnergy - energyRequired;
   }
 }

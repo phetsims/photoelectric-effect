@@ -148,10 +148,11 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
         this.battery.voltageProperty,
         this.photonSource.photonRateProperty,
         this.photonSource.wavelengthProperty,
-        this.target.workFunctionProperty
+        this.target.workFunctionProperty,
+        this.target.bandWidthProperty
       ],
-      ( voltage, photonsPerSecond, wavelength, workFunction ) => {
-        return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction );
+      ( voltage, photonsPerSecond, wavelength, workFunction, bandWidth ) => {
+        return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandWidth );
       },
       {
         tandem: tandem.createTandem( 'currentProperty' ),
@@ -355,7 +356,8 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     const photonsPerSecond = this.photonSource.photonRateProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
-    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction );
+    const bandWidth = this.target.bandWidthProperty.value;
+    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandWidth );
   }
 
   /**
@@ -365,21 +367,28 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     const voltage = this.battery.voltageProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
+    const bandWidth = this.target.bandWidthProperty.value;
     const photonsPerSecond = this.photonSource.getPhotonRateForNormalizedOutput( normalizedOutput );
-    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction );
+    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandWidth );
   }
 
   /**
    * Computes the analytic current expected for the given conditions.
    */
-  private getCurrentForSystem( voltage: number, photonsPerSecond: number, wavelength: number, workFunction: number ): number {
+  private getCurrentForSystem(
+    voltage: number,
+    photonsPerSecond: number,
+    wavelength: number,
+    workFunction: number,
+    bandWidth: number
+  ): number {
 
     // Compute how much photon energy exceeds the work function; this bounds emission likelihood.
     const photonEnergyBeyondWorkFunction = wavelengthToEnergy( wavelength ) - workFunction;
 
     // Convert excess energy into a fraction of photons that can liberate electrons (capped at 1).
     const electronRateAsFractionOfPhotonRate = Math.min(
-      photonEnergyBeyondWorkFunction / Material.TOTAL_ENERGY_DEPTH,
+      photonEnergyBeyondWorkFunction / bandWidth,
       1
     );
     const electronsPerSecondFromTarget = electronRateAsFractionOfPhotonRate * photonsPerSecond;
@@ -391,7 +400,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     const fractionMoreEnergeticThanRetardingVoltage = Math.max(
       0,
       Math.min( ( photonEnergyBeyondWorkFunction - retardingVoltage ) /
-                Material.TOTAL_ENERGY_DEPTH, 1 )
+                bandWidth, 1 )
     );
 
     const electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
