@@ -84,6 +84,8 @@ export default class PhotoelectricEffectConstants {
   public static readonly ELECTRON_MASS = 9.11e-31;
 
   // Scale factor applied to computed electron speeds for model tuning.
+  // This is the primary visual-speed knob. ELECTRON_ACCELERATION_SCALE is derived from it so
+  // the two are always consistent: the model stopping potential equals KE_max in eV.
   public static readonly ELECTRON_SPEED_SCALE_FACTOR = 1.6e-14;
 
   // Minimum energy (in eV) for an emitted electron to be tracked and rendered.
@@ -91,8 +93,14 @@ export default class PhotoelectricEffectConstants {
   // TODO: We may need to use this again after we do some more debugging around electron emissions.
   public static readonly MINIMUM_ELECTRON_ENERGY = 0.05;
 
-  // Acceleration scale from voltage to model units (model units per V*s^2).
-  public static readonly ELECTRON_ACCELERATION_SCALE = 100.2865;
+  // Acceleration scale from voltage to model units (model units per V·s²).
+  // Derived from ELECTRON_SPEED_SCALE_FACTOR and ELECTRON_MASS so the particle simulation's
+  // stopping potential matches the analytical formula: V_stop(model) = KE_max(eV).
+  // Invariant: ELECTRON_SPEED_SCALE_FACTOR² == ELECTRON_MASS × ELECTRON_ACCELERATION_SCALE.
+  public static readonly ELECTRON_ACCELERATION_SCALE =
+    ( PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR *
+      PhotoelectricEffectConstants.ELECTRON_SPEED_SCALE_FACTOR ) /
+    PhotoelectricEffectConstants.ELECTRON_MASS;
 
   // Fixed time step for the step-forward button while paused, in seconds (one nominal animation frame).
   public static readonly MANUAL_STEP_DT = 1 / 60;
