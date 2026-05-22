@@ -112,8 +112,8 @@ export type MaterialOptions = SelfOptions & PickRequired<PhetioObjectOptions, 't
 
 export default class Material extends PhetioObject {
 
-  // Range for the bandwidth in eV. Covers all six fixed metals plus the full custom range
-  // from the physics reference Section 5.5.
+  // Range for the bandwidth in eV. Covers all six fixed metals and the full custom range
+  // as prescribed by design.
   public static readonly BAND_WIDTH_RANGE = new Range( 0.5, 15 );
 
   /**
