@@ -36,17 +36,17 @@ export class MaterialType extends EnumerationValue {
   // Work functions (φ, eV) and occupied-band widths as prescribed by design.
   // Bandwidth is the effective range of binding energies available for photoemission, measured downward from
   // the Fermi level. It determines both the KE spread of ejected electrons and where the I-vs-f curve saturates.
-  public static readonly SODIUM = new MaterialType( 2.3, 3.2 );
-  public static readonly COPPER = new MaterialType( 4.7, 9.0 );
-  public static readonly CALCIUM = new MaterialType( 2.9, 4.6 );
-  public static readonly PLATINUM = new MaterialType( 6.3, 9.5 );
-  public static readonly ZINC = new MaterialType( 4.3, 9.5 );
+  public static readonly SODIUM = new MaterialType( 2.46, 3.24 );
+  public static readonly COPPER = new MaterialType( 4.70, 7.00 );
+  public static readonly CALCIUM = new MaterialType( 2.87, 4.69 );
+  public static readonly PLATINUM = new MaterialType( 6.35, 6.0 );
+  public static readonly ZINC = new MaterialType( 4.31, 9.47 );
 
   // Mystery materials are for teachers and PhET-iO clients. The work function will only be set from
   // preferences or with a PhET-iO customization. As such, simulation reset should not affect the
   // workFunctionProperty of mystery materials.
-  // Work function and bandwidth match Magnesium (φ=3.7 eV, bandWidth=7.1 eV) to mirror the java behavior.
-  public static readonly MYSTERY = new MaterialType( 3.7, 7.1, {
+  // Work function and bandwidth match Magnesium (φ=3.66 eV, bandWidth=7.08 eV).
+  public static readonly MYSTERY = new MaterialType( 3.66, 7.08, {
     workFunctionPhetioReadOnly: false,
     bandWidthPhetioReadOnly: false
   } );
