@@ -247,8 +247,12 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
    * Emits new photons based on source intensity and elapsed time.
    */
   private emitPhotons( dt: number ): void {
-    const photonRate = this.photonSource.photonRateProperty.value;
-    const totalPhotons = this.photonEmissionAccumulator + photonRate * dt;
+
+    // photonRateProperty is the physical photon flux. Visible photons are a sampled subset: one drawn for
+    // every PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON physical photons.
+    const physicalPhotonRate = this.photonSource.photonRateProperty.value;
+    const visiblePhotonRate = physicalPhotonRate / PhotoelectricEffectConstants.PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON;
+    const totalPhotons = this.photonEmissionAccumulator + visiblePhotonRate * dt;
     const wholePhotons = Math.floor( totalPhotons );
     this.photonEmissionAccumulator = totalPhotons - wholePhotons;
 
@@ -407,13 +411,11 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
     // Quantum efficiency (η) scales the ejection probability uniformly; keeps the analytical current consistent
     // with the per-photon emission path, which applies the same factor.
-    const visibleElectronsPerSecond =
+    const physicalElectronsPerSecond =
       electronsPerSecondToAnode * PhotoelectricEffectConstants.QUANTUM_EFFICIENCY;
 
-    // Scale the visible electron count up to the physical electron flux and convert to amps via the
-    // elementary charge: I = e · N_electrons_physical · η · accessibleBandFraction · fractionReachingCollector.
-    const physicalElectronsPerSecond =
-      visibleElectronsPerSecond * PhotoelectricEffectConstants.PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON;
+    // I = e · N_electrons_physical · η · accessibleBandFraction · fractionReachingCollector (spec §10.3). The
+    // photon rate fed into this calculation is already the physical flux, so no further magnification is needed.
     return physicalElectronsPerSecond * PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
   }
 

@@ -52,24 +52,50 @@ export default class PhotoelectricEffectConstants {
   // Distance between plate centers, used for potential/field calculations.
   public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.COLLECTOR_X - PhotoelectricEffectConstants.TARGET_X;
 
+  //------------------------------------------------
+  // KNOBS
+  // ------------------------------------------------
+
   // Quantum efficiency (η) of the photoemission process: the probability, given a photon with enough energy
   // to access at least some of the occupied band, that an electron is actually ejected. Applied as a single
   // scale factor on ejection probability (per the model reference, §6.3). Affects both the visible emission
   // rate and the analytical current. Defaults to 0.5; tune for visual/pedagogical effect.
+    // TODO: Maybe this isn't a knob? Maybe we get rid of it?
   public static readonly QUANTUM_EFFICIENCY = 0.5;
 
-  // TODO: The following constants replaced the JIMMY_FACTOR used in the java sim.
-  // Elementary charge in coulombs (SI 2019 exact value).
-  public static readonly ELEMENTARY_CHARGE = 1.602176634e-19;
-
+  // TODO: Our most powerful lever?
   // Number of physical photons each on-screen photon represents (and therefore the number of physical
   // electrons each visible ejection contributes to the ammeter reading). Visible photons are a sampled
   // subset of the actual photon flux, since a realistic flux would be orders of magnitude denser than
   // would be useful to draw on screen.
-  public static readonly PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON = 9.36e16;
+  public static readonly PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON = 1e14;
 
-  // Factor to scale voltage across electrodes for display.
-  public static readonly VOLTAGE_SCALE_FACTOR = 1;
+  // Scale factor applied to computed electron speeds for model tuning.
+  // This is the primary visual-speed knob. ELECTRON_ACCELERATION_SCALE is derived from it so
+  // the two are always consistent: the model stopping potential equals KE_max in eV.
+  public static readonly ELECTRON_SPEED_SCALE_FACTOR = 1.6e-14;
+
+  // -----------------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------------------------
+  // Physical constants that should not change, unless you have good reason to.
+  // --------------------------------------------------------------------------------------
+
+  // Elementary charge in coulombs (SI 2019 exact value).
+  public static readonly ELEMENTARY_CHARGE = 1.602176634e-19;
+
+  // Physical photon emission rate (photons per second) at 100% source output. This is the actual flux used
+  // by the analytical current calculation. The on-screen photon density is derived from this by sampling
+  // one in every PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON. Some flexibility for tuning since there is a range of reasonable
+  // values for "typical" photon sources
+  public static readonly MAX_PHOTONS_PER_SECOND = 1e16;
+
+
+  // Electron mass in kilograms, used for kinetic energy conversions.
+  public static readonly ELECTRON_MASS = 9.11e-31;
+
+  // -----------------------------------------------------------------------------------
+
 
   // Minimum voltage in the model range (volts).
   public static readonly MIN_VOLTAGE = -8;
@@ -86,26 +112,9 @@ export default class PhotoelectricEffectConstants {
   // Maximum wavelength used by the UI slider (nm).
   public static readonly MAX_WAVELENGTH_UI = 850;
 
-  // Maximum photon emission rate (photons per second).
-  public static readonly MAX_PHOTONS_PER_SECOND = 500;
-
   // Maximum expected current for the ammeter display, derived from max rate.
   public static readonly MAX_CURRENT = PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND *
-                                       PhotoelectricEffectConstants.PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON *
                                        PhotoelectricEffectConstants.ELEMENTARY_CHARGE / 8;
-
-  // Electron mass in kilograms, used for kinetic energy conversions.
-  public static readonly ELECTRON_MASS = 9.11e-31;
-
-  // Scale factor applied to computed electron speeds for model tuning.
-  // This is the primary visual-speed knob. ELECTRON_ACCELERATION_SCALE is derived from it so
-  // the two are always consistent: the model stopping potential equals KE_max in eV.
-  public static readonly ELECTRON_SPEED_SCALE_FACTOR = 1.6e-14;
-
-  // Minimum energy (in eV) for an emitted electron to be tracked and rendered.
-  // Electrons below this threshold are discarded rather than shown hanging near the target.
-  // TODO: We may need to use this again after we do some more debugging around electron emissions.
-  public static readonly MINIMUM_ELECTRON_ENERGY = 0.05;
 
   // Acceleration scale from voltage to model units (model units per V·s²).
   // Derived from ELECTRON_SPEED_SCALE_FACTOR and ELECTRON_MASS so the particle simulation's
