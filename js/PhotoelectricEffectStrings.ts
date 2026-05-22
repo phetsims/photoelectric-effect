@@ -62,6 +62,14 @@ type StringsType = {
   };
   'energy': {
     'graph': {
+      'yAxisLabelStringProperty': LocalizedStringProperty;
+      'conductionBandLabelStringProperty': LocalizedStringProperty;
+      'fermiLevelLabelStringProperty': LocalizedStringProperty;
+      'noElectronEjectedStringProperty': LocalizedStringProperty;
+      'diagramControls': {
+        'labelsStringProperty': LocalizedStringProperty;
+        'workFunctionStringProperty': LocalizedStringProperty;
+      };
       'legend': {
         'potentialEnergyStringProperty': LocalizedStringProperty;
         'photonEnergyStringProperty': LocalizedStringProperty;

@@ -119,6 +119,26 @@
   },
   "energy": {
     "graph": {
+      "yAxisLabel": {
+        "value": "Energy (eV)"
+      },
+      "conductionBandLabel": {
+        "value": "Conduction Band"
+      },
+      "fermiLevelLabel": {
+        "value": "Fermi Level"
+      },
+      "noElectronEjected": {
+        "value": "No electron ejected"
+      },
+      "diagramControls": {
+        "labels": {
+          "value": "Labels"
+        },
+        "workFunction": {
+          "value": "Work Function"
+        }
+      },
       "legend": {
         "potentialEnergy": {
           "value": "Potential Energy"

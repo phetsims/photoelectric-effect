@@ -8,6 +8,7 @@
  */
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
+import Property from '../../../../axon/js/Property.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import Material from '../../common/model/Material.js';
 import { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
@@ -16,7 +17,7 @@ import EnergyGraphData from './EnergyGraphData.js';
 import EnergyGraphDisplayProperties from './EnergyGraphDisplayProperties.js';
 
 export default class EnergyModel extends IntroModel {
-  public readonly emitSinglePhotonProperty: BooleanProperty;
+  public readonly emitSinglePhotonProperty: Property<boolean>;
 
   // Properties that control Energy screen graph mode and diagram visibility.
   public readonly energyGraphDisplayProperties: EnergyGraphDisplayProperties;

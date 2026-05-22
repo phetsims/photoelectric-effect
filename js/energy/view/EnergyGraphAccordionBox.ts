@@ -65,11 +65,12 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     const barGraphVisibleProperty = DerivedProperty.valueEqualsConstant( displayProperties.displayModeProperty, 'barGraph' );
     const energyDiagramVisibleProperty = DerivedProperty.valueEqualsConstant( displayProperties.displayModeProperty, 'energyDiagram' );
 
-    const barGraphNode = new EnergyBarGraphNode( model.target.workFunctionProperty, {
+    const barGraphNode = new EnergyBarGraphNode( model.energyGraphData.samples, model.target.workFunctionProperty, {
       visibleProperty: barGraphVisibleProperty
     } );
 
     const energyDiagramNode = new EnergyDiagramNode(
+      model.energyGraphData.samples,
       model.target.workFunctionProperty,
       displayProperties.diagramLabelsVisibleProperty,
       displayProperties.diagramWorkFunctionVisibleProperty,
@@ -109,12 +110,6 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       ]
     } );
     energyDiagramControlsNode.center = barGraphControlsNode.center;
-
-    // Assign each data model to the view components.
-    model.energyGraphData.samples.forEach( ( sample, sampleIndex ) => {
-      barGraphNode.setSample( sampleIndex, sample );
-      energyDiagramNode.setSample( sampleIndex, sample );
-    } );
 
     const bottomControlsNode = new HBox( {
       align: 'center',

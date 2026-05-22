@@ -60,6 +60,12 @@ addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 
 addToMapIfDefined( 'photonQuantity_single', 'photonQuantity.singleStringProperty' );
 addToMapIfDefined( 'photonQuantity_burst', 'photonQuantity.burstStringProperty' );
 addToMapIfDefined( 'photonQuantity_fire', 'photonQuantity.fireStringProperty' );
+addToMapIfDefined( 'energy_graph_yAxisLabel', 'energy.graph.yAxisLabelStringProperty' );
+addToMapIfDefined( 'energy_graph_conductionBandLabel', 'energy.graph.conductionBandLabelStringProperty' );
+addToMapIfDefined( 'energy_graph_fermiLevelLabel', 'energy.graph.fermiLevelLabelStringProperty' );
+addToMapIfDefined( 'energy_graph_noElectronEjected', 'energy.graph.noElectronEjectedStringProperty' );
+addToMapIfDefined( 'energy_graph_diagramControls_labels', 'energy.graph.diagramControls.labelsStringProperty' );
+addToMapIfDefined( 'energy_graph_diagramControls_workFunction', 'energy.graph.diagramControls.workFunctionStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_potentialEnergy', 'energy.graph.legend.potentialEnergyStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_photonEnergy', 'energy.graph.legend.photonEnergyStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_kineticEnergy', 'energy.graph.legend.kineticEnergyStringProperty' );
@@ -187,6 +193,15 @@ const PhotoelectricEffectFluent = {
   _comment_2: new FluentComment( {"comment":"Energy graphs","associatedKey":"energy"} ),
   energy: {
     graph: {
+      yAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.yAxisLabelStringProperty' ),
+      conductionBandLabelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.conductionBandLabelStringProperty' ),
+      fermiLevelLabelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.fermiLevelLabelStringProperty' ),
+      noElectronEjectedStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.noElectronEjectedStringProperty' ),
+      diagramControls: {
+        labelsStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.labelsStringProperty' ),
+        _comment_0: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
+        workFunctionStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.workFunctionStringProperty' )
+      },
       legend: {
         potentialEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.potentialEnergyStringProperty' ),
         photonEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.photonEnergyStringProperty' ),

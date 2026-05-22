@@ -24,6 +24,7 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
 import EnergyGraphSample from '../model/EnergyGraphSample.js';
@@ -74,8 +75,8 @@ export default class EnergyBarGraphNode extends Node {
   private readonly gridLineNode: Node;
 
   // Labels for the special y values shown on the graph.
-  private readonly zeroTickLabel: Text;
-  private readonly workFunctionTickLabel: Text;
+  private readonly zeroTickLabel: Node;
+  private readonly workFunctionTickLabel: Node;
 
   // Listener retained so it can be removed on disposal.
   private readonly workFunctionListener: () => void;
@@ -83,7 +84,9 @@ export default class EnergyBarGraphNode extends Node {
   // Work function source used for the -phi marker.
   private readonly workFunctionProperty: TReadOnlyProperty<number>;
 
-  public constructor( workFunctionProperty: TReadOnlyProperty<number>, providedOptions: EnergyBarGraphNodeOptions ) {
+  public constructor( samples: EnergyGraphSample[],
+                      workFunctionProperty: TReadOnlyProperty<number>,
+                      providedOptions: EnergyBarGraphNodeOptions ) {
 
     const options = optionize<EnergyBarGraphNodeOptions, SelfOptions, NodeOptions>()( {
       isDisposable: false
@@ -124,6 +127,30 @@ export default class EnergyBarGraphNode extends Node {
       );
     } );
 
+    // Link each persistent sample slot to its corresponding plot.
+    samples.forEach( ( sample, sampleIndex ) => {
+      const sampleBarPlot = this.sampleBarPlots[ sampleIndex ];
+      const sampleDataSet = this.sampleDataSets[ sampleIndex ];
+      sample.hasDataProperty.linkAttribute( sampleBarPlot, 'visible' );
+
+      Multilink.multilink( [
+        sample.hasDataProperty,
+        sample.potentialEnergyProperty,
+        sample.photonEnergyProperty,
+        sample.kineticEnergyProperty
+      ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy ) => {
+        this.noElectronEjectedPanels[ sampleIndex ].visible = hasData && kineticEnergy === 0;
+
+        EnergyBarGraphNode.updateDataSet(
+          sampleDataSet,
+          potentialEnergy,
+          photonEnergy,
+          kineticEnergy
+        );
+        sampleBarPlot.update();
+      } );
+    } );
+
     const plotLayer = new Node( {
       clipArea: plotRectangle.getShape(),
       children: [
@@ -141,8 +168,7 @@ export default class EnergyBarGraphNode extends Node {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
 
-    // TODO: i18n
-    const yAxisLabel = new Text( 'Energy (eV)', {
+    const yAxisLabel = new Text( PhotoelectricEffectFluent.energy.graph.yAxisLabelStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
       rotation: -Math.PI / 2
     } );
@@ -185,35 +211,6 @@ export default class EnergyBarGraphNode extends Node {
     workFunctionProperty.link( this.workFunctionListener );
 
     this.updateGraphDecorations();
-  }
-
-  /**
-   * Links one persistent sample slot to its corresponding plot.
-   */
-  public setSample( sampleIndex: number, sample: EnergyGraphSample ): void {
-    assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
-
-    const sampleBarPlot = this.sampleBarPlots[ sampleIndex ];
-    const sampleDataSet = this.sampleDataSets[ sampleIndex ];
-    sample.hasDataProperty.linkAttribute( sampleBarPlot, 'visible' );
-
-    Multilink.multilink( [
-      sample.hasDataProperty,
-      sample.potentialEnergyProperty,
-      sample.photonEnergyProperty,
-      sample.kineticEnergyProperty
-    ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy ) => {
-      const noElectronEjected = hasData && kineticEnergy === 0;
-      this.noElectronEjectedPanels[ sampleIndex ].visible = noElectronEjected;
-
-      EnergyBarGraphNode.updateDataSet(
-        sampleDataSet,
-        potentialEnergy,
-        photonEnergy,
-        kineticEnergy
-      );
-      sampleBarPlot.update();
-    } );
   }
 
   /**
@@ -308,8 +305,7 @@ export default class EnergyBarGraphNode extends Node {
    */
   private static createNoElectronEjectedPanel( centerX: number, centerY: number ): Panel {
 
-    // TODO: 18n
-    const text = new RichText( 'No electron ejected', {
+    const text = new RichText( PhotoelectricEffectFluent.energy.graph.noElectronEjectedStringProperty, {
       font: PhotoelectricEffectConstants.READOUT_FONT,
       lineWrap: 80
     } );

@@ -7,7 +7,6 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import type BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import Multilink from '../../../../axon/js/Multilink.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
@@ -27,6 +26,7 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import LinearGradient from '../../../../scenery/js/util/LinearGradient.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
 import EnergyGraphSample from '../model/EnergyGraphSample.js';
@@ -67,41 +67,41 @@ export default class EnergyDiagramNode extends Node {
 
   // Persistent graph decorations that can be repositioned as the work function changes. These are created once
   // to avoid disposing/reconstructing every change.
-  private readonly energyAxisNode: ArrowNode;
+  private readonly energyAxisNode: Node;
   private readonly conductionBandBottomLine: Line;
   private readonly fermiLevelLine: Line;
   private readonly zeroEnergyLine: Line;
   private readonly workFunctionMarkerLine: Line;
   private readonly workFunctionMarkerFermiCap: Line;
   private readonly workFunctionMarkerZeroCap: Line;
-  private readonly workFunctionLabel: Text;
-  private readonly conductionBandLabel: RichText;
+  private readonly workFunctionLabel: Node;
+  private readonly conductionBandLabel: Node;
 
   // BracketNode does not expose a way to mutate its shape, so it is replaced when its length changes.
-  private conductionBandBracket: BracketNode | null = null;
+  private conductionBandBracket: Node | null = null;
 
   // Electron markers for the fixed set of recorded energy samples.
   private readonly sampleMarkerNodes: SampleMarkerNodes[];
 
   // Labels for the special y values shown on the graph.
-  private readonly zeroTickLabel: Text;
-  private readonly fermiLevelTickLabel: Text;
+  private readonly zeroTickLabel: Node;
+  private readonly fermiLevelTickLabel: Node;
 
   // Listener retained so it can be removed on disposal.
   private readonly workFunctionListener: () => void;
 
-  // Work function source used for the Fermi level marker.
-  private readonly workFunctionProperty: TReadOnlyProperty<number>;
+  /**
+   * @param samples - Persistent sample slots whose Properties drive the marker positions.
+   * @param workFunctionProperty - Work function source used for the Fermi level marker.
+   * @param labelsVisibleProperty - Whether Fermi level and conduction band labels are visible.
+   * @param workFunctionVisibleProperty - Whether the work function label is visible.
+   * @param providedOptions
+   */
 
-  // Whether Fermi level and conduction band labels are visible.
-  private readonly labelsVisibleProperty: BooleanProperty;
-
-  // Whether the work function label is visible.
-  private readonly workFunctionVisibleProperty: BooleanProperty;
-
-  public constructor( workFunctionProperty: TReadOnlyProperty<number>,
-                      labelsVisibleProperty: BooleanProperty,
-                      workFunctionVisibleProperty: BooleanProperty,
+  public constructor( samples: EnergyGraphSample[],
+                      private readonly workFunctionProperty: TReadOnlyProperty<number>,
+                      private readonly labelsVisibleProperty: TReadOnlyProperty<boolean>,
+                      private readonly workFunctionVisibleProperty: TReadOnlyProperty<boolean>,
                       providedOptions: EnergyDiagramNodeOptions ) {
 
     const options = optionize<EnergyDiagramNodeOptions, SelfOptions, NodeOptions>()( {
@@ -109,10 +109,6 @@ export default class EnergyDiagramNode extends Node {
     }, providedOptions );
 
     super( options );
-
-    this.workFunctionProperty = workFunctionProperty;
-    this.labelsVisibleProperty = labelsVisibleProperty;
-    this.workFunctionVisibleProperty = workFunctionVisibleProperty;
 
     this.chartTransform = new ChartTransform( {
       viewWidth: CHART_VIEW_WIDTH,
@@ -172,8 +168,7 @@ export default class EnergyDiagramNode extends Node {
       visibleProperty: this.workFunctionVisibleProperty
     } );
 
-    // TODO: i18n
-    this.conductionBandLabel = new RichText( 'Conduction Band', {
+    this.conductionBandLabel = new RichText( PhotoelectricEffectFluent.energy.graph.conductionBandLabelStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
       lineWrap: 90
     } );
@@ -201,6 +196,25 @@ export default class EnergyDiagramNode extends Node {
       return EnergyDiagramNode.createSampleMarkerNodes( this.chartTransform, sampleIndex );
     } );
 
+    // Link each persistent sample slot to its corresponding markers.
+    samples.forEach( ( sample, sampleIndex ) => {
+      const sampleMarkerNodes = this.sampleMarkerNodes[ sampleIndex ];
+      sample.hasDataProperty.linkAttribute( sampleMarkerNodes.sampleNode, 'visible' );
+
+      Multilink.multilink( [
+        sample.potentialEnergyProperty,
+        sample.kineticEnergyProperty
+      ], ( potentialEnergy, kineticEnergy ) => {
+        EnergyDiagramNode.updateSampleMarkerPositions(
+          this.chartTransform,
+          sampleIndex,
+          sampleMarkerNodes,
+          potentialEnergy,
+          kineticEnergy
+        );
+      } );
+    } );
+
     const plotLayer = new Node( {
       children: [
         this.graphDecorationNode,
@@ -212,14 +226,12 @@ export default class EnergyDiagramNode extends Node {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
 
-    // TODO: i18n
-    this.fermiLevelTickLabel = new Text( 'Fermi Level', {
+    this.fermiLevelTickLabel = new Text( PhotoelectricEffectFluent.energy.graph.fermiLevelLabelStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
       visibleProperty: this.labelsVisibleProperty
     } );
 
-    // TODO: i18n
-    const yAxisLabel = new Text( 'Energy (eV)', {
+    const yAxisLabel = new Text( PhotoelectricEffectFluent.energy.graph.yAxisLabelStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
       rotation: -Math.PI / 2
     } );
@@ -261,29 +273,6 @@ export default class EnergyDiagramNode extends Node {
     workFunctionProperty.link( this.workFunctionListener );
 
     this.updateGraphDecorations();
-  }
-
-  /**
-   * Links one persistent sample slot to its corresponding markers.
-   */
-  public setSample( sampleIndex: number, sample: EnergyGraphSample ): void {
-    assert && assert( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, 'sampleIndex out of range' );
-
-    const sampleMarkerNodes = this.sampleMarkerNodes[ sampleIndex ];
-    sample.hasDataProperty.linkAttribute( sampleMarkerNodes.sampleNode, 'visible' );
-
-    Multilink.multilink( [
-      sample.potentialEnergyProperty,
-      sample.kineticEnergyProperty
-    ], ( potentialEnergy, kineticEnergy ) => {
-      EnergyDiagramNode.updateSampleMarkerPositions(
-        this.chartTransform,
-        sampleIndex,
-        sampleMarkerNodes,
-        potentialEnergy,
-        kineticEnergy
-      );
-    } );
   }
 
   /**

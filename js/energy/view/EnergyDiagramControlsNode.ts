@@ -6,13 +6,14 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import type BooleanProperty from '../../../../axon/js/BooleanProperty.js';
+import Property from '../../../../axon/js/Property.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import VBox, { type VBoxOptions } from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type SelfOptions = EmptySelfOptions;
 type EnergyDiagramControlsNodeOptions = SelfOptions & VBoxOptions & PickRequired<VBoxOptions, 'tandem'>;
@@ -29,8 +30,8 @@ const CHECKBOX_BOX_WIDTH = 17;
  */
 export default class EnergyDiagramControlsNode extends VBox {
 
-  public constructor( labelsVisibleProperty: BooleanProperty,
-                      workFunctionVisibleProperty: BooleanProperty,
+  public constructor( labelsVisibleProperty: Property<boolean>,
+                      workFunctionVisibleProperty: Property<boolean>,
                       providedOptions: EnergyDiagramControlsNodeOptions ) {
 
     const options = optionize<EnergyDiagramControlsNodeOptions, SelfOptions, VBoxOptions>()( {
@@ -38,10 +39,9 @@ export default class EnergyDiagramControlsNode extends VBox {
       spacing: CHECKBOX_SPACING,
       children: [
 
-        // TODO: i18n
         new Checkbox(
           labelsVisibleProperty,
-          new Text( 'Labels', {
+          new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.labelsStringProperty, {
             font: PhotoelectricEffectConstants.CONTENT_FONT,
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
@@ -51,10 +51,9 @@ export default class EnergyDiagramControlsNode extends VBox {
           }
         ),
 
-        // TODO: i18n
         new Checkbox(
           workFunctionVisibleProperty,
-          new Text( 'Work Function', {
+          new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionStringProperty, {
             font: PhotoelectricEffectConstants.CONTENT_FONT,
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {

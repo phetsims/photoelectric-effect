@@ -53,6 +53,13 @@ photonQuantity:
 # Energy graphs
 energy:
   graph:
+    yAxisLabel: 'Energy (eV)'
+    conductionBandLabel: 'Conduction Band'
+    fermiLevelLabel: 'Fermi Level'
+    noElectronEjected: 'No electron ejected'
+    diagramControls:
+      labels: 'Labels'
+      workFunction: 'Work Function'
     legend:
       potentialEnergy: 'Potential Energy'
       photonEnergy: 'Photon Energy'

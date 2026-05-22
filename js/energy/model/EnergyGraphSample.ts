@@ -8,6 +8,7 @@
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
+import Property from '../../../../axon/js/Property.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
@@ -28,16 +29,16 @@ export type EnergyGraphSampleData = {
 export default class EnergyGraphSample extends PhetioObject {
 
   // Whether this sample slot currently contains an event to render.
-  public readonly hasDataProperty: BooleanProperty;
+  public readonly hasDataProperty: Property<boolean>;
 
   // Energy before photon absorption, in eV.
-  public readonly potentialEnergyProperty: NumberProperty;
+  public readonly potentialEnergyProperty: Property<number>;
 
   // Energy delivered by the photon, in eV.
-  public readonly photonEnergyProperty: NumberProperty;
+  public readonly photonEnergyProperty: Property<number>;
 
   // Emitted electron kinetic energy, in eV.
-  public readonly kineticEnergyProperty: NumberProperty;
+  public readonly kineticEnergyProperty: Property<number>;
 
   public constructor( providedOptions: EnergyGraphSampleOptions ) {
 
@@ -55,7 +56,6 @@ export default class EnergyGraphSample extends PhetioObject {
     this.hasDataProperty = new BooleanProperty( false, {
       tandem: options.tandem.createTandem( 'hasDataProperty' ),
       phetioReadOnly: true,
-      phetioFeatured: true,
       phetioDocumentation: 'Whether this Energy screen graph sample slot currently contains recorded event data'
     } );
 

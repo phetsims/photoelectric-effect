@@ -7,6 +7,7 @@
  */
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
+import Property from '../../../../axon/js/Property.js';
 import StringUnionProperty from '../../../../axon/js/StringUnionProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
@@ -21,10 +22,10 @@ export default class EnergyGraphDisplayProperties {
   public readonly displayModeProperty: StringUnionProperty<EnergyGraphDisplayMode>;
 
   // Whether descriptive labels are visible on the energy diagram.
-  public readonly diagramLabelsVisibleProperty: BooleanProperty;
+  public readonly diagramLabelsVisibleProperty: Property<boolean>;
 
   // Whether the work function label is visible on the energy diagram.
-  public readonly diagramWorkFunctionVisibleProperty: BooleanProperty;
+  public readonly diagramWorkFunctionVisibleProperty: Property<boolean>;
 
   public constructor( tandem: Tandem ) {
     this.displayModeProperty = new StringUnionProperty( 'barGraph', {
