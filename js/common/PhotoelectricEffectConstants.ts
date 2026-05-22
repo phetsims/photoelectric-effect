@@ -52,8 +52,21 @@ export default class PhotoelectricEffectConstants {
   // Distance between plate centers, used for potential/field calculations.
   public static readonly PLATE_SEPARATION = PhotoelectricEffectConstants.COLLECTOR_X - PhotoelectricEffectConstants.TARGET_X;
 
-  // Factor to scale analytically reported current from photons-per-second.
-  public static readonly CURRENT_JIMMY_FACTOR = 0.015;
+  // Quantum efficiency (η) of the photoemission process: the probability, given a photon with enough energy
+  // to access at least some of the occupied band, that an electron is actually ejected. Applied as a single
+  // scale factor on ejection probability (per the model reference, §6.3). Affects both the visible emission
+  // rate and the analytical current. Defaults to 0.5; tune for visual/pedagogical effect.
+  public static readonly QUANTUM_EFFICIENCY = 0.5;
+
+  // TODO: The following constants replaced the JIMMY_FACTOR used in the java sim.
+  // Elementary charge in coulombs (SI 2019 exact value).
+  public static readonly ELEMENTARY_CHARGE = 1.602176634e-19;
+
+  // Number of physical photons each on-screen photon represents (and therefore the number of physical
+  // electrons each visible ejection contributes to the ammeter reading). Visible photons are a sampled
+  // subset of the actual photon flux, since a realistic flux would be orders of magnitude denser than
+  // would be useful to draw on screen.
+  public static readonly PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON = 9.36e16;
 
   // Factor to scale voltage across electrodes for display.
   public static readonly VOLTAGE_SCALE_FACTOR = 1;
@@ -78,7 +91,8 @@ export default class PhotoelectricEffectConstants {
 
   // Maximum expected current for the ammeter display, derived from max rate.
   public static readonly MAX_CURRENT = PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND *
-                                       PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR / 8;
+                                       PhotoelectricEffectConstants.PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON *
+                                       PhotoelectricEffectConstants.ELEMENTARY_CHARGE / 8;
 
   // Electron mass in kilograms, used for kinetic energy conversions.
   public static readonly ELECTRON_MASS = 9.11e-31;

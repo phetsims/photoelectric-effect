@@ -405,8 +405,16 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
     const electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
 
-    // "Jimmy factor" scales model output to match the sim's calibrated current display.
-    return electronsPerSecondToAnode * PhotoelectricEffectConstants.CURRENT_JIMMY_FACTOR;
+    // Quantum efficiency (η) scales the ejection probability uniformly; keeps the analytical current consistent
+    // with the per-photon emission path, which applies the same factor.
+    const visibleElectronsPerSecond =
+      electronsPerSecondToAnode * PhotoelectricEffectConstants.QUANTUM_EFFICIENCY;
+
+    // Scale the visible electron count up to the physical electron flux and convert to amps via the
+    // elementary charge: I = e · N_electrons_physical · η · accessibleBandFraction · fractionReachingCollector.
+    const physicalElectronsPerSecond =
+      visibleElectronsPerSecond * PhotoelectricEffectConstants.PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON;
+    return physicalElectronsPerSecond * PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
   }
 
   // Aggregate state for transient particles. ReferenceArrayIO mutates the existing arrays during restore so views that

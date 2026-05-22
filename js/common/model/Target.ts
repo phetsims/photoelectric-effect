@@ -114,6 +114,13 @@ export default class Target {
     const photonEnergy = photon.getEnergy();
     const workFunction = this.workFunctionProperty.value;
 
+    // Quantum efficiency rejection: even when a photon has enough energy to eject an electron, only a fraction
+    // η of such absorptions actually produces one. The remaining fraction is treated as absorbed-to-heat with
+    // no electron emitted.
+    if ( dotRandom.nextDouble() > PhotoelectricEffectConstants.QUANTUM_EFFICIENCY ) {
+      return null;
+    }
+
     let energyAfterCollision;
     if ( highestEnergyOnly ) {
 
