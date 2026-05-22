@@ -8,25 +8,29 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import ScreenSummaryContent from '../../../../joist/js/ScreenSummaryContent.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import CircuitNode from '../../common/view/CircuitNode.js';
-import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
+import LightSourceNode from '../../common/view/LightSourceNode.js';
+import PhotonBeamScreenView, { PhotonBeamScreenViewOptions } from '../../common/view/PhotonBeamScreenView.js';
+import PhotonSourceControl from '../../common/view/PhotonSourceControl.js';
 import IntroModel from '../model/IntroModel.js';
 import GroundedCircuitNode from './GroundedCircuitNode.js';
 import RepresentationRadioButtonGroup from './RepresentationRadioButtonGroup.js';
 
 type SelfOptions = EmptySelfOptions;
 
-type IntroScreenViewOptions = SelfOptions & ScreenViewOptions;
+type IntroScreenViewOptions = SelfOptions & PickRequired<PhotonBeamScreenViewOptions, 'tandem'>;
 
-export default class IntroScreenView extends PhotoelectricEffectScreenView {
+export default class IntroScreenView extends PhotonBeamScreenView {
 
   public constructor( model: IntroModel, providedOptions: IntroScreenViewOptions ) {
-    const options = optionize<IntroScreenViewOptions, SelfOptions, ScreenViewOptions>()( {
+    const options = optionize<IntroScreenViewOptions, SelfOptions, PhotonBeamScreenViewOptions>()( {
+      createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter ),
+      createPhotonSourcePanel: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
       screenSummaryContent: new ScreenSummaryContent( {
         playAreaContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.playAreaStringProperty,
         controlAreaContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.controlAreaStringProperty,
@@ -57,7 +61,7 @@ export default class IntroScreenView extends PhotoelectricEffectScreenView {
     } );
 
     this.pdomPlayAreaNode.pdomOrder = [
-      this.photonSourceControl,
+      this.photonSourcePanel,
       this.materialsComboBox,
       representationRadioButtonGroup
     ];

@@ -3,9 +3,10 @@
 /**
  * Base view shared by all photoelectric-effect screens.
  *
- * Owns the common circuit/play-area transform and shared controls (photon source, materials selection, electron
- * visibility controls, current readout, transport controls, and reset). Subclasses add screen-specific graphing and
- * play-area content while reusing this layout and PDOM wiring.
+ * Owns the common play-area transform and shared controls (materials selection, work function control,
+ * photon source panel + light source + cord, play/pause/step, and reset). Subclasses contribute screen-specific
+ * play-area content (graphs, additional controls) and provide the concrete light source / photon source panel
+ * via factory options.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -17,7 +18,7 @@ import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import Shape from '../../../../kite/js/Shape.js';
-import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
@@ -26,48 +27,49 @@ import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import Checkbox from '../../../../sun/js/Checkbox.js';
+import type Tandem from '../../../../tandem/js/Tandem.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
-import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
-import CircuitNode from './CircuitNode.js';
-import LightSourceNode from './LightSourceNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
-import ParticleCanvasNode from './ParticleCanvasNode.js';
-import PhotonSourceControl from './PhotonSourceControl.js';
 
-type SelfOptions = EmptySelfOptions;
-type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
+// Minimal interface every screen-specific light source node must satisfy.
+export type LightSourceNodeInterface = Node & { readonly cordAttachmentPoint: Vector2 };
+
+type SelfOptions = {
+
+  // Factory for the screen-specific light source node. Receives the view-space position of the beam aperture.
+  createLightSourceNode: ( beamStartCenter: Vector2 ) => LightSourceNodeInterface;
+
+  // Factory for the screen-specific photon source panel. The base positions the returned node at leftTop.
+  createPhotonSourcePanel: ( tandem: Tandem ) => Node;
+};
+
+export type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 export default class PhotoelectricEffectScreenView extends ScreenView {
 
-  // The background node holds static drawings that decorate and add context to each screen. Generally this is
-  // populated by the specific circuit required by the screen.
+  // Static drawings that decorate and add context to each screen — typically the circuit artwork for the screen.
   protected readonly backgroundNode = new Node();
 
-  private readonly particleCanvasNode: ParticleCanvasNode;
   protected readonly modelViewTransform: ModelViewTransform2;
 
-  // Shared ammeter panel for layout and visibility control in subclasses.
-  protected readonly ammeterDisplayPanel: AmmeterDisplayPanel;
-
-  // Controls for electron rendering and behavior, for layout and visibility control in subclasses.
-  protected readonly electronVisibilityControls: VBox;
-
-  // For pdom order
-  protected readonly photonSourceControl: Node;
+  // Exposed for subclasses to wire into pdom order and to position screen-specific content relative to.
   protected readonly materialsComboBox: Node;
+  protected readonly workFunctionControl: Node;
+  protected readonly photonSourcePanel: Node;
+  protected readonly playPauseStepButtonGroup: Node;
+  protected readonly resetAllButton: Node;
 
-  public constructor( private readonly model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
+  protected constructor( model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
     const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
 
     super( options );
 
-    // Added first to be in the background of each screen.
+    // Added first so screen artwork drawn into it sits behind everything else.
     this.addChild( this.backgroundNode );
 
     // model-view transform places the model x origin at the target plate, and a view origin at an x-offset with
@@ -93,7 +95,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const customMaterialSelectedProperty = new DerivedProperty( [ model.target.materialProperty ],
       material => material.materialType === MaterialType.CUSTOM );
 
-    const workFunctionControl = new NumberControl(
+    this.workFunctionControl = new NumberControl(
       PhotoelectricEffectFluent.workFunction.labelStringProperty,
       workFunctionProperty,
 
@@ -112,30 +114,22 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     );
 
-    this.photonSourceControl = new PhotonSourceControl( model.photonSource, {
-      rightTop: new Vector2(
-        this.modelViewTransform.modelToViewXY( model.target.x, 0 ).x,
-        this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      ),
-      tandem: options.tandem.createTandem( 'photonSourceControl' )
-    } );
-
-    this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty, {
-      tandem: options.tandem.createTandem( 'ammeterDisplayPanel' ),
-      center: this.modelViewTransform.modelToViewXY( model.collector.x, 0 )
-        .plusXY( 0, CircuitNode.WIRE_HEIGHT )
-    } );
+    this.photonSourcePanel = options.createPhotonSourcePanel( options.tandem.createTandem( 'photonSourcePanel' ) );
+    this.photonSourcePanel.leftTop = this.layoutBounds.leftTop.plusXY(
+      PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
+    );
 
     // Light source node: aperture at local origin, placed at the beam-start view position.
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
-    const lightSourceNode = new LightSourceNode( beamStartCenter );
+    const lightSourceNode = options.createLightSourceNode( beamStartCenter );
 
-    // S-shaped wire from the back of the lamp to the right side of the control panel.
-    // First control point of cubic curve below the start and second control point of cubic curve above the end
-    // create the S regardless of height difference.
+    // S-shaped wire from the back of the lamp to the right side of the photon source panel.
+    // First control point of the cubic curve below the start and second control point above the end create the S
+    // regardless of height difference.
     const S_BEND = 200;
     const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
-    const photonSourceWireEnd = this.photonSourceControl.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
+    const photonSourceWireEnd = this.photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
     const photonSourceWireNode = new Path( new Shape()
       .moveToPoint( photonSourceWireStart )
       .cubicCurveToPoint(
@@ -150,53 +144,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // Added in this order for proper z-layering.
     this.addChild( photonSourceWireNode );
     this.addChild( lightSourceNode );
-    this.addChild( this.photonSourceControl );
-
-    const showElectronsCheckbox = new Checkbox(
-      model.showElectronsProperty,
-      new Text( PhotoelectricEffectFluent.showElectronsStringProperty, {
-        font: PhotoelectricEffectConstants.CONTENT_FONT,
-        maxWidth: 170
-      } ),
-      {
-        tandem: options.tandem.createTandem( 'showElectronsCheckbox' )
-      }
-    );
-
-    const highestEnergyOnlyCheckbox = new Checkbox(
-      model.showHighestEnergyOnlyProperty,
-      new Text( PhotoelectricEffectFluent.highestEnergyOnlyStringProperty, {
-        font: PhotoelectricEffectConstants.CONTENT_FONT,
-        maxWidth: 170
-      } ),
-      {
-        enabledProperty: model.showElectronsProperty,
-        layoutOptions: {
-          leftMargin: 20
-        },
-        tandem: options.tandem.createTandem( 'highestEnergyOnlyCheckbox' )
-      }
-    );
-
-    this.electronVisibilityControls = new VBox( {
-      spacing: 5,
-      align: 'left',
-      children: [
-        showElectronsCheckbox,
-        highestEnergyOnlyCheckbox
-      ],
-      leftBottom: this.layoutBounds.leftBottom.plusXY(
-        PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-        -PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      )
-    } );
+    this.addChild( this.photonSourcePanel );
 
     this.addChild( this.materialsComboBox );
-    this.addChild( workFunctionControl );
-    this.addChild( this.electronVisibilityControls );
-    this.addChild( this.ammeterDisplayPanel );
+    this.addChild( this.workFunctionControl );
 
-    const resetAllButton = new ResetAllButton( {
+    this.resetAllButton = new ResetAllButton( {
       listener: () => {
         model.reset();
       },
@@ -204,9 +157,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       bottom: this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN,
       tandem: options.tandem.createTandem( 'resetAllButton' )
     } );
-    this.addChild( resetAllButton );
+    this.addChild( this.resetAllButton );
 
-    const playPauseStepButtonGroup = new PlayPauseStepButtonGroup( model.isPlayingProperty, {
+    this.playPauseStepButtonGroup = new PlayPauseStepButtonGroup( model.isPlayingProperty, {
       tandem: options.tandem.createTandem( 'playPauseStepButtonGroup' ),
       stepForwardButtonOptions: {
         listener: () => {
@@ -217,20 +170,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       // TODO: clean up once layout is more settled in mockups.
       centerBottom: this.layoutBounds.centerBottom.minusXY( -200, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
     } );
-    this.addChild( playPauseStepButtonGroup );
+    this.addChild( this.playPauseStepButtonGroup );
 
-    // Canvas that renders photons and electrons using the same model-view transform as the play area.
-    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
-      { canvasBounds: this.layoutBounds } );
-    this.addChild( this.particleCanvasNode );
-
-    // PDOM order for controls. It is up to subclasses to set the pdom order for the
-    // play area.
+    // Default PDOM order for the control area. Subclasses may prepend additional items by reassigning this.
     this.pdomControlAreaNode.pdomOrder = [
-      showElectronsCheckbox,
-      highestEnergyOnlyCheckbox,
-      playPauseStepButtonGroup,
-      resetAllButton
+      this.playPauseStepButtonGroup,
+      this.resetAllButton
     ];
 
     // DEBUG INDICATORS:
@@ -254,16 +199,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           new Text( devPhotonEnergyStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
           new Text( devCurrentStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } )
         ],
-        leftTop: this.photonSourceControl.rightTop
+        leftTop: this.photonSourcePanel.rightTop
       } ) );
     }
-  }
-
-  /**
-   * Steps the view.
-   * @param _dt - time step, in seconds
-   */
-  public override step( _dt: number ): void {
-    this.particleCanvasNode.step();
   }
 }

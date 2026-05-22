@@ -8,14 +8,16 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
 import ScreenSummaryContent from '../../../../joist/js/ScreenSummaryContent.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import CircuitNode from '../../common/view/CircuitNode.js';
-import PhotoelectricEffectScreenView from '../../common/view/PhotoelectricEffectScreenView.js';
+import LightSourceNode from '../../common/view/LightSourceNode.js';
+import PhotonBeamScreenView, { PhotonBeamScreenViewOptions } from '../../common/view/PhotonBeamScreenView.js';
+import PhotonSourceControl from '../../common/view/PhotonSourceControl.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import FrequencyEnergyGraphAssemblyNode from './FrequencyEnergyGraphAssemblyNode.js';
 import GraphAssemblyNode from './GraphAssemblyNode.js';
@@ -25,13 +27,15 @@ import VoltageNumberControl from './VoltageNumberControl.js';
 
 type SelfOptions = EmptySelfOptions;
 
-type ExperimentScreenViewOptions = SelfOptions & ScreenViewOptions;
+type ExperimentScreenViewOptions = SelfOptions & PickRequired<PhotonBeamScreenViewOptions, 'tandem'>;
 
-export default class ExperimentScreenView extends PhotoelectricEffectScreenView {
+export default class ExperimentScreenView extends PhotonBeamScreenView {
 
   public constructor( model: ExperimentModel, providedOptions: ExperimentScreenViewOptions ) {
 
-    const options = optionize<ExperimentScreenViewOptions, SelfOptions, ScreenViewOptions>()( {
+    const options = optionize<ExperimentScreenViewOptions, SelfOptions, PhotonBeamScreenViewOptions>()( {
+      createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter ),
+      createPhotonSourcePanel: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
       screenSummaryContent: new ScreenSummaryContent( {
         playAreaContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.playAreaStringProperty,
         controlAreaContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.controlAreaStringProperty,
@@ -84,7 +88,7 @@ export default class ExperimentScreenView extends PhotoelectricEffectScreenView 
     this.addChild( voltageNumberControl );
 
     this.pdomPlayAreaNode.pdomOrder = [
-      this.photonSourceControl,
+      this.photonSourcePanel,
       this.materialsComboBox,
       voltageNumberControl,
       graphsVBox
