@@ -19,11 +19,11 @@ import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 // Constants
-const BODY_WIDTH = 125;
-const BODY_HEIGHT = 100;
+const BODY_WIDTH = PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH + 50;
+const BODY_HEIGHT = 80;
 const BODY_CORNER_RADIUS = 5;
 const LENS_WIDTH = PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH + 10;
-const LENS_HEIGHT = 30;
+const LENS_HEIGHT = 25;
 
 export default class LightSourceNode extends Node {
 

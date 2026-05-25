@@ -13,8 +13,8 @@ import PhetFont from '../../../scenery-phet/js/PhetFont.js';
 
 // Width of the lamp opening which will emit our photons.
 // Defined here so that our model constant can derive the length of the line along which photons will emit.
-const PHOTON_SOURCE_WIDTH = 60;
-const PLATE_HEIGHT = 170;
+const PHOTON_SOURCE_WIDTH = 70;
+const PLATE_HEIGHT = 150;
 
 export default class PhotoelectricEffectConstants {
 
@@ -29,7 +29,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly COLLECTOR_X = 100;
 
   // Photon emission origin, positioned above and to the right of the target.
-  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 55, 45 );
+  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 70, 50 );
 
   // Angle of the photon beam direction, in radians, counter-clockwise from the positive x-axis.
   // Defaults to pointing from PHOTON_SOURCE_POSITION directly toward the target center (x=0, y=0).
@@ -155,7 +155,8 @@ export default class PhotoelectricEffectConstants {
   public static readonly DIALOG_CORNER_RADIUS = 10;
 
   // Scale factor for the model-to-view transform, in view pixels per model unit.
-  public static readonly MODEL_VIEW_SCALE = 4;
+  // Empirically determined.
+  public static readonly MODEL_VIEW_SCALE = 3.5;
 
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 

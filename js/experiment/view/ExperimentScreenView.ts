@@ -8,6 +8,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenSummaryContent from '../../../../joist/js/ScreenSummaryContent.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
@@ -62,27 +63,22 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
         new VoltageCurrentGraphAssemblyNode( model, {
           tandem: options.tandem.createTandem( 'voltageCurrentGraphNode' )
         } )
-      ]
+      ],
+      right: this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      top: this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
     } );
 
-    const voltageNumberControl = new VoltageNumberControl( model, {
-      tandem: options.tandem.createTandem( 'voltageNumberControl' )
-    } );
-
-    // layout
-    graphsVBox.right = this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN;
-    graphsVBox.top = this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
-
-    // TODO: In the future, we will have the model position of the battery (probably), and this control should
-    //   be positioned relative to that. And this control should be positioned relative to that.
-    const experimentViewCenter = this.modelViewTransform.modelToViewXY(
-      // center x between the plates
-      PhotoelectricEffectConstants.TARGET_X + ( PhotoelectricEffectConstants.COLLECTOR_X - PhotoelectricEffectConstants.TARGET_X ) / 2,
-
-      // view center y
-      0
+    // TODO: In the future, we will have the position of the battery, and this control will be positioned relative to that.
+    // center x between the plates in view coordinates
+    const experimentViewCenterX = this.modelViewTransform.modelToViewX(
+      PhotoelectricEffectConstants.TARGET_X + ( PhotoelectricEffectConstants.COLLECTOR_X - PhotoelectricEffectConstants.TARGET_X ) / 2
     );
-    voltageNumberControl.center = experimentViewCenter.plusXY( 0, 150 );
+
+    // Battery and voltage control should be just left of the experiment view center to make room for the ammeter.
+    const voltageNumberControl = new VoltageNumberControl( model, {
+      tandem: options.tandem.createTandem( 'voltageNumberControl' ),
+      centerBottom: new Vector2( experimentViewCenterX - 20, this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
+    } );
 
     this.addChild( graphsVBox );
     this.addChild( voltageNumberControl );

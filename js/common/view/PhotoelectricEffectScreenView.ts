@@ -78,13 +78,16 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
 
       // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
-      // TODO: Adjust once the target plate artwork and layout are finalized. https://github.com/phetsims/photoelectric-effect/issues/1
-      new Vector2( 250, this.layoutBounds.centerY + 40 ),
+      new Vector2( 250, this.layoutBounds.centerY + 30 ),
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
+    // Combo box should appear to the left of the target plate and above the wire that extends from center.
+    const comboBoxMargins = 35
     this.materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
-      left: this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-      top: this.layoutBounds.centerY,
+      right: this.modelViewTransform.modelToViewX( PhotoelectricEffectConstants.TARGET_X ) -
+             PhotoelectricEffectConstants.PLATE_MATERIAL_BOUNDS.width -
+             PhotoelectricEffectConstants.PLATE_BOUNDS.width - comboBoxMargins,
+      bottom: this.modelViewTransform.modelToViewY( 0 ) - comboBoxMargins,
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
@@ -108,8 +111,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         numberDisplayOptions: {
           decimalPlaces: 1
         },
+        layoutFunction: NumberControl.createLayoutFunction3(),
         visibleProperty: customMaterialSelectedProperty,
-        centerTop: this.materialsComboBox.centerBottom.plusXY( 0, 25 ),
+        centerTop: this.materialsComboBox.centerBottom.plusXY( 0, 20 ),
         tandem: options.tandem.createTandem( 'workFunctionControl' )
       }
     );
@@ -166,8 +170,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           model.stepForwardInTime( PhotoelectricEffectConstants.MANUAL_STEP_DT );
         }
       },
-
-      // TODO: clean up once layout is more settled in mockups.
       centerBottom: this.layoutBounds.centerBottom.minusXY( -200, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
     } );
     this.addChild( this.playPauseStepButtonGroup );

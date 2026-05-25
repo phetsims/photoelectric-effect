@@ -9,15 +9,17 @@
 
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
-import { combineOptions } from '../../../../phet-core/js/optionize.js';
+import optionize, { combineOptions, EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import NumberControl, { type NumberControlOptions } from '../../../../scenery-phet/js/NumberControl.js';
+import { NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 
-export type VoltageNumberControlOptions = PickRequired<NumberControlOptions, 'tandem'>;
+export type VoltageNumberControlOptions = PickRequired<NumberControlOptions, 'tandem'> & NodeTranslationOptions;
 
 export default class VoltageNumberControl extends NumberControl {
 
@@ -26,44 +28,46 @@ export default class VoltageNumberControl extends NumberControl {
    * @param providedOptions - NumberControl options and required instrumentation tandem.
    */
   public constructor( model: ExperimentModel, providedOptions: VoltageNumberControlOptions ) {
+
+    const options = optionize<VoltageNumberControlOptions, EmptySelfOptions, NumberControlOptions>()( {
+      delta: 0.01,
+      accessibleName: PhotoelectricEffectFluent.a11y.voltageNumberControl.accessibleNameStringProperty,
+      titleNodeOptions: {
+        font: PhotoelectricEffectConstants.CONTENT_FONT
+      },
+      layoutFunction: NumberControl.createLayoutFunction1( {
+        arrowButtonsXSpacing: 0
+      } ),
+      numberDisplayOptions: {
+        visible: false
+      },
+      sliderOptions: {
+        trackSize: new Dimension2( 140, 2 ),
+        majorTicks: [
+          {
+            value: PhotoelectricEffectConstants.MIN_VOLTAGE,
+            label: new Text( toFixed( PhotoelectricEffectConstants.MIN_VOLTAGE, 2 ), {
+              font: PhotoelectricEffectConstants.READOUT_FONT
+            } )
+          },
+          {
+            value: PhotoelectricEffectConstants.MAX_VOLTAGE,
+            label: new Text( toFixed( PhotoelectricEffectConstants.MAX_VOLTAGE, 2 ), {
+              font: PhotoelectricEffectConstants.READOUT_FONT
+            } )
+          }
+        ],
+        majorTickLength: 8,
+
+        // To produce one minor tick at 0.
+        minorTickSpacing: model.battery.voltageProperty.range.getLength() / 2
+      }
+    }, providedOptions)
+
     super(
       PhotoelectricEffectFluent.voltage.labelStringProperty,
       model.battery.voltageProperty,
       model.battery.voltageProperty.range,
-      combineOptions<NumberControlOptions>( {
-        delta: 0.01,
-        accessibleName: PhotoelectricEffectFluent.a11y.voltageNumberControl.accessibleNameStringProperty,
-        titleNodeOptions: {
-          font: PhotoelectricEffectConstants.CONTENT_FONT
-        },
-        layoutFunction: NumberControl.createLayoutFunction1( {
-          arrowButtonsXSpacing: 0
-        } ),
-        numberDisplayOptions: {
-          visible: false
-        },
-        sliderOptions: {
-          trackSize: new Dimension2( 140, 2 ),
-          majorTicks: [
-            {
-              value: PhotoelectricEffectConstants.MIN_VOLTAGE,
-              label: new Text( toFixed( PhotoelectricEffectConstants.MIN_VOLTAGE, 2 ), {
-                font: PhotoelectricEffectConstants.READOUT_FONT
-              } )
-            },
-            {
-              value: PhotoelectricEffectConstants.MAX_VOLTAGE,
-              label: new Text( toFixed( PhotoelectricEffectConstants.MAX_VOLTAGE, 2 ), {
-                font: PhotoelectricEffectConstants.READOUT_FONT
-              } )
-            }
-          ],
-          majorTickLength: 8,
-
-          // To produce one minor tick at 0.
-          minorTickSpacing: model.battery.voltageProperty.range.getLength() / 2
-        }
-      }, providedOptions )
-    );
+      options );
   }
 }
