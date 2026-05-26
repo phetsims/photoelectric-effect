@@ -38,7 +38,7 @@ export default class CircuitFactory {
   public static createPlateWithMaterial( translationOptions?: NodeTranslationOptions ): Node {
     const material = new Rectangle( PhotoelectricEffectConstants.PLATE_MATERIAL_BOUNDS, {
       fill: PhotoelectricEffectColors.targetPlateFillColorProperty,
-      stroke: 'black'
+      stroke: PhotoelectricEffectColors.circuitStrokeColorProperty
     } );
     const plate = CircuitFactory.createPlate( { rightCenter: material.leftCenter } );
 

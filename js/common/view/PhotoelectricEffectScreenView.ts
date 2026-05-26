@@ -31,6 +31,7 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
@@ -142,7 +143,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         photonSourceWireEnd.plusXY( 0, S_BEND ),
         photonSourceWireEnd
       ), {
-      stroke: 'black',
+      stroke: PhotoelectricEffectColors.circuitStrokeColorProperty,
       lineWidth: 3
     } );
 

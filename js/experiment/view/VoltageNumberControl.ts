@@ -9,9 +9,8 @@
 
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
-import optionize, { combineOptions, EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import NumberControl, { type NumberControlOptions } from '../../../../scenery-phet/js/NumberControl.js';
 import { NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -62,7 +61,7 @@ export default class VoltageNumberControl extends NumberControl {
         // To produce one minor tick at 0.
         minorTickSpacing: model.battery.voltageProperty.range.getLength() / 2
       }
-    }, providedOptions)
+    }, providedOptions );
 
     super(
       PhotoelectricEffectFluent.voltage.labelStringProperty,

@@ -26,6 +26,7 @@ import HSlider from '../../../../sun/js/HSlider.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectPreferences from '../model/PhotoelectricEffectPreferences.js';
 import { wavelengthToIntensityGradientEndColor } from '../model/PhotoelectricEffectUtils.js';
+import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = {
@@ -103,7 +104,7 @@ export default class PhotonSourceOutputSlider extends Node {
     } );
 
     const outputGradientRectangle = new Rectangle( outputSlider.localBounds, {
-      stroke: 'black',
+      stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
       lineWidth: 1
     } );
 

@@ -29,7 +29,7 @@ export default class PhotonSourceControl extends Panel {
 
   public constructor( photonSource: PhotonSource, providedOptions: PhotonSourceControlOptions ) {
     const options = optionize<PhotonSourceControlOptions, SelfOptions, PanelOptions>()( {
-      stroke: 'black',
+      stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
       lineWidth: 3,
       cornerRadius: 4,
       fill: PhotoelectricEffectColors.screenBackgroundColorProperty,

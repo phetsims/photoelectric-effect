@@ -27,6 +27,7 @@ import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import { type RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
@@ -156,7 +157,7 @@ export default class GraphAssemblyNode extends Node {
     );
     const actionButtonOptions: RectangularPushButtonOptions = {
       size: new Dimension2( actionButtonSideLength, actionButtonSideLength ),
-      baseColor: 'white',
+      baseColor: PhotoelectricEffectColors.graphButtonBaseColorProperty,
       xMargin: 6,
       yMargin: 6
     };

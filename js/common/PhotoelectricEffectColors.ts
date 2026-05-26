@@ -116,6 +116,36 @@ export default class PhotoelectricEffectColors {
       default: '#E03722'
     } );
 
+  // Stroke color shared by panel borders and the slider gradient rectangle outline.
+  public static readonly panelStrokeColorProperty = new ProfileColorProperty( photoelectricEffect, 'panelStroke', {
+    default: 'black'
+  } );
+
+  // Stroke color shared by circuit visual elements (wires, plate material outline, ground symbol).
+  public static readonly circuitStrokeColorProperty = new ProfileColorProperty( photoelectricEffect, 'circuitStroke', {
+    default: 'black'
+  } );
+
+  // Stroke color for the experiment graph border.
+  public static readonly graphBorderStrokeColorProperty = new ProfileColorProperty( photoelectricEffect, 'graphBorderStroke', {
+    default: 'black'
+  } );
+
+  // Fill color for the experiment graph background mask (sits behind plotted data inside the chart area).
+  public static readonly graphTickMaskColorProperty = new ProfileColorProperty( photoelectricEffect, 'graphTickMask', {
+    default: 'white'
+  } );
+
+  // Stroke color for grid lines inside the experiment graph plot area.
+  public static readonly graphGridLineColorProperty = new ProfileColorProperty( photoelectricEffect, 'graphGridLine', {
+    default: 'rgb( 220, 220, 220 )'
+  } );
+
+  // Base color for the experiment graph action buttons (info, trash, snapshots gallery).
+  public static readonly graphButtonBaseColorProperty = new ProfileColorProperty( photoelectricEffect, 'graphButtonBase', {
+    default: 'white'
+  } );
+
   // Color for potential energy in the Energy screen graph.
   public static readonly potentialEnergyGraphColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'potentialEnergyGraphColor', {

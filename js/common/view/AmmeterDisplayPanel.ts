@@ -34,7 +34,7 @@ export default class AmmeterDisplayPanel extends Panel {
   public constructor( currentProperty: ReadOnlyProperty<number>, providedOptions: AmmeterDisplayPanelOptions ) {
 
     const options = optionize<AmmeterDisplayPanelOptions, SelfOptions, PanelOptions>()( {
-      stroke: 'black',
+      stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
       lineWidth: 3,
       cornerRadius: 8,
       fill: PhotoelectricEffectColors.ammeterPanelFillColorProperty,

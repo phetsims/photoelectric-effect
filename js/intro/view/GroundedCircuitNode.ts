@@ -15,6 +15,7 @@ import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import CircuitFactory from '../../common/view/CircuitFactory.js';
 
@@ -31,7 +32,7 @@ export default class GroundedCircuitNode extends Node {
       .lineTo( targetPlate.left - 50, targetPlate.centerY )
       .lineTo( targetPlate.left - 50, targetPlate.centerY + 150 );
     const groundLinePath = new Path( groundLineShape, {
-      stroke: 'black',
+      stroke: PhotoelectricEffectColors.circuitStrokeColorProperty,
       lineWidth: 5
     } );
 
@@ -45,7 +46,7 @@ export default class GroundedCircuitNode extends Node {
       .moveTo( targetPlate.left - 50 - groundSymbolWidth / 6, groundLinePath.bottom + symbolVerticalSpacing * 2 )
       .lineTo( targetPlate.left - 50 + groundSymbolWidth / 6, groundLinePath.bottom + symbolVerticalSpacing * 2 );
     const groundSymbolPath = new Path( groundSymbolShape, {
-      stroke: 'black',
+      stroke: PhotoelectricEffectColors.circuitStrokeColorProperty,
       lineWidth: 5
     } );
 

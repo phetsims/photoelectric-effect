@@ -174,4 +174,7 @@ export default class PhotoelectricEffectConstants {
 
   // Font for numeric readouts (NumberDisplay) and experiment graph axis titles (shared 12 pt instance).
   public static readonly READOUT_FONT = new PhetFont( 12 );
+
+  // Font for small numeric tick labels on experiment graph axes.
+  public static readonly GRAPH_TICK_LABEL_FONT = new PhetFont( 10 );
 }
