@@ -67,7 +67,6 @@ export default class EnergyDiagramNode extends Node {
 
   // Persistent graph decorations that can be repositioned as the work function changes. These are created once
   // to avoid disposing/reconstructing every change.
-  private readonly energyAxisNode: Node;
   private readonly conductionBandBottomLine: Line;
   private readonly fermiLevelLine: Line;
   private readonly zeroEnergyLine: Line;
@@ -80,15 +79,9 @@ export default class EnergyDiagramNode extends Node {
   // BracketNode does not expose a way to mutate its shape, so it is replaced when its length changes.
   private conductionBandBracket: Node | null = null;
 
-  // Electron markers for the fixed set of recorded energy samples.
-  private readonly sampleMarkerNodes: SampleMarkerNodes[];
-
   // Labels for the special y values shown on the graph.
   private readonly zeroTickLabel: Node;
   private readonly fermiLevelTickLabel: Node;
-
-  // Listener retained so it can be removed on disposal.
-  private readonly workFunctionListener: () => void;
 
   /**
    * @param samples - Persistent sample slots whose Properties drive the marker positions.
@@ -101,7 +94,7 @@ export default class EnergyDiagramNode extends Node {
   public constructor( samples: EnergyGraphSample[],
                       private readonly workFunctionProperty: TReadOnlyProperty<number>,
                       private readonly labelsVisibleProperty: TReadOnlyProperty<boolean>,
-                      private readonly workFunctionVisibleProperty: TReadOnlyProperty<boolean>,
+                      workFunctionVisibleProperty: TReadOnlyProperty<boolean>,
                       providedOptions: EnergyDiagramNodeOptions ) {
 
     const options = optionize<EnergyDiagramNodeOptions, SelfOptions, NodeOptions>()( {
@@ -121,7 +114,7 @@ export default class EnergyDiagramNode extends Node {
       fill: 'white'
     } );
 
-    this.energyAxisNode = new ArrowNode( 0, CHART_VIEW_HEIGHT, 0, 0, {
+    const energyAxisNode = new ArrowNode( 0, CHART_VIEW_HEIGHT, 0, 0, {
       fill: PhotoelectricEffectColors.iconStrokeColorProperty,
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
       lineWidth: 1,
@@ -165,7 +158,7 @@ export default class EnergyDiagramNode extends Node {
 
     this.workFunctionLabel = new Text( MathSymbols.PHI, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
-      visibleProperty: this.workFunctionVisibleProperty
+      visibleProperty: workFunctionVisibleProperty
     } );
 
     this.conductionBandLabel = new RichText( PhotoelectricEffectFluent.energy.graph.conductionBandLabelStringProperty, {
@@ -176,12 +169,12 @@ export default class EnergyDiagramNode extends Node {
     this.graphDecorationNode = new Node( {
       children: [
         this.conductionBandNode,
-        this.energyAxisNode,
+        energyAxisNode,
         this.conductionBandBottomLine,
         this.fermiLevelLine,
         this.zeroEnergyLine,
         new Node( {
-          visibleProperty: this.workFunctionVisibleProperty,
+          visibleProperty: workFunctionVisibleProperty,
           children: [
             this.workFunctionMarkerLine,
             this.workFunctionMarkerFermiCap,
@@ -192,14 +185,14 @@ export default class EnergyDiagramNode extends Node {
       ]
     } );
 
-    this.sampleMarkerNodes = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
+    const sampleMarkerNodes = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       return EnergyDiagramNode.createSampleMarkerNodes( this.chartTransform, sampleIndex );
     } );
 
     // Link each persistent sample slot to its corresponding markers.
     samples.forEach( ( sample, sampleIndex ) => {
-      const sampleMarkerNodes = this.sampleMarkerNodes[ sampleIndex ];
-      sample.hasDataProperty.linkAttribute( sampleMarkerNodes.sampleNode, 'visible' );
+      const sampleMarkerNode = sampleMarkerNodes[ sampleIndex ];
+      sample.hasDataProperty.linkAttribute( sampleMarkerNode.sampleNode, 'visible' );
 
       Multilink.multilink( [
         sample.potentialEnergyProperty,
@@ -208,7 +201,7 @@ export default class EnergyDiagramNode extends Node {
         EnergyDiagramNode.updateSampleMarkerPositions(
           this.chartTransform,
           sampleIndex,
-          sampleMarkerNodes,
+          sampleMarkerNode,
           potentialEnergy,
           kineticEnergy
         );
@@ -218,7 +211,7 @@ export default class EnergyDiagramNode extends Node {
     const plotLayer = new Node( {
       children: [
         this.graphDecorationNode,
-        ...this.sampleMarkerNodes.map( sampleMarkerNodes => sampleMarkerNodes.sampleNode )
+        ...sampleMarkerNodes.map( sampleMarkerNode => sampleMarkerNode.sampleNode )
       ]
     } );
 
@@ -267,12 +260,10 @@ export default class EnergyDiagramNode extends Node {
       } )
     ];
 
-    this.workFunctionListener = () => {
+    // Linked eagerly to initialize decorations.
+    workFunctionProperty.link( () => {
       this.updateGraphDecorations();
-    };
-    workFunctionProperty.link( this.workFunctionListener );
-
-    this.updateGraphDecorations();
+    } );
   }
 
   /**
@@ -416,14 +407,5 @@ export default class EnergyDiagramNode extends Node {
       highlightYOffset: 0.4,
       isDisposable: false
     } );
-  }
-
-  public override dispose(): void {
-    this.disposeConductionBandBracket();
-    this.conductionBandLabel.dispose();
-
-    this.workFunctionProperty.unlink( this.workFunctionListener );
-    super.dispose();
-    this.chartTransform.dispose();
   }
 }

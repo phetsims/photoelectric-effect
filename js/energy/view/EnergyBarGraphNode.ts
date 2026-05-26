@@ -61,25 +61,12 @@ export default class EnergyBarGraphNode extends Node {
   // Translates energy and sample coordinates into the shared chart view.
   private readonly chartTransform: ChartTransform;
 
-  // BarPlot keeps a reference to its data set, including each Vector2 in the array. Keep these arrays persistent
-  // so sample changes can mutate the existing Vector2 values before BarPlot.update() is called.
-  private readonly sampleDataSets: Vector2[][];
-
-  // Bamboo plots for the fixed set of recorded energy samples.
-  private readonly sampleBarPlots: BarPlot[];
-
-  // Overlays for samples where no electron was ejected. Hidden for empty plots and normal bar plots.
-  private readonly noElectronEjectedPanels: Panel[];
-
   // Shared custom grid lines, regenerated when the work-function marker changes.
   private readonly gridLineNode: Node;
 
   // Labels for the special y values shown on the graph.
   private readonly zeroTickLabel: Node;
   private readonly workFunctionTickLabel: Node;
-
-  // Listener retained so it can be removed on disposal.
-  private readonly workFunctionListener: () => void;
 
   // Work function source used for the -phi marker.
   private readonly workFunctionProperty: TReadOnlyProperty<number>;
@@ -109,18 +96,20 @@ export default class EnergyBarGraphNode extends Node {
       fill: 'white'
     } );
 
-    this.sampleDataSets = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
+    // BarPlot keeps a reference to its data set, including each Vector2 in the array. Keep these arrays persistent
+    // so sample changes can mutate the existing Vector2 values before BarPlot.update() is called.
+    const sampleDataSets = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       return EnergyBarGraphNode.createDataSet( sampleIndex );
     } );
 
-    this.sampleBarPlots = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
-      return new BarPlot( this.chartTransform, this.sampleDataSets[ sampleIndex ], {
+    const sampleBarPlots = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
+      return new BarPlot( this.chartTransform, sampleDataSets[ sampleIndex ], {
         barWidth: BAR_WIDTH,
         pointToPaintableFields: point => this.getBarPaintableOptions( sampleIndex, point )
       } );
     } );
 
-    this.noElectronEjectedPanels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
+    const noElectronEjectedPanels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       return EnergyBarGraphNode.createNoElectronEjectedPanel(
         this.chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
         this.chartTransform.modelToViewY( NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y )
@@ -129,8 +118,8 @@ export default class EnergyBarGraphNode extends Node {
 
     // Link each persistent sample slot to its corresponding plot.
     samples.forEach( ( sample, sampleIndex ) => {
-      const sampleBarPlot = this.sampleBarPlots[ sampleIndex ];
-      const sampleDataSet = this.sampleDataSets[ sampleIndex ];
+      const sampleBarPlot = sampleBarPlots[ sampleIndex ];
+      const sampleDataSet = sampleDataSets[ sampleIndex ];
       sample.hasDataProperty.linkAttribute( sampleBarPlot, 'visible' );
 
       Multilink.multilink( [
@@ -139,7 +128,7 @@ export default class EnergyBarGraphNode extends Node {
         sample.photonEnergyProperty,
         sample.kineticEnergyProperty
       ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy ) => {
-        this.noElectronEjectedPanels[ sampleIndex ].visible = hasData && kineticEnergy === 0;
+        noElectronEjectedPanels[ sampleIndex ].visible = hasData && kineticEnergy === 0;
 
         EnergyBarGraphNode.updateDataSet(
           sampleDataSet,
@@ -155,8 +144,8 @@ export default class EnergyBarGraphNode extends Node {
       clipArea: plotRectangle.getShape(),
       children: [
         this.gridLineNode,
-        ...this.sampleBarPlots,
-        ...this.noElectronEjectedPanels
+        ...sampleBarPlots,
+        ...noElectronEjectedPanels
       ]
     } );
 
@@ -205,12 +194,10 @@ export default class EnergyBarGraphNode extends Node {
 
     this.children = [ graphNode ];
 
-    this.workFunctionListener = () => {
+    // Called eagerly to initialize decorations.
+    workFunctionProperty.link( () => {
       this.updateGraphDecorations();
-    };
-    workFunctionProperty.link( this.workFunctionListener );
-
-    this.updateGraphDecorations();
+    } );
   }
 
   /**
@@ -339,11 +326,5 @@ export default class EnergyBarGraphNode extends Node {
       fill: fillProperty,
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty
     };
-  }
-
-  public override dispose(): void {
-    this.workFunctionProperty.unlink( this.workFunctionListener );
-    super.dispose();
-    this.chartTransform.dispose();
   }
 }
