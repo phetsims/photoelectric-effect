@@ -14,6 +14,7 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
+import Dimension2 from '../../../../dot/js/Dimension2.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
@@ -82,12 +83,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
 
     // Combo box should appear to the left of the target plate and above the wire that extends from center.
-    const comboBoxMargins = 35
     this.materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
-      right: this.modelViewTransform.modelToViewX( PhotoelectricEffectConstants.TARGET_X ) -
-             PhotoelectricEffectConstants.PLATE_MATERIAL_BOUNDS.width -
-             PhotoelectricEffectConstants.PLATE_BOUNDS.width - comboBoxMargins,
-      bottom: this.modelViewTransform.modelToViewY( 0 ) - comboBoxMargins,
+      left: this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      bottom: this.modelViewTransform.modelToViewY( 0 ) - 35,
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
@@ -110,6 +108,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         delta: 0.1,
         numberDisplayOptions: {
           decimalPlaces: 1
+        },
+        sliderOptions: {
+          trackSize: new Dimension2( this.materialsComboBox.width, 5 )
         },
         layoutFunction: NumberControl.createLayoutFunction3(),
         visibleProperty: customMaterialSelectedProperty,
