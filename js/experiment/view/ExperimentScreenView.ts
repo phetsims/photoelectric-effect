@@ -47,8 +47,15 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
 
     super( model, options );
 
-    // Add circuit node as background.
+    //------------------------------------------------------------------------
+    // Background circuit artwork
+    //------------------------------------------------------------------------
+
     this.backgroundNode.addChild( new CircuitNode( this.modelViewTransform ) );
+
+    //------------------------------------------------------------------------
+    // Right-column graphs: intensity-current, frequency-energy, voltage-current
+    //------------------------------------------------------------------------
 
     const graphsVBox = new VBox( {
       spacing: GraphAssemblyNode.GRAPH_ASSEMBLY_SPACING,
@@ -68,13 +75,15 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
       top: this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
     } );
 
+    //------------------------------------------------------------------------
+    // Battery / voltage control (centered between the plates, offset to make room for the ammeter)
+    //------------------------------------------------------------------------
+
     // TODO: In the future, we will have the position of the battery, and this control will be positioned relative to that.
-    // center x between the plates in view coordinates
     const experimentViewCenterX = this.modelViewTransform.modelToViewX(
       PhotoelectricEffectConstants.TARGET_X + ( PhotoelectricEffectConstants.COLLECTOR_X - PhotoelectricEffectConstants.TARGET_X ) / 2
     );
 
-    // Battery and voltage control should be just left of the experiment view center to make room for the ammeter.
     const voltageNumberControl = new VoltageNumberControl( model, {
       tandem: options.tandem.createTandem( 'voltageNumberControl' ),
       centerBottom: new Vector2( experimentViewCenterX - 20, this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )

@@ -40,21 +40,28 @@ export default class IntroScreenView extends PhotonBeamScreenView {
     }, providedOptions );
     super( model, options );
 
-    // Add circuit as background. The type of circuit is determined by the representationRadioButtonGroup
+    //------------------------------------------------------------------------
+    // Background circuit artwork — full circuit and grounded variant toggled by representation
+    //------------------------------------------------------------------------
+
     this.backgroundNode.addChild( new CircuitNode( this.modelViewTransform, {
       visibleProperty: DerivedProperty.valueEqualsConstant( model.representationProperty, 'circuit' )
     } ) );
     this.backgroundNode.addChild( new GroundedCircuitNode( this.modelViewTransform, {
       visibleProperty: DerivedProperty.valueEqualsConstant( model.representationProperty, 'grounded' )
     } ) );
+
+    //------------------------------------------------------------------------
+    // Representation radio group (centered along the bottom)
+    //------------------------------------------------------------------------
+
     const representationRadioButtonGroup = new RepresentationRadioButtonGroup( model.representationProperty, {
       tandem: options.tandem.createTandem( 'representationRadioButtonGroup' )
     } );
+    representationRadioButtonGroup.centerBottom = this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN );
     this.addChild( representationRadioButtonGroup );
 
-    representationRadioButtonGroup.centerBottom = this.layoutBounds.centerBottom.minusXY( 0, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN );
-
-    // In the intro screen, electron visibility controls are only available in the circuit representation.
+    // Electron visibility controls and ammeter are only meaningful when the full circuit is shown.
     model.representationProperty.link( representation => {
       this.electronVisibilityControls.visible = representation === 'circuit';
       this.ammeterDisplayPanel.visible = representation === 'circuit';

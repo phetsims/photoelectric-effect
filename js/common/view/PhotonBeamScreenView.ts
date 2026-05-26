@@ -40,11 +40,20 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
 
     super( model, options );
 
+    //------------------------------------------------------------------------
+    // Ammeter readout (positioned along the collector-side wire)
+    //------------------------------------------------------------------------
+
     this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty, {
       tandem: options.tandem.createTandem( 'ammeterDisplayPanel' ),
       center: this.modelViewTransform.modelToViewXY( model.collector.x, 0 )
         .plusXY( 0, CircuitNode.WIRE_HEIGHT )
     } );
+    this.addChild( this.ammeterDisplayPanel );
+
+    //------------------------------------------------------------------------
+    // Electron visibility checkboxes (bottom-left of the play area)
+    //------------------------------------------------------------------------
 
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
@@ -57,6 +66,7 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
       }
     );
 
+    // The 'highest energy only' checkbox is nested under 'show electrons' — only meaningful when electrons are shown.
     const highestEnergyOnlyCheckbox = new Checkbox(
       model.showHighestEnergyOnlyProperty,
       new Text( PhotoelectricEffectFluent.highestEnergyOnlyStringProperty, {
@@ -84,11 +94,12 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
         -PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
       )
     } );
-
     this.addChild( this.electronVisibilityControls );
-    this.addChild( this.ammeterDisplayPanel );
 
-    // Canvas that renders photons and electrons using the same model-view transform as the play area.
+    //------------------------------------------------------------------------
+    // Particle canvas: renders photons and electrons in the play area
+    //------------------------------------------------------------------------
+
     this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
       { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );

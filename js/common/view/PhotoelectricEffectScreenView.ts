@@ -71,17 +71,60 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
     super( options );
 
+    //------------------------------------------------------------------------
+    // Background and model-view transform
+    //------------------------------------------------------------------------
+
     // Added first so screen artwork drawn into it sits behind everything else.
     this.addChild( this.backgroundNode );
 
-    // model-view transform places the model x origin at the target plate, and a view origin at an x-offset with
-    // y centered in the layout bounds
+    // Model-view transform places the model x origin at the target plate, and a view origin at an x-offset with
+    // y centered in the layout bounds.
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
-      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point - the target is the origin
+      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point — the target is the origin
+      new Vector2( 250, this.layoutBounds.centerY + 30 ),      // view point — pixels from the left edge of the screen
+      PhotoelectricEffectConstants.MODEL_VIEW_SCALE
+    );
 
-      // View x coordinate of model x=0 (the left edge of the target plate), in pixels from the left edge of the screen.
-      new Vector2( 250, this.layoutBounds.centerY + 30 ),
-      PhotoelectricEffectConstants.MODEL_VIEW_SCALE );
+    //------------------------------------------------------------------------
+    // Photon source group: panel (top-left), light source lamp, S-shaped wire
+    //------------------------------------------------------------------------
+
+    this.photonSourcePanel = options.createPhotonSourcePanel( options.tandem.createTandem( 'photonSourcePanel' ) );
+    this.photonSourcePanel.leftTop = this.layoutBounds.leftTop.plusXY(
+      PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
+    );
+
+    // Light source node: aperture at local origin, placed at the beam-start view position.
+    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
+    const lightSourceNode = options.createLightSourceNode( beamStartCenter );
+
+    // S-shaped wire from the back of the lamp to the right side of the photon source panel.
+    // First control point of the cubic curve below the start and second control point above the end create the S
+    // regardless of height difference.
+    const S_BEND = 200;
+    const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
+    const photonSourceWireEnd = this.photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
+    const photonSourceWireNode = new Path( new Shape()
+      .moveToPoint( photonSourceWireStart )
+      .cubicCurveToPoint(
+        photonSourceWireStart.plusXY( 0, -S_BEND ),
+        photonSourceWireEnd.plusXY( 0, S_BEND ),
+        photonSourceWireEnd
+      ), {
+      stroke: PhotoelectricEffectColors.circuitStrokeColorProperty,
+      lineWidth: 3
+    } );
+
+    // Added in this order for proper z-layering: wire underneath the lamp, panel covers the wire end.
+    this.addChild( photonSourceWireNode );
+    this.addChild( lightSourceNode );
+    this.addChild( this.photonSourcePanel );
+
+    //------------------------------------------------------------------------
+    // Target material controls: combo box and (custom-material-only) work function slider
+    //------------------------------------------------------------------------
 
     // Combo box should appear to the left of the target plate and above the wire that extends from center.
     this.materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
@@ -90,6 +133,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
+    // Work function NumberControl is only visible when the user-defined custom material is selected.
     const workFunctionProperty = new DynamicProperty<number, number, Material>( model.target.materialProperty, {
       bidirectional: true,
       derive: 'workFunctionProperty'
@@ -120,50 +164,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       }
     );
 
-    this.photonSourcePanel = options.createPhotonSourcePanel( options.tandem.createTandem( 'photonSourcePanel' ) );
-    this.photonSourcePanel.leftTop = this.layoutBounds.leftTop.plusXY(
-      PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-      PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-    );
-
-    // Light source node: aperture at local origin, placed at the beam-start view position.
-    const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
-    const lightSourceNode = options.createLightSourceNode( beamStartCenter );
-
-    // S-shaped wire from the back of the lamp to the right side of the photon source panel.
-    // First control point of the cubic curve below the start and second control point above the end create the S
-    // regardless of height difference.
-    const S_BEND = 200;
-    const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
-    const photonSourceWireEnd = this.photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
-    const photonSourceWireNode = new Path( new Shape()
-      .moveToPoint( photonSourceWireStart )
-      .cubicCurveToPoint(
-        photonSourceWireStart.plusXY( 0, -S_BEND ),
-        photonSourceWireEnd.plusXY( 0, S_BEND ),
-        photonSourceWireEnd
-      ), {
-      stroke: PhotoelectricEffectColors.circuitStrokeColorProperty,
-      lineWidth: 3
-    } );
-
-    // Added in this order for proper z-layering.
-    this.addChild( photonSourceWireNode );
-    this.addChild( lightSourceNode );
-    this.addChild( this.photonSourcePanel );
-
     this.addChild( this.materialsComboBox );
     this.addChild( this.workFunctionControl );
 
-    this.resetAllButton = new ResetAllButton( {
-      listener: () => {
-        model.reset();
-      },
-      right: this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-      bottom: this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN,
-      tandem: options.tandem.createTandem( 'resetAllButton' )
-    } );
-    this.addChild( this.resetAllButton );
+    //------------------------------------------------------------------------
+    // Time controls and reset
+    //------------------------------------------------------------------------
 
     this.playPauseStepButtonGroup = new PlayPauseStepButtonGroup( model.isPlayingProperty, {
       tandem: options.tandem.createTandem( 'playPauseStepButtonGroup' ),
@@ -174,7 +180,18 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       },
       centerBottom: this.layoutBounds.centerBottom.minusXY( -200, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
     } );
+
+    this.resetAllButton = new ResetAllButton( {
+      listener: () => {
+        model.reset();
+      },
+      right: this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      bottom: this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN,
+      tandem: options.tandem.createTandem( 'resetAllButton' )
+    } );
+
     this.addChild( this.playPauseStepButtonGroup );
+    this.addChild( this.resetAllButton );
 
     // Default PDOM order for the control area. Subclasses may prepend additional items by reassigning this.
     this.pdomControlAreaNode.pdomOrder = [
@@ -182,7 +199,10 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       this.resetAllButton
     ];
 
-    // DEBUG INDICATORS:
+    //------------------------------------------------------------------------
+    // Developer-only debug indicators (visible via ?dev query parameter)
+    //------------------------------------------------------------------------
+
     if ( phet.chipper.queryParameters.dev ) {
       const devWorkFunctionStringProperty = new DerivedProperty( [ model.target.workFunctionProperty ],
         workFunction => `Work Function: ${toFixed( workFunction, 2 )} eV` );
