@@ -78,6 +78,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
         visibleProperty: energyDiagramVisibleProperty
       } );
 
+    // So that the two share the same center and appear in the same position when switching between them.
     barGraphNode.centerX = energyDiagramNode.centerX;
 
     const displayModeRadioButtonGroup = new EnergyGraphDisplayModeRadioButtonGroup(

@@ -40,6 +40,7 @@ export default class EnergyGraphDisplayModeRadioButtonGroup extends RectangularR
         baseColor: PhotoelectricEffectColors.screenBackgroundColorProperty,
 
         // To create square radio buttons
+        // TODO: Factor out into constants now that we have multiple radio button groups with this style.
         minWidth: 64,
         minHeight: 64
       },
