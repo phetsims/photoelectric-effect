@@ -114,9 +114,12 @@ export default class PhotoelectricEffectConstants {
   // Maximum wavelength used by the UI slider (nm).
   public static readonly MAX_WAVELENGTH_UI = 850;
 
-  // Maximum expected current for the ammeter display, derived from max rate.
+  // Maximum expected current for the ammeter display, graphs, and model when in photon rate mode. When the photon rate
+  // is normalized the ceiling will be about 6% lower than this calculated number, however we only need this one constant
+  // since it covers the expected max current for both modes. Derived from max photon rate and quantum efficiency.
   public static readonly MAX_CURRENT = PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND *
-                                       PhotoelectricEffectConstants.ELEMENTARY_CHARGE / 8;
+                                       PhotoelectricEffectConstants.QUANTUM_EFFICIENCY *
+                                       PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
 
   // Acceleration scale from voltage to model units (model units per V·s²).
   // Derived from ELECTRON_SPEED_SCALE_FACTOR and ELECTRON_MASS so the particle simulation's
