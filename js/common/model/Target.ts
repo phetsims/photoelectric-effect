@@ -121,7 +121,7 @@ export default class Target {
       return null;
     }
 
-    let energyAfterCollision;
+    let energyAfterCollision: number;
     if ( highestEnergyOnly ) {
 
       // Eject from the Fermi level only (maximum KE), but use the same accessible band fraction
@@ -136,6 +136,12 @@ export default class Target {
       energyAfterCollision = Material.energyAfterPhotonCollision(
         photonEnergy, workFunction, this.bandWidthProperty.value
       );
+    }
+
+    // Non-positive kinetic energy means the photon did not leave an electron with enough energy to escape.
+    // Treat it as no-emission before computing speed, which requires positive energy.
+    if ( energyAfterCollision <= 0 ) {
+      return null;
     }
 
     const speed = Electron.determineNewElectronSpeed( energyAfterCollision );
