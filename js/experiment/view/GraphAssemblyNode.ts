@@ -18,15 +18,14 @@ import Range from '../../../../dot/js/Range.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
+import InfoButton, { type InfoButtonOptions } from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import Path from '../../../../scenery/js/nodes/Path.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import expandSolidShape from '../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
-import RectangularPushButton, { RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
+import { type RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
@@ -161,6 +160,12 @@ export default class GraphAssemblyNode extends Node {
       xMargin: 6,
       yMargin: 6
     };
+    const infoButtonOptions: InfoButtonOptions = {
+      radius: actionButtonSideLength / 2,
+      baseColor: 'white',
+      xMargin: 6,
+      yMargin: 6
+    };
 
     const snapshotsDialog = new GraphSnapshotsDialog(
       tandem.createTandem( 'snapshotsDialog' ),
@@ -178,11 +183,7 @@ export default class GraphAssemblyNode extends Node {
       accessibleName: options.trashButtonAccessibleNameProperty
     } ) );
 
-    const snapshotsGalleryButton = new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
-      content: new Path( expandSolidShape, {
-        fill: 'black',
-        scale: 0.7
-      } ),
+    const snapshotsGalleryButton = new InfoButton( combineOptions<InfoButtonOptions>( {}, infoButtonOptions, {
       listener: () => { snapshotsDialog.show(); },
       enabledProperty: new DerivedProperty(
         [ graphData.snapshotsCountProperty ],
