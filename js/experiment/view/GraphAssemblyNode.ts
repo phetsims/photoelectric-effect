@@ -198,7 +198,6 @@ export default class GraphAssemblyNode extends Node {
       spacing: GRAPH_ASSEMBLY_BUTTON_SPACING,
       align: 'center',
       children: [
-        snapshotsGalleryButton,
         new CameraButton( combineOptions<CameraButtonOptions>( {}, actionButtonOptions, {
           listener: () => graphData.captureSnapshot(),
           enabledProperty: new DerivedProperty( [ graphData.snapshotsCountProperty ], count => {
@@ -207,6 +206,7 @@ export default class GraphAssemblyNode extends Node {
           tandem: tandem.createTandem( 'cameraButton' ),
           accessibleName: options.cameraButtonAccessibleNameProperty
         } ) ),
+        snapshotsGalleryButton,
         trashButton
       ]
     } );
