@@ -80,12 +80,6 @@
       "energyAxisLabel": {
         "value": "Electron KE<sub>max</sub> (ev)"
       },
-      "infoDialogTitle": {
-        "value": "Information"
-      },
-      "infoDialogPlaceholder": {
-        "value": "This is the information dialog and content will go here..."
-      },
       "snapshotsDialogTitle": {
         "value": "Saved snapshots"
       },
@@ -300,11 +294,6 @@
           "value": "PLACEHOLDER expand/collapse"
         }
       },
-      "infoButton": {
-        "accessibleName": {
-          "value": "PLACEHOLDER Information"
-        }
-      },
       "cameraButton": {
         "accessibleName": {
           "value": "PLACEHOLDER Save Snapshot"
@@ -333,11 +322,6 @@
           "value": "PLACEHOLDER expand/collapse"
         }
       },
-      "infoButton": {
-        "accessibleName": {
-          "value": "PLACEHOLDER Information"
-        }
-      },
       "cameraButton": {
         "accessibleName": {
           "value": "PLACEHOLDER Save Snapshot"
@@ -364,11 +348,6 @@
       "expandCollapseButton": {
         "accessibleName": {
           "value": "PLACEHOLDER expand/collapse"
-        }
-      },
-      "infoButton": {
-        "accessibleName": {
-          "value": "PLACEHOLDER Information"
         }
       },
       "cameraButton": {

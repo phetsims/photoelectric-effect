@@ -35,9 +35,6 @@ experiment:
     energyAxisLabel: 'Electron KE<sub>max</sub> (ev)'
 
     # Just placeholders
-    infoDialogTitle: 'Information'
-    infoDialogPlaceholder: 'This is the information dialog and content will go here...'
-
     snapshotsDialogTitle: 'Saved snapshots'
     snapshotSaved: 'Saved!'
     materialLabel: 'Material'
@@ -153,8 +150,6 @@ a11y:
     accessibleHeading: PLACEHOLDER Intensity vs Current Graph
     expandCollapseButton:
       accessibleName: PLACEHOLDER expand/collapse
-    infoButton:
-      accessibleName: PLACEHOLDER Information
     cameraButton:
       accessibleName: PLACEHOLDER Save Snapshot
     trashButton:
@@ -166,8 +161,6 @@ a11y:
     accessibleHeading: PLACEHOLDER Frequency vs Energy Graph
     expandCollapseButton:
       accessibleName: PLACEHOLDER expand/collapse
-    infoButton:
-      accessibleName: PLACEHOLDER Information
     cameraButton:
       accessibleName: PLACEHOLDER Save Snapshot
     trashButton:
@@ -179,8 +172,6 @@ a11y:
     accessibleHeading: PLACEHOLDER Voltage vs Current Graph
     expandCollapseButton:
       accessibleName: PLACEHOLDER expand/collapse
-    infoButton:
-      accessibleName: PLACEHOLDER Information
     cameraButton:
       accessibleName: PLACEHOLDER Save Snapshot
     trashButton:

@@ -3,7 +3,7 @@
 /**
  * GraphAssemblyNode composes GraphPlotAreaNode with experiment-specific controls and readouts.
  * It owns the expand/collapse state, snapshot count readout, and the right-side action buttons
- * for opening graph info, viewing snapshot history, capturing snapshots, and clearing snapshots.
+ * for viewing snapshot history, capturing snapshots, and clearing snapshots.
  * This wrapper keeps screen-level graph interactions coordinated with GraphData while leaving plot rendering to
  * GraphPlotAreaNode.
  *
@@ -18,7 +18,6 @@ import Range from '../../../../dot/js/Range.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import CameraButton, { CameraButtonOptions } from '../../../../scenery-phet/js/buttons/CameraButton.js';
-import InfoButton from '../../../../scenery-phet/js/buttons/InfoButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/js/buttons/TrashButton.js';
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
@@ -31,7 +30,6 @@ import RectangularPushButton, { RectangularPushButtonOptions } from '../../../..
 import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
-import GraphInfoDialog from './GraphInfoDialog.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 import GraphSnapshotSavedMessageNode from './GraphSnapshotSavedMessageNode.js';
 import GraphSnapshotsDialog from './GraphSnapshotsDialog.js';
@@ -63,7 +61,6 @@ type SelfOptions = {
 
   // Accessible names for each button in the right-side column.
   expandCollapseButtonAccessibleNameProperty: TReadOnlyProperty<string>;
-  infoButtonAccessibleNameProperty: TReadOnlyProperty<string>;
   cameraButtonAccessibleNameProperty: TReadOnlyProperty<string>;
   trashButtonAccessibleNameProperty: TReadOnlyProperty<string>;
   snapshotsGalleryButtonAccessibleNameProperty: TReadOnlyProperty<string>;
@@ -165,7 +162,6 @@ export default class GraphAssemblyNode extends Node {
       yMargin: 6
     };
 
-    const infoDialog = new GraphInfoDialog( tandem.createTandem( 'infoDialog' ) );
     const snapshotsDialog = new GraphSnapshotsDialog(
       tandem.createTandem( 'snapshotsDialog' ),
       graphData,
@@ -175,16 +171,6 @@ export default class GraphAssemblyNode extends Node {
       snapshotsDialogTitleStringProperty,
       graphPlotAreaNodeOptions
     );
-
-    const infoButton = new InfoButton( {
-      radius: actionButtonSideLength / 2,
-      baseColor: 'white',
-      xMargin: actionButtonOptions.xMargin,
-      yMargin: actionButtonOptions.yMargin,
-      listener: () => infoDialog.show(),
-      tandem: tandem.createTandem( 'infoButton' ),
-      accessibleName: options.infoButtonAccessibleNameProperty
-    } );
 
     const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
       listener: () => graphData.clearSnapshots(),
@@ -220,7 +206,6 @@ export default class GraphAssemblyNode extends Node {
           tandem: tandem.createTandem( 'cameraButton' ),
           accessibleName: options.cameraButtonAccessibleNameProperty
         } ) ),
-        infoButton,
         trashButton
       ]
     } );

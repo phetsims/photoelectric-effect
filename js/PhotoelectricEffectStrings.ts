@@ -45,8 +45,6 @@ type StringsType = {
       'intensityAxisLabelStringProperty': LocalizedStringProperty;
       'frequencyAxisLabelStringProperty': LocalizedStringProperty;
       'energyAxisLabelStringProperty': LocalizedStringProperty;
-      'infoDialogTitleStringProperty': LocalizedStringProperty;
-      'infoDialogPlaceholderStringProperty': LocalizedStringProperty;
       'snapshotsDialogTitleStringProperty': LocalizedStringProperty;
       'snapshotSavedStringProperty': LocalizedStringProperty;
       'materialLabelStringProperty': LocalizedStringProperty;
@@ -167,9 +165,6 @@ type StringsType = {
       'expandCollapseButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
       };
-      'infoButton': {
-        'accessibleNameStringProperty': LocalizedStringProperty;
-      };
       'cameraButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
       };
@@ -186,9 +181,6 @@ type StringsType = {
       'expandCollapseButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
       };
-      'infoButton': {
-        'accessibleNameStringProperty': LocalizedStringProperty;
-      };
       'cameraButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
       };
@@ -203,9 +195,6 @@ type StringsType = {
     'voltageCurrentGraphNode': {
       'accessibleHeadingStringProperty': LocalizedStringProperty;
       'expandCollapseButton': {
-        'accessibleNameStringProperty': LocalizedStringProperty;
-      };
-      'infoButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
       };
       'cameraButton': {
