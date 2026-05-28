@@ -9,13 +9,13 @@
 
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectScreenView, { PhotoelectricEffectScreenViewOptions } from '../../common/view/PhotoelectricEffectScreenView.js';
 import GroundedCircuitNode from '../../intro/view/GroundedCircuitNode.js';
 import EnergyModel from '../model/EnergyModel.js';
 import EnergyGraphAccordionBox from './EnergyGraphAccordionBox.js';
 import EnergyLightSourceNode from './EnergyLightSourceNode.js';
 import EnergyPhotonSourcePanel from './EnergyPhotonSourcePanel.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
 type SelfOptions = EmptySelfOptions;
 type EnergyScreenViewOptions = SelfOptions & PickRequired<PhotoelectricEffectScreenViewOptions, 'tandem'>;
@@ -28,6 +28,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
       createPhotonSourcePanel: tandem => new EnergyPhotonSourcePanel(
         model.wavelengthProperty,
         model.emitSinglePhotonProperty,
+        model.firePhotonEmitter,
         { tandem: tandem }
       )
     }, providedOptions );

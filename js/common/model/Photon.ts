@@ -32,7 +32,7 @@ export default class Photon extends Particle {
    *
    * @param position
    * @param velocity
-   * @param acceleration
+   * @param acceleration - Generally acceleration starts at 0, but needed to restore from save and load.
    * @param wavelength - Wavelength of the photon in nanometers.
    * @param previousPosition - Particle position from the previous step. This is optional for normal runtime
    *                           construction and mainly provided so PhET-iO state restore preserves target-crossing

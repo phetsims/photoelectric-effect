@@ -227,7 +227,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
    * Single integration step for photon emission and particle motion.
    * @param dt - time step, in seconds
    */
-  private stepModel( dt: number ): void {
+  protected stepModel( dt: number ): void {
     if ( dt > 0 ) {
       this.emitPhotons( dt );
       this.stepPhotons( dt );
@@ -276,7 +276,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   /**
    * Advances photons and handles collisions with the target.
    */
-  private stepPhotons( dt: number ): void {
+  protected stepPhotons( dt: number ): void {
     const nextPhotons: Photon[] = [];
 
     this.photons.forEach( photon => {
@@ -309,7 +309,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   /**
    * Advances electrons and handles collisions with the target or collector.
    */
-  private stepElectrons( dt: number ): void {
+  protected stepElectrons( dt: number ): void {
     const nextElectrons: Electron[] = [];
     const acceleration = this.getElectronAcceleration();
 

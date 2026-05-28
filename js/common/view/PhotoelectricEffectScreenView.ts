@@ -36,6 +36,7 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
+import ParticleCanvasNode from './ParticleCanvasNode.js';
 
 // Minimal interface every screen-specific light source node must satisfy.
 export type LightSourceNodeInterface = Node & { readonly cordAttachmentPoint: Vector2 };
@@ -64,6 +65,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
   protected readonly photonSourcePanel: Node;
   protected readonly playPauseStepButtonGroup: Node;
   protected readonly resetAllButton: Node;
+
+  private readonly particleCanvasNode: ParticleCanvasNode;
 
   protected constructor( model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
@@ -168,6 +171,14 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( this.workFunctionControl );
 
     //------------------------------------------------------------------------
+    // Particle canvas: renders photons and electrons in the play area
+    //------------------------------------------------------------------------
+
+    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
+      { canvasBounds: this.layoutBounds } );
+    this.addChild( this.particleCanvasNode );
+
+    //------------------------------------------------------------------------
     // Time controls and reset
     //------------------------------------------------------------------------
 
@@ -226,5 +237,13 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         leftTop: this.photonSourcePanel.rightTop
       } ) );
     }
+  }
+
+  /**
+   * Steps the view.
+   * @param _dt - time step, in seconds
+   */
+  public override step( _dt: number ): void {
+    this.particleCanvasNode.step();
   }
 }

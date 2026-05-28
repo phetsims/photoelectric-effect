@@ -7,6 +7,7 @@
  *
  */
 
+import Emitter from '../../../../axon/js/Emitter.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
@@ -14,19 +15,24 @@ import { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import Text from '../../../../scenery/js/nodes/Text.js';
 import ABSwitch from '../../../../sun/js/ABSwitch.js';
 import RoundPushButton from '../../../../sun/js/buttons/RoundPushButton.js';
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import LabeledWavelengthNumberControl from '../../common/view/LabeledWavelengthNumberControl.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type SelfOptions = EmptySelfOptions;
 type EnergyPhotonSourcePanelOptions = SelfOptions & WithRequired<PanelOptions, 'tandem'>;
 export default class EnergyPhotonSourcePanel extends Panel {
 
-  public constructor( wavelengthProperty: NumberProperty, emitSinglePhotonProperty: Property<boolean>, providedOptions: EnergyPhotonSourcePanelOptions ) {
+  public constructor(
+    wavelengthProperty: NumberProperty,
+    emitSinglePhotonProperty: Property<boolean>,
+    firePhotonEmitter: Emitter,
+    providedOptions: EnergyPhotonSourcePanelOptions
+  ) {
 
     const switchHeight = 20;
     const photonQuantitySwitch = new ABSwitch(
@@ -50,8 +56,7 @@ export default class EnergyPhotonSourcePanel extends Panel {
         fill: 'white'
       } ),
       listener: () => {
-        emitSinglePhotonProperty.value ? console.log( 'TODO: fire single photon' )
-                                       : console.log( 'TODO: fire a photon burst.' );
+        firePhotonEmitter.emit();
       },
       baseColor: 'purple'
     } );

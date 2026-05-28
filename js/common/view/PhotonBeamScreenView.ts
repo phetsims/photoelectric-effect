@@ -32,8 +32,6 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
   // Controls for electron rendering and behavior, for layout and visibility control in subclasses.
   protected readonly electronVisibilityControls: VBox;
 
-  private readonly particleCanvasNode: ParticleCanvasNode;
-
   protected constructor( model: PhotoelectricEffectModel, providedOptions: PhotonBeamScreenViewOptions ) {
 
     const options = optionize<PhotonBeamScreenViewOptions, SelfOptions, PhotoelectricEffectScreenViewOptions>()( {}, providedOptions );
@@ -96,14 +94,6 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
     } );
     this.addChild( this.electronVisibilityControls );
 
-    //------------------------------------------------------------------------
-    // Particle canvas: renders photons and electrons in the play area
-    //------------------------------------------------------------------------
-
-    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
-      { canvasBounds: this.layoutBounds } );
-    this.addChild( this.particleCanvasNode );
-
     // Insert the electron visibility checkboxes ahead of the base's default control area order.
     this.pdomControlAreaNode.pdomOrder = [
       showElectronsCheckbox,
@@ -111,13 +101,5 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
       this.playPauseStepButtonGroup,
       this.resetAllButton
     ];
-  }
-
-  /**
-   * Steps the view.
-   * @param _dt - time step, in seconds
-   */
-  public override step( _dt: number ): void {
-    this.particleCanvasNode.step();
   }
 }
