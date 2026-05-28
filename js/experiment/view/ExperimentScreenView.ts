@@ -10,12 +10,12 @@
 
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Matrix3 from '../../../../dot/js/Matrix3.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenSummaryContent from '../../../../joist/js/ScreenSummaryContent.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import BatteryNode from '../../../../scenery-phet/js/BatteryNode.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
+import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Battery from '../../common/model/Battery.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
@@ -86,42 +86,38 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     //------------------------------------------------------------------------
     // Battery / voltage control (centered between the plates, offset to make room for the ammeter)
     //------------------------------------------------------------------------
-    const experimentViewCenterX = this.modelViewTransform.modelToViewX(
-      PhotoelectricEffectConstants.TARGET_X + ( PhotoelectricEffectConstants.COLLECTOR_X - PhotoelectricEffectConstants.TARGET_X ) / 2
-    );
-
-    // TODO: link to voltageProperty and apply transform and bounds there.
     const battery = model.battery;
-    const positiveBatteryNode = new BatteryNode( {
-      size: new Dimension2( 110, 57 ),
-      centerX: experimentViewCenterX - 20,
-      centerY: circuitNode.bottom - CircuitNode.WIRE_LINE_WIDTH / 2,
-      visibleProperty: battery.voltageProperty.derived( voltage => voltage >= 0 )
-    } );
-    const negativeBatteryNode = new BatteryNode( {
-      matrix: Matrix3.X_REFLECTION,
-      size: new Dimension2( 110, 57 ),
-      centerX: experimentViewCenterX - 20,
-      centerY: circuitNode.bottom - CircuitNode.WIRE_LINE_WIDTH / 2,
-      visibleProperty: battery.voltageProperty.derived( voltage => voltage < 0 )
-    } );
-
+    const batteryNode = new BatteryNode( { size: new Dimension2( 110, 57 ) } );
     const voltageNumberDisplay = new NumberDisplay( battery.voltageProperty, Battery.RANGE, {
-      center: positiveBatteryNode.center,
+      center: batteryNode.center,
       decimalPlaces: 2
     } );
-
     const voltageNumberControl = new VoltageNumberControl( model.battery, {
-      tandem: options.tandem.createTandem( 'voltageNumberControl' ),
-      centerBottom: new Vector2( positiveBatteryNode.centerX, this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
+      tandem: options.tandem.createTandem( 'voltageNumberControl' )
+    } );
+
+    ManualConstraint.create( this, [ batteryNode, voltageNumberDisplay, voltageNumberControl, circuitNode ],
+      ( batteryProxy, voltageDisplayProxy, voltageControlProxy, circuitProxy ) => {
+        batteryProxy.centerX = circuitProxy.centerX - 20;
+        batteryProxy.centerY = circuitProxy.bottom - CircuitNode.WIRE_LINE_WIDTH / 2;
+        voltageControlProxy.centerX = batteryProxy.centerX;
+        voltageControlProxy.bottom = this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
+        voltageDisplayProxy.center = batteryProxy.center;
+
+      } );
+
+    battery.voltageProperty.link( voltage => {
+      voltage < 0 ? batteryNode.matrix = Matrix3.X_REFLECTION : batteryNode.matrix = Matrix3.IDENTITY;
     } );
 
     this.addChild( graphsVBox );
-    this.addChild( positiveBatteryNode );
-    this.addChild( negativeBatteryNode );
+    this.addChild( batteryNode );
     this.addChild( voltageNumberDisplay );
     this.addChild( voltageNumberControl );
 
+    //------------------------------------------------------------------------
+    // PDOM order
+    //------------------------------------------------------------------------
     this.pdomPlayAreaNode.pdomOrder = [
       this.photonSourcePanel,
       this.materialsComboBox,
