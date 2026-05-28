@@ -1,8 +1,8 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Material is an instantiable class representing a target material with its own workFunctionProperty.
- * MaterialType is the enumeration of available materials and their initial work function values.
+ * Material is an instantiable class representing a target material with its own physical parameter Properties.
+ * MaterialType is the enumeration of available materials and their initial physical parameter values.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -23,12 +23,9 @@ import IOType from '../../../../tandem/js/types/IOType.js';
 
 type MaterialTypeOptions = {
 
-  // Whether the material's work function is read-only through PhET-iO. Defaults to true because most material
-  // types represent fixed physical materials.
-  workFunctionPhetioReadOnly?: boolean;
-
-  // Whether the material's band width is read-only through PhET-iO. Defaults to true for all fixed materials.
-  bandWidthPhetioReadOnly?: boolean;
+  // Whether the material's physical parameters are read-only through PhET-iO. Defaults to true because most
+  // material types represent fixed physical materials.
+  parametersPhetioReadOnly?: boolean;
 };
 
 export class MaterialType extends EnumerationValue {
@@ -42,35 +39,27 @@ export class MaterialType extends EnumerationValue {
   public static readonly PLATINUM = new MaterialType( 6.35, 6.0 );
   public static readonly ZINC = new MaterialType( 4.31, 9.47 );
 
-  // Mystery materials are for teachers and PhET-iO clients. The work function will only be set from
-  // preferences or with a PhET-iO customization. As such, simulation reset should not affect the
-  // workFunctionProperty of mystery materials.
+  // Mystery materials are for teachers and PhET-iO clients. Their physical parameters will only be set from
+  // preferences or with a PhET-iO customization. As such, simulation reset should not affect mystery materials.
   // Work function and bandwidth match Magnesium (φ=3.66 eV, bandWidth=7.08 eV).
   public static readonly MYSTERY = new MaterialType( 3.66, 7.08, {
-    workFunctionPhetioReadOnly: false,
-    bandWidthPhetioReadOnly: false
+    parametersPhetioReadOnly: false
   } );
 
   // Controllable by the student, the custom material will have work function and bandwidth controls right
   // in the simulation. Reset should restore both properties to their initial values.
   // Defaults and range from the physics reference Section 5.5.
   public static readonly CUSTOM = new MaterialType( 5, 5.0, {
-    workFunctionPhetioReadOnly: false,
-    bandWidthPhetioReadOnly: false
+    parametersPhetioReadOnly: false
   } );
 
   // Must be defined after all values are declared.
   public static readonly enumeration = new Enumeration( MaterialType );
 
   /**
-   * Whether the work function is read-only through PhET-iO.
+   * Whether the physical parameters are read-only through PhET-iO.
    */
-  public readonly workFunctionPhetioReadOnly: boolean;
-
-  /**
-   * Whether the bandwidth is read-only through PhET-iO.
-   */
-  public readonly bandWidthPhetioReadOnly: boolean;
+  public readonly parametersPhetioReadOnly: boolean;
 
   /**
    * Creates a material type with physics parameters and PhET-iO mutability policy.
@@ -87,12 +76,10 @@ export class MaterialType extends EnumerationValue {
     super();
 
     const options = optionize<MaterialTypeOptions>()( {
-      workFunctionPhetioReadOnly: true,
-      bandWidthPhetioReadOnly: true
+      parametersPhetioReadOnly: true
     }, providedOptions );
 
-    this.workFunctionPhetioReadOnly = options.workFunctionPhetioReadOnly;
-    this.bandWidthPhetioReadOnly = options.bandWidthPhetioReadOnly;
+    this.parametersPhetioReadOnly = options.parametersPhetioReadOnly;
   }
 }
 
@@ -147,7 +134,7 @@ export default class Material extends PhetioObject {
   public static readonly WORK_FUNCTION_RANGE = new Range( 1, 10 );
 
   /**
-   * Creates a material instance with its own work function Property.
+   * Creates a material instance with its own physical parameter Properties.
    * @param materialType
    * @param providedOptions - material configuration including required tandem and optional label key override
    */
@@ -166,14 +153,14 @@ export default class Material extends PhetioObject {
     this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
       range: Material.WORK_FUNCTION_RANGE,
       tandem: options.tandem.createTandem( 'workFunctionProperty' ),
-      phetioReadOnly: materialType.workFunctionPhetioReadOnly,
+      phetioReadOnly: materialType.parametersPhetioReadOnly,
       phetioDocumentation: 'Minimum energy, in electron volts, required to eject an electron from this material'
     } );
 
     this.bandWidthProperty = new NumberProperty( materialType.bandWidthInitialValue, {
       range: Material.BAND_WIDTH_RANGE,
       tandem: options.tandem.createTandem( 'bandWidthProperty' ),
-      phetioReadOnly: materialType.bandWidthPhetioReadOnly,
+      phetioReadOnly: materialType.parametersPhetioReadOnly,
       phetioDocumentation: 'Effective occupied-band width, in eV, available for photoemission'
     } );
 
