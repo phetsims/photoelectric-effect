@@ -18,7 +18,6 @@ import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
 import CircuitNode from './CircuitNode.js';
-import ParticleCanvasNode from './ParticleCanvasNode.js';
 import PhotoelectricEffectScreenView, { PhotoelectricEffectScreenViewOptions } from './PhotoelectricEffectScreenView.js';
 
 type SelfOptions = EmptySelfOptions;
