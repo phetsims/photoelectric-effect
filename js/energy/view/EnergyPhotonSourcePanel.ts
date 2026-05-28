@@ -56,6 +56,7 @@ export default class EnergyPhotonSourcePanel extends Panel {
         fill: 'white'
       } ),
       listener: () => {
+        //TODO: Disable button until emitted photon collides.
         firePhotonEmitter.emit();
       },
       baseColor: 'purple'

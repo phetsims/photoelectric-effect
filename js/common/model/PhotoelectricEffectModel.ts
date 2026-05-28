@@ -92,6 +92,13 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   // photon count matches the continuous flux and does not drift with the chosen time step.
   private photonEmissionAccumulator = 0;
 
+  // Emits when a photon hits the target, carrying the colliding photon and any electron emitted by the collision
+  // (null when no electron was produced). Subclasses subscribe to record per-collision data.
+  // TODO: instrument for PhET-iO
+  public readonly photonCollidedEmitter = new Emitter<[ Photon, Electron | null ]>( {
+    parameters: [ { valueType: Photon }, { valueType: [ Electron, null ] } ]
+  } );
+
   /**
    * @param mysteryMaterials - mystery materials owned by PhotoelectricEffectPreferencesModel and passed down.
    *   One entry for the user-configurable mystery material; additional entries can be added in the future
@@ -295,6 +302,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
         if ( electron ) {
           this.electrons.push( electron );
         }
+        this.photonCollidedEmitter.emit( photon, electron );
       }
 
       // Cull photons that have hit the target or passed it without a collision.

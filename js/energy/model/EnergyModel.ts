@@ -9,9 +9,11 @@
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
+import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
-import dotRandom from '../../../../dot/js/dotRandom.js';
+import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import Material from '../../common/model/Material.js';
 import { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
@@ -30,8 +32,16 @@ export default class EnergyModel extends IntroModel {
   // Recorded sample data shown by the Energy screen graph displays.
   public readonly energyGraphData: EnergyGraphData;
 
+  // Index of the sample slot a single-photon fire writes into; advances 0->1->2->0 on each single-photon fire.
+  // In multi-photon mode the three lenses fire into slots 0, 1, and 2 directly, and this Property is unused.
+  public readonly currentSlotIndexProperty: NumberProperty;
+
   // Emits an event when a photon should be created.
   public readonly firePhotonEmitter: Emitter;
+
+  // Tracks which sample slot each in-flight fired photon corresponds to, so its collision can be recorded
+  // into the matching slot. Uses a WeakMap so entries clear when photons are released by this.photons.
+  private readonly photonToSampleIndexMap = new WeakMap<Photon, number>();
 
   public constructor( mysteryMaterials: Material[], providedOptions: WithRequired<PhotoelectricEffectModelOptions, 'tandem'> ) {
     super( mysteryMaterials, providedOptions );
@@ -49,14 +59,43 @@ export default class EnergyModel extends IntroModel {
       providedOptions.tandem.createTandem( 'energyGraphDisplayProperties' )
     );
 
+    this.currentSlotIndexProperty = new NumberProperty( 0, {
+      tandem: providedOptions.tandem.createTandem( 'currentSlotIndexProperty' ),
+      numberType: 'Integer',
+      range: new Range( 0, EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES - 1 ),
+      phetioReadOnly: true,
+      phetioDocumentation: 'Sample slot index a single-photon fire writes into; advances after each single-photon fire'
+    } );
+
     this.firePhotonEmitter = new Emitter( {
       tandem: providedOptions.tandem.createTandem( 'firePhotonEmitter' )
     } );
 
     this.firePhotonEmitter.addListener( () => {
+      if ( this.emitSinglePhotonProperty.value ) {
+        const slotIndex = this.currentSlotIndexProperty.value;
+        this.energyGraphData.samples[ slotIndex ].clear();
+        this.firePhoton( slotIndex );
 
-      // TODO: Handle when emitSinglePhotonProperty is false.
-      this.firePhoton();
+        this.currentSlotIndexProperty.value =
+          ( slotIndex + 1 ) % EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES;
+      }
+      else {
+        this.energyGraphData.clear();
+        _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, slotIndex => this.firePhoton( slotIndex ) );
+      }
+    } );
+
+    // Record sample data when a fired photon collides with the target.
+    this.photonCollidedEmitter.addListener( ( photon, electron ) => {
+      const slotIndex = this.photonToSampleIndexMap.get( photon );
+      affirm( slotIndex !== undefined, 'Collided photon should have an associated sample slot index' );
+
+      const potentialEnergy = -this.target.workFunctionProperty.value;
+      const photonEnergy = photon.getEnergy();
+      const kineticEnergy = electron ? electron.energy : 0;
+      this.energyGraphData.setSampleData( slotIndex, potentialEnergy, photonEnergy, kineticEnergy );
+      this.photonToSampleIndexMap.delete( photon );
     } );
   }
 
@@ -73,27 +112,25 @@ export default class EnergyModel extends IntroModel {
   }
 
   /**
-   * Fires a single photon from the photon source.
+   * Fires a photon from the lens corresponding to the given sample slot index.
    *
-   * TODO: Fire multiple photons at once
    * TODO: Sequence multiple photons so that when multiple fire, they all hit the target at the same time.
    */
-  private firePhoton(): void {
-    const lensPositions = [
+  private firePhoton( slotIndex: number ): void {
+    const lensOffsets = [
       -PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH,
       0,
       PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH
     ];
 
-    // Calculate the initial position and velocity of the photon.
-    const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus( Photon.TRAVEL_DIRECTION.timesScalar(
-      dotRandom.sample( lensPositions ) ) );
+    const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus(
+      Photon.TRAVEL_DIRECTION.timesScalar( lensOffsets[ slotIndex ] ) );
     const velocity = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar(
       PhotoelectricEffectConstants.PHOTON_SPEED );
 
-    // Create an add photon to array.
     const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
     this.photons.push( photon );
+    this.photonToSampleIndexMap.set( photon, slotIndex );
   }
 
   /**
@@ -104,5 +141,6 @@ export default class EnergyModel extends IntroModel {
 
     this.energyGraphData.clear();
     this.energyGraphDisplayProperties.reset();
+    this.currentSlotIndexProperty.reset();
   }
 }
