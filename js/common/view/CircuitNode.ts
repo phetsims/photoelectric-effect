@@ -25,6 +25,7 @@ type CircuitNodeOptions = SelfOptions & StrictOmit<NodeOptions, 'children'>;
 
 export default class CircuitNode extends Node {
   public static readonly WIRE_HEIGHT = 150;
+  public static readonly WIRE_LINE_WIDTH = 10;
 
   public constructor( modelViewTransform: ModelViewTransform2, providedOptions?: CircuitNodeOptions ) {
 
@@ -44,7 +45,7 @@ export default class CircuitNode extends Node {
      */
     const circuitWireHeight = CircuitNode.WIRE_HEIGHT;
     const circuitWirePlateExtension = 50;
-    const circuitWireLineWidth = 10;
+    const circuitWireLineWidth = CircuitNode.WIRE_LINE_WIDTH;
     const circuitWireShape = new Shape().moveToPoint( targetPlate.leftCenter )
       .lineTo( targetPlate.left - circuitWirePlateExtension, targetPlate.centerY )
       .lineTo( targetPlate.left - circuitWirePlateExtension, targetPlate.centerY + circuitWireHeight )

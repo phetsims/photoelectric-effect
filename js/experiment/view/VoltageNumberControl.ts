@@ -14,19 +14,19 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberControl, { type NumberControlOptions } from '../../../../scenery-phet/js/NumberControl.js';
 import { NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
+import Battery from '../../common/model/Battery.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import ExperimentModel from '../model/ExperimentModel.js';
 
 export type VoltageNumberControlOptions = PickRequired<NumberControlOptions, 'tandem'> & NodeTranslationOptions;
 
 export default class VoltageNumberControl extends NumberControl {
 
   /**
-   * @param model - Provides the voltage Property controlled by this UI.
+   * @param battery - Provides the voltage Property controlled by this UI.
    * @param providedOptions - NumberControl options and required instrumentation tandem.
    */
-  public constructor( model: ExperimentModel, providedOptions: VoltageNumberControlOptions ) {
+  public constructor( battery: Battery, providedOptions: VoltageNumberControlOptions ) {
 
     const options = optionize<VoltageNumberControlOptions, EmptySelfOptions, NumberControlOptions>()( {
       delta: 0.01,
@@ -59,14 +59,14 @@ export default class VoltageNumberControl extends NumberControl {
         majorTickLength: 8,
 
         // To produce one minor tick at 0.
-        minorTickSpacing: model.battery.voltageProperty.range.getLength() / 2
+        minorTickSpacing: battery.voltageProperty.range.getLength() / 2
       }
     }, providedOptions );
 
     super(
       PhotoelectricEffectFluent.voltage.labelStringProperty,
-      model.battery.voltageProperty,
-      model.battery.voltageProperty.range,
+      battery.voltageProperty,
+      battery.voltageProperty.range,
       options );
   }
 }

@@ -20,9 +20,11 @@ export default class Battery {
    */
   public readonly voltageProperty: NumberProperty;
 
+  public static readonly RANGE = new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE );
+
   public constructor( tandem: Tandem ) {
     this.voltageProperty = new NumberProperty( PhotoelectricEffectConstants.DEFAULT_BATTERY_VOLTAGE, {
-      range: new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE ),
+      range: Battery.RANGE,
       tandem: tandem.createTandem( 'voltageProperty' )
     } );
   }
