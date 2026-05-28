@@ -18,7 +18,6 @@ import ReferenceIO from '../../../../tandem/js/types/ReferenceIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
-import Particle from './Particle.js';
 import Photon from './Photon.js';
 
 export default class Target {
@@ -81,16 +80,6 @@ export default class Target {
   }
 
   /**
-   * Handles a particle collision with the target.
-   * Called when a particle intersects the target bounds.
-   */
-  public particleCollisions( particle: Particle ): void {
-    if ( particle instanceof Photon ) {
-      this.handlePhotonCollision( particle );
-    }
-  }
-
-  /**
    * Determines whether a photon has reached or crossed the target x position.
    */
   public isHitByPhoton( photon: Photon ): boolean {
@@ -108,21 +97,43 @@ export default class Target {
    * Produces an electron if the photon has enough energy.
    *
    * @param photon
-   * @param highestEnergyOnly - When true, uses Java "simple-mode" absorption behavior.
+   * @param highestEnergyOnly - When true, use the highest available electron energy for emitted particles, matching
+   *   Java "simple-mode" absorption behavior. This does not guarantee emission; the normal quantum-efficiency gate
+   *   and accessible-band rejection still apply, so the electron rate remains probabilistic.
+   * @param emitAllAbsorbedPhotons - When true, bypass the quantum-efficiency gate and sample only from the portion
+   *   of the occupied band that can escape. This guarantees emission for every photon above the work-function
+   *   threshold while preserving a continuous emitted-energy distribution.
    */
-  public handlePhotonCollision( photon: Photon, highestEnergyOnly = false ): Electron | null {
+  public handlePhotonCollision( photon: Photon, highestEnergyOnly: boolean, emitAllAbsorbedPhotons: boolean ): Electron | null {
     const photonEnergy = photon.getEnergy();
     const workFunction = this.workFunctionProperty.value;
 
+    // TODO: @design If emitAllAbsorbedPhotons and highestEnergyOnly are both true, emitAllAbsorbedPhotons wins.
+    //  Discuss whether this should instead be represented as mutually exclusive modes. But if so,
+    //  how do we reflect that in the user interface?
+
+    // TODO: @design Are we sure that emitAllAbsorbedPhotons doesnt need to change the model for calculating current?
+    //  Now we will have far more electrons than we used to. It will be very easy to create many electrons
+    //  but have 0 current.
+
+    // TODO: @design Was emitAllAbsorbedPhotons intended only for the 3rd screen? If so, maybe it should be a
+    //  checkbox on screen instead of a simulation preference?
+
+    // The emit-all preference bypasses quantum efficiency so that above-threshold photons always emit.
     // Quantum efficiency rejection: even when a photon has enough energy to eject an electron, only a fraction
     // η of such absorptions actually produces one. The remaining fraction is treated as absorbed-to-heat with
     // no electron emitted.
-    if ( dotRandom.nextDouble() > PhotoelectricEffectConstants.QUANTUM_EFFICIENCY ) {
+    if ( !emitAllAbsorbedPhotons && dotRandom.nextDouble() > PhotoelectricEffectConstants.QUANTUM_EFFICIENCY ) {
       return null;
     }
 
     let energyAfterCollision: number;
-    if ( highestEnergyOnly ) {
+    if ( emitAllAbsorbedPhotons ) {
+      energyAfterCollision = Material.energyAfterGuaranteedPhotonEmission(
+        photonEnergy, workFunction, this.bandWidthProperty.value
+      );
+    }
+    else if ( highestEnergyOnly ) {
 
       // Eject from the Fermi level only (maximum KE), but use the same accessible band fraction
       // probability as the normal path so the visual electron rate still reflects the bandwidth.

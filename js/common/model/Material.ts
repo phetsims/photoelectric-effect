@@ -199,4 +199,37 @@ export default class Material extends PhetioObject {
     const bindingEnergy = workFunction + dotRandom.nextDouble() * bandWidth;
     return photonEnergy - bindingEnergy;
   }
+
+  /**
+   * Samples an electron binding energy from only the part of the occupied band that this photon can eject from.
+   *
+   * The full occupied band spans binding energies from workFunction to workFunction + bandWidth. In the normal model,
+   * a photon samples that full range, so it can choose an electron that is bound too deeply to escape. This guaranteed
+   * model instead clips the upper end of the range to the photon energy. The result is the accessible part of the band:
+   * all sampled electrons can escape, but they still come from a continuous range of binding energies.
+   *
+   * @param photonEnergy - energy of the incident photon, in eV
+   * @param workFunction - work function of the target material, in eV
+   * @param bandWidth - occupied-band width of the target material, in eV
+   */
+  public static energyAfterGuaranteedPhotonEmission( photonEnergy: number, workFunction: number, bandWidth: number ): number {
+    if ( photonEnergy <= workFunction ) {
+      return Number.NEGATIVE_INFINITY;
+    }
+
+    // Full-band upper limit, before accounting for whether this photon has enough energy to reach it.
+    const fullBandMaximumBindingEnergy = workFunction + bandWidth;
+
+    // The photon cannot eject electrons with binding energy greater than its own energy.
+    const maximumBindingEnergy = Math.min( photonEnergy, fullBandMaximumBindingEnergy );
+
+    // How far below the least-bound electrons this photon can sample and still emit.
+    const accessibleBandWidth = maximumBindingEnergy - workFunction;
+
+    // Sample within the accessible band so emitted electrons still have different kinetic energies.
+    const bindingEnergy = workFunction + dotRandom.nextDouble() * accessibleBandWidth;
+
+    // Kinetic energy after emission is the photon energy minus the sampled binding energy.
+    return photonEnergy - bindingEnergy;
+  }
 }

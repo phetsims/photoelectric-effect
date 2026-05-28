@@ -15,6 +15,7 @@ import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import WithOptional from '../../../../phet-core/js/types/WithOptional.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectMysteryMaterials from '../model/PhotoelectricEffectMysteryMaterials.js';
+import EmitAllAbsorbedPhotonsControl from './EmitAllAbsorbedPhotonsControl.js';
 import MysteryMaterialPreferencesControls from './MysteryMaterialPreferencesControls.js';
 import PhotonModeControl from './PhotonModeControl.js';
 
@@ -45,8 +46,13 @@ export default class PhotoelectricEffectPreferencesNode extends PreferencesPanel
       tandem: options.tandem.createTandem( 'photonModeControl' )
     } );
 
+    const emitAllAbsorbedPhotonsControl = new EmitAllAbsorbedPhotonsControl( {
+      tandem: options.tandem.createTandem( 'emitAllAbsorbedPhotonsControl' )
+    } );
+
     options.content = [
       photonModeControl,
+      emitAllAbsorbedPhotonsControl,
       mysteryMaterialControls
     ];
 

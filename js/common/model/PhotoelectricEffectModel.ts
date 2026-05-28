@@ -287,7 +287,11 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       // Check for target collisions, which may emit an electron and removes the photon from the beam.
       const hitTarget = this.target.isHitByPhoton( photon );
       if ( hitTarget ) {
-        const electron = this.target.handlePhotonCollision( photon, this.showHighestEnergyOnlyProperty.value );
+        const electron = this.target.handlePhotonCollision(
+          photon,
+          this.showHighestEnergyOnlyProperty.value,
+          PhotoelectricEffectPreferences.emitAllAbsorbedPhotonsProperty.value
+        );
         if ( electron ) {
           this.electrons.push( electron );
         }

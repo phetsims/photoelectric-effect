@@ -34,6 +34,13 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
     defaultValue: 'count'
   },
 
+  // TODO: @design Is emitAllAbsorbedPhotons the right name for this preference?
+  // Whether every photon with enough energy emits an electron, while preserving an emitted energy distribution.
+  emitAllAbsorbedPhotons: {
+    public: true,
+    type: 'flag'
+  },
+
   // Whether experiment graph data returns every deterministic bin instead of only bins revealed by interaction.
   // This is just for testing, not sure if we want this feature for now. It may become a PreferencesDialog
   // setting.
