@@ -20,16 +20,15 @@ import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import RadialGradient from '../../../../scenery/js/util/RadialGradient.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import LightSourceNode from '../../common/view/LightSourceNode.js';
 
 // TODO: Currently this matches the width of the LightSourceNode in Intro and Experiment. Is that important or are the
-// dimensions between the two empirical?
+//  dimensions between the two empirical?
 const BODY_WIDTH = 125;
 const BODY_HEIGHT = 50;
-const LENS_COUNT = 3;
 const SMALL_LENS_WIDTH = 28;
 const SMALL_LENS_HEIGHT = 22;
-const LENS_SPACING = ( BODY_WIDTH - LENS_COUNT * SMALL_LENS_WIDTH ) / ( LENS_COUNT + 1 );
 const LABEL_FONT = new PhetFont( { size: 10, weight: 'bold' } );
 
 export default class EnergyLightSourceNode extends Node {
@@ -43,9 +42,9 @@ export default class EnergyLightSourceNode extends Node {
     // x-center positions of the three lenses, evenly distributed within the body width.
     // The container's local origin sits at the center of the middle lens aperture (x=0, y=0).
     const lensXPositions = [
-      -BODY_WIDTH / 2 + LENS_SPACING + SMALL_LENS_WIDTH / 2,
+      -PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH / 2,
       0,
-      BODY_WIDTH / 2 - LENS_SPACING - SMALL_LENS_WIDTH / 2
+      PhotoelectricEffectConstants.PHOTON_SOURCE_WIDTH / 2
     ];
 
     const lensRectangles: Rectangle[] = [];

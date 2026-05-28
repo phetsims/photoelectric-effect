@@ -10,6 +10,7 @@
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
 import Property from '../../../../axon/js/Property.js';
+import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import Material from '../../common/model/Material.js';
@@ -74,15 +75,21 @@ export default class EnergyModel extends IntroModel {
   /**
    * Fires a single photon from the photon source.
    *
-   * TODO: Handle multiple photons from different positions along the photon source.
    * TODO: Fire multiple photons at once
    * TODO: Sequence multiple photons so that when multiple fire, they all hit the target at the same time.
    */
   private firePhoton(): void {
+    const lensPositions = [
+      -PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH,
+      0,
+      PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH
+    ];
 
     // Calculate the initial position and velocity of the photon.
-    const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus( Photon.TRAVEL_DIRECTION );
-    const velocity = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar( PhotoelectricEffectConstants.PHOTON_SPEED );
+    const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus( Photon.TRAVEL_DIRECTION.timesScalar(
+      dotRandom.sample( lensPositions ) ) );
+    const velocity = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar(
+      PhotoelectricEffectConstants.PHOTON_SPEED );
 
     // Create an add photon to array.
     const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );

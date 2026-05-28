@@ -11,10 +11,14 @@ import Bounds2 from '../../../dot/js/Bounds2.js';
 import Vector2 from '../../../dot/js/Vector2.js';
 import PhetFont from '../../../scenery-phet/js/PhetFont.js';
 
-// Width of the lamp opening which will emit our photons.
+// Width of the lamp opening which will emit our photons in view units.
 // Defined here so that our model constant can derive the length of the line along which photons will emit.
 const PHOTON_SOURCE_WIDTH = 70;
+
+// view units
 const PLATE_HEIGHT = 150;
+
+const MODEL_VIEW_SCALE = 3.5;
 
 export default class PhotoelectricEffectConstants {
 
@@ -41,10 +45,10 @@ export default class PhotoelectricEffectConstants {
   // Direction unit vector for emitted photons, derived from PHOTON_SOURCE_DIRECTION_ANGLE.
   public static readonly PHOTON_SOURCE_DIRECTION = Vector2.createPolar( 1, PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION_ANGLE );
 
-  // Half-length of the photon source line segment, in model units (approximately 5 view pixels at MODEL_VIEW_SCALE = 3).
+  // Half-length of the photon source line segment, in model units.
   // Photons originate from random positions along this line, centered at PHOTON_SOURCE_POSITION and perpendicular
   // to PHOTON_SOURCE_DIRECTION, so the beam appears to come from a line rather than a single point.
-  public static readonly PHOTON_SOURCE_LINE_HALF_LENGTH = ( PHOTON_SOURCE_WIDTH / 2 ) / 3;
+  public static readonly PHOTON_SOURCE_LINE_HALF_LENGTH = ( PHOTON_SOURCE_WIDTH / 2 ) / MODEL_VIEW_SCALE;
 
   // Photon speed in model units per second.
   public static readonly PHOTON_SPEED = 80;
@@ -159,7 +163,7 @@ export default class PhotoelectricEffectConstants {
 
   // Scale factor for the model-to-view transform, in view pixels per model unit.
   // Empirically determined.
-  public static readonly MODEL_VIEW_SCALE = 3.5;
+  public static readonly MODEL_VIEW_SCALE = MODEL_VIEW_SCALE;
 
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 
