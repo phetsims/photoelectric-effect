@@ -21,7 +21,7 @@ import IOType from '../../../../tandem/js/types/IOType.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
-import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions, PhotoelectricEffectModelStateObject } from '../../common/model/PhotoelectricEffectModel.js';
+import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions, type PhotoelectricEffectModelStateObject } from '../../common/model/PhotoelectricEffectModel.js';
 import Photon from '../../common/model/Photon.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import EnergyGraphData from './EnergyGraphData.js';
@@ -30,12 +30,46 @@ import EnergyGraphDisplayProperties from './EnergyGraphDisplayProperties.js';
 type SelfOptions = EmptySelfOptions;
 type EnergyModelOptions = SelfOptions & WithRequired<PhotoelectricEffectModelOptions, 'tandem'>;
 
+type QueuedPhotonEmission = {
+  slotIndex: number;
+  remainingTime: number;
+};
+
 // PhET-iO serialized state for the Energy model.
 type EnergyModelStateObject = PhotoelectricEffectModelStateObject & {
   photonSampleIndices: ( number | null )[];
+  queuedPhotonEmissions: QueuedPhotonEmission[];
 };
 
 export default class EnergyModel extends PhotoelectricEffectModel {
+
+  // Energy graph sample slot offsets along the photon source line.
+  private static readonly LENS_OFFSETS = [
+    -PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH,
+    0,
+    PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH
+  ];
+
+  /**
+   * PhET-iO IOType for delayed burst-mode photon emissions.
+   */
+  private static readonly QUEUED_PHOTON_EMISSION_IO = new IOType<QueuedPhotonEmission, QueuedPhotonEmission>(
+    'QueuedPhotonEmissionIO', {
+      valueType: Object,
+      stateSchema: {
+        slotIndex: NumberIO,
+        remainingTime: NumberIO
+      },
+      toStateObject: queuedPhotonEmission => ( {
+        slotIndex: queuedPhotonEmission.slotIndex,
+        remainingTime: queuedPhotonEmission.remainingTime
+      } ),
+      fromStateObject: stateObject => ( {
+        slotIndex: stateObject.slotIndex,
+        remainingTime: stateObject.remainingTime
+      } )
+    } );
+
   public readonly emitSinglePhotonProperty: Property<boolean>;
 
   // Whether photons fired from the Energy screen are still travelling toward the target.
@@ -58,8 +92,10 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   // into the matching slot. Uses a WeakMap so entries clear when photons are released by this.photons.
   private readonly photonToSampleIndexMap = new WeakMap<Photon, number>();
 
-  public constructor( mysteryMaterials: Material[], providedOptions: WithRequired<PhotoelectricEffectModelOptions, 'tandem'> ) {
+  // Delayed burst-mode photon emissions. Each entry counts down in model time until its photon should be fired.
+  private readonly queuedPhotonEmissions: QueuedPhotonEmission[] = [];
 
+  public constructor( mysteryMaterials: Material[], providedOptions: EnergyModelOptions ) {
     const options = optionize<EnergyModelOptions, SelfOptions, PhotoelectricEffectModelOptions>()( {
       phetioType: EnergyModel.EnergyModelIO
     }, providedOptions );
@@ -115,7 +151,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       }
       else {
         this.energyGraphData.clear();
-        _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, slotIndex => this.firePhoton( slotIndex ) );
+        this.queueBurstPhotons();
       }
     } );
 
@@ -135,12 +171,13 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   }
 
   /**
-   * Model animation for photons and electrons. This class does not create
-   * photons during animation like the base class.
+   * Model animation for photons and electrons. Instead of creating a stream of photons, this model
+   * creates any photons that were requested by a "burst" fire from the user.
    * @param dt - time step, in seconds
    */
   protected override stepModel( dt: number ): void {
     if ( dt > 0 ) {
+      this.stepQueuedPhotonEmissions( dt );
       this.stepPhotons( dt );
       this.stepElectrons( dt );
     }
@@ -148,24 +185,95 @@ export default class EnergyModel extends PhotoelectricEffectModel {
 
   /**
    * Fires a photon from the lens corresponding to the given sample slot index.
-   *
-   * TODO: Sequence multiple photons so that when multiple fire, they all hit the target at the same time.
    */
   private firePhoton( slotIndex: number ): void {
-    const lensOffsets = [
-      -PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH,
-      0,
-      PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH
-    ];
-
-    const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus(
-      Photon.TRAVEL_DIRECTION.timesScalar( lensOffsets[ slotIndex ] ) );
-    const velocity = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar(
-      PhotoelectricEffectConstants.PHOTON_SPEED );
+    const position = this.getPhotonInitialPosition( slotIndex );
+    const velocity = this.getPhotonInitialVelocity();
 
     const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
     this.photons.push( photon );
     this.photonToSampleIndexMap.set( photon, slotIndex );
+  }
+
+  /**
+   * Queues burst-mode photons so all slots reach the target at approximately the same time. The furthest photon has
+   * no delay, and closer photons fire later by the difference in travel time.
+   *
+   * This intentionally emits queued photons only at frame boundaries. If we need tighter synchronization later, this
+   * can be upgraded by splitting stepModel at each queued emission time so photons begin moving at the exact sub-frame
+   * time instead of the next frame boundary.
+   */
+  private queueBurstPhotons(): void {
+    const photonSchedules = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, slotIndex => ( {
+      slotIndex: slotIndex,
+      timeToTarget: this.getPhotonTimeToTarget( slotIndex )
+    } ) );
+
+    let maxTimeToTarget = 0;
+    photonSchedules.forEach( photonSchedule => {
+      maxTimeToTarget = Math.max( maxTimeToTarget, photonSchedule.timeToTarget );
+    } );
+
+    photonSchedules.forEach( photonSchedule => {
+      this.queuedPhotonEmissions.push( {
+        slotIndex: photonSchedule.slotIndex,
+        remainingTime: maxTimeToTarget - photonSchedule.timeToTarget
+      } );
+    } );
+  }
+
+  /**
+   * Advances delayed burst emissions by one frame. Due photons are created before active photons step so they can
+   * move during this frame, matching the simple frame-boundary scheduling described in queueBurstPhotons.
+   */
+  private stepQueuedPhotonEmissions( dt: number ): void {
+
+    // Build the next queue instead of mutating queuedPhotonEmissions while iterating over it.
+    const nextQueuedPhotonEmissions: QueuedPhotonEmission[] = [];
+
+    this.queuedPhotonEmissions.forEach( queuedPhotonEmission => {
+      const remainingTime = queuedPhotonEmission.remainingTime - dt;
+      if ( remainingTime <= 0 ) {
+        this.firePhoton( queuedPhotonEmission.slotIndex );
+      }
+      else {
+        nextQueuedPhotonEmissions.push( {
+          slotIndex: queuedPhotonEmission.slotIndex,
+          remainingTime: remainingTime
+        } );
+      }
+    } );
+
+    this.queuedPhotonEmissions.length = 0;
+    this.queuedPhotonEmissions.push( ...nextQueuedPhotonEmissions );
+  }
+
+  /**
+   * Initial photon position for the Energy graph sample slot.
+   */
+  private getPhotonInitialPosition( slotIndex: number ): Vector2 {
+    return PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus(
+      Photon.TRAVEL_DIRECTION.timesScalar( EnergyModel.LENS_OFFSETS[ slotIndex ] ) );
+  }
+
+  /**
+   * Initial photon velocity for Energy screen fired photons.
+   */
+  private getPhotonInitialVelocity(): Vector2 {
+    return PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar(
+      PhotoelectricEffectConstants.PHOTON_SPEED );
+  }
+
+  /**
+   * Time for the photon from a sample slot to reach the target x position. Photon motion is angled, but target
+   * collision is defined by crossing the target's vertical x plane, so only the x displacement and x velocity
+   * determine the collision time.
+   */
+  private getPhotonTimeToTarget( slotIndex: number ): number {
+    const position = this.getPhotonInitialPosition( slotIndex );
+    const velocity = this.getPhotonInitialVelocity();
+
+    return ( this.target.x - position.x ) / velocity.x;
   }
 
   /**
@@ -175,6 +283,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     super.reset();
 
     this.photonsTravellingProperty.reset();
+    this.queuedPhotonEmissions.length = 0;
     this.energyGraphData.clear();
     this.energyGraphDisplayProperties.reset();
     this.currentSlotIndexProperty.reset();
@@ -185,7 +294,11 @@ export default class EnergyModel extends PhotoelectricEffectModel {
    */
   protected override toStateObject(): EnergyModelStateObject {
     return Object.assign( super.toStateObject(), {
-      photonSampleIndices: this.photons.map( photon => this.photonToSampleIndexMap.get( photon ) ?? null )
+      photonSampleIndices: this.photons.map( photon => this.photonToSampleIndexMap.get( photon ) ?? null ),
+      queuedPhotonEmissions: this.queuedPhotonEmissions.map( queuedPhotonEmission => ( {
+        slotIndex: queuedPhotonEmission.slotIndex,
+        remainingTime: queuedPhotonEmission.remainingTime
+      } ) )
     } );
   }
 
@@ -199,15 +312,29 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       if ( sampleIndex !== null ) {
         this.photonToSampleIndexMap.set( this.photons[ photonIndex ], sampleIndex );
       }
+      else {
+        this.photonToSampleIndexMap.delete( this.photons[ photonIndex ] );
+      }
+    } );
+
+    this.queuedPhotonEmissions.length = 0;
+    stateObject.queuedPhotonEmissions.forEach( queuedPhotonEmission => {
+      this.queuedPhotonEmissions.push( {
+        slotIndex: queuedPhotonEmission.slotIndex,
+        remainingTime: queuedPhotonEmission.remainingTime
+      } );
     } );
   }
 
   /**
    * PhET-iO state schema.
    */
-  private static readonly ENERGY_MODEL_STATE_SCHEMA = Object.assign( {}, EnergyModel.PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA, {
-    photonSampleIndices: ArrayIO( NullableIO( NumberIO ) )
-  } );
+  private static readonly ENERGY_MODEL_STATE_SCHEMA = Object.assign(
+    {},
+    EnergyModel.PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA, {
+      photonSampleIndices: ArrayIO( NullableIO( NumberIO ) ),
+      queuedPhotonEmissions: ArrayIO( EnergyModel.QUEUED_PHOTON_EMISSION_IO )
+    } );
 
   /**
    * PhET-iO IOType for the Energy model.
