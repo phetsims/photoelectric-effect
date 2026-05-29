@@ -22,6 +22,7 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
+import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import ReferenceArrayIO from '../../../../tandem/js/types/ReferenceArrayIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
@@ -104,10 +105,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
   // Emits when a photon hits the target, carrying the colliding photon and any electron emitted by the collision
   // (null when no electron was produced). Subclasses subscribe to record per-collision data.
-  // TODO: instrument for PhET-iO
-  public readonly photonCollidedEmitter = new Emitter<[ Photon, Electron | null ]>( {
-    parameters: [ { valueType: Photon }, { valueType: [ Electron, null ] } ]
-  } );
+  public readonly photonCollidedEmitter: Emitter<[ Photon, Electron | null ]>;
 
   /**
    * @param mysteryMaterials - mystery materials owned by PhotoelectricEffectPreferencesModel and passed down.
@@ -133,6 +131,22 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
     const tandem = options.tandem;
     const materialsTandem = tandem.createTandem( 'materials' );
+
+    this.photonCollidedEmitter = new Emitter<[ Photon, Electron | null ]>( {
+      tandem: tandem.createTandem( 'photonCollidedEmitter' ),
+      parameters: [
+        {
+          name: 'photon',
+          phetioType: Photon.PhotonIO,
+          valueType: Photon
+        },
+        {
+          name: 'electron',
+          phetioType: NullableIO( Electron.ElectronIO ),
+          valueType: [ Electron, null ]
+        }
+      ]
+    } );
 
     const customMaterials = createCustomMaterials ? createCustomMaterials( materialsTandem ) : [];
 
