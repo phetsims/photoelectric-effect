@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * VoltageCurrentGraphAssemblyNode configures a GraphAssemblyNode for a voltage/current plot.
+ * VoltageCurrentGraphAssemblyNode configures a GraphAssemblyAccordionBox for a voltage/current plot.
  * Sample data is owned by ExperimentModel.voltageCurrentGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -17,7 +17,7 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyAccordionBox, { type GraphAssemblyNodeOptions } from './GraphAssemblyAccordionBox.js';
+import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from './GraphAssemblyAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -41,7 +41,7 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyAccord
       new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.3 )
     ];
 
-    const graphOptions: GraphAssemblyNodeOptions = {
+    const graphOptions: GraphAssemblyAccordionBoxOptions = {
       graphPlotAreaNodeOptions: {
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
@@ -51,8 +51,7 @@ export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyAccord
         //   miliamps.
         yTickLabelFormatter: value => toFixed( ampsToMilliAmps( value ), 0 )
       },
-      accessibleHeading: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
-      expandCollapseButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty,
+      accessibleName: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty,
       trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.trashButton.accessibleNameStringProperty,
       snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,

@@ -1,16 +1,15 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * GraphAssemblyNode composes GraphPlotAreaNode with experiment-specific controls and readouts.
+ * GraphAssemblyAccordionBox composes GraphPlotAreaNode with experiment-specific controls and readouts.
  * It owns the expand/collapse state, snapshot count readout, and the right-side action buttons
  * for viewing snapshot history, capturing snapshots, and clearing snapshots.
- * This wrapper keeps screen-level graph interactions coordinated with GraphData while leaving plot rendering to
+ * This accordion keeps screen-level graph interactions coordinated with GraphData while leaving plot rendering to
  * GraphPlotAreaNode.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
@@ -23,9 +22,9 @@ import TrashButton, { type TrashButtonOptions } from '../../../../scenery-phet/j
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
-import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import AccordionBox from '../../../../sun/js/AccordionBox.js';
+import AccordionBox, { type AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
 import { type RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
@@ -56,59 +55,51 @@ type SelfOptions = {
   graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions;
 
   // Accessible names for each button in the right-side column.
-  expandCollapseButtonAccessibleNameProperty: TReadOnlyProperty<string>;
   cameraButtonAccessibleNameProperty: TReadOnlyProperty<string>;
   trashButtonAccessibleNameProperty: TReadOnlyProperty<string>;
   snapshotsGalleryButtonAccessibleNameProperty: TReadOnlyProperty<string>;
   snapshotsGalleryButtonAccessibleHelpTextProperty: TReadOnlyProperty<string>;
 };
 
-export type GraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
+export type GraphAssemblyAccordionBoxOptions =
+  SelfOptions & AccordionBoxOptions & PickRequired<AccordionBoxOptions, 'tandem'>;
 
-export default class GraphAssemblyAccordionBox extends Node {
+export default class GraphAssemblyAccordionBox extends AccordionBox {
 
   // Vertical spacing between stacked graph assemblies in the experiment screen layout.
   public static readonly GRAPH_ASSEMBLY_SPACING = 12;
-
-  // Whether the graph accordion is expanded.
-  private readonly expandedProperty: BooleanProperty;
-
-  // Chart only (grid, plot, ticks, axis labels).
-  private readonly graphPlotAreaNode: GraphPlotAreaNode;
 
   /**
    * @param graphData - Source of live samples, snapshots, and current operating-point state.
    * @param xRange - Shared x range used for all zoom levels in this plot.
    * @param yZoomRanges - Zoom presets for the y axis, from any order (sorted internally by span).
    * @param snapshotsDialogTitleStringProperty - Localized title shown in this graph's snapshots dialog.
-   * @param providedOptions - Node options plus graph-plot-area configuration forwarded to child components.
+   * @param providedOptions - AccordionBox options plus graph-plot-area configuration forwarded to child components.
    */
   public constructor(
     graphData: GraphData,
     xRange: Range,
     yZoomRanges: Range[],
     snapshotsDialogTitleStringProperty: TReadOnlyProperty<string>,
-    providedOptions: GraphAssemblyNodeOptions
+    providedOptions: GraphAssemblyAccordionBoxOptions
   ) {
-    const options = optionize<GraphAssemblyNodeOptions, SelfOptions, NodeOptions>()( {
-      isDisposable: false
+    const options = optionize<GraphAssemblyAccordionBoxOptions, SelfOptions, AccordionBoxOptions>()( {
+      isDisposable: false,
+      allowContentToOverlapTitle: true,
+      titleBarExpandCollapse: false,
+      focusHighlightTarget: 'expandCollapseButton',
+      contentXMargin: 0,
+      contentYMargin: 0,
+      fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
+      stroke: null
     }, providedOptions );
 
     const tandem = options.tandem;
-    const graphPlotAreaNodeOptions = options.graphPlotAreaNodeOptions;
 
-    super( options );
-
-    this.addLinkedElement( graphData );
-
-    this.expandedProperty = new BooleanProperty( true, {
-      tandem: tandem.createTandem( 'expandedProperty' )
-    } );
-
-    this.graphPlotAreaNode = new GraphPlotAreaNode( xRange, yZoomRanges, graphPlotAreaNodeOptions );
+    const graphPlotAreaNode = new GraphPlotAreaNode( xRange, yZoomRanges, options.graphPlotAreaNodeOptions );
 
     // Layout for UI components will be relative to this chart rectangle area.
-    const plotBounds = this.graphPlotAreaNode.plotBounds;
+    const plotBounds = graphPlotAreaNode.plotBounds;
 
     // A readout for the number of snapshots taken and remaining.
     const snapshotCountReadoutText = new Text(
@@ -120,7 +111,7 @@ export default class GraphAssemblyAccordionBox extends Node {
 
     const plotContentNode = new Node( {
       children: [
-        this.graphPlotAreaNode,
+        graphPlotAreaNode,
         snapshotSavedMessageNode,
         snapshotCountReadoutText
       ]
@@ -157,11 +148,11 @@ export default class GraphAssemblyAccordionBox extends Node {
     const snapshotsDialog = new GraphSnapshotsDialog(
       tandem.createTandem( 'snapshotsDialog' ),
       graphData,
-      this.graphPlotAreaNode.zoomLevelProperty,
+      graphPlotAreaNode.zoomLevelProperty,
       xRange,
       yZoomRanges,
       snapshotsDialogTitleStringProperty,
-      graphPlotAreaNodeOptions
+      options.graphPlotAreaNodeOptions
     );
 
     const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {
@@ -206,21 +197,8 @@ export default class GraphAssemblyAccordionBox extends Node {
         buttonColumn
       ]
     } );
-    this.addChild( new AccordionBox( contentRow, {
-      expandedProperty: this.expandedProperty,
-      tandem: tandem.createTandem( 'accordionBox' ),
-      accessibleName: options.expandCollapseButtonAccessibleNameProperty,
 
-      // Options that make the AccordionBox background panel invisible, and align the expand/collapse
-      // button with the content
-      allowContentToOverlapTitle: true,
-      titleBarExpandCollapse: false,
-      focusHighlightTarget: 'expandCollapseButton',
-      contentXMargin: 0,
-      contentYMargin: 0,
-      fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
-      stroke: null
-    } ) );
+    super( contentRow, options );
 
     // When we get a new snapshot, indicate that data was saved.
     let previousSnapshotsCount = graphData.snapshotsCountProperty.value;
@@ -235,14 +213,15 @@ export default class GraphAssemblyAccordionBox extends Node {
 
       // Revealed curve points currently shown in the line plot.
       const lineDataSet = [ ...graphData.getDataPoints() ];
-      this.graphPlotAreaNode.setLineDataSet( lineDataSet );
-      this.graphPlotAreaNode.zoomToFitDataSetY( lineDataSet, graphData.currentPointProperty.value );
+
+      graphPlotAreaNode.setLineDataSet( lineDataSet );
+      graphPlotAreaNode.zoomToFitDataSetY( lineDataSet, graphData.currentPointProperty.value );
     };
     graphData.dataChangedEmitter.addListener( syncLinePlot );
     syncLinePlot();
 
     graphData.currentPointProperty.link( currentPoint => {
-      this.graphPlotAreaNode.setCurrentPointMarker( currentPoint );
+      graphPlotAreaNode.setCurrentPointMarker( currentPoint );
     } );
   }
 }

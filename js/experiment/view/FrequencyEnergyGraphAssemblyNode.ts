@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * FrequencyEnergyGraphAssemblyNode configures a GraphAssemblyNode for a frequency/energy plot.
+ * FrequencyEnergyGraphAssemblyNode configures a GraphAssemblyAccordionBox for a frequency/energy plot.
  * Sample data is owned by ExperimentModel.frequencyEnergyGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -14,7 +14,7 @@ import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyAccordionBox, { type GraphAssemblyNodeOptions } from './GraphAssemblyAccordionBox.js';
+import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from './GraphAssemblyAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -38,7 +38,7 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyAccor
       new Range( 0, 12 )
     ];
 
-    const graphOptions: GraphAssemblyNodeOptions = {
+    const graphOptions: GraphAssemblyAccordionBoxOptions = {
       graphPlotAreaNodeOptions: {
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
@@ -48,8 +48,7 @@ export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyAccor
         yAxisLabelYOffset: 10,
         fill: PhotoelectricEffectColors.frequencyEnergyGraphFillColorProperty
       },
-      accessibleHeading: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty,
-      expandCollapseButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.expandCollapseButton.accessibleNameStringProperty,
+      accessibleName: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.cameraButton.accessibleNameStringProperty,
       trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.trashButton.accessibleNameStringProperty,
       snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,

@@ -61,14 +61,16 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
       spacing: GraphAssemblyAccordionBox.GRAPH_ASSEMBLY_SPACING,
       align: 'right',
       children: [
+
+        // TODO: Rename these to AccordionBox now
         new IntensityCurrentGraphAssemblyNode( model, {
-          tandem: options.tandem.createTandem( 'intensityCurrentGraphNode' )
+          tandem: options.tandem.createTandem( 'intensityCurrentGraphAccordionBox' )
         } ),
         new FrequencyEnergyGraphAssemblyNode( model, {
-          tandem: options.tandem.createTandem( 'frequencyEnergyGraphNode' )
+          tandem: options.tandem.createTandem( 'frequencyEnergyGraphAccordionBox' )
         } ),
         new VoltageCurrentGraphAssemblyNode( model, {
-          tandem: options.tandem.createTandem( 'voltageCurrentGraphNode' )
+          tandem: options.tandem.createTandem( 'voltageCurrentGraphAccordionBox' )
         } )
       ],
       right: this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,

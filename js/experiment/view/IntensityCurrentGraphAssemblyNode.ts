@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * IntensityCurrentGraphAssemblyNode configures a GraphAssemblyNode for an intensity/current plot.
+ * IntensityCurrentGraphAssemblyNode configures a GraphAssemblyAccordionBox for an intensity/current plot.
  * Sample data is owned by ExperimentModel.intensityCurrentGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -19,7 +19,7 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyAccordionBox, { type GraphAssemblyNodeOptions } from './GraphAssemblyAccordionBox.js';
+import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from './GraphAssemblyAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -43,7 +43,7 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyAcco
       new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.2 )
     ];
 
-    const graphOptions: GraphAssemblyNodeOptions = {
+    const graphOptions: GraphAssemblyAccordionBoxOptions = {
       graphPlotAreaNodeOptions: {
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.intensityAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
@@ -55,8 +55,7 @@ export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyAcco
         fill: PhotoelectricEffectColors.intensityCurrentGraphFillColorProperty,
         yTickLabelFormatter: value => toFixed( ampsToMilliAmps( value ), 0 )
       },
-      accessibleHeading: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty,
-      expandCollapseButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty,
+      accessibleName: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty,
       trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.trashButton.accessibleNameStringProperty,
       snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,
