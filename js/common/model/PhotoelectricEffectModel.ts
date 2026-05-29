@@ -11,6 +11,7 @@
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type ReadOnlyProperty from '../../../../axon/js/ReadOnlyProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
@@ -186,6 +187,12 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       phetioDocumentation: 'Whether only highest-energy electron emissions are shown'
     } );
 
+    // So that slow moving electrons from previous experiments do not persist and confuse the student.
+    Multilink.lazyMultilinkAny( [
+      this.showHighestEnergyOnlyProperty,
+      this.target.materialProperty
+    ], () => this.clearElectrons() );
+
     PhotoelectricEffectPreferences.photonModeProperty.lazyLink( () => {
 
       // The accumulator stores fractional photons in the previous emission mode's rate scale. Clear it so toggling
@@ -206,7 +213,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     this.showHighestEnergyOnlyProperty.reset();
 
     this.photons.length = 0;
-    this.electrons.length = 0;
+    this.clearElectrons();
     this.photonEmissionAccumulator = 0;
 
     this.resetEmitter.emit();
@@ -363,6 +370,13 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
                                     PhotoelectricEffectConstants.ELECTRON_ACCELERATION_SCALE ) /
                                   PhotoelectricEffectConstants.PLATE_SEPARATION;
     return new Vector2( accelerationMagnitude, 0 );
+  }
+
+  /**
+   * Clears all electrons that have been created by the model.
+   */
+  private clearElectrons(): void {
+    this.electrons.length = 0;
   }
 
   /**
