@@ -65,7 +65,7 @@ type SelfOptions = {
 
 export type GraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
-export default class GraphAssemblyNode extends Node {
+export default class GraphAssemblyAccordionBox extends Node {
 
   // Vertical spacing between stacked graph assemblies in the experiment screen layout.
   public static readonly GRAPH_ASSEMBLY_SPACING = 12;

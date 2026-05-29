@@ -14,13 +14,13 @@ import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyNode, { type GraphAssemblyNodeOptions } from './GraphAssemblyNode.js';
+import GraphAssemblyAccordionBox, { type GraphAssemblyNodeOptions } from './GraphAssemblyAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
 
 export type FrequencyEnergyGraphAssemblyNodeOptions = SelfOptions & WithRequired<NodeOptions, 'tandem'>;
 
-export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyNode {
+export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyAccordionBox {
 
   /**
    * @param model - Provides graph data and axis ranges for this plot.

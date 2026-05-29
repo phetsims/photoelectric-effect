@@ -21,7 +21,7 @@ import PhotonBeamScreenView, { PhotonBeamScreenViewOptions } from '../../common/
 import PhotonSourceControl from '../../common/view/PhotonSourceControl.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import FrequencyEnergyGraphAssemblyNode from './FrequencyEnergyGraphAssemblyNode.js';
-import GraphAssemblyNode from './GraphAssemblyNode.js';
+import GraphAssemblyAccordionBox from './GraphAssemblyAccordionBox.js';
 import IntensityCurrentGraphAssemblyNode from './IntensityCurrentGraphAssemblyNode.js';
 import VoltageCurrentGraphAssemblyNode from './VoltageCurrentGraphAssemblyNode.js';
 import VoltageNumberControl from './VoltageNumberControl.js';
@@ -58,7 +58,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     //------------------------------------------------------------------------
 
     const graphsVBox = new VBox( {
-      spacing: GraphAssemblyNode.GRAPH_ASSEMBLY_SPACING,
+      spacing: GraphAssemblyAccordionBox.GRAPH_ASSEMBLY_SPACING,
       align: 'right',
       children: [
         new IntensityCurrentGraphAssemblyNode( model, {

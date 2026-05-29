@@ -19,13 +19,13 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyNode, { type GraphAssemblyNodeOptions } from './GraphAssemblyNode.js';
+import GraphAssemblyAccordionBox, { type GraphAssemblyNodeOptions } from './GraphAssemblyAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
 
 export type IntensityCurrentGraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
-export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyNode {
+export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyAccordionBox {
 
   /**
    * @param model - Provides graph data and axis ranges for this plot.
