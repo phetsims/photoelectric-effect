@@ -211,13 +211,13 @@ export default class GraphAssemblyNode extends Node {
       tandem: tandem.createTandem( 'accordionBox' ),
       accessibleName: options.expandCollapseButtonAccessibleNameProperty,
 
-      // Options that make the AccordionBox panel
+      // Options that make the AccordionBox background panel invisible, and align the expand/collapse
+      // button with the content
       allowContentToOverlapTitle: true,
       titleBarExpandCollapse: false,
       focusHighlightTarget: 'expandCollapseButton',
       contentXMargin: 0,
       contentYMargin: 0,
-
       fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
       stroke: null
     } ) );
