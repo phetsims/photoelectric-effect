@@ -25,8 +25,8 @@ import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
+import AccordionBox from '../../../../sun/js/AccordionBox.js';
 import { type RectangularPushButtonOptions } from '../../../../sun/js/buttons/RectangularPushButton.js';
-import ExpandCollapseButton from '../../../../sun/js/ExpandCollapseButton.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
@@ -40,13 +40,9 @@ const GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 10;
 // Vertical spacing between action buttons in the right-side column.
 const GRAPH_ASSEMBLY_BUTTON_SPACING = 8;
 
-// Minimum dimensions used to normalize action button sizing.
+// Minimum dimensions used to normalize action-button sizing.
 const GRAPH_ASSEMBLY_BUTTON_WIDTH = 28;
 const GRAPH_ASSEMBLY_BUTTON_HEIGHT = 20;
-
-// Insets and offset used to anchor the expand/collapse button near the chart corner.
-const GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN = 3;
-const GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET = 6;
 
 // Padding from the chart border for the snapshot count readout.
 const SNAPSHOT_READOUT_MARGIN = 4;
@@ -74,7 +70,7 @@ export default class GraphAssemblyNode extends Node {
   // Vertical spacing between stacked graph assemblies in the experiment screen layout.
   public static readonly GRAPH_ASSEMBLY_SPACING = 12;
 
-  // Whether the chart content row is visible.
+  // Whether the graph accordion is expanded.
   private readonly expandedProperty: BooleanProperty;
 
   // Chart only (grid, plot, ticks, axis labels).
@@ -138,16 +134,6 @@ export default class GraphAssemblyNode extends Node {
     ManualConstraint.create( plotContentNode, [ snapshotSavedMessageNode ], savedMessageNode => {
       savedMessageNode.centerX = plotBounds.centerX;
       savedMessageNode.top = plotBounds.top + SNAPSHOT_SAVED_MESSAGE_MARGIN;
-    } );
-
-    const expandCollapseButton = new ExpandCollapseButton( this.expandedProperty, {
-      sideLength: 18,
-      left: plotBounds.left +
-            GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN -
-            GRAPH_ASSEMBLY_EXPAND_BUTTON_LEFT_OFFSET,
-      top: plotBounds.top + GRAPH_ASSEMBLY_EXPAND_BUTTON_MARGIN,
-      tandem: tandem.createTandem( 'expandCollapseButton' ),
-      accessibleName: options.expandCollapseButtonAccessibleNameProperty
     } );
 
     // Uses a square size so mixed button implementations share a consistent visual footprint.
@@ -220,12 +206,21 @@ export default class GraphAssemblyNode extends Node {
         buttonColumn
       ]
     } );
-    this.addChild( contentRow );
-    this.addChild( expandCollapseButton );
+    this.addChild( new AccordionBox( contentRow, {
+      expandedProperty: this.expandedProperty,
+      tandem: tandem.createTandem( 'accordionBox' ),
+      accessibleName: options.expandCollapseButtonAccessibleNameProperty,
 
-    this.expandedProperty.link( expanded => {
-      contentRow.visible = expanded;
-    } );
+      // Options that make the AccordionBox panel
+      allowContentToOverlapTitle: true,
+      titleBarExpandCollapse: false,
+      focusHighlightTarget: 'expandCollapseButton',
+      contentXMargin: 0,
+      contentYMargin: 0,
+
+      fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
+      stroke: null
+    } ) );
 
     // When we get a new snapshot, indicate that data was saved.
     let previousSnapshotsCount = graphData.snapshotsCountProperty.value;
