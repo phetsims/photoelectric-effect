@@ -42,11 +42,11 @@ const BAR_X_OFFSET = 0.18;
 const BAR_WIDTH = 9;
 
 // In-plot message shown when a sample exists, but the photon did not eject an electron. This is in model units.
-const NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y = 8.5;
+const NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y = 8.0;
 
 // Segmented zero-energy line layout. One segment is drawn for each sample so space remains between plots.
 // This is in model units.
-const ZERO_ENERGY_LINE_HALF_WIDTH = 0.32;
+const ZERO_ENERGY_LINE_HALF_WIDTH = 0.4;
 
 // Space around axis labels and sample labels.
 const Y_TICK_LABEL_MARGIN = 5;
@@ -64,8 +64,12 @@ export default class EnergyBarGraphNode extends Node {
   // Shared custom grid lines, regenerated when the work-function marker changes.
   private readonly gridLineNode: Node;
 
-  // Labels for the special y values shown on the graph.
+  // Labels for fixed y values shown on the graph.
+  private readonly minimumEnergyTickLabel: Node;
   private readonly zeroTickLabel: Node;
+  private readonly maximumEnergyTickLabel: Node;
+
+  // Label for the dynamic work-function value shown on the graph.
   private readonly workFunctionTickLabel: Node;
 
   // Work function source used for the -phi marker.
@@ -149,9 +153,9 @@ export default class EnergyBarGraphNode extends Node {
       ]
     } );
 
-    this.zeroTickLabel = new Text( '0', {
-      font: PhotoelectricEffectConstants.CONTENT_FONT
-    } );
+    this.minimumEnergyTickLabel = EnergyBarGraphNode.createEnergyTickLabel( EnergyGraphDisplayProperties.MODEL_Y_RANGE.min );
+    this.zeroTickLabel = EnergyBarGraphNode.createEnergyTickLabel( 0 );
+    this.maximumEnergyTickLabel = EnergyBarGraphNode.createEnergyTickLabel( EnergyGraphDisplayProperties.MODEL_Y_RANGE.max );
 
     this.workFunctionTickLabel = new Text( `-${MathSymbols.PHI}`, {
       font: PhotoelectricEffectConstants.CONTENT_FONT
@@ -177,7 +181,9 @@ export default class EnergyBarGraphNode extends Node {
       children: [
         plotRectangle,
         plotLayer,
+        this.minimumEnergyTickLabel,
         this.zeroTickLabel,
+        this.maximumEnergyTickLabel,
         this.workFunctionTickLabel,
         ...xLabels
       ]
@@ -208,10 +214,14 @@ export default class EnergyBarGraphNode extends Node {
    */
   private updateGraphDecorations(): void {
     const zeroY = this.chartTransform.modelToViewY( 0 );
+    const minimumEnergyY = this.chartTransform.modelToViewY( EnergyGraphDisplayProperties.MODEL_Y_RANGE.min );
+    const maximumEnergyY = this.chartTransform.modelToViewY( EnergyGraphDisplayProperties.MODEL_Y_RANGE.max );
     const workFunctionY = this.chartTransform.modelToViewY( -this.workFunctionProperty.value );
 
-    // Position the custom tick labels for zero energy and the current negative work-function value.
+    // Position the custom tick labels for fixed energy values and the current negative work-function value.
+    this.minimumEnergyTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, minimumEnergyY );
     this.zeroTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, zeroY );
+    this.maximumEnergyTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, maximumEnergyY );
     this.workFunctionTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, workFunctionY );
 
     const gridLines: Line[] = [];
@@ -255,7 +265,7 @@ export default class EnergyBarGraphNode extends Node {
         this.chartTransform.modelToViewX( sampleCenterX + ZERO_ENERGY_LINE_HALF_WIDTH ),
         zeroY, {
           stroke: 'black',
-          lineWidth: 1.5
+          lineWidth: 2
         } ) );
     } );
 
@@ -273,6 +283,15 @@ export default class EnergyBarGraphNode extends Node {
       new Vector2( centerX, 0 ),
       new Vector2( centerX + BAR_X_OFFSET, 0 )
     ];
+  }
+
+  /**
+   * Creates one numeric y-axis tick label for an energy value.
+   */
+  private static createEnergyTickLabel( energy: number ): Text {
+    return new Text( energy, {
+      font: PhotoelectricEffectConstants.CONTENT_FONT
+    } );
   }
 
   /**

@@ -58,5 +58,5 @@ export default class EnergyGraphDisplayProperties {
   }
 
   // Fixed model range for energy graph y-axes. Keeps zero, grid lines, and scaling stable as material changes.
-  public static readonly MODEL_Y_RANGE = new Range( -14, 10 );
+  public static readonly MODEL_Y_RANGE = new Range( -12, 12 );
 }
