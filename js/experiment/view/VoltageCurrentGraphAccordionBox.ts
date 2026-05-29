@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * VoltageCurrentGraphAssemblyNode configures a GraphAssemblyAccordionBox for a voltage/current plot.
+ * VoltageCurrentGraphAccordionBox configures a GraphAssemblyAccordionBox for a voltage/current plot.
  * Sample data is owned by ExperimentModel.voltageCurrentGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -21,15 +21,15 @@ import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from
 
 type SelfOptions = EmptySelfOptions;
 
-export type VoltageCurrentGraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
+export type VoltageCurrentGraphAccordionBoxOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
-export default class VoltageCurrentGraphAssemblyNode extends GraphAssemblyAccordionBox {
+export default class VoltageCurrentGraphAccordionBox extends GraphAssemblyAccordionBox {
 
   /**
    * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: ExperimentModel, providedOptions: VoltageCurrentGraphAssemblyNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions: VoltageCurrentGraphAccordionBoxOptions ) {
 
     // Full voltage domain displayed for this graph.
     const xRange = new Range( PhotoelectricEffectConstants.MIN_VOLTAGE, PhotoelectricEffectConstants.MAX_VOLTAGE );

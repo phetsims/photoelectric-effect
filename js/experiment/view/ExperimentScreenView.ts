@@ -20,10 +20,10 @@ import LightSourceNode from '../../common/view/LightSourceNode.js';
 import PhotonBeamScreenView, { PhotonBeamScreenViewOptions } from '../../common/view/PhotonBeamScreenView.js';
 import PhotonSourceControl from '../../common/view/PhotonSourceControl.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import FrequencyEnergyGraphAssemblyNode from './FrequencyEnergyGraphAssemblyNode.js';
+import FrequencyEnergyGraphAccordionBox from './FrequencyEnergyGraphAccordionBox.js';
 import GraphAssemblyAccordionBox from './GraphAssemblyAccordionBox.js';
-import IntensityCurrentGraphAssemblyNode from './IntensityCurrentGraphAssemblyNode.js';
-import VoltageCurrentGraphAssemblyNode from './VoltageCurrentGraphAssemblyNode.js';
+import IntensityCurrentGraphAccordionBox from './IntensityCurrentGraphAccordionBox.js';
+import VoltageCurrentGraphAccordionBox from './VoltageCurrentGraphAccordionBox.js';
 import VoltageNumberControl from './VoltageNumberControl.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -63,13 +63,13 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
       children: [
 
         // TODO: Rename these to AccordionBox now
-        new IntensityCurrentGraphAssemblyNode( model, {
+        new IntensityCurrentGraphAccordionBox( model, {
           tandem: options.tandem.createTandem( 'intensityCurrentGraphAccordionBox' )
         } ),
-        new FrequencyEnergyGraphAssemblyNode( model, {
+        new FrequencyEnergyGraphAccordionBox( model, {
           tandem: options.tandem.createTandem( 'frequencyEnergyGraphAccordionBox' )
         } ),
-        new VoltageCurrentGraphAssemblyNode( model, {
+        new VoltageCurrentGraphAccordionBox( model, {
           tandem: options.tandem.createTandem( 'voltageCurrentGraphAccordionBox' )
         } )
       ],

@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * IntensityCurrentGraphAssemblyNode configures a GraphAssemblyAccordionBox for an intensity/current plot.
+ * IntensityCurrentGraphAccordionBox configures a GraphAssemblyAccordionBox for an intensity/current plot.
  * Sample data is owned by ExperimentModel.intensityCurrentGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -23,15 +23,15 @@ import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from
 
 type SelfOptions = EmptySelfOptions;
 
-export type IntensityCurrentGraphAssemblyNodeOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
+export type IntensityCurrentGraphAccordionBoxOptions = SelfOptions & NodeOptions & PickRequired<NodeOptions, 'tandem'>;
 
-export default class IntensityCurrentGraphAssemblyNode extends GraphAssemblyAccordionBox {
+export default class IntensityCurrentGraphAccordionBox extends GraphAssemblyAccordionBox {
 
   /**
    * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: ExperimentModel, providedOptions: IntensityCurrentGraphAssemblyNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions: IntensityCurrentGraphAccordionBoxOptions ) {
 
     // Graph remains labeled as intensity, but the source control value is represented as normalized output.
     const xRange = PhotonSource.NORMALIZED_OUTPUT_RANGE;

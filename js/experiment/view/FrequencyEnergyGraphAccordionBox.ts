@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * FrequencyEnergyGraphAssemblyNode configures a GraphAssemblyAccordionBox for a frequency/energy plot.
+ * FrequencyEnergyGraphAccordionBox configures a GraphAssemblyAccordionBox for a frequency/energy plot.
  * Sample data is owned by ExperimentModel.frequencyEnergyGraphData.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -18,15 +18,15 @@ import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from
 
 type SelfOptions = EmptySelfOptions;
 
-export type FrequencyEnergyGraphAssemblyNodeOptions = SelfOptions & WithRequired<NodeOptions, 'tandem'>;
+export type FrequencyEnergyGraphAccordionBoxOptions = SelfOptions & WithRequired<NodeOptions, 'tandem'>;
 
-export default class FrequencyEnergyGraphAssemblyNode extends GraphAssemblyAccordionBox {
+export default class FrequencyEnergyGraphAccordionBox extends GraphAssemblyAccordionBox {
 
   /**
    * @param model - Provides graph data and axis ranges for this plot.
    * @param providedOptions - Node options for layout and instrumentation.
    */
-  public constructor( model: ExperimentModel, providedOptions: FrequencyEnergyGraphAssemblyNodeOptions ) {
+  public constructor( model: ExperimentModel, providedOptions: FrequencyEnergyGraphAccordionBoxOptions ) {
 
     // Frequency domain displayed for this graph.
     const xRange = new Range( 0, 3 );
