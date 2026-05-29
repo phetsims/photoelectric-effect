@@ -1,15 +1,19 @@
 // Copyright 2026, University of Colorado Boulder
+
 /**
- * Panel for the Energy screen's photon source controls. Contains an ABSwitch to toggle between single-photon and burst
- * modes, a fire button to emit photons, and a wavelength slider.
+ * Panel for the Energy screen's photon source controls. Lets the user choose between single-photon and burst modes,
+ * fire photons for the Energy graphs, and adjust the photon wavelength. The Fire button is disabled while fired
+ * photons are still travelling to the target so graph samples are recorded one firing sequence at a time.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
- *
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
@@ -25,12 +29,21 @@ import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type SelfOptions = EmptySelfOptions;
 type EnergyPhotonSourcePanelOptions = SelfOptions & WithRequired<PanelOptions, 'tandem'>;
+
 export default class EnergyPhotonSourcePanel extends Panel {
 
+  /**
+   * @param wavelengthProperty - Wavelength controlled by the slider.
+   * @param emitSinglePhotonProperty - Whether the Fire button emits one photon or a burst.
+   * @param firePhotonEmitter - Emits when the Fire button is pressed.
+   * @param photonsTravellingProperty - The fire button is enabled only when no fired photons are in flight.
+   * @param providedOptions
+   */
   public constructor(
     wavelengthProperty: NumberProperty,
     emitSinglePhotonProperty: Property<boolean>,
     firePhotonEmitter: Emitter,
+    photonsTravellingProperty: TReadOnlyProperty<boolean>,
     providedOptions: EnergyPhotonSourcePanelOptions
   ) {
 
@@ -56,9 +69,9 @@ export default class EnergyPhotonSourcePanel extends Panel {
         fill: 'white'
       } ),
       listener: () => {
-        //TODO: Disable button until emitted photon collides.
         firePhotonEmitter.emit();
       },
+      enabledProperty: DerivedProperty.not( photonsTravellingProperty ),
       baseColor: 'purple'
     } );
 

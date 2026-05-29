@@ -14,16 +14,32 @@ import Property from '../../../../axon/js/Property.js';
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
+import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
+import IOType from '../../../../tandem/js/types/IOType.js';
+import NullableIO from '../../../../tandem/js/types/NullableIO.js';
+import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
-import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
+import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions, PhotoelectricEffectModelStateObject } from '../../common/model/PhotoelectricEffectModel.js';
 import Photon from '../../common/model/Photon.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import EnergyGraphData from './EnergyGraphData.js';
 import EnergyGraphDisplayProperties from './EnergyGraphDisplayProperties.js';
 
+type SelfOptions = EmptySelfOptions;
+type EnergyModelOptions = SelfOptions & WithRequired<PhotoelectricEffectModelOptions, 'tandem'>;
+
+// PhET-iO serialized state for the Energy model.
+type EnergyModelStateObject = PhotoelectricEffectModelStateObject & {
+  photonSampleIndices: ( number | null )[];
+};
+
 export default class EnergyModel extends PhotoelectricEffectModel {
   public readonly emitSinglePhotonProperty: Property<boolean>;
+
+  // Whether photons fired from the Energy screen are still travelling toward the target.
+  public readonly photonsTravellingProperty: BooleanProperty;
 
   // Properties that control Energy screen graph mode and diagram visibility.
   public readonly energyGraphDisplayProperties: EnergyGraphDisplayProperties;
@@ -43,27 +59,38 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   private readonly photonToSampleIndexMap = new WeakMap<Photon, number>();
 
   public constructor( mysteryMaterials: Material[], providedOptions: WithRequired<PhotoelectricEffectModelOptions, 'tandem'> ) {
+
+    const options = optionize<EnergyModelOptions, SelfOptions, PhotoelectricEffectModelOptions>()( {
+      phetioType: EnergyModel.EnergyModelIO
+    }, providedOptions );
+
     super(
       mysteryMaterials,
       tandem => [ new Material( MaterialType.CUSTOM, { tandem: tandem.createTandem( 'custom' ) } ) ],
-      providedOptions
+      options
     );
 
     this.energyGraphData = new EnergyGraphData( {
-      tandem: providedOptions.tandem.createTandem( 'energyGraphData' ),
+      tandem: options.tandem.createTandem( 'energyGraphData' ),
       phetioDocumentation: 'Recorded sample data shown by the Energy screen graph displays'
     } );
 
     this.emitSinglePhotonProperty = new BooleanProperty( false, {
-      tandem: providedOptions.tandem.createTandem( 'emitSinglePhotonProperty' )
+      tandem: options.tandem.createTandem( 'emitSinglePhotonProperty' )
+    } );
+
+    this.photonsTravellingProperty = new BooleanProperty( false, {
+      tandem: options.tandem.createTandem( 'photonsTravellingProperty' ),
+      phetioReadOnly: true,
+      phetioDocumentation: 'Whether photons fired from the Energy screen are still travelling toward the target'
     } );
 
     this.energyGraphDisplayProperties = new EnergyGraphDisplayProperties(
-      providedOptions.tandem.createTandem( 'energyGraphDisplayProperties' )
+      options.tandem.createTandem( 'energyGraphDisplayProperties' )
     );
 
     this.currentSlotIndexProperty = new NumberProperty( 0, {
-      tandem: providedOptions.tandem.createTandem( 'currentSlotIndexProperty' ),
+      tandem: options.tandem.createTandem( 'currentSlotIndexProperty' ),
       numberType: 'Integer',
       range: new Range( 0, EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES - 1 ),
       phetioReadOnly: true,
@@ -71,10 +98,13 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     } );
 
     this.firePhotonEmitter = new Emitter( {
-      tandem: providedOptions.tandem.createTandem( 'firePhotonEmitter' )
+      tandem: options.tandem.createTandem( 'firePhotonEmitter' )
     } );
 
     this.firePhotonEmitter.addListener( () => {
+      affirm( !this.photonsTravellingProperty.value, 'Cannot fire photons while previous photons are still travelling' );
+      this.photonsTravellingProperty.value = true;
+
       if ( this.emitSinglePhotonProperty.value ) {
         const slotIndex = this.currentSlotIndexProperty.value;
         this.energyGraphData.samples[ slotIndex ].clear();
@@ -99,6 +129,8 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       const kineticEnergy = electron ? electron.energy : 0;
       this.energyGraphData.setSampleData( slotIndex, potentialEnergy, photonEnergy, kineticEnergy );
       this.photonToSampleIndexMap.delete( photon );
+
+      this.photonsTravellingProperty.value = false;
     } );
   }
 
@@ -142,8 +174,48 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   public override reset(): void {
     super.reset();
 
+    this.photonsTravellingProperty.reset();
     this.energyGraphData.clear();
     this.energyGraphDisplayProperties.reset();
     this.currentSlotIndexProperty.reset();
   }
+
+  /**
+   * Serializes Energy-screen state that is not already handled by Properties or the base particle state.
+   */
+  protected override toStateObject(): EnergyModelStateObject {
+    return Object.assign( super.toStateObject(), {
+      photonSampleIndices: this.photons.map( photon => this.photonToSampleIndexMap.get( photon ) ?? null )
+    } );
+  }
+
+  /**
+   * Restores Energy-screen firing state, rebuilding the runtime WeakMap for photon -> sample index.
+   */
+  protected override applyState( stateObject: EnergyModelStateObject ): void {
+    super.applyState( stateObject );
+
+    stateObject.photonSampleIndices.forEach( ( sampleIndex, photonIndex ) => {
+      if ( sampleIndex !== null ) {
+        this.photonToSampleIndexMap.set( this.photons[ photonIndex ], sampleIndex );
+      }
+    } );
+  }
+
+  /**
+   * PhET-iO state schema.
+   */
+  private static readonly ENERGY_MODEL_STATE_SCHEMA = Object.assign( {}, EnergyModel.PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA, {
+    photonSampleIndices: ArrayIO( NullableIO( NumberIO ) )
+  } );
+
+  /**
+   * PhET-iO IOType for the Energy model.
+   */
+  public static readonly EnergyModelIO = new IOType<EnergyModel, EnergyModelStateObject>( 'EnergyModelIO', {
+    valueType: EnergyModel,
+    stateSchema: EnergyModel.ENERGY_MODEL_STATE_SCHEMA,
+    toStateObject: model => model.toStateObject(),
+    applyState: ( model, stateObject ) => model.applyState( stateObject )
+  } );
 }

@@ -29,6 +29,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
         model.wavelengthProperty,
         model.emitSinglePhotonProperty,
         model.firePhotonEmitter,
+        model.photonsTravellingProperty,
         { tandem: tandem }
       )
     }, providedOptions );

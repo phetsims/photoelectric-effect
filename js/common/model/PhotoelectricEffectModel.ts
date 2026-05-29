@@ -18,6 +18,7 @@ import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import TModel from '../../../../joist/js/TModel.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PickOptional from '../../../../phet-core/js/types/PickOptional.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
@@ -37,12 +38,14 @@ import PhotonSource from './PhotonSource.js';
 import Target from './Target.js';
 
 type SelfOptions = EmptySelfOptions;
-export type PhotoelectricEffectModelOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
+export type PhotoelectricEffectModelOptions = SelfOptions &
+  PickRequired<PhetioObjectOptions, 'tandem'> &
+  PickOptional<PhetioObjectOptions, 'phetioType'>;
 
 type CustomMaterialsFactory = ( tandem: Tandem ) => Material[];
 
 // PhET-iO serialized state for the photoelectric-effect model.
-type PhotoelectricEffectModelStateObject = {
+export type PhotoelectricEffectModelStateObject = {
   photons: PhotonStateObject[];
   electrons: ElectronStateObject[];
   photonEmissionAccumulator: number;
@@ -489,7 +492,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   /**
    * PhET-iO state schema.
    */
-  private static readonly PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA = {
+  protected static readonly PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA = {
     photons: PhotoelectricEffectModel.PHOTONS_IO,
     electrons: PhotoelectricEffectModel.ELECTRONS_IO,
     photonEmissionAccumulator: NumberIO
@@ -498,7 +501,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   /**
    * Serializes active photons, electrons, and fractional photon emission accumulator for PhET-iO.
    */
-  private toStateObject(): PhotoelectricEffectModelStateObject {
+  protected toStateObject(): PhotoelectricEffectModelStateObject {
     return {
       photons: PhotoelectricEffectModel.PHOTONS_IO.toStateObject( this.photons ),
       electrons: PhotoelectricEffectModel.ELECTRONS_IO.toStateObject( this.electrons ),
@@ -509,7 +512,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   /**
    * Restores transient particles and the photon emission accumulator from PhET-iO state.
    */
-  private applyState( stateObject: PhotoelectricEffectModelStateObject ): void {
+  protected applyState( stateObject: PhotoelectricEffectModelStateObject ): void {
     PhotoelectricEffectModel.PHOTONS_IO.applyState( this.photons, stateObject.photons );
     PhotoelectricEffectModel.ELECTRONS_IO.applyState( this.electrons, stateObject.electrons );
     this.photonEmissionAccumulator = stateObject.photonEmissionAccumulator;
