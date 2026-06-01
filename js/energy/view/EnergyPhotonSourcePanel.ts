@@ -3,7 +3,7 @@
 /**
  * Panel for the Energy screen's photon source controls. Lets the user choose between single-photon and burst modes,
  * fire photons for the Energy graphs, and adjust the photon wavelength. The Fire button is disabled while fired
- * photons are still travelling to the target so graph samples are recorded one firing sequence at a time.
+ * photons are still traveling to the target so graph samples are recorded one firing sequence at a time.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -36,14 +36,14 @@ export default class EnergyPhotonSourcePanel extends Panel {
    * @param wavelengthProperty - Wavelength controlled by the slider.
    * @param emitSinglePhotonProperty - Whether the Fire button emits one photon or a burst.
    * @param firePhotonEmitter - Emits when the Fire button is pressed.
-   * @param photonsTravellingProperty - The fire button is enabled only when no fired photons are in flight.
+   * @param photonsTravelingProperty - The fire button is enabled only when no fired photons are in flight.
    * @param providedOptions
    */
   public constructor(
     wavelengthProperty: NumberProperty,
     emitSinglePhotonProperty: Property<boolean>,
     firePhotonEmitter: Emitter,
-    photonsTravellingProperty: TReadOnlyProperty<boolean>,
+    photonsTravelingProperty: TReadOnlyProperty<boolean>,
     providedOptions: EnergyPhotonSourcePanelOptions
   ) {
 
@@ -71,7 +71,7 @@ export default class EnergyPhotonSourcePanel extends Panel {
       listener: () => {
         firePhotonEmitter.emit();
       },
-      enabledProperty: DerivedProperty.not( photonsTravellingProperty ),
+      enabledProperty: DerivedProperty.not( photonsTravelingProperty ),
       baseColor: 'purple'
     } );
 

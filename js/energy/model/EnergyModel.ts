@@ -72,8 +72,8 @@ export default class EnergyModel extends PhotoelectricEffectModel {
 
   public readonly emitSinglePhotonProperty: Property<boolean>;
 
-  // Whether photons fired from the Energy screen are still travelling toward the target.
-  public readonly photonsTravellingProperty: BooleanProperty;
+  // Whether photons fired from the Energy screen are still traveling toward the target.
+  public readonly photonsTravelingProperty: BooleanProperty;
 
   // Properties that control Energy screen graph mode and diagram visibility.
   public readonly energyGraphDisplayProperties: EnergyGraphDisplayProperties;
@@ -115,7 +115,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       tandem: options.tandem.createTandem( 'emitSinglePhotonProperty' )
     } );
 
-    this.photonsTravellingProperty = new BooleanProperty( false, {
+    this.photonsTravelingProperty = new BooleanProperty( false, {
       tandem: options.tandem.createTandem( 'photonsTravellingProperty' ),
       phetioReadOnly: true,
       phetioDocumentation: 'Whether photons fired from the Energy screen are still travelling toward the target'
@@ -138,8 +138,8 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     } );
 
     this.firePhotonEmitter.addListener( () => {
-      affirm( !this.photonsTravellingProperty.value, 'Cannot fire photons while previous photons are still travelling' );
-      this.photonsTravellingProperty.value = true;
+      affirm( !this.photonsTravelingProperty.value, 'Cannot fire photons while previous photons are still traveling' );
+      this.photonsTravelingProperty.value = true;
 
       if ( this.emitSinglePhotonProperty.value ) {
         const slotIndex = this.currentSlotIndexProperty.value;
@@ -166,7 +166,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       this.energyGraphData.setSampleData( slotIndex, potentialEnergy, photonEnergy, kineticEnergy );
       this.photonToSampleIndexMap.delete( photon );
 
-      this.photonsTravellingProperty.value = false;
+      this.photonsTravelingProperty.value = false;
     } );
   }
 
@@ -282,7 +282,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   public override reset(): void {
     super.reset();
 
-    this.photonsTravellingProperty.reset();
+    this.photonsTravelingProperty.reset();
     this.queuedPhotonEmissions.length = 0;
     this.energyGraphData.clear();
     this.energyGraphDisplayProperties.reset();
