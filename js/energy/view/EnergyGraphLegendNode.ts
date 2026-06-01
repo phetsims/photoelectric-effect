@@ -2,7 +2,7 @@
 
 /**
  * Legend for the Energy screen graph displays. Shows color swatches and labels that identify each energy quantity
- * shown by the bar graph.
+ * shown by the bar graph in a two-row layout.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -28,6 +28,9 @@ const LEGEND_SWATCH_SIZE = 14;
 // Vertical spacing between rows in the graph legend.
 const LEGEND_ROW_SPACING = 8;
 
+// Horizontal spacing between legend items in the top row.
+const LEGEND_COLUMN_SPACING = 16;
+
 // Horizontal spacing between each swatch and its text label.
 const LEGEND_ITEM_SPACING = 6;
 
@@ -39,14 +42,20 @@ export default class EnergyGraphLegendNode extends VBox {
       align: 'left',
       spacing: LEGEND_ROW_SPACING,
       children: [
-        EnergyGraphLegendNode.createLegendItem(
-          PhotoelectricEffectColors.potentialEnergyGraphColorProperty,
-          PhotoelectricEffectFluent.energy.graph.legend.potentialEnergyStringProperty
-        ),
-        EnergyGraphLegendNode.createLegendItem(
-          PhotoelectricEffectColors.photonEnergyGraphColorProperty,
-          PhotoelectricEffectFluent.energy.graph.legend.photonEnergyStringProperty
-        ),
+        new HBox( {
+          align: 'center',
+          spacing: LEGEND_COLUMN_SPACING,
+          children: [
+            EnergyGraphLegendNode.createLegendItem(
+              PhotoelectricEffectColors.potentialEnergyGraphColorProperty,
+              PhotoelectricEffectFluent.energy.graph.legend.potentialEnergyStringProperty
+            ),
+            EnergyGraphLegendNode.createLegendItem(
+              PhotoelectricEffectColors.photonEnergyGraphColorProperty,
+              PhotoelectricEffectFluent.energy.graph.legend.photonEnergyStringProperty
+            )
+          ]
+        } ),
         EnergyGraphLegendNode.createLegendItem(
           PhotoelectricEffectColors.kineticEnergyGraphColorProperty,
           PhotoelectricEffectFluent.energy.graph.legend.kineticEnergyStringProperty

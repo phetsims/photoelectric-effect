@@ -10,7 +10,7 @@ import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
+import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import KeyboardListener from '../../../../scenery/js/listeners/KeyboardListener.js';
 import Node, { type NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
@@ -35,9 +35,6 @@ export type EnergyGraphAccordionBoxOptions =
 
 // Vertical spacing between the plot and display mode controls.
 const GRAPH_SECTION_SPACING = 8;
-
-// Horizontal spacing between graph-specific controls and display mode controls.
-const BOTTOM_CONTROLS_SPACING = 24;
 
 // Random sample data range, in eV. These values match the fixed graph range used by the Energy graph views.
 const MIN_POTENTIAL_ENERGY = -8;
@@ -110,23 +107,36 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
         energyDiagramControlsNode
       ]
     } );
-    energyDiagramControlsNode.center = barGraphControlsNode.center;
+    energyDiagramControlsNode.leftTop = barGraphControlsNode.leftTop;
 
-    const bottomControlsNode = new HBox( {
-      align: 'center',
-      spacing: BOTTOM_CONTROLS_SPACING,
+    const graphDisplayControlsNode = new Node( {
       children: [
         graphSpecificControlsNode,
         displayModeRadioButtonGroup
       ]
     } );
 
+    // The graph-specific controls should stay below the graph and left-aligned, while the display mode controls
+    // should sit below them and align with the right edge of the graph display. Vertical position depends on the
+    // graph-specific controls, but horizontal position depends on the graph display width.
+    // ManualConstraint keeps those relationships updated if bounds change.
+    ManualConstraint.create(
+      graphDisplayControlsNode,
+      [ graphSpecificControlsNode, displayModeRadioButtonGroup ],
+      ( graphSpecificControlsProxy, displayModeRadioButtonGroupProxy ) => {
+        graphSpecificControlsProxy.left = 0;
+        graphSpecificControlsProxy.top = 0;
+        displayModeRadioButtonGroupProxy.right = graphDisplayNode.width;
+        displayModeRadioButtonGroupProxy.top = graphSpecificControlsProxy.bottom + GRAPH_SECTION_SPACING;
+      }
+    );
+
     const graphControlsNode = new VBox( {
       align: 'center',
       spacing: GRAPH_SECTION_SPACING,
       children: [
         graphDisplayNode,
-        bottomControlsNode
+        graphDisplayControlsNode
       ]
     } );
 

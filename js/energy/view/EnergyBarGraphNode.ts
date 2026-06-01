@@ -34,7 +34,7 @@ export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
 
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 240;
-const CHART_VIEW_HEIGHT = 320;
+const CHART_VIEW_HEIGHT = 270;
 
 // Bar layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;

@@ -42,7 +42,7 @@ type SampleMarkerNodes = {
 
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 120;
-const CHART_VIEW_HEIGHT = 360;
+const CHART_VIEW_HEIGHT = 310;
 
 // Horizontal layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
