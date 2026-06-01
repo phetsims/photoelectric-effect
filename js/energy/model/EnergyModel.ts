@@ -15,15 +15,14 @@ import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
-import Material from '../../common/model/Material.js';
-import { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
+import Material, { MaterialType } from '../../common/model/Material.js';
+import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 import Photon from '../../common/model/Photon.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import IntroModel from '../../intro/model/IntroModel.js';
 import EnergyGraphData from './EnergyGraphData.js';
 import EnergyGraphDisplayProperties from './EnergyGraphDisplayProperties.js';
 
-export default class EnergyModel extends IntroModel {
+export default class EnergyModel extends PhotoelectricEffectModel {
   public readonly emitSinglePhotonProperty: Property<boolean>;
 
   // Properties that control Energy screen graph mode and diagram visibility.
@@ -44,7 +43,11 @@ export default class EnergyModel extends IntroModel {
   private readonly photonToSampleIndexMap = new WeakMap<Photon, number>();
 
   public constructor( mysteryMaterials: Material[], providedOptions: WithRequired<PhotoelectricEffectModelOptions, 'tandem'> ) {
-    super( mysteryMaterials, providedOptions );
+    super(
+      mysteryMaterials,
+      tandem => [ new Material( MaterialType.CUSTOM, { tandem: tandem.createTandem( 'custom' ) } ) ],
+      providedOptions
+    );
 
     this.energyGraphData = new EnergyGraphData( {
       tandem: providedOptions.tandem.createTandem( 'energyGraphData' ),
