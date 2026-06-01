@@ -290,6 +290,22 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   }
 
   /**
+   * Initial photon position for the Energy graph sample slot.
+   */
+  protected getPhotonInitialPosition( offset: number ): Vector2 {
+    return PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus(
+      Photon.TRAVEL_DIRECTION.timesScalar( offset ) );
+  }
+
+  /**
+   * Initial photon velocity for Energy screen fired photons.
+   */
+  protected getPhotonInitialVelocity(): Vector2 {
+    return PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar(
+      PhotoelectricEffectConstants.PHOTON_SPEED );
+  }
+
+  /**
    * Emits new photons based on source intensity and elapsed time.
    */
   private emitPhotons( dt: number ): void {
@@ -310,8 +326,8 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       const offset = ( dotRandom.nextDouble() * 2 - 1 ) * PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH;
 
       // Calculate the initial position and velocity of the photon.
-      const position = PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus( Photon.TRAVEL_DIRECTION.timesScalar( offset ) );
-      const velocity = PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar( PhotoelectricEffectConstants.PHOTON_SPEED );
+      const position = this.getPhotonInitialPosition( offset );
+      const velocity = this.getPhotonInitialVelocity();
 
       // Create an add photon to array.
       const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );

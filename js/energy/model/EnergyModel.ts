@@ -116,9 +116,9 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     } );
 
     this.photonsTravelingProperty = new BooleanProperty( false, {
-      tandem: options.tandem.createTandem( 'photonsTravellingProperty' ),
+      tandem: options.tandem.createTandem( 'photonsTravelingProperty' ),
       phetioReadOnly: true,
-      phetioDocumentation: 'Whether photons fired from the Energy screen are still travelling toward the target'
+      phetioDocumentation: 'Whether photons fired from the Energy screen are still traveling toward the target'
     } );
 
     this.energyGraphDisplayProperties = new EnergyGraphDisplayProperties(
@@ -223,7 +223,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   }
 
   /**
-   * Advances delayed burst emissions by one frame. Due photons are created before active photons step so they can
+   * Advances delayed burst emissions by one frame. Photons are created before active photons step so they can
    * move during this frame, matching the simple frame-boundary scheduling described in queueBurstPhotons.
    */
   private stepQueuedPhotonEmissions( dt: number ): void {
@@ -249,28 +249,12 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   }
 
   /**
-   * Initial photon position for the Energy graph sample slot.
-   */
-  private getPhotonInitialPosition( slotIndex: number ): Vector2 {
-    return PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus(
-      Photon.TRAVEL_DIRECTION.timesScalar( EnergyModel.LENS_OFFSETS[ slotIndex ] ) );
-  }
-
-  /**
-   * Initial photon velocity for Energy screen fired photons.
-   */
-  private getPhotonInitialVelocity(): Vector2 {
-    return PhotoelectricEffectConstants.PHOTON_SOURCE_DIRECTION.timesScalar(
-      PhotoelectricEffectConstants.PHOTON_SPEED );
-  }
-
-  /**
    * Time for the photon from a sample slot to reach the target x position. Photon motion is angled, but target
    * collision is defined by crossing the target's vertical x plane, so only the x displacement and x velocity
    * determine the collision time.
    */
   private getPhotonTimeToTarget( slotIndex: number ): number {
-    const position = this.getPhotonInitialPosition( slotIndex );
+    const position = this.getPhotonInitialPosition( EnergyModel.LENS_OFFSETS[ slotIndex ] );
     const velocity = this.getPhotonInitialVelocity();
 
     return ( this.target.x - position.x ) / velocity.x;
@@ -295,10 +279,8 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   protected override toStateObject(): EnergyModelStateObject {
     return Object.assign( super.toStateObject(), {
       photonSampleIndices: this.photons.map( photon => this.photonToSampleIndexMap.get( photon ) ?? null ),
-      queuedPhotonEmissions: this.queuedPhotonEmissions.map( queuedPhotonEmission => ( {
-        slotIndex: queuedPhotonEmission.slotIndex,
-        remainingTime: queuedPhotonEmission.remainingTime
-      } ) )
+      queuedPhotonEmissions: this.queuedPhotonEmissions.map( queuedPhotonEmission =>
+        EnergyModel.QUEUED_PHOTON_EMISSION_IO.toStateObject( queuedPhotonEmission ) )
     } );
   }
 
@@ -318,12 +300,8 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     } );
 
     this.queuedPhotonEmissions.length = 0;
-    stateObject.queuedPhotonEmissions.forEach( queuedPhotonEmission => {
-      this.queuedPhotonEmissions.push( {
-        slotIndex: queuedPhotonEmission.slotIndex,
-        remainingTime: queuedPhotonEmission.remainingTime
-      } );
-    } );
+    stateObject.queuedPhotonEmissions.forEach( stateObj =>
+      this.queuedPhotonEmissions.push( EnergyModel.QUEUED_PHOTON_EMISSION_IO.fromStateObject( stateObj ) ) );
   }
 
   /**
