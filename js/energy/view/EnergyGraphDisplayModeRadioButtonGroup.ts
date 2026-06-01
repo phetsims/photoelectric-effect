@@ -109,21 +109,27 @@ export default class EnergyGraphDisplayModeRadioButtonGroup extends RectangularR
     const zeroEnergyLineRightX = DISPLAY_MODE_ICON_SIZE;
     const energyAxisX = 1;
     const plotRightX = DISPLAY_MODE_ICON_SIZE - 1;
-    const lowerEnergyLevelY = DISPLAY_MODE_ICON_SIZE;
-    const conductionBandBottomY = DISPLAY_MODE_ICON_SIZE - 3;
-    const conductionBandTopY = 26;
-    const zeroEnergyLineY = 14;
+    const lowerEnergyLevelY = DISPLAY_MODE_ICON_SIZE - 5;
+    const conductionBandBottomY = DISPLAY_MODE_ICON_SIZE - 10;
+    const zeroEnergyLineY = 18;
 
     return new Node( {
       children: [
         new Rectangle(
           energyAxisX,
-          conductionBandTopY,
+          zeroEnergyLineY,
           plotRightX - energyAxisX,
-          conductionBandBottomY - conductionBandTopY, {
+          lowerEnergyLevelY - zeroEnergyLineY, {
+            fill: PhotoelectricEffectColors.emptyStatesEnergyDiagramColorProperty
+          } ),
+        new Rectangle(
+          energyAxisX,
+          conductionBandBottomY,
+          plotRightX - energyAxisX,
+          lowerEnergyLevelY - conductionBandBottomY, {
             fill: PhotoelectricEffectColors.electronColorProperty
           } ),
-        new ArrowNode( energyAxisX, lowerEnergyLevelY, energyAxisX, 2, {
+        new ArrowNode( energyAxisX, DISPLAY_MODE_ICON_SIZE, energyAxisX, 2, {
           fill: PhotoelectricEffectColors.iconStrokeColorProperty,
           stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
           lineWidth: 1,
