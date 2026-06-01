@@ -157,7 +157,7 @@ export default class EnergyBarGraphNode extends Node {
     this.zeroTickLabel = EnergyBarGraphNode.createEnergyTickLabel( 0 );
     this.maximumEnergyTickLabel = EnergyBarGraphNode.createEnergyTickLabel( EnergyGraphDisplayProperties.MODEL_Y_RANGE.max );
 
-    this.workFunctionTickLabel = new Text( `-${MathSymbols.PHI}`, {
+    this.workFunctionTickLabel = new Text( `-${MathSymbols.PHI_SYMBOL}`, {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
 

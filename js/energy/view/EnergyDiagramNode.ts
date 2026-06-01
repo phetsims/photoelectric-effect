@@ -156,7 +156,7 @@ export default class EnergyDiagramNode extends Node {
       lineWidth: WORK_FUNCTION_MARKER_LINE_WIDTH
     } );
 
-    this.workFunctionLabel = new Text( MathSymbols.PHI, {
+    this.workFunctionLabel = new Text( MathSymbols.PHI_SYMBOL, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
       visibleProperty: workFunctionVisibleProperty
     } );
