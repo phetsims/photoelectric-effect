@@ -27,6 +27,9 @@ export default class EnergyGraphDisplayProperties {
   // Whether the work function label is visible on the energy diagram.
   public readonly diagramWorkFunctionVisibleProperty: Property<boolean>;
 
+  // Whether photon energy transfer arrows are visible on the energy diagram.
+  public readonly diagramPhotonArrowsVisibleProperty: Property<boolean>;
+
   public constructor( tandem: Tandem ) {
     this.displayModeProperty = new StringUnionProperty( 'barGraph', {
       phetioFeatured: true,
@@ -46,6 +49,12 @@ export default class EnergyGraphDisplayProperties {
       tandem: tandem.createTandem( 'diagramWorkFunctionVisibleProperty' ),
       phetioDocumentation: 'Whether the work function label is visible on the Energy screen energy diagram'
     } );
+
+    this.diagramPhotonArrowsVisibleProperty = new BooleanProperty( true, {
+      phetioFeatured: true,
+      tandem: tandem.createTandem( 'diagramPhotonArrowsVisibleProperty' ),
+      phetioDocumentation: 'Whether photon energy transfer arrows are visible on the Energy screen energy diagram'
+    } );
   }
 
   /**
@@ -55,6 +64,7 @@ export default class EnergyGraphDisplayProperties {
     this.displayModeProperty.reset();
     this.diagramLabelsVisibleProperty.reset();
     this.diagramWorkFunctionVisibleProperty.reset();
+    this.diagramPhotonArrowsVisibleProperty.reset();
   }
 
   // Fixed model range for energy graph y-axes. Keeps zero, grid lines, and scaling stable as material changes.

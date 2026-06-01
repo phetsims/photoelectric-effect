@@ -51,16 +51,18 @@ photonQuantity:
 energy:
   graph:
     yAxisLabel: 'Energy (eV)'
-    conductionBandLabel: 'Conduction Band'
     fermiLevelLabel: 'Fermi Level'
     noElectronEjected: 'No electron ejected'
     diagramControls:
       labels: 'Labels'
       workFunction: 'Work Function'
+      photonArrow: 'Photon Arrow'
     legend:
       potentialEnergy: 'Potential Energy'
       photonEnergy: 'Photon Energy'
       kineticEnergy: 'Kinetic Energy'
+      emptyStates: 'Empty States'
+      filledStates: 'Filled States'
 
 showElectrons: 'Show Electrons'
 highestEnergyOnly: 'Highest Energy Only'

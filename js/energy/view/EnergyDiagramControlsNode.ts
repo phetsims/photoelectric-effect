@@ -32,6 +32,7 @@ export default class EnergyDiagramControlsNode extends VBox {
 
   public constructor( labelsVisibleProperty: Property<boolean>,
                       workFunctionVisibleProperty: Property<boolean>,
+                      photonArrowsVisibleProperty: Property<boolean>,
                       providedOptions: EnergyDiagramControlsNodeOptions ) {
 
     const options = optionize<EnergyDiagramControlsNodeOptions, SelfOptions, VBoxOptions>()( {
@@ -60,6 +61,18 @@ export default class EnergyDiagramControlsNode extends VBox {
             boxWidth: CHECKBOX_BOX_WIDTH,
             spacing: 4,
             tandem: providedOptions.tandem.createTandem( 'workFunctionCheckbox' )
+          }
+        ),
+
+        new Checkbox(
+          photonArrowsVisibleProperty,
+          new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.photonArrowStringProperty, {
+            font: PhotoelectricEffectConstants.CONTENT_FONT,
+            maxWidth: CHECKBOX_LABEL_MAX_WIDTH
+          } ), {
+            boxWidth: CHECKBOX_BOX_WIDTH,
+            spacing: 4,
+            tandem: providedOptions.tandem.createTandem( 'photonArrowCheckbox' )
           }
         )
       ]

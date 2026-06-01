@@ -30,8 +30,8 @@ export default class PhotoelectricEffectColors {
     } );
 
   public static readonly photonColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonColor', {
-      default: 'purple'
-    } );
+    default: 'purple'
+  } );
 
   public static readonly photonOrbInnerColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonOrbInnerColor', {
     default: 'rgba(255, 255, 255, 0.7)'
@@ -167,6 +167,24 @@ export default class PhotoelectricEffectColors {
   // Color for the conduction band in the Energy screen energy diagram.
   public static readonly conductionBandEnergyDiagramColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'conductionBandEnergyDiagramColor', {
-      default: '#5fabd7'
+      default: 'rgb( 108, 186, 223 )'
+    } );
+
+  // Color for empty states in the Energy screen energy diagram.
+  public static readonly emptyStatesEnergyDiagramColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'emptyStatesEnergyDiagramColor', {
+      default: '#e6e6e6'
+    } );
+
+  // Color for the initial electron energy markers in the Energy screen energy diagram.
+  public static readonly initialEnergyMarkerColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'initialEnergyMarkerColor', {
+      default: 'white'
+    } );
+
+  // Color for photon energy transfer arrows in the Energy screen energy diagram.
+  public static readonly photonArrowEnergyDiagramColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'photonArrowEnergyDiagramColor', {
+      default: '#83368a'
     } );
 }

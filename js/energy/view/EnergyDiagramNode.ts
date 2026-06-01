@@ -14,16 +14,13 @@ import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
-import BracketNode from '../../../../scenery-phet/js/BracketNode.js';
 import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
 import ShadedSphereNode from '../../../../scenery-phet/js/ShadedSphereNode.js';
 import Circle from '../../../../scenery/js/nodes/Circle.js';
 import Line from '../../../../scenery/js/nodes/Line.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
-import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import LinearGradient from '../../../../scenery/js/util/LinearGradient.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -34,20 +31,23 @@ import EnergyGraphSample from '../model/EnergyGraphSample.js';
 type SelfOptions = EmptySelfOptions;
 export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
 
+// A collection of markers Nodes that label and represent physical energies. These Nodes are persistent and
+// their positions are updated upon model changes.
 type SampleMarkerNodes = {
   sampleNode: Node;
+  photonArrowNode: ArrowNode;
   initialEnergyMarker: Circle;
   emittedEnergyMarker: ShadedSphereNode;
 };
 
 // View size of the shared chart rectangle.
-const CHART_VIEW_WIDTH = 120;
+const CHART_VIEW_WIDTH = 170;
 const CHART_VIEW_HEIGHT = 310;
 
 // Horizontal layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
 
-// Marker and label layout.
+// Various reused layout constants.
 const ELECTRON_MARKER_RADIUS = 5;
 const Y_TICK_LABEL_MARGIN = 5;
 const WORK_FUNCTION_MARKER_X = CHART_VIEW_WIDTH + 14;
@@ -62,7 +62,10 @@ export default class EnergyDiagramNode extends Node {
   // Container for graph decorations that depend on the work function.
   private readonly graphDecorationNode: Node;
 
-  // Shaded region that represents the conduction band.
+  // Filled region between zero energy and the Fermi level, representing empty electron states.
+  private readonly emptyStatesNode: Rectangle;
+
+  // Filled region that represents occupied states below the Fermi level.
   private readonly conductionBandNode: Rectangle;
 
   // Persistent graph decorations that can be repositioned as the work function changes. These are created once
@@ -74,10 +77,6 @@ export default class EnergyDiagramNode extends Node {
   private readonly workFunctionMarkerFermiCap: Line;
   private readonly workFunctionMarkerZeroCap: Line;
   private readonly workFunctionLabel: Node;
-  private readonly conductionBandLabel: Node;
-
-  // BracketNode does not expose a way to mutate its shape, so it is replaced when its length changes.
-  private conductionBandBracket: Node | null = null;
 
   // Labels for the special y values shown on the graph.
   private readonly zeroTickLabel: Node;
@@ -86,15 +85,19 @@ export default class EnergyDiagramNode extends Node {
   /**
    * @param samples - Persistent sample slots whose Properties drive the marker positions.
    * @param workFunctionProperty - Work function source used for the Fermi level marker.
-   * @param labelsVisibleProperty - Whether Fermi level and conduction band labels are visible.
+   * @param bandWidthProperty - Occupied-band width source used for the lower edge of the filled states.
+   * @param labelsVisibleProperty - Whether Fermi level labels are visible.
    * @param workFunctionVisibleProperty - Whether the work function label is visible.
+   * @param photonArrowsVisibleProperty - Whether arrows showing photon energy transfer are visible.
    * @param providedOptions
    */
 
   public constructor( samples: EnergyGraphSample[],
                       private readonly workFunctionProperty: TReadOnlyProperty<number>,
+                      private readonly bandWidthProperty: TReadOnlyProperty<number>,
                       private readonly labelsVisibleProperty: TReadOnlyProperty<boolean>,
                       workFunctionVisibleProperty: TReadOnlyProperty<boolean>,
+                      photonArrowsVisibleProperty: TReadOnlyProperty<boolean>,
                       providedOptions: EnergyDiagramNodeOptions ) {
 
     const options = optionize<EnergyDiagramNodeOptions, SelfOptions, NodeOptions>()( {
@@ -110,15 +113,19 @@ export default class EnergyDiagramNode extends Node {
       modelYRange: EnergyGraphDisplayProperties.MODEL_Y_RANGE
     } );
 
+    this.emptyStatesNode = new Rectangle( 0, 0, CHART_VIEW_WIDTH, 0, {
+      fill: PhotoelectricEffectColors.emptyStatesEnergyDiagramColorProperty
+    } );
+
     this.conductionBandNode = new Rectangle( 0, 0, CHART_VIEW_WIDTH, 0, {
-      fill: 'white'
+      fill: PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty
     } );
 
     const energyAxisNode = new ArrowNode( 0, CHART_VIEW_HEIGHT, 0, 0, {
       fill: PhotoelectricEffectColors.iconStrokeColorProperty,
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
       lineWidth: 1,
-      tailWidth: 1,
+      tailWidth: 0.5,
       headWidth: 9,
       headHeight: 9
     } );
@@ -126,19 +133,19 @@ export default class EnergyDiagramNode extends Node {
     this.conductionBandBottomLine = new Line( 0, 0, CHART_VIEW_WIDTH, 0, {
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
       lineWidth: 1.5,
-      lineDash: [ 2, 2 ]
+      lineDash: [ 1, 0.5 ]
     } );
 
     this.fermiLevelLine = new Line( 0, 0, CHART_VIEW_WIDTH, 0, {
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
       lineWidth: 1.5,
-      lineDash: [ 2, 2 ]
+      lineDash: [ 1, 0.5 ]
     } );
 
     this.zeroEnergyLine = new Line( 0, 0, CHART_VIEW_WIDTH, 0, {
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
       lineWidth: 1.5,
-      lineDash: [ 8, 5 ]
+      lineDash: [ 2, 1 ]
     } );
 
     this.workFunctionMarkerLine = new Line( 0, 0, 0, 0, {
@@ -161,13 +168,9 @@ export default class EnergyDiagramNode extends Node {
       visibleProperty: workFunctionVisibleProperty
     } );
 
-    this.conductionBandLabel = new RichText( PhotoelectricEffectFluent.energy.graph.conductionBandLabelStringProperty, {
-      font: PhotoelectricEffectConstants.CONTENT_FONT,
-      lineWrap: 90
-    } );
-
     this.graphDecorationNode = new Node( {
       children: [
+        this.emptyStatesNode,
         this.conductionBandNode,
         energyAxisNode,
         this.conductionBandBottomLine,
@@ -186,7 +189,7 @@ export default class EnergyDiagramNode extends Node {
     } );
 
     const sampleMarkerNodes = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
-      return EnergyDiagramNode.createSampleMarkerNodes( this.chartTransform, sampleIndex );
+      return EnergyDiagramNode.createSampleMarkerNodes( this.chartTransform, sampleIndex, photonArrowsVisibleProperty );
     } );
 
     // Link each persistent sample slot to its corresponding markers.
@@ -260,8 +263,8 @@ export default class EnergyDiagramNode extends Node {
       } )
     ];
 
-    // Linked eagerly to initialize decorations.
-    workFunctionProperty.link( () => {
+    // Linked eagerly to initialize decoration positions.
+    Multilink.multilink( [ workFunctionProperty, bandWidthProperty ], () => {
       this.updateGraphDecorations();
     } );
   }
@@ -272,7 +275,13 @@ export default class EnergyDiagramNode extends Node {
   private updateGraphDecorations(): void {
     const zeroY = this.chartTransform.modelToViewY( 0 );
     const fermiLevelY = this.chartTransform.modelToViewY( -this.workFunctionProperty.value );
-    const conductionBandBottomY = this.chartTransform.modelToViewY( -8 );
+    const unclippedConductionBandBottomY = this.chartTransform.modelToViewY(
+      -this.workFunctionProperty.value - this.bandWidthProperty.value
+    );
+
+    // TODO: @design Discuss how to represent occupied states when the material bandwidth extends below the plotted
+    //  energy range.
+    const conductionBandBottomY = Math.min( unclippedConductionBandBottomY, CHART_VIEW_HEIGHT );
 
     this.zeroTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, zeroY );
     this.fermiLevelTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, fermiLevelY );
@@ -283,9 +292,12 @@ export default class EnergyDiagramNode extends Node {
       CHART_VIEW_WIDTH,
       conductionBandBottomY - fermiLevelY
     );
-    this.conductionBandNode.fill = new LinearGradient( 0, fermiLevelY, 0, conductionBandBottomY )
-      .addColorStop( 0, 'white' )
-      .addColorStop( 1, PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty );
+    this.emptyStatesNode.setRect(
+      0,
+      zeroY,
+      CHART_VIEW_WIDTH,
+      fermiLevelY - zeroY
+    );
 
     this.conductionBandBottomLine.setLine( 0, conductionBandBottomY, CHART_VIEW_WIDTH, conductionBandBottomY );
     this.fermiLevelLine.setLine( 0, fermiLevelY, CHART_VIEW_WIDTH, fermiLevelY );
@@ -304,48 +316,6 @@ export default class EnergyDiagramNode extends Node {
       WORK_FUNCTION_MARKER_X + WORK_FUNCTION_MARKER_CAP_WIDTH / 2 + 4,
       ( fermiLevelY + zeroY ) / 2
     );
-
-    // We must dispose and create a new BracketNode because it doesn't support shape changes once constructed.
-    this.disposeConductionBandBracket();
-
-    const conductionBandBracketX = WORK_FUNCTION_MARKER_X - WORK_FUNCTION_MARKER_CAP_WIDTH / 2;
-    const conductionBandBracketVerticalInset = 6;
-    const conductionBandBracketMinLength = 18;
-    const conductionBandBracketEndRadius = 3;
-    const conductionBandBracketTipRadius = 4;
-    const conductionBandBracketLabelSpacing = 4;
-    this.conductionBandBracket = new BracketNode( {
-      orientation: 'right',
-      labelNode: this.conductionBandLabel,
-      bracketLength: Math.max(
-        conductionBandBottomY - fermiLevelY - 2 * conductionBandBracketVerticalInset,
-        conductionBandBracketMinLength
-      ),
-      bracketEndRadius: conductionBandBracketEndRadius,
-      bracketTipRadius: conductionBandBracketTipRadius,
-      bracketStroke: PhotoelectricEffectColors.iconStrokeColorProperty,
-      bracketLineWidth: 1.5,
-      spacing: conductionBandBracketLabelSpacing,
-      visibleProperty: this.labelsVisibleProperty
-    } );
-    this.conductionBandBracket.leftCenter = new Vector2(
-      conductionBandBracketX,
-      ( fermiLevelY + conductionBandBottomY ) / 2
-    );
-    this.graphDecorationNode.addChild( this.conductionBandBracket );
-  }
-
-  /**
-   * Disposes the generated conduction-band bracket before the next bracket is created.
-   * We typically create reusable Nodes to avoid disposal in this class, but BracketNode does not support
-   * changes once constructed.
-   */
-  private disposeConductionBandBracket(): void {
-    if ( this.conductionBandBracket ) {
-      this.graphDecorationNode.removeChild( this.conductionBandBracket );
-      this.conductionBandBracket.dispose();
-      this.conductionBandBracket = null;
-    }
   }
 
   /**
@@ -353,11 +323,23 @@ export default class EnergyDiagramNode extends Node {
    * conduction band, and the shaded blue electron marks its emitted kinetic energy after photon collision. The
    * markers are retained and repositioned as sample Properties change.
    */
-  private static createSampleMarkerNodes( chartTransform: ChartTransform, sampleIndex: number ): SampleMarkerNodes {
+  private static createSampleMarkerNodes( chartTransform: ChartTransform,
+                                          sampleIndex: number,
+                                          photonArrowsVisibleProperty: TReadOnlyProperty<boolean> ): SampleMarkerNodes {
     const sampleCenterX = chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) );
+    const sampleInitialY = chartTransform.modelToViewY( 0 );
+
+    const photonArrowNode = new ArrowNode( sampleCenterX, sampleInitialY, sampleCenterX, sampleInitialY, {
+      fill: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
+      stroke: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
+      tailWidth: 1.25,
+      headWidth: 8,
+      headHeight: 8,
+      visibleProperty: photonArrowsVisibleProperty
+    } );
 
     const initialEnergyMarker = new Circle( ELECTRON_MARKER_RADIUS, {
-      fill: 'white',
+      fill: PhotoelectricEffectColors.initialEnergyMarkerColorProperty,
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty,
       lineWidth: 1.5
     } );
@@ -367,14 +349,15 @@ export default class EnergyDiagramNode extends Node {
     const sampleMarkerNodes: SampleMarkerNodes = {
       sampleNode: new Node( {
         visible: false,
-        children: [ initialEnergyMarker, emittedEnergyMarker ]
+        children: [ photonArrowNode, initialEnergyMarker, emittedEnergyMarker ]
       } ),
+      photonArrowNode: photonArrowNode,
       initialEnergyMarker: initialEnergyMarker,
       emittedEnergyMarker: emittedEnergyMarker
     };
 
-    initialEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( 0 ) );
-    emittedEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( 0 ) );
+    initialEnergyMarker.center = new Vector2( sampleCenterX, sampleInitialY );
+    emittedEnergyMarker.center = new Vector2( sampleCenterX, sampleInitialY );
 
     return sampleMarkerNodes;
   }
@@ -388,12 +371,17 @@ export default class EnergyDiagramNode extends Node {
                                               potentialEnergy: number,
                                               kineticEnergy: number ): void {
     const sampleCenterX = chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) );
+    const potentialEnergyY = chartTransform.modelToViewY( potentialEnergy );
+    const kineticEnergyY = chartTransform.modelToViewY( kineticEnergy );
 
-    sampleMarkerNodes.initialEnergyMarker.center = new Vector2(
+    sampleMarkerNodes.initialEnergyMarker.center = new Vector2( sampleCenterX, potentialEnergyY );
+    sampleMarkerNodes.emittedEnergyMarker.center = new Vector2( sampleCenterX, kineticEnergyY );
+    sampleMarkerNodes.photonArrowNode.setTailAndTip(
       sampleCenterX,
-      chartTransform.modelToViewY( potentialEnergy )
+      potentialEnergyY,
+      sampleCenterX,
+      kineticEnergyY + ELECTRON_MARKER_RADIUS
     );
-    sampleMarkerNodes.emittedEnergyMarker.center = new Vector2( sampleCenterX, chartTransform.modelToViewY( kineticEnergy ) );
   }
 
   /**

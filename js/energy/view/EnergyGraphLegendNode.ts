@@ -1,8 +1,10 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Legend for the Energy screen graph displays. Shows color swatches and labels that identify each energy quantity
- * shown by the bar graph in a two-row layout.
+ * Legend for the Energy screen graph displays. Shows color swatches and labels that identify graph-specific
+ * quantities. The legend is a vertical stack of rows. Each row is supplied as an array of legend items; rows with
+ * one item add that item directly, while rows with multiple items are wrapped in a horizontal layout so related
+ * entries can share one line.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -17,10 +19,14 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import type TPaint from '../../../../scenery/js/util/TPaint.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+
+export type EnergyGraphLegendItem = {
+  fill: TPaint;
+  labelStringProperty: TReadOnlyProperty<string>;
+};
 
 type SelfOptions = EmptySelfOptions;
-type EnergyGraphLegendNodeOptions = SelfOptions & VBoxOptions;
+export type EnergyGraphLegendNodeOptions = SelfOptions & VBoxOptions;
 
 // Size of the square color samples in the graph legend.
 const LEGEND_SWATCH_SIZE = 14;
@@ -36,49 +42,40 @@ const LEGEND_ITEM_SPACING = 6;
 
 export default class EnergyGraphLegendNode extends VBox {
 
-  public constructor( providedOptions?: EnergyGraphLegendNodeOptions ) {
-
+  /**
+   * @param rows - Outer array defines vertical rows. Inner arrays define the items within a row, arranged
+   * horizontally when there is more than one item.
+   * @param providedOptions
+   */
+  public constructor( rows: EnergyGraphLegendItem[][], providedOptions?: EnergyGraphLegendNodeOptions ) {
     const options = optionize<EnergyGraphLegendNodeOptions, SelfOptions, VBoxOptions>()( {
       align: 'left',
       spacing: LEGEND_ROW_SPACING,
-      children: [
-        new HBox( {
-          align: 'center',
-          spacing: LEGEND_COLUMN_SPACING,
-          children: [
-            EnergyGraphLegendNode.createLegendItem(
-              PhotoelectricEffectColors.potentialEnergyGraphColorProperty,
-              PhotoelectricEffectFluent.energy.graph.legend.potentialEnergyStringProperty
-            ),
-            EnergyGraphLegendNode.createLegendItem(
-              PhotoelectricEffectColors.photonEnergyGraphColorProperty,
-              PhotoelectricEffectFluent.energy.graph.legend.photonEnergyStringProperty
-            )
-          ]
-        } ),
-        EnergyGraphLegendNode.createLegendItem(
-          PhotoelectricEffectColors.kineticEnergyGraphColorProperty,
-          PhotoelectricEffectFluent.energy.graph.legend.kineticEnergyStringProperty
-        )
-      ]
+      children: rows.map( row => row.length === 1 ?
+                           EnergyGraphLegendNode.createLegendItem( row[ 0 ] ) :
+                           new HBox( {
+                             align: 'center',
+                             spacing: LEGEND_COLUMN_SPACING,
+                             children: row.map( item => EnergyGraphLegendNode.createLegendItem( item ) )
+                           } ) )
     }, providedOptions );
 
     super( options );
   }
 
   /**
-   * Creates one row for the energy graph legend, with a colored swatch and the associated energy label.
+   * Creates one legend item with a colored swatch and the associated energy label.
    */
-  private static createLegendItem( color: TPaint, labelStringProperty: TReadOnlyProperty<string> ): Node {
+  private static createLegendItem( item: EnergyGraphLegendItem ): Node {
     return new HBox( {
       align: 'center',
       spacing: LEGEND_ITEM_SPACING,
       children: [
         new Rectangle( 0, 0, LEGEND_SWATCH_SIZE, LEGEND_SWATCH_SIZE, {
-          fill: color,
+          fill: item.fill,
           stroke: PhotoelectricEffectColors.iconStrokeColorProperty
         } ),
-        new Text( labelStringProperty, {
+        new Text( item.labelStringProperty, {
           font: PhotoelectricEffectConstants.CONTENT_FONT
         } )
       ]

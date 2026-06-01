@@ -7,20 +7,16 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import dotRandom from '../../../../dot/js/dotRandom.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
-import KeyboardListener from '../../../../scenery/js/listeners/KeyboardListener.js';
 import Node, { type NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import AccordionBox, { AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import EnergyGraphData from '../model/EnergyGraphData.js';
-import type { EnergyGraphSampleData } from '../model/EnergyGraphSample.js';
 import type EnergyModel from '../model/EnergyModel.js';
 import EnergyBarGraphNode from './EnergyBarGraphNode.js';
 import EnergyDiagramControlsNode from './EnergyDiagramControlsNode.js';
@@ -32,13 +28,6 @@ type SelfOptions = EmptySelfOptions;
 
 export type EnergyGraphAccordionBoxOptions =
   SelfOptions & NodeTranslationOptions & PickRequired<AccordionBoxOptions, 'tandem'>;
-
-// Vertical spacing between the plot and display mode controls.
-const GRAPH_SECTION_SPACING = 8;
-
-// Random sample data range, in eV. These values match the fixed graph range used by the Energy graph views.
-const MIN_POTENTIAL_ENERGY = -8;
-const MAX_PHOTON_ENERGY = 7;
 
 export default class EnergyGraphAccordionBox extends AccordionBox {
 
@@ -69,8 +58,10 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     const energyDiagramNode = new EnergyDiagramNode(
       model.energyGraphData.samples,
       model.target.workFunctionProperty,
+      model.target.bandWidthProperty,
       displayProperties.diagramLabelsVisibleProperty,
       displayProperties.diagramWorkFunctionVisibleProperty,
+      displayProperties.diagramPhotonArrowsVisibleProperty,
       {
         visibleProperty: energyDiagramVisibleProperty
       } );
@@ -90,24 +81,67 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       ]
     } );
 
-    const barGraphControlsNode = new EnergyGraphLegendNode( {
+    const barGraphControlsNode = new EnergyGraphLegendNode( [
+      [
+        {
+          fill: PhotoelectricEffectColors.potentialEnergyGraphColorProperty,
+          labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.potentialEnergyStringProperty
+        },
+        {
+          fill: PhotoelectricEffectColors.photonEnergyGraphColorProperty,
+          labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.photonEnergyStringProperty
+        }
+      ],
+      [
+        {
+          fill: PhotoelectricEffectColors.kineticEnergyGraphColorProperty,
+          labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.kineticEnergyStringProperty
+        }
+      ]
+    ], {
       visibleProperty: barGraphVisibleProperty
     } );
 
+    const energyDiagramLegendNode = new EnergyGraphLegendNode( [
+      [
+        {
+          fill: PhotoelectricEffectColors.emptyStatesEnergyDiagramColorProperty,
+          labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.emptyStatesStringProperty
+        },
+        {
+          fill: PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty,
+          labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.filledStatesStringProperty
+        }
+      ]
+    ] );
+
     const energyDiagramControlsNode = new EnergyDiagramControlsNode(
       displayProperties.diagramLabelsVisibleProperty,
-      displayProperties.diagramWorkFunctionVisibleProperty, {
-        visibleProperty: energyDiagramVisibleProperty,
+      displayProperties.diagramWorkFunctionVisibleProperty,
+      displayProperties.diagramPhotonArrowsVisibleProperty, {
+        layoutOptions: {
+          leftMargin: 6
+        },
         tandem: options.tandem.createTandem( 'energyDiagramControlsNode' )
       } );
+
+    const energyDiagramDecorationNode = new VBox( {
+      align: 'left',
+      spacing: 16,
+      children: [
+        energyDiagramLegendNode,
+        energyDiagramControlsNode
+      ],
+      visibleProperty: energyDiagramVisibleProperty
+    } );
 
     const graphSpecificControlsNode = new Node( {
       children: [
         barGraphControlsNode,
-        energyDiagramControlsNode
+        energyDiagramDecorationNode
       ]
     } );
-    energyDiagramControlsNode.leftTop = barGraphControlsNode.leftTop;
+    energyDiagramDecorationNode.leftTop = barGraphControlsNode.leftTop;
 
     const graphDisplayControlsNode = new Node( {
       children: [
@@ -117,9 +151,9 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     } );
 
     // The graph-specific controls should stay below the graph and left-aligned, while the display mode controls
-    // should sit below them and align with the right edge of the graph display. Vertical position depends on the
-    // graph-specific controls, but horizontal position depends on the graph display width.
-    // ManualConstraint keeps those relationships updated if bounds change.
+    // should align with the right edge of the graph display. The bottom alignment keeps the radio buttons lined up
+    // with the checkbox controls in diagram mode, even though the legend sits above the checkboxes.
+    // ManualConstraint keeps these relationships updated if bounds change.
     ManualConstraint.create(
       graphDisplayControlsNode,
       [ graphSpecificControlsNode, displayModeRadioButtonGroup ],
@@ -127,13 +161,13 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
         graphSpecificControlsProxy.left = 0;
         graphSpecificControlsProxy.top = 0;
         displayModeRadioButtonGroupProxy.right = graphDisplayNode.width;
-        displayModeRadioButtonGroupProxy.top = graphSpecificControlsProxy.bottom + GRAPH_SECTION_SPACING;
+        displayModeRadioButtonGroupProxy.bottom = graphSpecificControlsProxy.bottom;
       }
     );
 
     const graphControlsNode = new VBox( {
       align: 'center',
-      spacing: GRAPH_SECTION_SPACING,
+      spacing: 8,
       children: [
         graphDisplayNode,
         graphDisplayControlsNode
@@ -141,36 +175,5 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     } );
 
     super( graphControlsNode, options );
-
-    // TODO: Just for debugging until the model produces energy from events.
-    KeyboardListener.createGlobal( this, {
-      keys: [ 'r' ],
-      overlapBehavior: 'allow',
-      fire: () => {
-        _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
-          const sampleData = EnergyGraphAccordionBox.createRandomSampleData();
-          model.energyGraphData.setSampleData(
-            sampleIndex,
-            sampleData.potentialEnergy,
-            sampleData.photonEnergy,
-            sampleData.kineticEnergy
-          );
-        } );
-      }
-    } );
-  }
-
-  /**
-   * Creates temporary randomized sample data for graph development.
-   */
-  private static createRandomSampleData(): EnergyGraphSampleData {
-    const potentialEnergy = MIN_POTENTIAL_ENERGY * dotRandom.nextDouble();
-    const photonEnergy = MAX_PHOTON_ENERGY * dotRandom.nextDouble();
-
-    return {
-      potentialEnergy: potentialEnergy,
-      photonEnergy: photonEnergy,
-      kineticEnergy: Math.max( 0, potentialEnergy + photonEnergy )
-    };
   }
 }
