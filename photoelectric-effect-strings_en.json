@@ -123,8 +123,8 @@
         "value": "No electron ejected"
       },
       "diagramControls": {
-        "labels": {
-          "value": "Labels"
+        "label": {
+          "value": "Label"
         },
         "workFunction": {
           "value": "Work Function"

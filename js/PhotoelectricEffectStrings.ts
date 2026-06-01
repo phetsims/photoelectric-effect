@@ -64,7 +64,7 @@ type StringsType = {
       'fermiLevelLabelStringProperty': LocalizedStringProperty;
       'noElectronEjectedStringProperty': LocalizedStringProperty;
       'diagramControls': {
-        'labelsStringProperty': LocalizedStringProperty;
+        'labelStringProperty': LocalizedStringProperty;
         'workFunctionStringProperty': LocalizedStringProperty;
         'photonArrowStringProperty': LocalizedStringProperty;
       };

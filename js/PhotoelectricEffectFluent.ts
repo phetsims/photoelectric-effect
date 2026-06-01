@@ -61,7 +61,7 @@ addToMapIfDefined( 'photonQuantity_fire', 'photonQuantity.fireStringProperty' );
 addToMapIfDefined( 'energy_graph_yAxisLabel', 'energy.graph.yAxisLabelStringProperty' );
 addToMapIfDefined( 'energy_graph_fermiLevelLabel', 'energy.graph.fermiLevelLabelStringProperty' );
 addToMapIfDefined( 'energy_graph_noElectronEjected', 'energy.graph.noElectronEjectedStringProperty' );
-addToMapIfDefined( 'energy_graph_diagramControls_labels', 'energy.graph.diagramControls.labelsStringProperty' );
+addToMapIfDefined( 'energy_graph_diagramControls_label', 'energy.graph.diagramControls.labelStringProperty' );
 addToMapIfDefined( 'energy_graph_diagramControls_workFunction', 'energy.graph.diagramControls.workFunctionStringProperty' );
 addToMapIfDefined( 'energy_graph_diagramControls_photonArrow', 'energy.graph.diagramControls.photonArrowStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_potentialEnergy', 'energy.graph.legend.potentialEnergyStringProperty' );
@@ -192,7 +192,7 @@ const PhotoelectricEffectFluent = {
       fermiLevelLabelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.fermiLevelLabelStringProperty' ),
       noElectronEjectedStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.noElectronEjectedStringProperty' ),
       diagramControls: {
-        labelsStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.labelsStringProperty' ),
+        labelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.labelStringProperty' ),
         _comment_0: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
         workFunctionStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.workFunctionStringProperty' ),
         photonArrowStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.photonArrowStringProperty' )

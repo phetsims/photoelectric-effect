@@ -109,7 +109,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
           labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.emptyStatesStringProperty
         },
         {
-          fill: PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty,
+          fill: PhotoelectricEffectColors.electronColorProperty,
           labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.filledStatesStringProperty
         }
       ]

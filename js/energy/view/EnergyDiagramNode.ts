@@ -118,7 +118,7 @@ export default class EnergyDiagramNode extends Node {
     } );
 
     this.conductionBandNode = new Rectangle( 0, 0, CHART_VIEW_WIDTH, 0, {
-      fill: PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty
+      fill: PhotoelectricEffectColors.electronColorProperty
     } );
 
     const energyAxisNode = new ArrowNode( 0, CHART_VIEW_HEIGHT, 0, 0, {
@@ -389,7 +389,7 @@ export default class EnergyDiagramNode extends Node {
    */
   private static createElectronMarker(): ShadedSphereNode {
     return new ShadedSphereNode( 2 * ELECTRON_MARKER_RADIUS, {
-      mainColor: PhotoelectricEffectColors.electronBaseColorProperty,
+      mainColor: PhotoelectricEffectColors.electronColorProperty,
       highlightColor: PhotoelectricEffectColors.electronHighlightColorProperty,
       highlightXOffset: 0,
       highlightYOffset: 0.4,

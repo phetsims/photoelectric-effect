@@ -53,10 +53,6 @@ export default class PhotoelectricEffectColors {
     default: 'rgb( 6, 144, 249 )'
   } );
 
-  public static readonly electronBaseColorProperty = new ProfileColorProperty( photoelectricEffect, 'electronBaseColor', {
-    default: 'rgb( 6, 144, 249 )'
-  } );
-
   public static readonly electronHighlightColorProperty = new ProfileColorProperty( photoelectricEffect, 'electronHighlightColor', {
     default: 'rgb( 169, 214, 231 )'
   } );
@@ -162,12 +158,6 @@ export default class PhotoelectricEffectColors {
   public static readonly kineticEnergyGraphColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'kineticEnergyGraphColor', {
       default: '#2a29f5'
-    } );
-
-  // Color for the conduction band in the Energy screen energy diagram.
-  public static readonly conductionBandEnergyDiagramColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'conductionBandEnergyDiagramColor', {
-      default: 'rgb( 6, 144, 249 )'
     } );
 
   // Color for empty states in the Energy screen energy diagram.

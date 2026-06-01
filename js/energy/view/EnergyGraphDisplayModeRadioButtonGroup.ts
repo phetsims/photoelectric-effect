@@ -121,7 +121,7 @@ export default class EnergyGraphDisplayModeRadioButtonGroup extends RectangularR
           conductionBandTopY,
           plotRightX - energyAxisX,
           conductionBandBottomY - conductionBandTopY, {
-            fill: PhotoelectricEffectColors.conductionBandEnergyDiagramColorProperty
+            fill: PhotoelectricEffectColors.electronColorProperty
           } ),
         new ArrowNode( energyAxisX, lowerEnergyLevelY, energyAxisX, 2, {
           fill: PhotoelectricEffectColors.iconStrokeColorProperty,

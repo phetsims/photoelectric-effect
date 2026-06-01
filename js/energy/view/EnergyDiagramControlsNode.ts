@@ -41,18 +41,6 @@ export default class EnergyDiagramControlsNode extends VBox {
       children: [
 
         new Checkbox(
-          labelsVisibleProperty,
-          new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.labelsStringProperty, {
-            font: PhotoelectricEffectConstants.CONTENT_FONT,
-            maxWidth: CHECKBOX_LABEL_MAX_WIDTH
-          } ), {
-            boxWidth: CHECKBOX_BOX_WIDTH,
-            spacing: 4,
-            tandem: providedOptions.tandem.createTandem( 'labelsCheckbox' )
-          }
-        ),
-
-        new Checkbox(
           workFunctionVisibleProperty,
           new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionStringProperty, {
             font: PhotoelectricEffectConstants.CONTENT_FONT,
@@ -61,6 +49,18 @@ export default class EnergyDiagramControlsNode extends VBox {
             boxWidth: CHECKBOX_BOX_WIDTH,
             spacing: 4,
             tandem: providedOptions.tandem.createTandem( 'workFunctionCheckbox' )
+          }
+        ),
+
+        new Checkbox(
+          labelsVisibleProperty,
+          new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.labelStringProperty, {
+            font: PhotoelectricEffectConstants.CONTENT_FONT,
+            maxWidth: CHECKBOX_LABEL_MAX_WIDTH
+          } ), {
+            boxWidth: CHECKBOX_BOX_WIDTH,
+            spacing: 4,
+            tandem: providedOptions.tandem.createTandem( 'labelsCheckbox' )
           }
         ),
 
