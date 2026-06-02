@@ -58,7 +58,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     const energyDiagramNode = new EnergyDiagramNode(
       model.energyGraphData.samples,
       model.target.workFunctionProperty,
-      model.target.bandWidthProperty,
+      model.target.bandDepthProperty,
       displayProperties.diagramLabelsVisibleProperty,
       displayProperties.diagramWorkFunctionVisibleProperty,
       displayProperties.diagramPhotonArrowsVisibleProperty,

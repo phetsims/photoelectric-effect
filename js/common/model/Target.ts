@@ -40,9 +40,9 @@ export default class Target {
   public readonly workFunctionProperty: DynamicProperty<number, number, Material>;
 
   /**
-   * Convenience property for the active material's occupied-band width.
+   * Convenience property for the active material's occupied-band depth.
    */
-  public readonly bandWidthProperty: DynamicProperty<number, number, Material>;
+  public readonly bandDepthProperty: DynamicProperty<number, number, Material>;
 
   /**
    * X position of the target plate center in model coordinates.
@@ -72,8 +72,8 @@ export default class Target {
       derive: 'workFunctionProperty'
     } );
 
-    this.bandWidthProperty = new DynamicProperty( this.materialProperty, {
-      derive: 'bandWidthProperty'
+    this.bandDepthProperty = new DynamicProperty( this.materialProperty, {
+      derive: 'bandDepthProperty'
     } );
 
     this.x = PhotoelectricEffectConstants.TARGET_X;
@@ -130,22 +130,22 @@ export default class Target {
     let energyAfterCollision: number;
     if ( emitAllAbsorbedPhotons ) {
       energyAfterCollision = Material.energyAfterGuaranteedPhotonEmission(
-        photonEnergy, workFunction, this.bandWidthProperty.value
+        photonEnergy, workFunction, this.bandDepthProperty.value
       );
     }
     else if ( highestEnergyOnly ) {
 
       // Eject from the Fermi level only (maximum KE), but use the same accessible band fraction
-      // probability as the normal path so the visual electron rate still reflects the bandwidth.
-      const bandWidth = this.bandWidthProperty.value;
-      const accessibleBandFraction = Math.min( 1, Math.max( 0, ( photonEnergy - workFunction ) / bandWidth ) );
+      // probability as the normal path so the visual electron rate still reflects the band depth.
+      const bandDepth = this.bandDepthProperty.value;
+      const accessibleBandFraction = Math.min( 1, Math.max( 0, ( photonEnergy - workFunction ) / bandDepth ) );
       energyAfterCollision = dotRandom.nextDouble() < accessibleBandFraction ?
                              photonEnergy - workFunction :
                              Number.NEGATIVE_INFINITY;
     }
     else {
       energyAfterCollision = Material.energyAfterPhotonCollision(
-        photonEnergy, workFunction, this.bandWidthProperty.value
+        photonEnergy, workFunction, this.bandDepthProperty.value
       );
     }
 

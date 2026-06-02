@@ -30,8 +30,8 @@ type MaterialTypeOptions = {
 
 export class MaterialType extends EnumerationValue {
 
-  // Work functions (φ, eV) and occupied-band widths as prescribed by design.
-  // Bandwidth is the effective range of binding energies available for photoemission, measured downward from
+  // Work functions (φ, eV) and occupied-band depths as prescribed by design.
+  // Band depth is the effective range of binding energies available for photoemission, measured downward from
   // the Fermi level. It determines both the KE spread of ejected electrons and where the I-vs-f curve saturates.
   public static readonly SODIUM = new MaterialType( 2.46, 3.24 );
   public static readonly COPPER = new MaterialType( 4.70, 7.00 );
@@ -41,12 +41,12 @@ export class MaterialType extends EnumerationValue {
 
   // Mystery materials are for teachers and PhET-iO clients. Their physical parameters will only be set from
   // preferences or with a PhET-iO customization. As such, simulation reset should not affect mystery materials.
-  // Work function and bandwidth match Magnesium (φ=3.66 eV, bandWidth=7.08 eV).
+  // Work function and band depth match Magnesium (φ=3.66 eV, bandDepth=7.08 eV).
   public static readonly MYSTERY = new MaterialType( 3.66, 7.08, {
     parametersPhetioReadOnly: false
   } );
 
-  // Controllable by the student, the custom material will have work function and bandwidth controls right
+  // Controllable by the student, the custom material will have work function and band depth controls right
   // in the simulation. Reset should restore both properties to their initial values.
   // Defaults and range from the physics reference Section 5.5.
   public static readonly CUSTOM = new MaterialType( 5, 5.0, {
@@ -65,12 +65,12 @@ export class MaterialType extends EnumerationValue {
    * Creates a material type with physics parameters and PhET-iO mutability policy.
    *
    * @param workFunctionInitialValue - minimum energy to eject an electron from the Fermi level, in eV (φ)
-   * @param bandWidthInitialValue - effective occupied-band width available for photoemission, in eV
+   * @param bandDepthInitialValue - effective occupied-band depth available for photoemission, in eV
    * @param providedOptions
    */
   public constructor(
     public readonly workFunctionInitialValue: number,
-    public readonly bandWidthInitialValue: number,
+    public readonly bandDepthInitialValue: number,
     providedOptions?: MaterialTypeOptions
   ) {
     super();
@@ -99,7 +99,7 @@ export type MaterialOptions = SelfOptions & PickRequired<PhetioObjectOptions, 't
 
 export default class Material extends PhetioObject {
 
-  // Range for the bandwidth in eV. Covers all six fixed metals and the full custom range
+  // Range for the band depth in eV. Covers all six fixed metals and the full custom range
   // as prescribed by design.
   public static readonly BAND_WIDTH_RANGE = new Range( 0.5, 15 );
 
@@ -120,10 +120,10 @@ export default class Material extends PhetioObject {
   public readonly workFunctionProperty: NumberProperty;
 
   /**
-   * Effective occupied-band width for this material, in eV.
+   * Effective occupied-band depth for this material, in eV.
    * Controls the spread of ejected-electron kinetic energies and the saturation point of the I-vs-f curve.
    */
-  public readonly bandWidthProperty: NumberProperty;
+  public readonly bandDepthProperty: NumberProperty;
 
   /**
    * Controls whether this material is available for selection in the UI.
@@ -157,11 +157,11 @@ export default class Material extends PhetioObject {
       phetioDocumentation: 'Minimum energy, in electron volts, required to eject an electron from this material'
     } );
 
-    this.bandWidthProperty = new NumberProperty( materialType.bandWidthInitialValue, {
+    this.bandDepthProperty = new NumberProperty( materialType.bandDepthInitialValue, {
       range: Material.BAND_WIDTH_RANGE,
-      tandem: options.tandem.createTandem( 'bandWidthProperty' ),
+      tandem: options.tandem.createTandem( 'bandDepthProperty' ),
       phetioReadOnly: materialType.parametersPhetioReadOnly,
-      phetioDocumentation: 'Effective occupied-band width, in eV, available for photoemission'
+      phetioDocumentation: 'Effective occupied-band depth, in eV, available for photoemission'
     } );
 
     // TODO: @design (phet-io) All EnabledProperty instances are featured. Do we want that for all Materials?
@@ -172,11 +172,11 @@ export default class Material extends PhetioObject {
   }
 
   /**
-   * Resets the work function and bandwidth to their initial values.
+   * Resets the work function and band depth to their initial values.
    */
   public reset(): void {
     this.workFunctionProperty.reset();
-    this.bandWidthProperty.reset();
+    this.bandDepthProperty.reset();
   }
 
   public static readonly MaterialIO = new IOType<Material, MaterialStateObject>( 'MaterialIO', {
@@ -187,38 +187,38 @@ export default class Material extends PhetioObject {
   } );
 
   /**
-   * Samples a binding energy uniformly across the occupied band [φ, φ + bandwidth] and returns the resulting
+   * Samples a binding energy uniformly across the occupied band [φ, φ + band depth] and returns the resulting
    * electron kinetic energy (KE = photonEnergy - bindingEnergy). KE may be negative when the sampled level
    * is inaccessible at the current photon energy; downstream emission logic treats those as no-emission.
    *
    * @param photonEnergy - energy of the incident photon, in eV
    * @param workFunction - work function (φ) of the target material, in eV
-   * @param bandWidth - occupied-band width of the target material, in eV
+   * @param bandDepth - occupied-band depth of the target material, in eV
    */
-  public static energyAfterPhotonCollision( photonEnergy: number, workFunction: number, bandWidth: number ): number {
-    const bindingEnergy = workFunction + dotRandom.nextDouble() * bandWidth;
+  public static energyAfterPhotonCollision( photonEnergy: number, workFunction: number, bandDepth: number ): number {
+    const bindingEnergy = workFunction + dotRandom.nextDouble() * bandDepth;
     return photonEnergy - bindingEnergy;
   }
 
   /**
    * Samples an electron binding energy from only the part of the occupied band that this photon can eject from.
    *
-   * The full occupied band spans binding energies from workFunction to workFunction + bandWidth. In the normal model,
+   * The full occupied band spans binding energies from workFunction to workFunction + bandDepth. In the normal model,
    * a photon samples that full range, so it can choose an electron that is bound too deeply to escape. This guaranteed
    * model instead clips the upper end of the range to the photon energy. The result is the accessible part of the band:
    * all sampled electrons can escape, but they still come from a continuous range of binding energies.
    *
    * @param photonEnergy - energy of the incident photon, in eV
    * @param workFunction - work function of the target material, in eV
-   * @param bandWidth - occupied-band width of the target material, in eV
+   * @param bandDepth - occupied-band depth of the target material, in eV
    */
-  public static energyAfterGuaranteedPhotonEmission( photonEnergy: number, workFunction: number, bandWidth: number ): number {
+  public static energyAfterGuaranteedPhotonEmission( photonEnergy: number, workFunction: number, bandDepth: number ): number {
     if ( photonEnergy <= workFunction ) {
       return Number.NEGATIVE_INFINITY;
     }
 
     // Full-band upper limit, before accounting for whether this photon has enough energy to reach it.
-    const fullBandMaximumBindingEnergy = workFunction + bandWidth;
+    const fullBandMaximumBindingEnergy = workFunction + bandDepth;
 
     // The photon cannot eject electrons with binding energy greater than its own energy.
     const maximumBindingEnergy = Math.min( photonEnergy, fullBandMaximumBindingEnergy );

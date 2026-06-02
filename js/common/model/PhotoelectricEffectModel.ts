@@ -183,10 +183,10 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
         this.photonSource.photonRateProperty,
         this.photonSource.wavelengthProperty,
         this.target.workFunctionProperty,
-        this.target.bandWidthProperty
+        this.target.bandDepthProperty
       ],
-      ( voltage, photonsPerSecond, wavelength, workFunction, bandWidth ) => {
-        return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandWidth );
+      ( voltage, photonsPerSecond, wavelength, workFunction, bandDepth ) => {
+        return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandDepth );
       },
       {
         tandem: tandem.createTandem( 'currentProperty' ),
@@ -439,8 +439,8 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     const photonsPerSecond = this.photonSource.photonRateProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
-    const bandWidth = this.target.bandWidthProperty.value;
-    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandWidth );
+    const bandDepth = this.target.bandDepthProperty.value;
+    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandDepth );
   }
 
   /**
@@ -450,9 +450,9 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     const voltage = this.battery.voltageProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
-    const bandWidth = this.target.bandWidthProperty.value;
+    const bandDepth = this.target.bandDepthProperty.value;
     const photonsPerSecond = this.photonSource.getPhotonRateForNormalizedOutput( normalizedOutput );
-    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandWidth );
+    return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandDepth );
   }
 
   /**
@@ -463,7 +463,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     photonsPerSecond: number,
     wavelength: number,
     workFunction: number,
-    bandWidth: number
+    bandDepth: number
   ): number {
 
     // Compute how much photon energy exceeds the work function; this bounds emission likelihood.
@@ -471,7 +471,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
     // Convert excess energy into a fraction of photons that can liberate electrons (capped at 1).
     const electronRateAsFractionOfPhotonRate = Math.min(
-      photonEnergyBeyondWorkFunction / bandWidth,
+      photonEnergyBeyondWorkFunction / bandDepth,
       1
     );
     const electronsPerSecondFromTarget = electronRateAsFractionOfPhotonRate * photonsPerSecond;
@@ -479,12 +479,12 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     // Retarding voltage reduces the fraction of emitted electrons that reach the anode.
     const retardingVoltage = voltage < 0 ? -voltage : 0;
 
-    // The emitted (escaped) electrons have kinetic energies uniformly distributed over a band of width
-    // min( photonEnergyBeyondWorkFunction, bandWidth ): when the photon can access the whole band the spread is
-    // bandWidth, and near threshold (photonEnergyBeyondWorkFunction < bandWidth) the spread is just the excess energy.
-    // The retarding fraction must be normalized by THIS spread, not by bandWidth, otherwise the accessible-band
+    // The emitted (escaped) electrons have kinetic energies uniformly distributed over a band of depth
+    // min( photonEnergyBeyondWorkFunction, bandDepth ): when the photon can access the whole band the spread is
+    // bandDepth, and near threshold (photonEnergyBeyondWorkFunction < bandDepth) the spread is just the excess energy.
+    // The retarding fraction must be normalized by THIS spread, not by bandDepth, otherwise the accessible-band
     // fraction (already applied in electronsPerSecondFromTarget) gets applied a second time.
-    const emittedElectronEnergySpread = Math.min( photonEnergyBeyondWorkFunction, bandWidth );
+    const emittedElectronEnergySpread = Math.min( photonEnergyBeyondWorkFunction, bandDepth );
 
     // Only electrons with enough energy to overcome the retarding voltage contribute to current.
     const fractionMoreEnergeticThanRetardingVoltage = emittedElectronEnergySpread > 0 ? Math.max(

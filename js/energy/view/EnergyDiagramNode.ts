@@ -85,7 +85,7 @@ export default class EnergyDiagramNode extends Node {
   /**
    * @param samples - Persistent sample slots whose Properties drive the marker positions.
    * @param workFunctionProperty - Work function source used for the Fermi level marker.
-   * @param bandWidthProperty - Occupied-band width source used for the lower edge of the filled states.
+   * @param bandDepthProperty - Occupied-band depth source used for the lower edge of the filled states.
    * @param labelsVisibleProperty - Whether Fermi level labels are visible.
    * @param workFunctionVisibleProperty - Whether the work function label is visible.
    * @param photonArrowsVisibleProperty - Whether arrows showing photon energy transfer are visible.
@@ -94,7 +94,7 @@ export default class EnergyDiagramNode extends Node {
 
   public constructor( samples: EnergyGraphSample[],
                       private readonly workFunctionProperty: TReadOnlyProperty<number>,
-                      private readonly bandWidthProperty: TReadOnlyProperty<number>,
+                      private readonly bandDepthProperty: TReadOnlyProperty<number>,
                       private readonly labelsVisibleProperty: TReadOnlyProperty<boolean>,
                       workFunctionVisibleProperty: TReadOnlyProperty<boolean>,
                       photonArrowsVisibleProperty: TReadOnlyProperty<boolean>,
@@ -264,7 +264,7 @@ export default class EnergyDiagramNode extends Node {
     ];
 
     // Linked eagerly to initialize decoration positions.
-    Multilink.multilink( [ workFunctionProperty, bandWidthProperty ], () => {
+    Multilink.multilink( [ workFunctionProperty, bandDepthProperty ], () => {
       this.updateGraphDecorations();
     } );
   }
@@ -276,10 +276,10 @@ export default class EnergyDiagramNode extends Node {
     const zeroY = this.chartTransform.modelToViewY( 0 );
     const fermiLevelY = this.chartTransform.modelToViewY( -this.workFunctionProperty.value );
     const unclippedConductionBandBottomY = this.chartTransform.modelToViewY(
-      -this.workFunctionProperty.value - this.bandWidthProperty.value
+      -this.workFunctionProperty.value - this.bandDepthProperty.value
     );
 
-    // TODO: @design Discuss how to represent occupied states when the material bandwidth extends below the plotted
+    // TODO: @design Discuss how to represent occupied states when the material band depth extends below the plotted
     //  energy range.
     const conductionBandBottomY = Math.min( unclippedConductionBandBottomY, CHART_VIEW_HEIGHT );
 

@@ -37,7 +37,7 @@ export default class PhotoelectricEffectPreferences {
   // energy while preserving the normal probabilistic rejection behavior.
   //
   // With this preference enabled, the target samples only from the accessible portion of the occupied band,
-  // [ workFunction, min( photonEnergy, workFunction + bandWidth ) ], so emitted electrons keep a continuous energy
+  // [ workFunction, min( photonEnergy, workFunction + bandDepth ) ], so emitted electrons keep a continuous energy
   // distribution from near zero kinetic energy up to the maximum kinetic energy.
   public static readonly emitAllAbsorbedPhotonsProperty = new BooleanProperty(
     PhotoelectricEffectQueryParameters.emitAllAbsorbedPhotons,

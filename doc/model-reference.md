@@ -47,7 +47,7 @@ Einstein explained this by proposing that light comes in discrete packets (photo
 | `v` | Electron speed | m/s |
 | `I` | Current in the circuit | A (display in mA or μA) |
 | `N_γ` | Photon emission rate | photons/s |
-| `W_band` | Effective occupied-band width (per metal) | eV |
+| `W_band` | Effective occupied-band depth (per metal) | eV |
 | `η` | Quantum efficiency factor (overall) | dimensionless, 0 to 1 |
 
 **Sign convention for voltage:** `V` is the voltage of the **collector plate (anode) relative to the emitter plate (cathode where light hits)**. Positive `V` accelerates ejected electrons toward the collector. Negative `V` (retarding) decelerates them. The stopping potential occurs at `V = -V_stop` (i.e., `V` is negative).
@@ -152,7 +152,7 @@ For animation purposes, you will scale `v` to a screen velocity. A linear scale 
 
 ## 5. Material Properties
 
-Each material has two parameters: a work function `φ` (the minimum energy to liberate an electron from the Fermi level) and an effective occupied-band width `W_band` (the energy range below the Fermi level over which electrons are uniformly available for photoemission). Both are required by the band model in Section 6.
+Each material has two parameters: a work function `φ` (the minimum energy to liberate an electron from the Fermi level) and an effective occupied-band depth `W_band` (the energy range below the Fermi level over which electrons are uniformly available for photoemission). Both are required by the band model in Section 6.
 
 ### 5.1 Material Table
 
@@ -187,9 +187,9 @@ With these values, the simulation produces this behavior across its 100–800 nm
 
 This contrast is itself pedagogically useful: alkali and alkaline-earth metals (with low work functions and narrow bands) cleanly demonstrate the full saturation phenomenon, while transition metals show only the rising regime in the accessible range. This reflects real physics — these are part of the reasons alkali metals were historically chosen for early photoelectric experiments.
 
-### 5.4 Caveats on the Band Width Values
+### 5.4 Caveats on the Band Depth Values
 
-Real metal band structures are complicated. The "width" of an occupied band depends on what is included (s-only? s+p? s+p+d?) and on how it is measured (DFT calculation, photoemission spectroscopy, optical methods). Different sources give values that can differ by a few eV, especially for transition metals where the d-band overlaps or sits just below the s-p band.
+Real metal band structures are complicated. The "depth" of an occupied band depends on what is included (s-only? s+p? s+p+d?) and on how it is measured (DFT calculation, photoemission spectroscopy, optical methods). Different sources give values that can differ by a few eV, especially for transition metals where the d-band overlaps or sits just below the s-p band.
 
 The values in Section 5.1 are reasonable rounded values consistent with standard solid-state references and chosen primarily to give clean, distinguishable pedagogical behavior across the six metals. They are not meant to be physically exact. If specific values need to be revisited later, it is a one-line change per metal in the materials table.
 
@@ -201,7 +201,7 @@ The custom material allows continuous adjustment of both parameters:
 - `W_band ∈ [0.5, 15.0]` eV, step 0.1 eV (suggested range)
 - Recommended defaults: `φ = 3.10 eV`, `W_band = 5.0 eV`
 
-Whether to expose the band width slider to learners or keep it as an instructor-only control is a UI choice. For introductory use it can be hidden with a fixed default; for more advanced exploration it can be exposed alongside the work function slider.
+Whether to expose the band depth slider to learners or keep it as an instructor-only control is a UI choice. For introductory use it can be hidden with a fixed default; for more advanced exploration it can be exposed alongside the work function slider.
 
 ---
 
@@ -318,7 +318,7 @@ This is the core algorithm. It is run for each photon that hits the cathode plat
 
 ### 8.1 Step-by-Step Logic
 
-For one photon with energy `E_γ` interacting with a material of work function `φ` and band width `W_band`:
+For one photon with energy `E_γ` interacting with a material of work function `φ` and band depth `W_band`:
 
 1. **Threshold check.** If `E_γ ≤ φ`, the photon is absorbed by the metal as heat. No electron is ejected. Done. (Note `≤`, not `<`: at exact threshold `f_acc = 0` and the band model produces no ejection; see Section 8.4.)
 2. **Determine accessible band fraction.** A photon can eject any electron with `E_b ≤ E_γ`. The fraction of band electrons accessible is:
@@ -360,7 +360,7 @@ For one photon with energy `E_γ` interacting with a material of work function `
 ```
 function absorb_photon(photon, material):
     phi      = material.work_function_eV
-    W        = material.band_width_eV          # per-metal value, see Section 5.1
+    W        = material.band_depth_eV          # per-metal value, see Section 5.1
     E_gamma  = photon.energy_eV
 
     if E_gamma <= phi:
@@ -496,7 +496,7 @@ KE_max = E_γ - φ
 KE_min = max(0, KE_max - W_band) = max(0, E_γ - φ - W_band)
 ```
 
-`KE_min > 0` whenever `E_γ - φ > W_band`, i.e., when the photon is energetic enough that even the most deeply bound accessible electron carries away non-trivial KE. With per-metal band widths, this condition is reachable in the simulation's wavelength range for several metals (e.g., for Sodium with W_band = 3.2 eV, `E_γ - φ > W_band` whenever λ < 226 nm). When this condition holds, the I-V curve has a flat top extending into negative voltages before the linear ramp begins.
+`KE_min > 0` whenever `E_γ - φ > W_band`, i.e., when the photon is energetic enough that even the most deeply bound accessible electron carries away non-trivial KE. With per-metal band depths, this condition is reachable in the simulation's wavelength range for several metals (e.g., for Sodium with W_band = 3.2 eV, `E_γ - φ > W_band` whenever λ < 226 nm). When this condition holds, the I-V curve has a flat top extending into negative voltages before the linear ramp begins.
 
 The fraction of ejected electrons that reach the collector at applied voltage `V`:
 
@@ -785,7 +785,7 @@ These are deliberate departures from the full physics. They simplify the model w
 
 2. **Uniform density of states from `φ` to `φ + W_band`.** Real metals have non-uniform DOS, often with sharp peaks (e.g., d-band features in transition metals). The uniform approximation is sufficient to reproduce the linear-rise-then-saturate behavior in the current-vs-frequency curve.
 
-3. **Per-metal `W_band` values are approximate.** Real band widths depend on which states are included in the count, the measurement method, and the level of theory. The values in Section 5.1 are reasonable rounded values chosen to give clean pedagogical behavior; they should not be treated as exact spectroscopic data.
+3. **Per-metal `W_band` values are approximate.** Real band depths depend on which states are included in the count, the measurement method, and the level of theory. The values in Section 5.1 are reasonable rounded values chosen to give clean pedagogical behavior; they should not be treated as exact spectroscopic data.
 
 4. **No relativistic corrections.** Maximum KE in the sim is ~10 eV, which corresponds to v/c ≈ 0.006, non-relativistic by any reasonable standard.
 
