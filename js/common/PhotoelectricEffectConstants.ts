@@ -67,14 +67,14 @@ export default class PhotoelectricEffectConstants {
   // TODO: Maybe this isn't a knob? Maybe we get rid of it?
   // TODO: reference, §6.3 is pointing to ai generated model documentation our team has been using - link to
   //    it and possibly clean it/check it in - or just remove that reference.
-  public static readonly QUANTUM_EFFICIENCY = 0.5;
+  public static readonly QUANTUM_EFFICIENCY = 1;
 
   // TODO: Our most powerful lever?
   // Number of physical photons each on-screen photon represents (and therefore the number of physical
   // electrons each visible ejection contributes to the ammeter reading). Visible photons are a sampled
   // subset of the actual photon flux, since a realistic flux would be orders of magnitude denser than
   // would be useful to draw on screen.
-  public static readonly PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON = 1e14;
+  public static readonly PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON = 3.33e12;
 
   // Scale factor applied to computed electron speeds for model tuning.
   // This is the primary visual-speed knob. ELECTRON_ACCELERATION_SCALE is derived from it so
@@ -94,7 +94,7 @@ export default class PhotoelectricEffectConstants {
   // by the analytical current calculation. The on-screen photon density is derived from this by sampling
   // one in every PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON. Some flexibility for tuning since there is a range of reasonable
   // values for "typical" photon sources
-  public static readonly MAX_PHOTONS_PER_SECOND = 1e16;
+  public static readonly MAX_PHOTONS_PER_SECOND = 5e14;
 
 
   // Electron mass in kilograms, used for kinetic energy conversions.
@@ -122,8 +122,8 @@ export default class PhotoelectricEffectConstants {
   // is normalized the ceiling will be about 6% lower than this calculated number, however we only need this one constant
   // since it covers the expected max current for both modes. Derived from max photon rate and quantum efficiency.
   public static readonly MAX_CURRENT = PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND *
-                                       PhotoelectricEffectConstants.QUANTUM_EFFICIENCY *
-                                       PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
+    PhotoelectricEffectConstants.QUANTUM_EFFICIENCY *
+    PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
 
   // Acceleration scale from voltage to model units (model units per V·s²).
   // Derived from ELECTRON_SPEED_SCALE_FACTOR and ELECTRON_MASS so the particle simulation's
