@@ -139,7 +139,6 @@ export default class EnergyModel extends PhotoelectricEffectModel {
 
     this.firePhotonEmitter.addListener( () => {
       affirm( !this.photonsTravelingProperty.value, 'Cannot fire photons while previous photons are still traveling' );
-      this.photonsTravelingProperty.value = true;
 
       if ( this.emitSinglePhotonProperty.value ) {
         const slotIndex = this.currentSlotIndexProperty.value;
@@ -153,6 +152,8 @@ export default class EnergyModel extends PhotoelectricEffectModel {
         this.energyGraphData.clear();
         this.queueBurstPhotons();
       }
+
+      this.updatePhotonsTravelingProperty();
     } );
 
     // Record sample data when a fired photon collides with the target.
@@ -165,8 +166,6 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       const kineticEnergy = electron ? electron.energy : 0;
       this.energyGraphData.setSampleData( slotIndex, potentialEnergy, photonEnergy, kineticEnergy );
       this.photonToSampleIndexMap.delete( photon );
-
-      this.photonsTravelingProperty.value = false;
     } );
   }
 
@@ -179,6 +178,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     if ( dt > 0 ) {
       this.stepQueuedPhotonEmissions( dt );
       this.stepPhotons( dt );
+      this.updatePhotonsTravelingProperty();
       this.stepElectrons( dt );
     }
   }
@@ -302,6 +302,16 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     this.queuedPhotonEmissions.length = 0;
     stateObject.queuedPhotonEmissions.forEach( stateObj =>
       this.queuedPhotonEmissions.push( EnergyModel.QUEUED_PHOTON_EMISSION_IO.fromStateObject( stateObj ) ) );
+
+    this.updatePhotonsTravelingProperty();
+  }
+
+  /**
+   * Updates whether a fired Energy sequence is still active. This must be called after stepPhotons, because
+   * photonCollidedEmitter fires before the active photon array has been compacted for the frame.
+   */
+  private updatePhotonsTravelingProperty(): void {
+    this.photonsTravelingProperty.value = this.photons.length > 0 || this.queuedPhotonEmissions.length > 0;
   }
 
   /**
