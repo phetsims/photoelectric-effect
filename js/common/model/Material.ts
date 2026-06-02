@@ -101,7 +101,7 @@ export default class Material extends PhetioObject {
 
   // Range for the band depth in eV. Covers all six fixed metals and the full custom range
   // as prescribed by design.
-  public static readonly BAND_WIDTH_RANGE = new Range( 0.5, 15 );
+  public static readonly BAND_DEPTH_RANGE = new Range( 0.5, 15 );
 
   /**
    * Material type for this instance.
@@ -158,7 +158,7 @@ export default class Material extends PhetioObject {
     } );
 
     this.bandDepthProperty = new NumberProperty( materialType.bandDepthInitialValue, {
-      range: Material.BAND_WIDTH_RANGE,
+      range: Material.BAND_DEPTH_RANGE,
       tandem: options.tandem.createTandem( 'bandDepthProperty' ),
       phetioReadOnly: materialType.parametersPhetioReadOnly,
       phetioDocumentation: 'Effective occupied-band depth, in eV, available for photoemission'
@@ -224,10 +224,10 @@ export default class Material extends PhetioObject {
     const maximumBindingEnergy = Math.min( photonEnergy, fullBandMaximumBindingEnergy );
 
     // How far below the least-bound electrons this photon can sample and still emit.
-    const accessibleBandWidth = maximumBindingEnergy - workFunction;
+    const accessibleBandDepth = maximumBindingEnergy - workFunction;
 
     // Sample within the accessible band so emitted electrons still have different kinetic energies.
-    const bindingEnergy = workFunction + dotRandom.nextDouble() * accessibleBandWidth;
+    const bindingEnergy = workFunction + dotRandom.nextDouble() * accessibleBandDepth;
 
     // Kinetic energy after emission is the photon energy minus the sampled binding energy.
     return photonEnergy - bindingEnergy;
