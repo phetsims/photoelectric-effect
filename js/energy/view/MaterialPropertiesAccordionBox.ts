@@ -37,6 +37,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
 
     const options = optionize<MaterialPropertiesAccordionBoxOptions, SelfOptions, AccordionBoxOptions>()( {
       isDisposable: false,
+      expandedDefaultValue: false,
 
       // todo: factor out into constants, since these are shared with the energy diagram accordion box
       buttonXMargin: 10,
