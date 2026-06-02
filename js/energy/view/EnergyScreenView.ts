@@ -16,6 +16,7 @@ import EnergyModel from '../model/EnergyModel.js';
 import EnergyGraphAccordionBox from './EnergyGraphAccordionBox.js';
 import EnergyLightSourceNode from './EnergyLightSourceNode.js';
 import EnergyPhotonSourcePanel from './EnergyPhotonSourcePanel.js';
+import MaterialPropertiesAccordionBox from './MaterialPropertiesAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
 type EnergyScreenViewOptions = SelfOptions & PickRequired<PhotoelectricEffectScreenViewOptions, 'tandem'>;
@@ -45,6 +46,14 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
     } );
 
     this.addChild( energyGraphAccordionBox );
+
+    const materialPropertiesAccordionBox = new MaterialPropertiesAccordionBox( model.target.materialProperty, {
+      left: this.layoutBounds.minX + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
+      bottom: this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN,
+      tandem: options.tandem.createTandem( 'materialPropertiesAccordionBox' )
+    } );
+
+    this.addChild( materialPropertiesAccordionBox );
 
     // TODO: Define PDOM order for screen specific components
     this.pdomPlayAreaNode.setPDOMOrder( [
