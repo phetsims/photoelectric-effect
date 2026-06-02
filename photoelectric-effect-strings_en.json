@@ -207,6 +207,14 @@
     }
   },
   "preferences": {
+    "showPhotons": {
+      "label": {
+        "value": "Show photons"
+      },
+      "description": {
+        "value": "Light source emits photons"
+      }
+    },
     "mysteryMaterial": {
       "label": {
         "value": "Add Second mystery material"

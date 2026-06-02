@@ -14,6 +14,7 @@ import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 import PhotoelectricEffectModel from '../model/PhotoelectricEffectModel.js';
+import PhotoelectricEffectPreferences from '../model/PhotoelectricEffectPreferences.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
@@ -33,7 +34,12 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
 
   protected constructor( model: PhotoelectricEffectModel, providedOptions: PhotonBeamScreenViewOptions ) {
 
-    const options = optionize<PhotonBeamScreenViewOptions, SelfOptions, PhotoelectricEffectScreenViewOptions>()( {}, providedOptions );
+    const options = optionize<PhotonBeamScreenViewOptions, SelfOptions, PhotoelectricEffectScreenViewOptions>()( {
+
+      // On the continuous-beam screens, photon rendering is governed by the 'show photons' preference. When
+      // disabled, the LightBeamNode stands in for the photons.
+      photonsVisibleProperty: PhotoelectricEffectPreferences.showPhotonsProperty
+    }, providedOptions );
 
     super( model, options );
 

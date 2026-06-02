@@ -33,13 +33,21 @@ export default class ParticleCanvasNode extends CanvasNode {
     private readonly photons: Photon[],
     private readonly electrons: Electron[],
     private readonly showElectronsProperty: TReadOnlyProperty<boolean>,
+    private readonly showPhotonsProperty: TReadOnlyProperty<boolean>,
     private readonly modelViewTransform: ModelViewTransform2,
     providedOptions: ParticleCanvasNodeOptions ) {
     super( providedOptions );
+
+    // Repaint when photon visibility is toggled while the sim is paused, so the change is immediate.
+    showPhotonsProperty.link( () => this.invalidatePaint() );
   }
 
   public override paintCanvas( context: CanvasRenderingContext2D ): void {
-    this.drawPhotons( context );
+
+    // When photons are hidden, a LightBeamNode stands in for the beam instead.
+    if ( this.showPhotonsProperty.value ) {
+      this.drawPhotons( context );
+    }
 
     if ( this.showElectronsProperty.value ) {
       this.drawParticles( context, this.electrons, ELECTRON_RADIUS, PhotoelectricEffectColors.electronColorProperty.value );

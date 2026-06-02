@@ -114,6 +114,10 @@ type StringsType = {
     }
   };
   'preferences': {
+    'showPhotons': {
+      'labelStringProperty': LocalizedStringProperty;
+      'descriptionStringProperty': LocalizedStringProperty;
+    };
     'mysteryMaterial': {
       'labelStringProperty': LocalizedStringProperty;
       'descriptionStringProperty': LocalizedStringProperty;

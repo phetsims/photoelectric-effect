@@ -88,6 +88,9 @@ units:
     symbolPattern: '{{value}} μA'
 
 preferences:
+  showPhotons:
+    label: 'Show photons'
+    description: 'Light source emits photons'
   mysteryMaterial:
     label:       'Add Second mystery material'
     description: 'Additional target material option with customizable work function value.'

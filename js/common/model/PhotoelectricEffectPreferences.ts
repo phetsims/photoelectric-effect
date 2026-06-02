@@ -48,4 +48,14 @@ export default class PhotoelectricEffectPreferences {
                            'with a sampled accessible-band energy'
     }
   );
+
+  // Whether the light source emits visible photons.
+  public static readonly showPhotonsProperty = new BooleanProperty(
+    PhotoelectricEffectQueryParameters.showPhotons,
+    {
+      tandem: Tandem.PREFERENCES.createTandem( 'showPhotonsProperty' ),
+      phetioFeatured: true,
+      phetioDocumentation: 'Whether the light source emits visible photons'
+    }
+  );
 }

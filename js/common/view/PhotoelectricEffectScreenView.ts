@@ -12,6 +12,8 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import TinyProperty from '../../../../axon/js/TinyProperty.js';
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
@@ -29,6 +31,7 @@ import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectMode
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
+import LightBeamNode from './LightBeamNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
 
@@ -42,6 +45,11 @@ type SelfOptions = {
 
   // Factory for the screen-specific photon source panel. The base positions the returned node at leftTop.
   createPhotonSourcePanel: ( tandem: Tandem ) => Node;
+
+  // Whether individual photons are rendered. When false, a LightBeamNode stands in for the photons. Defaults to
+  // always visible, so screens that emit single photons (e.g. Energy) are unaffected. Continuous-beam screens
+  // pass the 'show photons' preference here.
+  photonsVisibleProperty?: TReadOnlyProperty<boolean>;
 };
 
 export type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
@@ -63,7 +71,11 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
   protected constructor( model: PhotoelectricEffectModel, providedOptions: PhotoelectricEffectScreenViewOptions ) {
 
-    const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {}, providedOptions );
+    const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {
+
+      // Photons are rendered by default; continuous-beam screens override this with the 'show photons' preference.
+      photonsVisibleProperty: new TinyProperty( true )
+    }, providedOptions );
 
     super( options );
 
@@ -132,10 +144,26 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( this.materialsComboBox );
 
     //------------------------------------------------------------------------
+    // Light beam: stands in for the rendered photons when the 'show photons' preference is disabled
+    //------------------------------------------------------------------------
+
+    const lightBeamNode = new LightBeamNode(
+      beamStartCenter,
+      this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ),
+      model.wavelengthProperty,
+      model.photonSource.normalizedOutputProperty,
+      {
+        visibleProperty: DerivedProperty.not( options.photonsVisibleProperty )
+      }
+    );
+    this.addChild( lightBeamNode );
+
+    //------------------------------------------------------------------------
     // Particle canvas: renders photons and electrons in the play area
     //------------------------------------------------------------------------
 
-    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty, this.modelViewTransform,
+    this.particleCanvasNode = new ParticleCanvasNode( model.photons, model.electrons, model.showElectronsProperty,
+      options.photonsVisibleProperty, this.modelViewTransform,
       { canvasBounds: this.layoutBounds } );
     this.addChild( this.particleCanvasNode );
 

@@ -81,7 +81,8 @@ addToMapIfDefined( 'photonRate_label', 'photonRate.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
-addToMapIfDefined( 'units_microamperes_symbol', 'units.microamperes.symbolStringProperty' );
+addToMapIfDefined( 'preferences_showPhotons_label', 'preferences.showPhotons.labelStringProperty' );
+addToMapIfDefined( 'preferences_showPhotons_description', 'preferences.showPhotons.descriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_label', 'preferences.mysteryMaterial.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_description', 'preferences.mysteryMaterial.descriptionStringProperty' );
 addToMapIfDefined( 'a11y_units_microamperes_pattern', 'a11y.units.microamperes.patternStringProperty' );
@@ -248,6 +249,10 @@ const PhotoelectricEffectFluent = {
     }
   },
   preferences: {
+    showPhotons: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.showPhotons.labelStringProperty' ),
+      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.showPhotons.descriptionStringProperty' )
+    },
     mysteryMaterial: {
       labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.labelStringProperty' ),
       descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.descriptionStringProperty' )
