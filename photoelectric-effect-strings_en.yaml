@@ -81,7 +81,7 @@ wavelength.valueReadoutPattern: '{{value}} nm'
 voltage.label: 'Voltage'
 voltage.valueReadoutPattern: '{{value}} V'
 current.label: 'Current'
-current.readoutPattern: '{{value}} mA'
+current.readoutPattern: '{{value}} uA'
 
 preferences:
   mysteryMaterial:

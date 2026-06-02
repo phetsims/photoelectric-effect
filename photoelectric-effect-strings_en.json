@@ -197,7 +197,7 @@
     "value": "Current"
   },
   "current.readoutPattern": {
-    "value": "{{value}} mA"
+    "value": "{{value}} uA"
   },
   "preferences": {
     "mysteryMaterial": {

@@ -12,15 +12,18 @@ import type ReadOnlyProperty from '../../../../axon/js/ReadOnlyProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import type { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import { ampsToMilliAmps } from '../model/PhotoelectricEffectUtils.js';
+import { ampsToMicroamps } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
+
+const MIN_DISPLAYED_MICROAMPS = 0.001;
 
 type SelfOptions = EmptySelfOptions;
 
@@ -46,17 +49,27 @@ export default class AmmeterDisplayPanel extends Panel {
       accessibleName: PhotoelectricEffectFluent.a11y.ammeterDisplayPanel.accessibleNameStringProperty
     }, providedOptions );
 
-    const microampCurrentProperty = new DerivedProperty( [ currentProperty ], current => ampsToMilliAmps( current ) );
+    const microampCurrentProperty = new DerivedProperty( [ currentProperty ], current => ampsToMicroamps( current ) );
 
     const currentDisplay = new NumberDisplay(
       microampCurrentProperty,
-      new Range( 0, ampsToMilliAmps( PhotoelectricEffectConstants.MAX_CURRENT ) ),
+
+      // NumberDisplay uses displayRange to size the readout, so include a non-zero sub-threshold value to account
+      // for the inequality formatter.
+      new Range( MIN_DISPLAYED_MICROAMPS / 2, ampsToMicroamps( PhotoelectricEffectConstants.MAX_CURRENT ) ),
       {
-        // TODO: @design What should this be? And the design doc describes units for this readout are still tbd.
-        decimalPlaces: 3,
+        // Use an inequality readout for non-zero currents below the visible precision.
+        numberFormatter: value => {
+          const valueString = value > 0 && value < MIN_DISPLAYED_MICROAMPS ? StringUtils.wrapLTR( '< 0.001' ) :
+                              StringUtils.toFixedLTR( value, 3 );
+
+          return StringUtils.fillIn( PhotoelectricEffectFluent.current.readoutPatternStringProperty.value, {
+            value: valueString
+          } );
+        },
+        numberFormatterDependencies: [ PhotoelectricEffectFluent.current.readoutPatternStringProperty ],
         cornerRadius: 3,
         backgroundStroke: 'black',
-        valuePattern: PhotoelectricEffectFluent.current.readoutPatternStringProperty,
         textOptions: {
           font: PhotoelectricEffectConstants.READOUT_FONT
         },
