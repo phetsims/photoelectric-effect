@@ -187,7 +187,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
    * Fires a photon from the lens corresponding to the given sample slot index.
    */
   private firePhoton( slotIndex: number ): void {
-    const position = this.getPhotonInitialPosition( slotIndex );
+    const position = this.getPhotonInitialPosition( EnergyModel.LENS_OFFSETS[ slotIndex ] );
     const velocity = this.getPhotonInitialVelocity();
 
     const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );

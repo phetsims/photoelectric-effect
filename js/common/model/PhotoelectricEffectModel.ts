@@ -290,7 +290,12 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   }
 
   /**
-   * Initial photon position for the Energy graph sample slot.
+   * Initial photon position for a point on the photon source line.
+   *
+   * @param offset - Signed distance, in model units, from PHOTON_SOURCE_POSITION along the source line. The source
+   *   line is perpendicular to the beam direction, so offset = 0 emits from the center of the source, negative offsets
+   *   emit from one side, and positive offsets emit from the other. Photon.TRAVEL_DIRECTION is the unit vector along
+   *   that source line, so multiplying it by the scalar offset gives the displacement from PHOTON_SOURCE_POSITION.
    */
   protected getPhotonInitialPosition( offset: number ): Vector2 {
     return PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION.plus(
