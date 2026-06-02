@@ -7,7 +7,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Material, { MaterialType } from '../../common/model/Material.js';
+import Material from '../../common/model/Material.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 import FrequencyEnergyGraphData from './FrequencyEnergyGraphData.js';
 import IntensityCurrentGraphData from './IntensityCurrentGraphData.js';
@@ -23,7 +23,7 @@ export default class ExperimentModel extends PhotoelectricEffectModel {
   public constructor( mysteryMaterials: Material[], providedOptions: PhotoelectricEffectModelOptions ) {
     super(
       mysteryMaterials,
-      tandem => [ new Material( MaterialType.CUSTOM, { tandem: tandem.createTandem( 'custom' ) } ) ],
+      null,
       providedOptions
     );
 
