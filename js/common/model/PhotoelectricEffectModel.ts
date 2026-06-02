@@ -216,7 +216,9 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     // So that slow moving electrons from previous experiments do not persist and confuse the student.
     Multilink.lazyMultilinkAny( [
       this.showHighestEnergyOnlyProperty,
-      this.target.materialProperty
+      this.target.materialProperty,
+      this.target.workFunctionProperty,
+      this.target.bandDepthProperty
     ], () => this.clearElectrons() );
 
     PhotoelectricEffectPreferences.photonModeProperty.lazyLink( () => {
