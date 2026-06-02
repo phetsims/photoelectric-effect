@@ -16,7 +16,7 @@ import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
-import type { NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
+import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import AccordionBox, { type AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
@@ -27,7 +27,7 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 type SelfOptions = EmptySelfOptions;
 
 export type MaterialPropertiesAccordionBoxOptions =
-  SelfOptions & NodeTranslationOptions & PickRequired<AccordionBoxOptions, 'tandem'>;
+  SelfOptions & NodeOptions & PickRequired<AccordionBoxOptions, 'tandem'>;
 
 const CONTROL_TRACK_SIZE = new Dimension2( 140, 2 );
 
@@ -52,6 +52,11 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
         font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
       } )
     }, providedOptions );
+
+    // TODO: Should Target's workFunctionProperty and bandWidthProperty be bidirectional DynamicProperties so
+    //  views can edit the active material through Target directly? Pro: Target would be the single active-material API,
+    //  avoiding duplicate DynamicProperties in view code. Con: writable convenience Properties may obscure that setting
+    //  them mutates whichever Material is currently selected.
 
     // These DynamicProperties are bidirectional so the NumberControls edit the currently selected Material directly.
     const workFunctionProperty = new DynamicProperty<number, number, Material>( materialProperty, {

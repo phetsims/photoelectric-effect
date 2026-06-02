@@ -7,8 +7,10 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import derived from '../../../../axon/js/derived.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectScreenView, { PhotoelectricEffectScreenViewOptions } from '../../common/view/PhotoelectricEffectScreenView.js';
 import GroundedCircuitNode from '../../intro/view/GroundedCircuitNode.js';
@@ -50,6 +52,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
     const materialPropertiesAccordionBox = new MaterialPropertiesAccordionBox( model.target.materialProperty, {
       left: this.layoutBounds.minX + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
       bottom: this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN,
+      visibleProperty: derived( model.target.materialProperty, material => material.materialType === MaterialType.CUSTOM ),
       tandem: options.tandem.createTandem( 'materialPropertiesAccordionBox' )
     } );
 

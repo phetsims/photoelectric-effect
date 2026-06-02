@@ -3,18 +3,15 @@
 /**
  * Base view shared by all photoelectric-effect screens.
  *
- * Owns the common play-area transform and shared controls (materials selection, work function control,
- * photon source panel + light source + cord, play/pause/step, and reset). Subclasses contribute screen-specific
- * play-area content (graphs, additional controls) and provide the concrete light source / photon source panel
- * via factory options.
+ * Owns the common play-area transform and shared controls (materials selection, photon source panel + light source +
+ * cord, play/pause/step, and reset). Subclasses contribute screen-specific play-area content (graphs, additional
+ * controls) and provide the concrete light source / photon source panel via factory options.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
-import Dimension2 from '../../../../dot/js/Dimension2.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.js';
@@ -23,17 +20,14 @@ import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
-import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
-import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
@@ -61,7 +55,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
   // Exposed for subclasses to wire into pdom order and to position screen-specific content relative to.
   protected readonly materialsComboBox: Node;
-  protected readonly workFunctionControl: Node;
   protected readonly photonSourcePanel: Node;
   protected readonly playPauseStepButtonGroup: Node;
   protected readonly resetAllButton: Node;
@@ -126,7 +119,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( this.photonSourcePanel );
 
     //------------------------------------------------------------------------
-    // Target material controls: combo box and (custom-material-only) work function slider
+    // Target material controls
     //------------------------------------------------------------------------
 
     // Combo box should appear to the left of the target plate and above the wire that extends from center.
@@ -136,39 +129,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 
-    // Work function NumberControl is only visible when the user-defined custom material is selected.
-    const workFunctionProperty = new DynamicProperty<number, number, Material>( model.target.materialProperty, {
-      bidirectional: true,
-      derive: 'workFunctionProperty'
-    } );
-    const customMaterialSelectedProperty = new DerivedProperty( [ model.target.materialProperty ],
-      material => material.materialType === MaterialType.CUSTOM );
-
-    this.workFunctionControl = new NumberControl(
-      PhotoelectricEffectFluent.workFunction.labelStringProperty,
-      workFunctionProperty,
-
-      // TODO: @design NumberControl doesn't support a Property<Range>? If this needs to be different for each Material,
-      //   we will need to add support in scenery-phet or reconstruct this NumberControl on material change,
-      //   or create several NumberControls and toggle visibility. SEE TODO where this is created.
-      Material.WORK_FUNCTION_RANGE,
-      {
-        delta: 0.1,
-        numberDisplayOptions: {
-          decimalPlaces: 1
-        },
-        sliderOptions: {
-          trackSize: new Dimension2( this.materialsComboBox.width, 5 )
-        },
-        layoutFunction: NumberControl.createLayoutFunction3(),
-        visibleProperty: customMaterialSelectedProperty,
-        centerTop: this.materialsComboBox.centerBottom.plusXY( 0, 20 ),
-        tandem: options.tandem.createTandem( 'workFunctionControl' )
-      }
-    );
-
     this.addChild( this.materialsComboBox );
-    this.addChild( this.workFunctionControl );
 
     //------------------------------------------------------------------------
     // Particle canvas: renders photons and electrons in the play area
