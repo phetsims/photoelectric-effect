@@ -441,12 +441,19 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     // Retarding voltage reduces the fraction of emitted electrons that reach the anode.
     const retardingVoltage = voltage < 0 ? -voltage : 0;
 
+    // The emitted (escaped) electrons have kinetic energies uniformly distributed over a band of width
+    // min( photonEnergyBeyondWorkFunction, bandWidth ): when the photon can access the whole band the spread is
+    // bandWidth, and near threshold (photonEnergyBeyondWorkFunction < bandWidth) the spread is just the excess energy.
+    // The retarding fraction must be normalized by THIS spread, not by bandWidth, otherwise the accessible-band
+    // fraction (already applied in electronsPerSecondFromTarget) gets applied a second time.
+    const emittedElectronEnergySpread = Math.min( photonEnergyBeyondWorkFunction, bandWidth );
+
     // Only electrons with enough energy to overcome the retarding voltage contribute to current.
-    const fractionMoreEnergeticThanRetardingVoltage = Math.max(
+    const fractionMoreEnergeticThanRetardingVoltage = emittedElectronEnergySpread > 0 ? Math.max(
       0,
       Math.min( ( photonEnergyBeyondWorkFunction - retardingVoltage ) /
-                bandWidth, 1 )
-    );
+                emittedElectronEnergySpread, 1 )
+    ) : 0;
 
     const electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
 
