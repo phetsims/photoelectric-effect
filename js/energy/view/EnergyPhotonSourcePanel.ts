@@ -68,6 +68,7 @@ export default class EnergyPhotonSourcePanel extends Panel {
         font: PhotoelectricEffectConstants.CONTENT_FONT,
         fill: 'white'
       } ),
+      tandem: providedOptions.tandem.createTandem( 'firePhotonButton' ),
       listener: () => {
         firePhotonEmitter.emit();
       },
@@ -80,7 +81,7 @@ export default class EnergyPhotonSourcePanel extends Panel {
       spacing: 10
     } );
     const wavelengthSlider = new LabeledWavelengthNumberControl( wavelengthProperty, {
-      tandem: providedOptions.tandem.createTandem( 'wavelengthSlider' )
+      tandem: providedOptions.tandem.createTandem( 'wavelengthNumberControl' )
     } );
 
     const panelContent = new VBox( {
