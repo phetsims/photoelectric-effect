@@ -80,12 +80,12 @@ export default class EnergyPhotonSourcePanel extends Panel {
       children: [ photonQuantitySwitch, firePhotonButton ],
       spacing: 10
     } );
-    const wavelengthSlider = new LabeledWavelengthNumberControl( wavelengthProperty, {
+    const wavelengthNumberControl = new LabeledWavelengthNumberControl( wavelengthProperty, {
       tandem: providedOptions.tandem.createTandem( 'wavelengthNumberControl' )
     } );
 
     const panelContent = new VBox( {
-      children: [ emitPhotonHBox, wavelengthSlider ],
+      children: [ emitPhotonHBox, wavelengthNumberControl ],
       spacing: 10
     } );
 
