@@ -125,7 +125,24 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       lineWidth: 3
     } );
 
-    // Added in this order for proper z-layering: wire underneath the lamp, panel covers the wire end.
+    //------------------------------------------------------------------------
+    // Light beam: stands in for the rendered photons when the 'show photons' preference is disabled. Added before
+    // the lamp so the lamp occludes the beam's recessed starting edge, making the beam emerge from the aperture.
+    //------------------------------------------------------------------------
+
+    const lightBeamNode = new LightBeamNode(
+      beamStartCenter,
+      this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ),
+      model.wavelengthProperty,
+      model.photonSource.normalizedOutputProperty,
+      {
+        visibleProperty: DerivedProperty.not( options.photonsVisibleProperty )
+      }
+    );
+    this.addChild( lightBeamNode );
+
+    // Added in this order for proper z-layering: beam behind the lamp, wire underneath the lamp, panel covers the
+    // wire end.
     this.addChild( photonSourceWireNode );
     this.addChild( lightSourceNode );
     this.addChild( this.photonSourcePanel );
@@ -142,21 +159,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     } );
 
     this.addChild( this.materialsComboBox );
-
-    //------------------------------------------------------------------------
-    // Light beam: stands in for the rendered photons when the 'show photons' preference is disabled
-    //------------------------------------------------------------------------
-
-    const lightBeamNode = new LightBeamNode(
-      beamStartCenter,
-      this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ),
-      model.wavelengthProperty,
-      model.photonSource.normalizedOutputProperty,
-      {
-        visibleProperty: DerivedProperty.not( options.photonsVisibleProperty )
-      }
-    );
-    this.addChild( lightBeamNode );
 
     //------------------------------------------------------------------------
     // Particle canvas: renders photons and electrons in the play area

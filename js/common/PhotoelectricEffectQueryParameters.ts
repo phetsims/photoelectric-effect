@@ -44,8 +44,7 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
   // Whether the light source emits visible photons.
   showPhotons: {
     public: true,
-    type: 'boolean',
-    defaultValue: false
+    type: 'flag'
   },
 
   // Whether experiment graph data returns every deterministic bin instead of only bins revealed by interaction.

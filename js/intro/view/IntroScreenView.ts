@@ -29,7 +29,8 @@ export default class IntroScreenView extends PhotonBeamScreenView {
 
   public constructor( model: IntroModel, providedOptions: IntroScreenViewOptions ) {
     const options = optionize<IntroScreenViewOptions, SelfOptions, PhotonBeamScreenViewOptions>()( {
-      createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter ),
+      createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter,
+        model.photonSource.wavelengthProperty, model.photonSource.photonRateProperty ),
       createPhotonSourcePanel: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
       screenSummaryContent: new ScreenSummaryContent( {
         playAreaContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.playAreaStringProperty,
