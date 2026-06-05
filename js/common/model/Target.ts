@@ -137,6 +137,9 @@ export default class Target {
 
       // 1/20 is an empirically determined threshold confirmed chosen by design team. Critically, this only
       // affects the electrons that are created for the experiment view. It does not affect the current calculation.
+      // It is intended to match the behavior of "Highest Energy Only" in the Java version. Electrons are emitted
+      // with highest possible energy, but we only about 5% of them as this represents a small sample of the
+      // possible energies.
       energyAfterCollision = dotRandom.nextDouble() < 1 / 20 ?
                              photonEnergy - workFunction :
                              Number.NEGATIVE_INFINITY;
