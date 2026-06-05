@@ -360,6 +360,8 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   private getBeamModeEmissionPosition( position: Vector2, velocity: Vector2, dt: number ): Vector2 {
 
     // Parametric time along the velocity at which the photon path crosses the target x.
+    // TODO: We actually needed this same calculation to sequence the photons in the energy screen.
+    //   Once merged, consider this refactorying opportunity.
     const timeToTarget = ( PhotoelectricEffectConstants.TARGET_X - position.x ) / velocity.x;
     const targetCrossing = position.plus( velocity.timesScalar( timeToTarget ) );
 

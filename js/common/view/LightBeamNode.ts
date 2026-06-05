@@ -59,7 +59,7 @@ export default class LightBeamNode extends Node {
     const beamEndCornerB = beamEnd.plusXY( 0, beamWidth * endBeamScaleFactor );
 
     // Trapezoid with corner points aligned to light source opening (beam start) and target plate (beam end).
-    const beamShape = new Shape().polygon( [ beamStartCornerA, beamStartCornerB, beamEndCornerA, beamEndCornerB ] );
+    const beamShape = Shape.polygon( [ beamStartCornerA, beamStartCornerB, beamEndCornerA, beamEndCornerB ] );
     const beamPath = new Path( beamShape );
 
     // Color tracks the wavelength. In UV/IR mode the fill is white, so the beam gets an outline matching the
@@ -80,6 +80,8 @@ export default class LightBeamNode extends Node {
       beamPath.opacity = MAX_BEAM_OPACITY * normalizedOutput;
     } );
 
+    // TODO: LightBeamNode could potentially extend Path instead of Node + children, unless there is a layout
+    //   or other need for this.
     super( combineOptions<NodeOptions>( {
       children: [ beamPath ]
     }, providedOptions ) );
