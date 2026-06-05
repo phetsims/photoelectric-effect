@@ -333,13 +333,38 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       const offset = ( dotRandom.nextDouble() * 2 - 1 ) * PhotoelectricEffectConstants.PHOTON_SOURCE_LINE_HALF_LENGTH;
 
       // Calculate the initial position and velocity of the photon.
-      const position = this.getPhotonInitialPosition( offset );
+      let position = this.getPhotonInitialPosition( offset );
       const velocity = this.getPhotonInitialVelocity();
+
+      // When photons are not shown (beam view), emit each photon right in front of the target so it collides on the
+      // upcoming stepPhotons call. This removes the beam-travel delay so electron ejection responds immediately to
+      // changes in wavelength or source output.
+      if ( !PhotoelectricEffectPreferences.showPhotonsProperty.value ) {
+        position = this.getBeamModeEmissionPosition( position, velocity, dt );
+      }
 
       // Create an add photon to array.
       const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
       this.photons.push( photon );
     } );
+  }
+
+  /**
+   * Computes a beam-view emission position that places a photon one step before it crosses the target plate, so the
+   * subsequent stepPhotons call lands it exactly on the target. Used when photons are not shown, so the target
+   * responds to wavelength and source-output changes without the visible beam-travel delay.
+   * @param position - the photon's source-line origin
+   * @param velocity - the photon's velocity, in model units per second
+   * @param dt - the time step that stepPhotons will use this frame, in seconds
+   */
+  private getBeamModeEmissionPosition( position: Vector2, velocity: Vector2, dt: number ): Vector2 {
+
+    // Parametric time along the velocity at which the photon path crosses the target x.
+    const timeToTarget = ( PhotoelectricEffectConstants.TARGET_X - position.x ) / velocity.x;
+    const targetCrossing = position.plus( velocity.timesScalar( timeToTarget ) );
+
+    // Back up one step so the next stepPhotons advance lands the photon exactly on the target.
+    return targetCrossing.minus( velocity.timesScalar( dt ) );
   }
 
   /**
