@@ -124,7 +124,6 @@ export default class EnergyBarGraphNode extends Node {
     samples.forEach( ( sample, sampleIndex ) => {
       const sampleBarPlot = sampleBarPlots[ sampleIndex ];
       const sampleDataSet = sampleDataSets[ sampleIndex ];
-      sample.hasDataProperty.linkAttribute( sampleBarPlot, 'visible' );
 
       Multilink.multilink( [
         sample.hasDataProperty,
@@ -133,9 +132,7 @@ export default class EnergyBarGraphNode extends Node {
         sample.kineticEnergyProperty
       ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy ) => {
         noElectronEjectedPanels[ sampleIndex ].visible = hasData && kineticEnergy === 0;
-
-        // TODO (SESSION): if hasData && kineticEnergy is zero, the energy bar graphs should be hidden
-        //   Perhaps we update data set with 0s? Or perhaps we actually make the bars invisible, not sure. See https://github.com/phetsims/photoelectric-effect/issues/92
+        sampleBarPlot.visible = hasData && kineticEnergy !== 0;
         EnergyBarGraphNode.updateDataSet(
           sampleDataSet,
           potentialEnergy,
