@@ -14,44 +14,24 @@ import Property from '../../../../axon/js/Property.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
-import IOType from '../../../../tandem/js/types/IOType.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import ReferenceIO from '../../../../tandem/js/types/ReferenceIO.js';
-import StringIO from '../../../../tandem/js/types/StringIO.js';
+import SchemaOrientedIOType from '../../../../tandem/js/types/SchemaOrientedIOType.js';
+import { type CoreRecord } from '../../../../tandem/js/types/StateSchema.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
-import Electron, { type ElectronStateObject } from './Electron.js';
+import Electron from './Electron.js';
 import Material, { MaterialType } from './Material.js';
 import Photon from './Photon.js';
 
-export type PhotonCollisionOutcome =
-  'electronEmitted' |
-  'photonEnergyInsufficient' |
-  'quantumMechanicallyForbidden';
-
-export const PhotonCollisionOutcomeValues: PhotonCollisionOutcome[] = [
-  'electronEmitted',
-  'photonEnergyInsufficient',
-  'quantumMechanicallyForbidden'
-];
-
-export type PhotonCollisionResult = {
-  photonEnergy: number;
-  bindingEnergy: number | null;
-  potentialEnergy: number | null;
-  kineticEnergy: number;
-  outcome: PhotonCollisionOutcome;
-  electron: Electron | null;
+const PHOTON_COLLISION_RESULT_SCHEMA = {
+  photonEnergy: NumberIO,
+  potentialEnergy: NullableIO( NumberIO ),
+  kineticEnergy: NumberIO,
+  electron: NullableIO( Electron.ElectronIO )
 };
 
-type PhotonCollisionResultStateObject = {
-  photonEnergy: number;
-  bindingEnergy: number | null;
-  potentialEnergy: number | null;
-  kineticEnergy: number;
-  outcome: PhotonCollisionOutcome;
-  electron: ElectronStateObject | null;
-};
+export type PhotonCollisionResult = CoreRecord<typeof PHOTON_COLLISION_RESULT_SCHEMA>;
 
 export default class Target {
 
@@ -60,38 +40,6 @@ export default class Target {
 
   // Horizontal offset from the target surface for emitted electrons.
   private static readonly EMISSION_OFFSET = 1;
-
-  /**
-   * PhET-iO IOType for photon-target collision metadata.
-   */
-  public static readonly PhotonCollisionResultIO = new IOType<PhotonCollisionResult, PhotonCollisionResultStateObject>(
-    'PhotonCollisionResultIO', {
-      valueType: Object,
-      stateSchema: {
-        photonEnergy: NumberIO,
-        bindingEnergy: NullableIO( NumberIO ),
-        potentialEnergy: NullableIO( NumberIO ),
-        kineticEnergy: NumberIO,
-        outcome: StringIO,
-        electron: NullableIO( Electron.ElectronIO )
-      },
-      toStateObject: collisionResult => ( {
-        photonEnergy: collisionResult.photonEnergy,
-        bindingEnergy: collisionResult.bindingEnergy,
-        potentialEnergy: collisionResult.potentialEnergy,
-        kineticEnergy: collisionResult.kineticEnergy,
-        outcome: collisionResult.outcome,
-        electron: collisionResult.electron ? Electron.ElectronIO.toStateObject( collisionResult.electron ) : null
-      } ),
-      fromStateObject: stateObject => ( {
-        photonEnergy: stateObject.photonEnergy,
-        bindingEnergy: stateObject.bindingEnergy,
-        potentialEnergy: stateObject.potentialEnergy,
-        kineticEnergy: stateObject.kineticEnergy,
-        outcome: stateObject.outcome,
-        electron: stateObject.electron ? Electron.ElectronIO.fromStateObject( stateObject.electron ) : null
-      } )
-    } );
 
   /**
    * The active material instance, owns the live workFunctionProperty.
@@ -161,6 +109,9 @@ export default class Target {
   /**
    * Handles a photon-target collision, producing an electron and collision metadata when emission occurs.
    *
+   * TODO: I suspect this function would be easier to understand without early return statements. Consider
+   *   implementing it with a single collision result return.
+   *
    * @param photon
    * @param highestEnergyOnly - When true, use the highest available electron energy for emitted particles, matching
    *   Java "simple-mode" absorption behavior. This does not guarantee emission; the normal quantum-efficiency gate
@@ -193,7 +144,7 @@ export default class Target {
     // η of such absorptions actually produces one. The remaining fraction is treated as absorbed-to-heat with
     // no electron emitted.
     if ( !emitAllAbsorbedPhotons && dotRandom.nextDouble() > PhotoelectricEffectConstants.QUANTUM_EFFICIENCY ) {
-      return Target.createCollisionResult( photonEnergy, null, 'quantumMechanicallyForbidden', null );
+      return Target.createCollisionResult( photonEnergy, null, null );
     }
 
     let bindingEnergy: number | null;
@@ -216,7 +167,7 @@ export default class Target {
     }
 
     if ( bindingEnergy === null ) {
-      return Target.createCollisionResult( photonEnergy, null, 'quantumMechanicallyForbidden', null );
+      return Target.createCollisionResult( photonEnergy, null, null );
     }
 
     const kineticEnergy = photonEnergy - bindingEnergy;
@@ -224,7 +175,7 @@ export default class Target {
     // Non-positive kinetic energy means the photon did not leave an electron with enough energy to escape.
     // Treat it as no-emission before computing speed, which requires positive energy.
     if ( kineticEnergy <= 0 ) {
-      return Target.createCollisionResult( photonEnergy, bindingEnergy, 'photonEnergyInsufficient', null );
+      return Target.createCollisionResult( photonEnergy, bindingEnergy, null );
     }
 
     const speed = Electron.determineNewElectronSpeed( kineticEnergy );
@@ -239,24 +190,21 @@ export default class Target {
     const emissionPosition = new Vector2( this.x + Target.EMISSION_OFFSET, emissionY );
     const electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), kineticEnergy );
 
-    return Target.createCollisionResult( photonEnergy, bindingEnergy, 'electronEmitted', electron );
+    return Target.createCollisionResult( photonEnergy, bindingEnergy, electron );
   }
 
   /**
-   * Creates collision metadata for both electron-emitting and no-electron outcomes.
+   * Creates collision metadata for both electron-emitting and no-electron collisions.
    */
   private static createCollisionResult(
     photonEnergy: number,
     bindingEnergy: number | null,
-    outcome: PhotonCollisionOutcome,
     electron: Electron | null
   ): PhotonCollisionResult {
     return {
       photonEnergy: photonEnergy,
-      bindingEnergy: bindingEnergy,
       potentialEnergy: bindingEnergy === null ? null : -bindingEnergy,
       kineticEnergy: electron ? electron.energy : 0,
-      outcome: outcome,
       electron: electron
     };
   }
@@ -289,4 +237,16 @@ export default class Target {
     // PhET-iO customizable materials should not be reset and should only be controlled with PhET-iO.
     this.materials.forEach( material => material.materialType === MaterialType.CUSTOM && material.reset() );
   }
+
+  /**
+   * PhET-iO IOType for photon-target collision metadata.
+   */
+  public static readonly PhotonCollisionResultIO = new SchemaOrientedIOType<
+    PhotonCollisionResult,
+    typeof PHOTON_COLLISION_RESULT_SCHEMA
+  >(
+    'PhotonCollisionResultIO', {
+      documentation: 'Serialization for photon-target collision metadata.',
+      stateSchema: PHOTON_COLLISION_RESULT_SCHEMA
+    } );
 }

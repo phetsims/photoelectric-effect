@@ -130,10 +130,10 @@ export default class EnergyBarGraphNode extends Node {
         sample.potentialEnergyProperty,
         sample.photonEnergyProperty,
         sample.kineticEnergyProperty,
-        sample.outcomeProperty
-      ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy, outcome ) => {
-        noElectronEjectedPanels[ sampleIndex ].visible = hasData && outcome === 'photonEnergyInsufficient';
-        sampleBarPlot.visible = hasData && outcome === 'electronEmitted';
+        sample.electronEmittedProperty
+      ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy, electronEmitted ) => {
+        noElectronEjectedPanels[ sampleIndex ].visible = hasData && !electronEmitted;
+        sampleBarPlot.visible = hasData && electronEmitted;
         EnergyBarGraphNode.updateDataSet(
           sampleDataSet,
           potentialEnergy,

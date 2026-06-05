@@ -166,7 +166,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
         collisionResult.potentialEnergy ?? 0,
         collisionResult.photonEnergy,
         collisionResult.kineticEnergy,
-        collisionResult.outcome
+        collisionResult.electron !== null
       );
       this.photonToSampleIndexMap.delete( photon );
     } );

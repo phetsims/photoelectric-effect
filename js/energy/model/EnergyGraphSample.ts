@@ -9,21 +9,12 @@
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
-import StringUnionProperty from '../../../../axon/js/StringUnionProperty.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
-import { PhotonCollisionOutcomeValues, type PhotonCollisionOutcome } from '../../common/model/Target.js';
 
 type SelfOptions = EmptySelfOptions;
 type EnergyGraphSampleOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
-
-export type EnergyGraphSampleData = {
-  potentialEnergy: number;
-  photonEnergy: number;
-  kineticEnergy: number;
-  outcome: PhotonCollisionOutcome;
-};
 
 /**
  * Holds the energy values for one recorded electron event. The slot remains stable for the lifetime of the model,
@@ -43,8 +34,8 @@ export default class EnergyGraphSample extends PhetioObject {
   // Emitted electron kinetic energy, in eV.
   public readonly kineticEnergyProperty: Property<number>;
 
-  // Classification of the photon-target collision that produced this sample.
-  public readonly outcomeProperty: StringUnionProperty<PhotonCollisionOutcome>;
+  // Whether this sample produced an emitted electron.
+  public readonly electronEmittedProperty: Property<boolean>;
 
   public constructor( providedOptions: EnergyGraphSampleOptions ) {
 
@@ -86,11 +77,10 @@ export default class EnergyGraphSample extends PhetioObject {
       phetioDocumentation: 'Kinetic energy for this Energy screen graph sample, in electron volts'
     } );
 
-    this.outcomeProperty = new StringUnionProperty<PhotonCollisionOutcome>( 'quantumMechanicallyForbidden', {
-      validValues: PhotonCollisionOutcomeValues,
-      tandem: options.tandem.createTandem( 'outcomeProperty' ),
+    this.electronEmittedProperty = new BooleanProperty( false, {
+      tandem: options.tandem.createTandem( 'electronEmittedProperty' ),
       phetioReadOnly: true,
-      phetioDocumentation: 'Outcome of the photon-target collision that produced this sample'
+      phetioDocumentation: 'Whether this Energy screen graph sample produced an emitted electron'
     } );
   }
 
@@ -101,12 +91,12 @@ export default class EnergyGraphSample extends PhetioObject {
     potentialEnergy: number,
     photonEnergy: number,
     kineticEnergy: number,
-    outcome: PhotonCollisionOutcome
+    electronEmitted: boolean
   ): void {
     this.potentialEnergyProperty.value = potentialEnergy;
     this.photonEnergyProperty.value = photonEnergy;
     this.kineticEnergyProperty.value = kineticEnergy;
-    this.outcomeProperty.value = outcome;
+    this.electronEmittedProperty.value = electronEmitted;
     this.hasDataProperty.value = true;
   }
 
@@ -118,6 +108,6 @@ export default class EnergyGraphSample extends PhetioObject {
     this.potentialEnergyProperty.reset();
     this.photonEnergyProperty.reset();
     this.kineticEnergyProperty.reset();
-    this.outcomeProperty.reset();
+    this.electronEmittedProperty.reset();
   }
 }

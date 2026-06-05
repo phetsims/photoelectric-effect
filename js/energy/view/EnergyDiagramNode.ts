@@ -200,9 +200,9 @@ export default class EnergyDiagramNode extends Node {
         sample.hasDataProperty,
         sample.potentialEnergyProperty,
         sample.kineticEnergyProperty,
-        sample.outcomeProperty
-      ], ( hasData, potentialEnergy, kineticEnergy, outcome ) => {
-        sampleMarkerNode.sampleNode.visible = hasData && outcome !== 'quantumMechanicallyForbidden';
+        sample.electronEmittedProperty
+      ], ( hasData, potentialEnergy, kineticEnergy, electronEmitted ) => {
+        sampleMarkerNode.sampleNode.visible = hasData && electronEmitted;
         EnergyDiagramNode.updateSampleMarkerPositions(
           this.chartTransform,
           sampleIndex,
