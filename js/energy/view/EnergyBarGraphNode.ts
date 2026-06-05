@@ -134,6 +134,8 @@ export default class EnergyBarGraphNode extends Node {
       ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy ) => {
         noElectronEjectedPanels[ sampleIndex ].visible = hasData && kineticEnergy === 0;
 
+        // TODO (SESSION): if hasData && kineticEnergy is zero, the energy bar graphs should be hidden
+        //   Perhaps we update data set with 0s? Or perhaps we actually make the bars invisible, not sure.
         EnergyBarGraphNode.updateDataSet(
           sampleDataSet,
           potentialEnergy,

@@ -161,6 +161,79 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       const slotIndex = this.photonToSampleIndexMap.get( photon );
       affirm( slotIndex !== undefined, 'Collided photon should have an associated sample slot index' );
 
+// TODO (SESSION): There is something wrong with how e report potential energy for the diagrams on the energy screen.
+//
+// ```
+//       const potentialEnergy = -this.target.workFunctionProperty.value;
+//       const photonEnergy = photon.getEnergy();
+//       const kineticEnergy = electron ? electron.energy : 0;
+// ```
+//
+// So we are reporting that the potential energy is always at the work function (fermi level). To support the energy graphs, we will need to change how we are reporting sampled energies from photon collisions.
+//
+// Here is a plan that I think will work:
+//
+// <details>
+//
+//
+// 1. Refactor `Material` energy helpers so they sample/return binding energy instead of final kinetic energy.
+//    - Full-band path samples from `[workFunction, workFunction + bandWidth]`.
+//    - Guaranteed-emission path samples from `[workFunction, min(photonEnergy, workFunction + bandWidth)]`.
+//
+// 2. Add a `PhotonCollisionOutcome` type, likely:
+//    - `electronEmitted`
+//    - `photonEnergyInsufficient`
+//    - `quantumMechanicallyForbidden`
+//
+// 3. Change `Target.handlePhotonCollision` to return a structured collision result instead of `Electron | null`:
+//
+// ```ts
+// {
+//   photonEnergy: number;
+//   bindingEnergy: number | null;
+//   potentialEnergy: number | null; // graph value, probably -bindingEnergy
+//   kineticEnergy: number;
+//   outcome: PhotonCollisionOutcome;
+//   electron: Electron | null;
+// }
+// ```
+//
+// 4. Keep collision metadata off `Electron`.
+//    - `Electron` should continue to represent the emitted moving particle.
+//    - Collision outcome/binding energy belong to the photon-target interaction, including no-electron cases.
+//
+// 5. Update `Target.handlePhotonCollision` to classify outcomes explicitly.
+//    - Quantum-efficiency rejection becomes `quantumMechanicallyForbidden`.
+//    - Sampled/selected state with insufficient energy becomes `photonEnergyInsufficient`.
+//    - Positive kinetic energy creates an `Electron` and becomes `electronEmitted`.
+//
+// 6. Update `PhotoelectricEffectModel.stepPhotons`.
+//    - Add `collisionResult.electron` to `this.electrons` when present.
+//    - Emit the full collision result through `photonCollidedEmitter`.
+//
+// 7. Update `EnergyModel` to record graph samples from the collision result.
+//    - Stop hard-coding `potentialEnergy = -workFunction`.
+//    - Use `collisionResult.potentialEnergy` when available.
+//    - Record `outcome` with each sample.
+//
+// 8. Update `EnergyGraphSample` / `EnergyGraphData`.
+//    - Store `outcome` in addition to existing energy values.
+//    - Keep sample slots persistent as they are now.
+//
+// 9. Update the energy bar graph.
+//    - Stop using `kineticEnergy === 0` to infer “no electron ejected.”
+//    - Show the “photon energy insufficient” message only for the insufficient-energy absorbed outcome.
+//    - Do not show that message for quantum-mechanically forbidden/no-interaction outcomes.
+//
+// 10. Update the energy diagram.
+//    - Show photon/electron energy icons for emitted and insufficient-energy absorbed outcomes.
+//    - Hide icons for quantum-mechanically forbidden/no-interaction outcomes.
+//
+// 11. Add focused tests or spot checks for the three outcomes.
+//    - Emitted electron records sampled potential energy within the occupied band.
+//    - Insufficient-energy event records an absorbed/no-ejection outcome and remains visible in the diagram.
+//    - Quantum-forbidden event records no-interaction outcome and hides diagram icons.
+
       const potentialEnergy = -this.target.workFunctionProperty.value;
       const photonEnergy = photon.getEnergy();
       const kineticEnergy = electron ? electron.energy : 0;
