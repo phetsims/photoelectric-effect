@@ -9,9 +9,11 @@
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
+import StringUnionProperty from '../../../../axon/js/StringUnionProperty.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import { PhotonCollisionOutcomeValues, type PhotonCollisionOutcome } from '../../common/model/Target.js';
 
 type SelfOptions = EmptySelfOptions;
 type EnergyGraphSampleOptions = SelfOptions & PickRequired<PhetioObjectOptions, 'tandem'>;
@@ -20,6 +22,7 @@ export type EnergyGraphSampleData = {
   potentialEnergy: number;
   photonEnergy: number;
   kineticEnergy: number;
+  outcome: PhotonCollisionOutcome;
 };
 
 /**
@@ -39,6 +42,9 @@ export default class EnergyGraphSample extends PhetioObject {
 
   // Emitted electron kinetic energy, in eV.
   public readonly kineticEnergyProperty: Property<number>;
+
+  // Classification of the photon-target collision that produced this sample.
+  public readonly outcomeProperty: StringUnionProperty<PhotonCollisionOutcome>;
 
   public constructor( providedOptions: EnergyGraphSampleOptions ) {
 
@@ -79,15 +85,28 @@ export default class EnergyGraphSample extends PhetioObject {
       phetioFeatured: true,
       phetioDocumentation: 'Kinetic energy for this Energy screen graph sample, in electron volts'
     } );
+
+    this.outcomeProperty = new StringUnionProperty<PhotonCollisionOutcome>( 'quantumMechanicallyForbidden', {
+      validValues: PhotonCollisionOutcomeValues,
+      tandem: options.tandem.createTandem( 'outcomeProperty' ),
+      phetioReadOnly: true,
+      phetioDocumentation: 'Outcome of the photon-target collision that produced this sample'
+    } );
   }
 
   /**
    * Records energy values for this sample slot.
    */
-  public setData( potentialEnergy: number, photonEnergy: number, kineticEnergy: number ): void {
+  public setData(
+    potentialEnergy: number,
+    photonEnergy: number,
+    kineticEnergy: number,
+    outcome: PhotonCollisionOutcome
+  ): void {
     this.potentialEnergyProperty.value = potentialEnergy;
     this.photonEnergyProperty.value = photonEnergy;
     this.kineticEnergyProperty.value = kineticEnergy;
+    this.outcomeProperty.value = outcome;
     this.hasDataProperty.value = true;
   }
 
@@ -99,5 +118,6 @@ export default class EnergyGraphSample extends PhetioObject {
     this.potentialEnergyProperty.reset();
     this.photonEnergyProperty.reset();
     this.kineticEnergyProperty.reset();
+    this.outcomeProperty.reset();
   }
 }

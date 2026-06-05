@@ -14,11 +14,44 @@ import Property from '../../../../axon/js/Property.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import IOType from '../../../../tandem/js/types/IOType.js';
+import NullableIO from '../../../../tandem/js/types/NullableIO.js';
+import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import ReferenceIO from '../../../../tandem/js/types/ReferenceIO.js';
+import StringIO from '../../../../tandem/js/types/StringIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
-import Electron from './Electron.js';
+import Electron, { type ElectronStateObject } from './Electron.js';
 import Material, { MaterialType } from './Material.js';
 import Photon from './Photon.js';
+
+export type PhotonCollisionOutcome =
+  'electronEmitted' |
+  'photonEnergyInsufficient' |
+  'quantumMechanicallyForbidden';
+
+export const PhotonCollisionOutcomeValues: PhotonCollisionOutcome[] = [
+  'electronEmitted',
+  'photonEnergyInsufficient',
+  'quantumMechanicallyForbidden'
+];
+
+export type PhotonCollisionResult = {
+  photonEnergy: number;
+  bindingEnergy: number | null;
+  potentialEnergy: number | null;
+  kineticEnergy: number;
+  outcome: PhotonCollisionOutcome;
+  electron: Electron | null;
+};
+
+type PhotonCollisionResultStateObject = {
+  photonEnergy: number;
+  bindingEnergy: number | null;
+  potentialEnergy: number | null;
+  kineticEnergy: number;
+  outcome: PhotonCollisionOutcome;
+  electron: ElectronStateObject | null;
+};
 
 export default class Target {
 
@@ -27,6 +60,38 @@ export default class Target {
 
   // Horizontal offset from the target surface for emitted electrons.
   private static readonly EMISSION_OFFSET = 1;
+
+  /**
+   * PhET-iO IOType for photon-target collision metadata.
+   */
+  public static readonly PhotonCollisionResultIO = new IOType<PhotonCollisionResult, PhotonCollisionResultStateObject>(
+    'PhotonCollisionResultIO', {
+      valueType: Object,
+      stateSchema: {
+        photonEnergy: NumberIO,
+        bindingEnergy: NullableIO( NumberIO ),
+        potentialEnergy: NullableIO( NumberIO ),
+        kineticEnergy: NumberIO,
+        outcome: StringIO,
+        electron: NullableIO( Electron.ElectronIO )
+      },
+      toStateObject: collisionResult => ( {
+        photonEnergy: collisionResult.photonEnergy,
+        bindingEnergy: collisionResult.bindingEnergy,
+        potentialEnergy: collisionResult.potentialEnergy,
+        kineticEnergy: collisionResult.kineticEnergy,
+        outcome: collisionResult.outcome,
+        electron: collisionResult.electron ? Electron.ElectronIO.toStateObject( collisionResult.electron ) : null
+      } ),
+      fromStateObject: stateObject => ( {
+        photonEnergy: stateObject.photonEnergy,
+        bindingEnergy: stateObject.bindingEnergy,
+        potentialEnergy: stateObject.potentialEnergy,
+        kineticEnergy: stateObject.kineticEnergy,
+        outcome: stateObject.outcome,
+        electron: stateObject.electron ? Electron.ElectronIO.fromStateObject( stateObject.electron ) : null
+      } )
+    } );
 
   /**
    * The active material instance, owns the live workFunctionProperty.
@@ -94,7 +159,7 @@ export default class Target {
   }
 
   /**
-   * Produces an electron if the photon has enough energy.
+   * Handles a photon-target collision, producing an electron and collision metadata when emission occurs.
    *
    * @param photon
    * @param highestEnergyOnly - When true, use the highest available electron energy for emitted particles, matching
@@ -104,7 +169,11 @@ export default class Target {
    *   of the occupied band that can escape. This guarantees emission for every photon above the work-function
    *   threshold while preserving a continuous emitted-energy distribution.
    */
-  public handlePhotonCollision( photon: Photon, highestEnergyOnly: boolean, emitAllAbsorbedPhotons: boolean ): Electron | null {
+  public handlePhotonCollision(
+    photon: Photon,
+    highestEnergyOnly: boolean,
+    emitAllAbsorbedPhotons: boolean
+  ): PhotonCollisionResult {
     const photonEnergy = photon.getEnergy();
     const workFunction = this.workFunctionProperty.value;
 
@@ -124,12 +193,12 @@ export default class Target {
     // η of such absorptions actually produces one. The remaining fraction is treated as absorbed-to-heat with
     // no electron emitted.
     if ( !emitAllAbsorbedPhotons && dotRandom.nextDouble() > PhotoelectricEffectConstants.QUANTUM_EFFICIENCY ) {
-      return null;
+      return Target.createCollisionResult( photonEnergy, null, 'quantumMechanicallyForbidden', null );
     }
 
-    let energyAfterCollision: number;
+    let bindingEnergy: number | null;
     if ( emitAllAbsorbedPhotons ) {
-      energyAfterCollision = Material.energyAfterGuaranteedPhotonEmission(
+      bindingEnergy = Material.sampleBindingEnergyForGuaranteedPhotonEmission(
         photonEnergy, workFunction, this.bandDepthProperty.value
       );
     }
@@ -140,23 +209,25 @@ export default class Target {
       // It is intended to match the behavior of "Highest Energy Only" in the Java version. Electrons are emitted
       // with the highest possible energy, but we only show about 5% of them as this represents a small sample of the
       // possible energies.
-      energyAfterCollision = dotRandom.nextDouble() < 1 / 20 ?
-                             photonEnergy - workFunction :
-                             Number.NEGATIVE_INFINITY;
+      bindingEnergy = dotRandom.nextDouble() < 1 / 20 ? workFunction : null;
     }
     else {
-      energyAfterCollision = Material.energyAfterPhotonCollision(
-        photonEnergy, workFunction, this.bandDepthProperty.value
-      );
+      bindingEnergy = Material.sampleBindingEnergy( workFunction, this.bandDepthProperty.value );
     }
+
+    if ( bindingEnergy === null ) {
+      return Target.createCollisionResult( photonEnergy, null, 'quantumMechanicallyForbidden', null );
+    }
+
+    const kineticEnergy = photonEnergy - bindingEnergy;
 
     // Non-positive kinetic energy means the photon did not leave an electron with enough energy to escape.
     // Treat it as no-emission before computing speed, which requires positive energy.
-    if ( energyAfterCollision <= 0 ) {
-      return null;
+    if ( kineticEnergy <= 0 ) {
+      return Target.createCollisionResult( photonEnergy, bindingEnergy, 'photonEnergyInsufficient', null );
     }
 
-    const speed = Electron.determineNewElectronSpeed( energyAfterCollision );
+    const speed = Electron.determineNewElectronSpeed( kineticEnergy );
     let angle = 0;
     if ( Target.ELECTRON_DISPERSION_ANGLE !== 0 ) {
       angle = dotRandom.nextDouble() * Target.ELECTRON_DISPERSION_ANGLE -
@@ -166,7 +237,28 @@ export default class Target {
     const velocity = new Vector2( speed * Math.cos( angle ), speed * Math.sin( angle ) );
     const emissionY = this.getPhotonTargetCrossingY( photon );
     const emissionPosition = new Vector2( this.x + Target.EMISSION_OFFSET, emissionY );
-    return new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), energyAfterCollision );
+    const electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), kineticEnergy );
+
+    return Target.createCollisionResult( photonEnergy, bindingEnergy, 'electronEmitted', electron );
+  }
+
+  /**
+   * Creates collision metadata for both electron-emitting and no-electron outcomes.
+   */
+  private static createCollisionResult(
+    photonEnergy: number,
+    bindingEnergy: number | null,
+    outcome: PhotonCollisionOutcome,
+    electron: Electron | null
+  ): PhotonCollisionResult {
+    return {
+      photonEnergy: photonEnergy,
+      bindingEnergy: bindingEnergy,
+      potentialEnergy: bindingEnergy === null ? null : -bindingEnergy,
+      kineticEnergy: electron ? electron.energy : 0,
+      outcome: outcome,
+      electron: electron
+    };
   }
 
   /**

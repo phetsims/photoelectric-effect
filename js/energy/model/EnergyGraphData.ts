@@ -11,6 +11,7 @@ import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.
 import PickOptional from '../../../../phet-core/js/types/PickOptional.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import type { PhotonCollisionOutcome } from '../../common/model/Target.js';
 import EnergyGraphSample from './EnergyGraphSample.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -48,10 +49,16 @@ export default class EnergyGraphData extends PhetioObject {
   /**
    * Records energy values for one sample slot.
    */
-  public setSampleData( sampleIndex: number, potentialEnergy: number, photonEnergy: number, kineticEnergy: number ): void {
+  public setSampleData(
+    sampleIndex: number,
+    potentialEnergy: number,
+    photonEnergy: number,
+    kineticEnergy: number,
+    outcome: PhotonCollisionOutcome
+  ): void {
     affirm( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES,
       'sampleIndex out of range' );
-    this.samples[ sampleIndex ].setData( potentialEnergy, photonEnergy, kineticEnergy );
+    this.samples[ sampleIndex ].setData( potentialEnergy, photonEnergy, kineticEnergy, outcome );
   }
 
   /**

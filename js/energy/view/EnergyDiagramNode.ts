@@ -199,9 +199,10 @@ export default class EnergyDiagramNode extends Node {
       Multilink.multilink( [
         sample.hasDataProperty,
         sample.potentialEnergyProperty,
-        sample.kineticEnergyProperty
-      ], ( hasData, potentialEnergy, kineticEnergy ) => {
-        sampleMarkerNode.sampleNode.visible = hasData && kineticEnergy !== 0;
+        sample.kineticEnergyProperty,
+        sample.outcomeProperty
+      ], ( hasData, potentialEnergy, kineticEnergy, outcome ) => {
+        sampleMarkerNode.sampleNode.visible = hasData && outcome !== 'quantumMechanicallyForbidden';
         EnergyDiagramNode.updateSampleMarkerPositions(
           this.chartTransform,
           sampleIndex,

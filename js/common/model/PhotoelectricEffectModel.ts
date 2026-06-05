@@ -23,7 +23,6 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
-import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import ReferenceArrayIO from '../../../../tandem/js/types/ReferenceArrayIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
@@ -35,7 +34,7 @@ import PhotoelectricEffectPreferences from './PhotoelectricEffectPreferences.js'
 import { wavelengthToEnergy } from './PhotoelectricEffectUtils.js';
 import Photon, { type PhotonStateObject } from './Photon.js';
 import PhotonSource from './PhotonSource.js';
-import Target from './Target.js';
+import Target, { type PhotonCollisionResult } from './Target.js';
 
 type SelfOptions = EmptySelfOptions;
 export type PhotoelectricEffectModelOptions = SelfOptions &
@@ -106,9 +105,8 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   // photon count matches the continuous flux and does not drift with the chosen time step.
   private photonEmissionAccumulator = 0;
 
-  // Emits when a photon hits the target, carrying the colliding photon and any electron emitted by the collision
-  // (null when no electron was produced). Subclasses subscribe to record per-collision data.
-  public readonly photonCollidedEmitter: Emitter<[ Photon, Electron | null ]>;
+  // Emits when a photon hits the target, carrying the colliding photon and full collision metadata.
+  public readonly photonCollidedEmitter: Emitter<[ Photon, PhotonCollisionResult ]>;
 
   /**
    * @param mysteryMaterials - mystery materials owned by PhotoelectricEffectPreferencesModel and passed down.
@@ -135,7 +133,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     const tandem = options.tandem;
     const materialsTandem = tandem.createTandem( 'materials' );
 
-    this.photonCollidedEmitter = new Emitter<[ Photon, Electron | null ]>( {
+    this.photonCollidedEmitter = new Emitter<[ Photon, PhotonCollisionResult ]>( {
       tandem: tandem.createTandem( 'photonCollidedEmitter' ),
       parameters: [
         {
@@ -144,9 +142,9 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
           valueType: Photon
         },
         {
-          name: 'electron',
-          phetioType: NullableIO( Electron.ElectronIO ),
-          valueType: [ Electron, null ]
+          name: 'collisionResult',
+          phetioType: Target.PhotonCollisionResultIO,
+          valueType: Object
         }
       ]
     } );
@@ -391,15 +389,16 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       // Check for target collisions, which may emit an electron and removes the photon from the beam.
       const hitTarget = this.target.isHitByPhoton( photon );
       if ( hitTarget ) {
-        const electron = this.target.handlePhotonCollision(
+        const collisionResult = this.target.handlePhotonCollision(
           photon,
           this.showHighestEnergyOnlyProperty.value,
           PhotoelectricEffectPreferences.emitAllAbsorbedPhotonsProperty.value
         );
+        const electron = collisionResult.electron;
         if ( electron ) {
           this.electrons.push( electron );
         }
-        this.photonCollidedEmitter.emit( photon, electron );
+        this.photonCollidedEmitter.emit( photon, collisionResult );
       }
 
       // Cull photons that have hit the target or passed it without a collision.

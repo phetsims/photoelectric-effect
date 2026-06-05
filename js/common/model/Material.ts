@@ -187,17 +187,13 @@ export default class Material extends PhetioObject {
   } );
 
   /**
-   * Samples a binding energy uniformly across the occupied band [φ, φ + band depth] and returns the resulting
-   * electron kinetic energy (KE = photonEnergy - bindingEnergy). KE may be negative when the sampled level
-   * is inaccessible at the current photon energy; downstream emission logic treats those as no-emission.
+   * Samples a binding energy uniformly across the occupied band [phi, phi + band depth].
    *
-   * @param photonEnergy - energy of the incident photon, in eV
-   * @param workFunction - work function (φ) of the target material, in eV
+   * @param workFunction - work function of the target material, in eV
    * @param bandDepth - occupied-band depth of the target material, in eV
    */
-  public static energyAfterPhotonCollision( photonEnergy: number, workFunction: number, bandDepth: number ): number {
-    const bindingEnergy = workFunction + dotRandom.nextDouble() * bandDepth;
-    return photonEnergy - bindingEnergy;
+  public static sampleBindingEnergy( workFunction: number, bandDepth: number ): number {
+    return workFunction + dotRandom.nextDouble() * bandDepth;
   }
 
   /**
@@ -212,11 +208,11 @@ export default class Material extends PhetioObject {
    * @param workFunction - work function of the target material, in eV
    * @param bandDepth - occupied-band depth of the target material, in eV
    */
-  public static energyAfterGuaranteedPhotonEmission( photonEnergy: number, workFunction: number, bandDepth: number ): number {
-    if ( photonEnergy <= workFunction ) {
-      return Number.NEGATIVE_INFINITY;
-    }
-
+  public static sampleBindingEnergyForGuaranteedPhotonEmission(
+    photonEnergy: number,
+    workFunction: number,
+    bandDepth: number
+  ): number | null {
     // Full-band upper limit, before accounting for whether this photon has enough energy to reach it.
     const fullBandMaximumBindingEnergy = workFunction + bandDepth;
 
@@ -225,11 +221,10 @@ export default class Material extends PhetioObject {
 
     // How far below the least-bound electrons this photon can sample and still emit.
     const accessibleBandDepth = maximumBindingEnergy - workFunction;
+    if ( accessibleBandDepth <= 0 ) {
+      return null;
+    }
 
-    // Sample within the accessible band so emitted electrons still have different kinetic energies.
-    const bindingEnergy = workFunction + dotRandom.nextDouble() * accessibleBandDepth;
-
-    // Kinetic energy after emission is the photon energy minus the sampled binding energy.
-    return photonEnergy - bindingEnergy;
+    return Material.sampleBindingEnergy( workFunction, accessibleBandDepth );
   }
 }
