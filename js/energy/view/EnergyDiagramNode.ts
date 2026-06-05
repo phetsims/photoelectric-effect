@@ -200,7 +200,7 @@ export default class EnergyDiagramNode extends Node {
       // TODO (SESSION): if kineticEnergy is zero, the sample markers (circles and arrow) should be hidden
       //   Perhaps we update data set with 0s? Or perhaps we actually make the bars invisible, not sure.
       //   Or perhaps we avoid setting hasData, but it seems like we should be able to set empty data without
-      //   checks at the usage site.
+      //   checks at the usage site. See https://github.com/phetsims/photoelectric-effect/issues/92
       Multilink.multilink( [
         sample.potentialEnergyProperty,
         sample.kineticEnergyProperty

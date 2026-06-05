@@ -161,7 +161,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       const slotIndex = this.photonToSampleIndexMap.get( photon );
       affirm( slotIndex !== undefined, 'Collided photon should have an associated sample slot index' );
 
-// TODO (SESSION): There is something wrong with how e report potential energy for the diagrams on the energy screen.
+// TODO (SESSION): There is something wrong with how e report potential energy for the diagrams on the energy screen. See https://github.com/phetsims/photoelectric-effect/issues/92
 //
 // ```
 //       const potentialEnergy = -this.target.workFunctionProperty.value;

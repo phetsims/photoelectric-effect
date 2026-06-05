@@ -135,7 +135,7 @@ export default class EnergyBarGraphNode extends Node {
         noElectronEjectedPanels[ sampleIndex ].visible = hasData && kineticEnergy === 0;
 
         // TODO (SESSION): if hasData && kineticEnergy is zero, the energy bar graphs should be hidden
-        //   Perhaps we update data set with 0s? Or perhaps we actually make the bars invisible, not sure.
+        //   Perhaps we update data set with 0s? Or perhaps we actually make the bars invisible, not sure. See https://github.com/phetsims/photoelectric-effect/issues/92
         EnergyBarGraphNode.updateDataSet(
           sampleDataSet,
           potentialEnergy,
