@@ -135,11 +135,9 @@ export default class Target {
     }
     else if ( highestEnergyOnly ) {
 
-      // Eject from the Fermi level only (maximum KE), but use the same accessible band fraction
-      // probability as the normal path so the visual electron rate still reflects the band depth.
-      const bandDepth = this.bandDepthProperty.value;
-      const accessibleBandFraction = Math.min( 1, Math.max( 0, ( photonEnergy - workFunction ) / bandDepth ) );
-      energyAfterCollision = dotRandom.nextDouble() < accessibleBandFraction ?
+      // 1/20 is an empirically determined threshold confirmed chosen by design team. Critically, this only
+      // affects the electrons that are created for the experiment view. It does not affect the current calculation.
+      energyAfterCollision = dotRandom.nextDouble() < 1 / 20 ?
                              photonEnergy - workFunction :
                              Number.NEGATIVE_INFINITY;
     }
