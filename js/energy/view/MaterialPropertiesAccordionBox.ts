@@ -66,7 +66,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
 
     const bandWidthProperty = new DynamicProperty<number, number, Material>( materialProperty, {
       bidirectional: true,
-      derive: 'bandWidthProperty'
+      derive: 'bandDepthProperty'
     } );
 
     const workFunctionControl = MaterialPropertiesAccordionBox.createMaterialPropertyNumberControl(
@@ -79,7 +79,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
     const bandWidthControl = MaterialPropertiesAccordionBox.createMaterialPropertyNumberControl(
       'Band Depth',
       bandWidthProperty,
-      Material.BAND_WIDTH_RANGE,
+      Material.BAND_DEPTH_RANGE,
       options.tandem.createTandem( 'bandWidthControl' )
     );
 
