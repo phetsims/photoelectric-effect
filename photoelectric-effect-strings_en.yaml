@@ -1,20 +1,20 @@
 # Title
-photoelectric-effect.title: 'Photoelectric Effect'
+photoelectric-effect.title:         'Photoelectric Effect'
 
 # Screens
 screen:
-  intro: 'Intro'
+  intro:      'Intro'
   experiment: 'Experiment'
-  energy: 'Energy'
+  energy:     'Energy'
 
 materials:
-  sodium: 'Sodium'
-  copper: 'Copper'
-  calcium: 'Calcium'
+  sodium:   'Sodium'
+  copper:   'Copper'
+  calcium:  'Calcium'
   platinum: 'Platinum'
-  zinc: 'Zinc'
-  custom: 'Custom'
-  mystery: 'Mystery'
+  zinc:     'Zinc'
+  custom:   'Custom'
+  mystery:  'Mystery'
   mystery1: 'Mystery 1'
   mystery2: 'Mystery 2'
   mystery3: 'Mystery 3'
@@ -24,82 +24,94 @@ materials:
 # Experiment graphs
 experiment:
   graph:
-    voltageCurrentTitle: 'Voltage vs. Current'
-    intensityCurrentTitle: 'Intensity vs. Current'
-    frequencyEnergyTitle: 'Frequency vs. Energy'
-    actionButton: 'Graph action'
-    voltageAxisLabel: 'Voltage (V)'
-    currentAxisLabel: 'Current (mA)'
-    intensityAxisLabel: 'Intensity (%)'
-    frequencyAxisLabel: 'Frequency (x10<sup>15</sup> Hz)'
-    energyAxisLabel: 'Electron KE<sub>max</sub> (ev)'
+    voltageCurrentTitle:                      'Voltage vs. Current'
+    intensityCurrentTitle:                    'Intensity vs. Current'
+    frequencyEnergyTitle:                     'Frequency vs. Energy'
+    actionButton:                             'Graph action'
+    voltageAxisLabel:                         'Voltage (V)'
+    currentAxisLabel:                         'Current (μA)'
+    intensityAxisLabel:                       'Intensity (%)'
+    frequencyAxisLabel:                       'Frequency (x10<sup>15</sup> Hz)'
+    energyAxisLabel:                          'Electron KE<sub>max</sub> (ev)'
 
     # Just placeholders
-    snapshotsDialogTitle: 'Saved snapshots'
-    snapshotSaved: 'Saved!'
-    materialLabel: 'Material'
-    snapshotLabelValuePattern: '{{label}}: {{value}}'
-    snapshotsGalleryButtonAccessibleName: 'View saved snapshots'
+    snapshotsDialogTitle:                     'Saved snapshots'
+    snapshotSaved:                            'Saved!'
+    materialLabel:                            'Material'
+    snapshotLabelValuePattern:                '{{label}}: {{value}}'
+    snapshotsGalleryButtonAccessibleName:     'View saved snapshots'
     snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
 
 photonQuantity:
   single: 'Single'
-  burst: 'Burst'
-  fire: 'Fire'
+  burst:  'Burst'
+  fire:   'Fire'
 
 # Energy graphs
 energy:
   graph:
-    yAxisLabel: 'Energy (eV)'
-    fermiLevelLabel: 'Fermi Level'
+    yAxisLabel:        'Energy (eV)'
+    fermiLevelLabel:   'Fermi Level'
     noElectronEjected: 'No electron ejected'
     diagramControls:
-      label: 'Label'
+      label:        'Label'
       workFunction: 'Work Function'
-      photonArrow: 'Photon Arrow'
+      photonArrow:  'Photon Arrow'
     legend:
       potentialEnergy: 'Potential Energy'
-      photonEnergy: 'Photon Energy'
-      kineticEnergy: 'Kinetic Energy'
-      emptyStates: 'Empty States'
-      filledStates: 'Filled States'
+      photonEnergy:    'Photon Energy'
+      kineticEnergy:   'Kinetic Energy'
+      emptyStates:     'Empty States'
+      filledStates:    'Filled States'
 
-showElectrons: 'Show Electrons'
-highestEnergyOnly: 'Highest Energy Only'
+showElectrons:                      'Show Electrons'
+highestEnergyOnly:                  'Highest Energy Only'
 
 spectrumTrack:
   uvLabel: 'UV'
   irLabel: 'IR'
 
-workFunction.label: 'Work Function (eV)'
-intensity.label: 'Intensity'
-intensity.percentReadoutPattern: '{{value}} %'
-photonRate.label: 'Photon Rate'
+workFunction.label:                 'Work Function (eV)'
+intensity.label:                    'Intensity'
+intensity.percentReadoutPattern:    '{{value}} %'
+photonRate.label:                   'Photon Rate'
 sourceOutput.percentReadoutPattern: '{{value}} %'
-wavelength.label: 'Wavelength (nm)'
-wavelength.valueReadoutPattern: '{{value}} nm'
-voltage.label: 'Voltage'
-voltage.valueReadoutPattern: '{{value}} V'
-current.label: 'Current'
-current.readoutPattern: '{{value}} uA'
+wavelength.label:                   'Wavelength (nm)'
+wavelength.valueReadoutPattern:     '{{value}} nm'
+voltage.label:                      'Voltage'
+voltage.valueReadoutPattern:        '{{value}} V'
+current.label:                      'Current'
+
+units:
+  microamperes:
+    symbol:        μA
+    symbolPattern: '{{value}} μA'
 
 preferences:
   mysteryMaterial:
-    label: 'Add Second mystery material'
+    label:       'Add Second mystery material'
     description: 'Additional target material option with customizable work function value.'
 
 a11y:
 
+  units:
+    microamperes:
+      pattern: |-
+               { $value ->
+                 [one] { $value } microampere
+                 *[other] { $value } microamperes
+               }
+
   # Intro screen summary
   introScreen:
     screenSummary:
-      playArea: >-
-        PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target.
-        Choose a target material and adjust the light's intensity and wavelength to explore the photoelectric effect.
-        Toggle between a circuit and grounded representation.
-      controlArea: >-
-        PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons.
-        There are also time controls and a button to reset the simulation.
+      playArea:        >-
+                       PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target.
+                       Choose a target material and adjust the light's intensity and wavelength to explore the photoelectric effect.
+                       Toggle between a circuit and grounded representation.
+      controlArea:     >-
+                       PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons.
+                       There are also time controls and a button to reset the simulation.
       currentDetails:
         leadingParagraph: 'Currently:'
       interactionHint: PLACEHOLDER Choose a material and adjust the wavelength to start exploring.
@@ -107,14 +119,14 @@ a11y:
   # Experiment screen summary
   experimentScreen:
     screenSummary:
-      playArea: >-
-        PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target.
-        Choose a target material and adjust the light's intensity and wavelength.
-        A voltage control sets the battery voltage across the circuit.
-        Three graphs show relationships between intensity, frequency, and voltage versus current.
-      controlArea: >-
-        PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons.
-        There are also time controls and a button to reset the simulation.
+      playArea:        >-
+                       PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target.
+                       Choose a target material and adjust the light's intensity and wavelength.
+                       A voltage control sets the battery voltage across the circuit.
+                       Three graphs show relationships between intensity, frequency, and voltage versus current.
+      controlArea:     >-
+                       PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons.
+                       There are also time controls and a button to reset the simulation.
       currentDetails:
         leadingParagraph: 'Currently:'
       interactionHint: PLACEHOLDER Choose a material and adjust the wavelength to start exploring.
@@ -157,7 +169,7 @@ a11y:
     trashButton:
       accessibleName: PLACEHOLDER Clear Snapshots
     snapshotsGalleryButton:
-      accessibleName: PLACEHOLDER View saved snapshots
+      accessibleName:     PLACEHOLDER View saved snapshots
       accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
   frequencyEnergyGraphNode:
     accessibleHeading: PLACEHOLDER Frequency vs Energy Graph
@@ -168,7 +180,7 @@ a11y:
     trashButton:
       accessibleName: PLACEHOLDER Clear Snapshots
     snapshotsGalleryButton:
-      accessibleName: PLACEHOLDER View saved snapshots
+      accessibleName:     PLACEHOLDER View saved snapshots
       accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
   voltageCurrentGraphNode:
     accessibleHeading: PLACEHOLDER Voltage vs Current Graph
@@ -179,15 +191,15 @@ a11y:
     trashButton:
       accessibleName: PLACEHOLDER Clear Snapshots
     snapshotsGalleryButton:
-      accessibleName: PLACEHOLDER View saved snapshots
+      accessibleName:     PLACEHOLDER View saved snapshots
       accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
 
 
 
     # TODO: @design What should these be?
     workFunction:
-      label: 'Mystery Material Work Function (eV)'
+      label:       'Mystery Material Work Function (eV)'
       description: 'Set the work function of the mystery material.'
   photonMode:
-    label: 'Normalize intensity'
+    label:       'Normalize intensity'
     description: 'When intensity is normalized, number of photons emitted is independent of photon wavelength.'

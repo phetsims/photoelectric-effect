@@ -13,7 +13,7 @@ import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import { ampsToMilliAmps } from '../../common/model/PhotoelectricEffectUtils.js';
+import { ampsToMicroamps } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotonSource from '../../common/model/PhotonSource.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
@@ -53,7 +53,7 @@ export default class IntensityCurrentGraphAccordionBox extends GraphAssemblyAcco
           return toFixed( scaledValue, isInteger ? 0 : 2 );
         },
         fill: PhotoelectricEffectColors.intensityCurrentGraphFillColorProperty,
-        yTickLabelFormatter: value => toFixed( ampsToMilliAmps( value ), 0 )
+        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 0 )
       },
       accessibleName: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty,

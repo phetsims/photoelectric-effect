@@ -19,6 +19,7 @@ import type { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/n
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import { microamperesUnit } from '../model/microamperesUnit.js';
 import { ampsToMicroamps } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
@@ -60,14 +61,23 @@ export default class AmmeterDisplayPanel extends Panel {
       {
         // Use an inequality readout for non-zero currents below the visible precision.
         numberFormatter: value => {
-          const valueString = value > 0 && value < MIN_DISPLAYED_MICROAMPS ? StringUtils.wrapLTR( '< 0.001' ) :
-                              StringUtils.toFixedLTR( value, 3 );
+          if ( value > 0 && value < MIN_DISPLAYED_MICROAMPS ) {
+            return {
+              visualString: StringUtils.fillIn( microamperesUnit.visualSymbolPatternStringProperty!.value, {
+                value: StringUtils.wrapLTR( '< 0.001' )
+              } ),
+              accessibleString: microamperesUnit.accessiblePattern!.format( {
 
-          return StringUtils.fillIn( PhotoelectricEffectFluent.current.readoutPatternStringProperty.value, {
-            value: valueString
-          } );
+                // TODO: a11y i18n? Or just remove this.
+                value: 'less than 0.001'
+              } )
+            };
+          }
+          else {
+            return microamperesUnit.getDualString( value, { decimalPlaces: 3 } );
+          }
         },
-        numberFormatterDependencies: [ PhotoelectricEffectFluent.current.readoutPatternStringProperty ],
+        numberFormatterDependencies: microamperesUnit.getDependentProperties(),
         cornerRadius: 3,
         backgroundStroke: 'black',
         textOptions: {

@@ -12,7 +12,7 @@ import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import { ampsToMilliAmps } from '../../common/model/PhotoelectricEffectUtils.js';
+import { ampsToMicroamps } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -46,10 +46,7 @@ export default class VoltageCurrentGraphAccordionBox extends GraphAssemblyAccord
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
         fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty,
-
-        // TODO: @design - what units are these in? Mockup shows microamps in label but I think display is in
-        //   miliamps.
-        yTickLabelFormatter: value => toFixed( ampsToMilliAmps( value ), 0 )
+        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 0 )
       },
       accessibleName: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty,

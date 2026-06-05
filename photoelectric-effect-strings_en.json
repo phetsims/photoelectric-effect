@@ -69,7 +69,7 @@
         "value": "Voltage (V)"
       },
       "currentAxisLabel": {
-        "value": "Current (mA)"
+        "value": "Current (μA)"
       },
       "intensityAxisLabel": {
         "value": "Intensity (%)"
@@ -196,8 +196,15 @@
   "current.label": {
     "value": "Current"
   },
-  "current.readoutPattern": {
-    "value": "{{value}} uA"
+  "units": {
+    "microamperes": {
+      "symbol": {
+        "value": "μA"
+      },
+      "symbolPattern": {
+        "value": "{{value}} μA"
+      }
+    }
   },
   "preferences": {
     "mysteryMaterial": {
@@ -210,6 +217,13 @@
     }
   },
   "a11y": {
+    "units": {
+      "microamperes": {
+        "pattern": {
+          "value": "{ $value ->\n  [one] { $value } microampere\n  *[other] { $value } microamperes\n}"
+        }
+      }
+    },
     "introScreen": {
       "screenSummary": {
         "playArea": {

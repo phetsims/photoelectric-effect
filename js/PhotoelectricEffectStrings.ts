@@ -106,7 +106,12 @@ type StringsType = {
   };
   'current': {
     'labelStringProperty': LocalizedStringProperty;
-    'readoutPatternStringProperty': LocalizedStringProperty;
+  };
+  'units': {
+    'microamperes': {
+      'symbolStringProperty': LocalizedStringProperty;
+      'symbolPatternStringProperty': LocalizedStringProperty;
+    }
   };
   'preferences': {
     'mysteryMaterial': {
@@ -115,6 +120,11 @@ type StringsType = {
     }
   };
   'a11y': {
+    'units': {
+      'microamperes': {
+        'patternStringProperty': LocalizedStringProperty;
+      }
+    };
     'introScreen': {
       'screenSummary': {
         'playAreaStringProperty': LocalizedStringProperty;

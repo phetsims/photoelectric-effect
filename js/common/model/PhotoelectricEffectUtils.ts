@@ -93,13 +93,6 @@ export const ampsToMicroamps = ( currentAmps: number ): number => {
 };
 
 /**
- * Converts electric current from amps to milliamps.
- */
-export const ampsToMilliAmps = ( currentAmps: number ): number => {
-  return currentAmps * 1e3;
-};
-
-/**
  * Maps wavelength in nm to a display color for spectrum sliders (thumb and track).
  * UV and IR bands use white, consistent across photon-source controls.
  */
