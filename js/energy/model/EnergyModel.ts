@@ -206,7 +206,10 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   private queueBurstPhotons(): void {
     const photonSchedules = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, slotIndex => ( {
       slotIndex: slotIndex,
-      timeToTarget: this.getPhotonTimeToTarget( slotIndex )
+      timeToTarget: this.getPhotonTimeToTarget(
+        this.getPhotonInitialPosition( EnergyModel.LENS_OFFSETS[ slotIndex ] ),
+        this.getPhotonInitialVelocity()
+      )
     } ) );
 
     let maxTimeToTarget = 0;
@@ -246,18 +249,6 @@ export default class EnergyModel extends PhotoelectricEffectModel {
 
     this.queuedPhotonEmissions.length = 0;
     this.queuedPhotonEmissions.push( ...nextQueuedPhotonEmissions );
-  }
-
-  /**
-   * Time for the photon from a sample slot to reach the target x position. Photon motion is angled, but target
-   * collision is defined by crossing the target's vertical x plane, so only the x displacement and x velocity
-   * determine the collision time.
-   */
-  private getPhotonTimeToTarget( slotIndex: number ): number {
-    const position = this.getPhotonInitialPosition( EnergyModel.LENS_OFFSETS[ slotIndex ] );
-    const velocity = this.getPhotonInitialVelocity();
-
-    return ( this.target.x - position.x ) / velocity.x;
   }
 
   /**
