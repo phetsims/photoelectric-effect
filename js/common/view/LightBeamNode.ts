@@ -18,10 +18,8 @@ import Multilink from '../../../../axon/js/Multilink.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Shape from '../../../../kite/js/Shape.js';
-import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
-import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import Path from '../../../../scenery/js/nodes/Path.js';
+import Path, { PathOptions } from '../../../../scenery/js/nodes/Path.js';
 import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import { LENS_WIDTH, LENS_Y_RADIUS } from './LightSourceNode.js';
@@ -29,7 +27,7 @@ import { LENS_WIDTH, LENS_Y_RADIUS } from './LightSourceNode.js';
 // Opacity of the beam at maximum source output, so the target plate, vacuum tube, and electrons remain visible.
 const MAX_BEAM_OPACITY = 0.6;
 
-export default class LightBeamNode extends Node {
+export default class LightBeamNode extends Path {
 
   /**
    * @param beamStart - view position of the light source aperture, where the beam begins
@@ -41,7 +39,7 @@ export default class LightBeamNode extends Node {
   public constructor( beamStart: Vector2, beamEnd: Vector2,
                       wavelengthProperty: TReadOnlyProperty<number>,
                       normalizedOutputProperty: TReadOnlyProperty<number>,
-                      providedOptions?: NodeOptions ) {
+                      providedOptions?: PathOptions ) {
 
     // Near edge: spans the aperture width, perpendicular to the beam direction. The origin is recessed back into
     // the lens so the flat starting edge is occluded by the light source node.
@@ -60,7 +58,8 @@ export default class LightBeamNode extends Node {
 
     // Trapezoid with corner points aligned to light source opening (beam start) and target plate (beam end).
     const beamShape = Shape.polygon( [ beamStartCornerA, beamStartCornerB, beamEndCornerA, beamEndCornerB ] );
-    const beamPath = new Path( beamShape );
+
+    super( beamShape, providedOptions );
 
     // Color tracks the wavelength. In UV/IR mode the fill is white, so the beam gets an outline matching the
     // corresponding UV/IR photon "sparkle" color to keep it distinct from the background.
@@ -69,21 +68,15 @@ export default class LightBeamNode extends Node {
       PhotoelectricEffectColors.photonUVSparkleColorProperty,
       PhotoelectricEffectColors.photonIRSparkleColorProperty
     ], ( wavelength, uvSparkleColor, irSparkleColor ) => {
-      beamPath.fill = wavelengthToColor( wavelength );
-      beamPath.stroke = VisibleColor.isUVWavelength( wavelength ) ? uvSparkleColor :
-                        VisibleColor.isIRWavelength( wavelength ) ? irSparkleColor :
-                        null;
+      this.fill = wavelengthToColor( wavelength );
+      this.stroke = VisibleColor.isUVWavelength( wavelength ) ? uvSparkleColor :
+                    VisibleColor.isIRWavelength( wavelength ) ? irSparkleColor :
+                    null;
     } );
 
     // A dimmer source produces a fainter beam; no output means no visible beam.
     normalizedOutputProperty.link( normalizedOutput => {
-      beamPath.opacity = MAX_BEAM_OPACITY * normalizedOutput;
+      this.opacity = MAX_BEAM_OPACITY * normalizedOutput;
     } );
-
-    // TODO: LightBeamNode could potentially extend Path instead of Node + children, unless there is a layout
-    //   or other need for this.
-    super( combineOptions<NodeOptions>( {
-      children: [ beamPath ]
-    }, providedOptions ) );
   }
 }
