@@ -81,6 +81,7 @@ addToMapIfDefined( 'photonRate_label', 'photonRate.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
+addToMapIfDefined( 'units_microamperes_symbol', 'units.microamperes.symbolStringProperty' );
 addToMapIfDefined( 'preferences_showPhotons_label', 'preferences.showPhotons.labelStringProperty' );
 addToMapIfDefined( 'preferences_showPhotons_description', 'preferences.showPhotons.descriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_label', 'preferences.mysteryMaterial.labelStringProperty' );
