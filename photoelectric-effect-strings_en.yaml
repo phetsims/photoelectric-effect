@@ -109,93 +109,109 @@ a11y:
   introScreen:
     screenSummary:
       playArea:        >-
-                       PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target.
-                       Choose a target material and adjust the light's intensity and wavelength to explore the photoelectric effect.
-                       Toggle between a circuit and grounded representation.
+                       A light source shines light onto a metal target. Adjust the output and wavelength of the light, and
+                       choose the target material, to explore when light ejects electrons from the metal. A representation
+                       toggle switches between a Grounded target and a full Circuit with an ammeter that reads the current.
       controlArea:     >-
-                       PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons.
-                       There are also time controls and a button to reset the simulation.
+                       Show or hide the ejected electrons, and choose to show only the highest energy electrons. Time controls
+                       let you pause, step, or restart the action, and Reset All returns the simulation to its starting state.
       currentDetails:
-        leadingParagraph: 'Currently:'
-      interactionHint: PLACEHOLDER Choose a material and adjust the wavelength to start exploring.
+        leadingParagraph: >-
+          Currently,
+
+            The target material is MATERIAL.
+            The representation is set to REPRESENTATION.
+            Light source output is INTENSITY percent.
+            Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.
+            Electron emission is EMISSIONSTATE.
+      interactionHint: Turn up the light source output, then adjust the wavelength to find when electrons start to fly off the metal.
 
   # Experiment screen summary
   experimentScreen:
     screenSummary:
       playArea:        >-
-                       PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target.
-                       Choose a target material and adjust the light's intensity and wavelength.
-                       A voltage control sets the battery voltage across the circuit.
-                       Three graphs show relationships between intensity, frequency, and voltage versus current.
+                       A light source shines light onto a metal target inside a circuit. Adjust the output and wavelength of
+                       the light, choose the target material, and set the battery voltage across the plates to explore what
+                       affects the current and the energy of the ejected electrons. Three graphs plot intensity versus current,
+                       frequency versus electron energy, and voltage versus current, and you can capture snapshots to compare
+                       experiments.
       controlArea:     >-
-                       PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons.
-                       There are also time controls and a button to reset the simulation.
+                       Show or hide the ejected electrons, and choose to show only the highest energy electrons. Time controls
+                       let you pause, step, or restart the action, and Reset All returns the simulation to its starting state.
       currentDetails:
-        leadingParagraph: 'Currently:'
-      interactionHint: PLACEHOLDER Choose a material and adjust the wavelength to start exploring.
+        leadingParagraph: >-
+          Currently,
+
+            The target material is MATERIAL.
+            Light source output is INTENSITY percent.
+            Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.
+            Battery voltage is VOLTAGE volts.
+            Electron emission is EMISSIONSTATE.
+            The ammeter reads CURRENT.
+      interactionHint: Turn up the light source output and adjust the wavelength, voltage, and material to start collecting data in the graphs.
 
   # Photon source panel and its inner controls
   photonSourcePanel:
-    accessibleHeading: PLACEHOLDER Photon Source
+    accessibleHeading: Light Source
     intensitySlider:
-      accessibleName: PLACEHOLDER Intensity
+      accessibleName: Intensity
     wavelengthNumberControl:
-      accessibleName: PLACEHOLDER Wavelength
+      accessibleName: Wavelength
 
   # Ammeter current readout
   ammeterDisplayPanel:
-    accessibleName: PLACEHOLDER Ammeter
+    accessibleName: Ammeter
 
   # Material selection
   materialsComboBox:
-    accessibleName: PLACEHOLDER Material
+    accessibleName: Target Material
 
   # Intro screen: representation toggle
   representationRadioButtonGroup:
-    accessibleName: PLACEHOLDER Representation
+    accessibleName: Representation
     groundedRadioButton:
-      accessibleName: PLACEHOLDER Grounded
+      accessibleName: Grounded
     circuitRadioButton:
-      accessibleName: PLACEHOLDER Circuit
+      accessibleName: Circuit
 
   # Experiment screen: battery voltage control
   voltageNumberControl:
-    accessibleName: PLACEHOLDER Voltage
+    accessibleName: Battery Voltage
 
   # Experiment screen: graphs
   intensityCurrentGraphNode:
-    accessibleHeading: PLACEHOLDER Intensity vs Current Graph
+    accessibleHeading: Intensity vs. Current Graph
     expandCollapseButton:
-      accessibleName: PLACEHOLDER expand/collapse
+      accessibleName: Intensity vs. Current
     cameraButton:
-      accessibleName: PLACEHOLDER Save Snapshot
+      accessibleName: Save Snapshot, Intensity vs. Current
     trashButton:
-      accessibleName: PLACEHOLDER Clear Snapshots
+      accessibleName: Clear Snapshots, Intensity vs. Current
     snapshotsGalleryButton:
-      accessibleName:     PLACEHOLDER View saved snapshots
-      accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
+      accessibleName:     View Snapshots, Intensity vs. Current
+      accessibleHelpText: Compare your saved snapshots of this graph side by side.
   frequencyEnergyGraphNode:
-    accessibleHeading: PLACEHOLDER Frequency vs Energy Graph
+    accessibleHeading: Frequency vs. Energy Graph
     expandCollapseButton:
-      accessibleName: PLACEHOLDER expand/collapse
+      accessibleName: Frequency vs. Energy
     cameraButton:
-      accessibleName: PLACEHOLDER Save Snapshot
+      accessibleName: Save Snapshot, Frequency vs. Energy
     trashButton:
-      accessibleName: PLACEHOLDER Clear Snapshots
+      accessibleName: Clear Snapshots, Frequency vs. Energy
     snapshotsGalleryButton:
-      accessibleName:     PLACEHOLDER View saved snapshots
-      accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
+      accessibleName:     View Snapshots, Frequency vs. Energy
+      accessibleHelpText: Compare your saved snapshots of this graph side by side.
   voltageCurrentGraphNode:
-    accessibleHeading: PLACEHOLDER Voltage vs Current Graph
+    accessibleHeading: Voltage vs. Current Graph
     expandCollapseButton:
-      accessibleName: PLACEHOLDER expand/collapse
+      accessibleName: Voltage vs. Current
     cameraButton:
-      accessibleName: PLACEHOLDER Save Snapshot
+      accessibleName: Save Snapshot, Voltage vs. Current
     trashButton:
-      accessibleName: PLACEHOLDER Clear Snapshots
+      accessibleName: Clear Snapshots, Voltage vs. Current
     snapshotsGalleryButton:
-      accessibleName:     PLACEHOLDER View saved snapshots
-      accessibleHelpText: PLACEHOLDER Opens a dialog with a plot of each saved snapshot.
+      accessibleName:     View Snapshots, Voltage vs. Current
+      accessibleHelpText: Compare your saved snapshots of this graph side by side.
 
 
 

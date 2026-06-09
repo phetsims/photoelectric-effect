@@ -235,165 +235,165 @@
     "introScreen": {
       "screenSummary": {
         "playArea": {
-          "value": "PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target. Choose a target material and adjust the light's intensity and wavelength to explore the photoelectric effect. Toggle between a circuit and grounded representation."
+          "value": "A light source shines light onto a metal target. Adjust the output and wavelength of the light, and choose the target material, to explore when light ejects electrons from the metal. A representation toggle switches between a Grounded target and a full Circuit with an ammeter that reads the current."
         },
         "controlArea": {
-          "value": "PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons. There are also time controls and a button to reset the simulation."
+          "value": "Show or hide the ejected electrons, and choose to show only the highest energy electrons. Time controls let you pause, step, or restart the action, and Reset All returns the simulation to its starting state."
         },
         "currentDetails": {
           "leadingParagraph": {
-            "value": "Currently:"
+            "value": "Currently,\n\n  The target material is MATERIAL.\n  The representation is set to REPRESENTATION.\n  Light source output is INTENSITY percent.\n  Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.\n  Electron emission is EMISSIONSTATE."
           }
         },
         "interactionHint": {
-          "value": "PLACEHOLDER Choose a material and adjust the wavelength to start exploring."
+          "value": "Turn up the light source output, then adjust the wavelength to find when electrons start to fly off the metal."
         }
       }
     },
     "experimentScreen": {
       "screenSummary": {
         "playArea": {
-          "value": "PLACEHOLDER In the play area, there is a light source that shines photons onto a metal target. Choose a target material and adjust the light's intensity and wavelength. A voltage control sets the battery voltage across the circuit. Three graphs show relationships between intensity, frequency, and voltage versus current."
+          "value": "A light source shines light onto a metal target inside a circuit. Adjust the output and wavelength of the light, choose the target material, and set the battery voltage across the plates to explore what affects the current and the energy of the ejected electrons. Three graphs plot intensity versus current, frequency versus electron energy, and voltage versus current, and you can capture snapshots to compare experiments."
         },
         "controlArea": {
-          "value": "PLACEHOLDER In the control area, there are options to show electrons and display only the highest energy electrons. There are also time controls and a button to reset the simulation."
+          "value": "Show or hide the ejected electrons, and choose to show only the highest energy electrons. Time controls let you pause, step, or restart the action, and Reset All returns the simulation to its starting state."
         },
         "currentDetails": {
           "leadingParagraph": {
-            "value": "Currently:"
+            "value": "Currently,\n\n  The target material is MATERIAL.\n  Light source output is INTENSITY percent.\n  Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.\n  Battery voltage is VOLTAGE volts.\n  Electron emission is EMISSIONSTATE.\n  The ammeter reads CURRENT."
           }
         },
         "interactionHint": {
-          "value": "PLACEHOLDER Choose a material and adjust the wavelength to start exploring."
+          "value": "Turn up the light source output and adjust the wavelength, voltage, and material to start collecting data in the graphs."
         }
       }
     },
     "photonSourcePanel": {
       "accessibleHeading": {
-        "value": "PLACEHOLDER Photon Source"
+        "value": "Light Source"
       },
       "intensitySlider": {
         "accessibleName": {
-          "value": "PLACEHOLDER Intensity"
+          "value": "Intensity"
         }
       },
       "wavelengthNumberControl": {
         "accessibleName": {
-          "value": "PLACEHOLDER Wavelength"
+          "value": "Wavelength"
         }
       }
     },
     "ammeterDisplayPanel": {
       "accessibleName": {
-        "value": "PLACEHOLDER Ammeter"
+        "value": "Ammeter"
       }
     },
     "materialsComboBox": {
       "accessibleName": {
-        "value": "PLACEHOLDER Material"
+        "value": "Target Material"
       }
     },
     "representationRadioButtonGroup": {
       "accessibleName": {
-        "value": "PLACEHOLDER Representation"
+        "value": "Representation"
       },
       "groundedRadioButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER Grounded"
+          "value": "Grounded"
         }
       },
       "circuitRadioButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER Circuit"
+          "value": "Circuit"
         }
       }
     },
     "voltageNumberControl": {
       "accessibleName": {
-        "value": "PLACEHOLDER Voltage"
+        "value": "Battery Voltage"
       }
     },
     "intensityCurrentGraphNode": {
       "accessibleHeading": {
-        "value": "PLACEHOLDER Intensity vs Current Graph"
+        "value": "Intensity vs. Current Graph"
       },
       "expandCollapseButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER expand/collapse"
+          "value": "Intensity vs. Current"
         }
       },
       "cameraButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER Save Snapshot"
+          "value": "Save Snapshot, Intensity vs. Current"
         }
       },
       "trashButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER Clear Snapshots"
+          "value": "Clear Snapshots, Intensity vs. Current"
         }
       },
       "snapshotsGalleryButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER View saved snapshots"
+          "value": "View Snapshots, Intensity vs. Current"
         },
         "accessibleHelpText": {
-          "value": "PLACEHOLDER Opens a dialog with a plot of each saved snapshot."
+          "value": "Compare your saved snapshots of this graph side by side."
         }
       }
     },
     "frequencyEnergyGraphNode": {
       "accessibleHeading": {
-        "value": "PLACEHOLDER Frequency vs Energy Graph"
+        "value": "Frequency vs. Energy Graph"
       },
       "expandCollapseButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER expand/collapse"
+          "value": "Frequency vs. Energy"
         }
       },
       "cameraButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER Save Snapshot"
+          "value": "Save Snapshot, Frequency vs. Energy"
         }
       },
       "trashButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER Clear Snapshots"
+          "value": "Clear Snapshots, Frequency vs. Energy"
         }
       },
       "snapshotsGalleryButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER View saved snapshots"
+          "value": "View Snapshots, Frequency vs. Energy"
         },
         "accessibleHelpText": {
-          "value": "PLACEHOLDER Opens a dialog with a plot of each saved snapshot."
+          "value": "Compare your saved snapshots of this graph side by side."
         }
       }
     },
     "voltageCurrentGraphNode": {
       "accessibleHeading": {
-        "value": "PLACEHOLDER Voltage vs Current Graph"
+        "value": "Voltage vs. Current Graph"
       },
       "expandCollapseButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER expand/collapse"
+          "value": "Voltage vs. Current"
         }
       },
       "cameraButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER Save Snapshot"
+          "value": "Save Snapshot, Voltage vs. Current"
         }
       },
       "trashButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER Clear Snapshots"
+          "value": "Clear Snapshots, Voltage vs. Current"
         }
       },
       "snapshotsGalleryButton": {
         "accessibleName": {
-          "value": "PLACEHOLDER View saved snapshots"
+          "value": "View Snapshots, Voltage vs. Current"
         },
         "accessibleHelpText": {
-          "value": "PLACEHOLDER Opens a dialog with a plot of each saved snapshot."
+          "value": "Compare your saved snapshots of this graph side by side."
         }
       },
       "workFunction": {
