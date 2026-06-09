@@ -38,7 +38,9 @@ export default class VoltageCurrentGraphAccordionBox extends GraphAssemblyAccord
     const yZoomRanges = [
       new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT ),
       new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.6 ),
-      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.3 )
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.2 ),
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.1 ),
+      new Range( 0, PhotoelectricEffectConstants.MAX_CURRENT * 0.02 )
     ];
 
     const graphOptions: GraphAssemblyAccordionBoxOptions = {
