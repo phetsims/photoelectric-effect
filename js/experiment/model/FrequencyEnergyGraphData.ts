@@ -6,6 +6,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
@@ -69,7 +70,14 @@ export default class FrequencyEnergyGraphData extends GraphData {
 
         // The user controls wavelength. But we plot with frequency.
         xDomain: frequencyXDomain,
-        drivingValueToChartX: wavelength => wavelengthToFrequency( wavelength )
+        drivingValueToChartX: wavelength => wavelengthToFrequency( wavelength ),
+
+        // KEmax is only measurable while the source emits photons, so no new data plots while the source output
+        // is at 0% (mimics the Java sim), see https://github.com/phetsims/photoelectric-effect/issues/102
+        samplingEnabledProperty: new DerivedProperty(
+          [ model.photonSource.normalizedOutputProperty ],
+          normalizedOutput => normalizedOutput > 0
+        )
       } )
     );
   }

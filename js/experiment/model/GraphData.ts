@@ -17,9 +17,13 @@
  * clearDependencies should list every other model input that changes the physical meaning of the curve (or the
  * mapping in createDataPointAtChartX) so the plot does not mix samples from incompatible settings of the simulation.
  *
+ * An optional samplingEnabledProperty gates new data: while false, sweeping the driving control reveals nothing and
+ * currentPointProperty is null so the latest-point marker hides. Previously revealed samples remain visible.
+ *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
 import Multilink from '../../../../axon/js/Multilink.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
@@ -40,8 +44,8 @@ import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
-import PhotoelectricEffectQueryParameters from '../../common/PhotoelectricEffectQueryParameters.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
+import PhotoelectricEffectQueryParameters from '../../common/PhotoelectricEffectQueryParameters.js';
 import GraphSnapshot from './GraphSnapshot.js';
 
 type SelfOptions = {
@@ -58,6 +62,10 @@ type SelfOptions = {
   // Number of fixed x-axis bins across xDomain, including both endpoints. Increase the binCount for
   // more accurate/smooth plots.
   binCount?: number;
+
+  // Gates new data. While false, driving-property changes do not reveal new samples and currentPointProperty is
+  // null so the latest-point marker hides. Previously revealed samples remain visible. Defaults to always enabled.
+  samplingEnabledProperty?: TReadOnlyProperty<boolean>;
 };
 
 export type GraphDataPhetioOptions =
@@ -124,8 +132,11 @@ export default class GraphData extends PhetioObject {
   // getDataPoints() and update plots.
   public readonly dataChangedEmitter = new Emitter();
 
-  // Latest chart coordinates for the current driving value.
-  public readonly currentPointProperty: Property<Vector2>;
+  // Latest chart coordinates for the current driving value, or null while sampling is disabled.
+  public readonly currentPointProperty: Property<Vector2 | null>;
+
+  // Gates new data; see SelfOptions.samplingEnabledProperty.
+  private readonly samplingEnabledProperty: TReadOnlyProperty<boolean>;
 
   // Number of stored snapshots.
   public readonly snapshotsCountProperty: NumberProperty;
@@ -162,11 +173,13 @@ export default class GraphData extends PhetioObject {
       phetioState: true,
       xDomain: drivingProperty.range,
       binCount: 200,
-      drivingValueToChartX: drivingValue => drivingValue
+      drivingValueToChartX: drivingValue => drivingValue,
+      samplingEnabledProperty: new BooleanProperty( true )
     }, providedOptions );
 
     super( options );
     this.model = model;
+    this.samplingEnabledProperty = options.samplingEnabledProperty;
     this.secondValueMetadata = secondValueMetadata;
     this.thirdValueMetadata = thirdValueMetadata;
     this.snapshotsCountProperty = new NumberProperty( 0, {
@@ -192,8 +205,8 @@ export default class GraphData extends PhetioObject {
     this.binCount = options.binCount;
     this.binWidth = span / ( this.binCount - 1 );
 
-    const initialChartX = options.drivingValueToChartX( drivingProperty.value );
-    this.currentPointProperty = new Property( createDataPointAtChartX( initialChartX ) );
+    // recomputeDeterministicBinsAndCurrentPoint below assigns the initial value, respecting samplingEnabledProperty.
+    this.currentPointProperty = new Property<Vector2 | null>( null );
 
     this.bins = _.times( this.binCount, index => ( {
       dataPoint: new Vector2( this.binIndexToChartX( index ), 0 ),
@@ -205,12 +218,29 @@ export default class GraphData extends PhetioObject {
     );
 
     drivingProperty.lazyLink( ( drivingValue: number ) => {
+
+      // While sampling is disabled, sweeping reveals nothing and the marker stays hidden.
+      if ( !this.samplingEnabledProperty.value ) {
+        return;
+      }
+
       const chartX = options.drivingValueToChartX( drivingValue );
       this.currentPointProperty.value = createDataPointAtChartX( chartX );
 
       const currentBinIndex = this.chartXToBinIndex( chartX );
       this.revealBinRange( this.previousDrivingBinIndex, currentBinIndex );
       this.previousDrivingBinIndex = currentBinIndex;
+      this.dataChangedEmitter.emit();
+    } );
+
+    options.samplingEnabledProperty.lazyLink( samplingEnabled => {
+
+      // Show the operating-point marker only while sampling is enabled. Revealed samples are untouched.
+      this.currentPointProperty.value = samplingEnabled ?
+                                        createDataPointAtChartX( options.drivingValueToChartX( drivingProperty.value ) ) :
+                                        null;
+
+      // Notifies views so the zoom level re-fits with or without the marker.
       this.dataChangedEmitter.emit();
     } );
 
@@ -341,8 +371,10 @@ export default class GraphData extends PhetioObject {
     } );
 
     // When a dependency changes that should clear the plot, it changed the physical state for the system,
-    // so recompute the current point.
-    this.currentPointProperty.value = createDataPointAtChartX( drivingValueInChartX );
+    // so recompute the current point. While sampling is disabled there is no operating point to show.
+    this.currentPointProperty.value = this.samplingEnabledProperty.value ?
+                                      createDataPointAtChartX( drivingValueInChartX ) :
+                                      null;
   }
 
   /**
