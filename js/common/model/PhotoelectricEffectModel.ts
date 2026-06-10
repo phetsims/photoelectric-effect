@@ -52,11 +52,10 @@ export type PhotoelectricEffectModelStateObject = {
 
 // Maximum integration step for particle emission and motion. Large browser resume steps are split into smaller chunks
 // so photon/electron streams remain spatially continuous instead of jumping across the play area in one frame.
-// TODO: Review this tuning value with the design team. Larger values will only tap into this fix for larger joist
-//  steps. Smaller values improve particle continuity, but can increase per-frame work on slower platforms because
-//  slow frames require more substeps. On my modern laptop, 1 / 60 still only ran 1 iteration per frame, except for
-//  returning after minimizing. See https://github.com/phetsims/photoelectric-effect/issues/89
-// TODO: NOTE I did not apply this to the energy screen because the "photon stream" doesn't apply in that sim.
+// Larger values only engage the substepping for larger joist steps, while smaller values improve particle continuity
+// at the cost of more per-frame work on slower platforms. At 1 / 60, a normal 60fps frame runs a single iteration,
+// so substepping only kicks in on long frames (e.g. returning after minimizing the browser).
+// See https://github.com/phetsims/photoelectric-effect/issues/89
 const MAX_PARTICLE_DT = 1 / 60;
 
 export default class PhotoelectricEffectModel extends PhetioObject implements TModel {

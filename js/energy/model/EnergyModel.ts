@@ -175,6 +175,9 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   /**
    * Model animation for photons and electrons. Instead of creating a stream of photons, this model
    * creates any photons that were requested by a "burst" fire from the user.
+   *
+   * This override intentionally does not substep large time steps, because photons here are fired on demand in bursts
+   * rather than as a continuous stream.
    * @param dt - time step, in seconds
    */
   protected override stepModel( dt: number ): void {
