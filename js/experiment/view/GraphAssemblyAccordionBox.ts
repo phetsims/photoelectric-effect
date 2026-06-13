@@ -90,6 +90,11 @@ export default class GraphAssemblyAccordionBox extends AccordionBox {
       focusHighlightTarget: 'expandCollapseButton',
       contentXMargin: 0,
       contentYMargin: 0,
+
+      // These graphs have no visible title, so pin the expand/collapse button to the top
+      titleAlignY: 'top',
+      buttonYMargin: 0,
+      titleYMargin: 0,
       fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
       stroke: null
     }, providedOptions );
