@@ -463,7 +463,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   /**
    * Clears all electrons that have been created by the model.
    */
-  private clearElectrons(): void {
+  protected clearElectrons(): void {
     this.electrons.length = 0;
   }
 

@@ -20,6 +20,7 @@ import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
+import Electron from '../../common/model/Electron.js';
 import Material, { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions, type PhotoelectricEffectModelStateObject } from '../../common/model/PhotoelectricEffectModel.js';
 import Photon from '../../common/model/Photon.js';
@@ -38,6 +39,7 @@ type QueuedPhotonEmission = {
 // PhET-iO serialized state for the Energy model.
 type EnergyModelStateObject = PhotoelectricEffectModelStateObject & {
   photonSampleIndices: ( number | null )[];
+  electronSampleIndices: ( number | null )[];
   queuedPhotonEmissions: QueuedPhotonEmission[];
 };
 
@@ -92,6 +94,11 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   // into the matching slot. Uses a WeakMap so entries clear when photons are released by this.photons.
   private readonly photonToSampleIndexMap = new WeakMap<Photon, number>();
 
+  // Tracks which sample slot each emitted electron corresponds to, so the electron can be cleared together with
+  // its slot's graph data on the next fire. Uses a WeakMap so entries clear when electrons are released by
+  // this.electrons.
+  private readonly electronToSampleIndexMap = new WeakMap<Electron, number>();
+
   // Delayed burst-mode photon emissions. Each entry counts down in model time until its photon should be fired.
   private readonly queuedPhotonEmissions: QueuedPhotonEmission[] = [];
 
@@ -143,6 +150,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       if ( this.emitSinglePhotonProperty.value ) {
         const slotIndex = this.currentSlotIndexProperty.value;
         this.energyGraphData.samples[ slotIndex ].clear();
+        this.clearElectronsForSlot( slotIndex );
         this.firePhoton( slotIndex );
 
         this.currentSlotIndexProperty.value =
@@ -150,6 +158,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       }
       else {
         this.energyGraphData.clear();
+        this.clearElectrons();
         this.queueBurstPhotons();
       }
 
@@ -169,6 +178,11 @@ export default class EnergyModel extends PhotoelectricEffectModel {
         collisionResult.electron !== null
       );
       this.photonToSampleIndexMap.delete( photon );
+
+      // Associate the emitted electron with its slot so it can be cleared when the slot is fired again.
+      if ( collisionResult.electron ) {
+        this.electronToSampleIndexMap.set( collisionResult.electron, slotIndex );
+      }
     } );
   }
 
@@ -199,6 +213,18 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     const photon = new Photon( position, velocity, new Vector2( 0, 0 ), this.photonSource.wavelengthProperty.value );
     this.photons.push( photon );
     this.photonToSampleIndexMap.set( photon, slotIndex );
+  }
+
+  /**
+   * Clears any electrons associated with the given sample slot, so that re-firing a slot removes the electron from
+   * its previous fire along with the slot's graph data. This caps the Energy screen at one electron per sample slot.
+   */
+  private clearElectronsForSlot( slotIndex: number ): void {
+    const remainingElectrons = this.electrons.filter(
+      electron => this.electronToSampleIndexMap.get( electron ) !== slotIndex );
+
+    this.electrons.length = 0;
+    this.electrons.push( ...remainingElectrons );
   }
 
   /**
@@ -276,6 +302,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   protected override toStateObject(): EnergyModelStateObject {
     return Object.assign( super.toStateObject(), {
       photonSampleIndices: this.photons.map( photon => this.photonToSampleIndexMap.get( photon ) ?? null ),
+      electronSampleIndices: this.electrons.map( electron => this.electronToSampleIndexMap.get( electron ) ?? null ),
       queuedPhotonEmissions: this.queuedPhotonEmissions.map( queuedPhotonEmission =>
         EnergyModel.QUEUED_PHOTON_EMISSION_IO.toStateObject( queuedPhotonEmission ) )
     } );
@@ -293,6 +320,15 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       }
       else {
         this.photonToSampleIndexMap.delete( this.photons[ photonIndex ] );
+      }
+    } );
+
+    stateObject.electronSampleIndices.forEach( ( sampleIndex, electronIndex ) => {
+      if ( sampleIndex !== null ) {
+        this.electronToSampleIndexMap.set( this.electrons[ electronIndex ], sampleIndex );
+      }
+      else {
+        this.electronToSampleIndexMap.delete( this.electrons[ electronIndex ] );
       }
     } );
 
@@ -318,6 +354,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     {},
     EnergyModel.PHOTOELECTRIC_EFFECT_MODEL_STATE_SCHEMA, {
       photonSampleIndices: ArrayIO( NullableIO( NumberIO ) ),
+      electronSampleIndices: ArrayIO( NullableIO( NumberIO ) ),
       queuedPhotonEmissions: ArrayIO( EnergyModel.QUEUED_PHOTON_EMISSION_IO )
     } );
 
