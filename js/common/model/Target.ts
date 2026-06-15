@@ -112,6 +112,12 @@ export default class Target {
    * TODO: I suspect this function would be easier to understand without early return statements. Consider
    *   implementing it with a single collision result return.
    *
+   * TODO: Revisit closer to publication/code review:
+   *   We are not sure if we need PhotonCollisionResult anymore. It allows us to plot the binding energy when
+   *   no electron is produced. Not clear if that is desireable. Currently, if no electron is produced, we don't
+   *   plot anything at all. If we do not end up plotting anything when no electron is produced, we can simplify
+   *   by deleting PhotonCollisionResult, its IOTypes, and just use Electron.
+   *
    * @param photon
    * @param highestEnergyOnly - When true, use the highest available electron energy for emitted particles, matching
    *   Java "simple-mode" absorption behavior. This does not guarantee emission; the normal quantum-efficiency gate
