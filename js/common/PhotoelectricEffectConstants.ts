@@ -62,11 +62,10 @@ export default class PhotoelectricEffectConstants {
 
   // Quantum efficiency (η) of the photoemission process: the probability, given a photon with enough energy
   // to access at least some of the occupied band, that an electron is actually ejected. Applied as a single
-  // scale factor on ejection probability (per the model reference, §6.3). Affects both the visible emission
-  // rate and the analytical current. Defaults to 0.5; tune for visual/pedagogical effect.
+  // scale factor on ejection probability (see the "Quantum Efficiency" section of doc/model-reference.md).
+  // Affects both the visible emission rate and the analytical current. Defaults to 0.5; tune for
+  // visual/pedagogical effect.
   // TODO: Maybe this isn't a knob? Maybe we get rid of it?
-  // TODO: reference, §6.3 is pointing to ai generated model documentation our team has been using - link to
-  //    it and possibly clean it/check it in - or just remove that reference.
   public static readonly QUANTUM_EFFICIENCY = 1;
 
   // TODO: Our most powerful lever?

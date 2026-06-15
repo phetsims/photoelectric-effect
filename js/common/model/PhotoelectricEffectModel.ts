@@ -535,8 +535,9 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     const physicalElectronsPerSecond =
       electronsPerSecondToAnode * PhotoelectricEffectConstants.QUANTUM_EFFICIENCY;
 
-    // I = e · N_electrons_physical · η · accessibleBandFraction · fractionReachingCollector (spec §10.3). The
-    // photon rate fed into this calculation is already the physical flux, so no further magnification is needed.
+    // I = e · N_electrons_physical · η · accessibleBandFraction · fractionReachingCollector (see the "Analytical
+    // Current Formula" section of doc/model-reference.md). The photon rate fed into this calculation is already
+    // the physical flux, so no further magnification is needed.
     return physicalElectronsPerSecond * PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
   }
 
