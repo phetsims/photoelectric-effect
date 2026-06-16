@@ -18,9 +18,9 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import type EnergyModel from '../model/EnergyModel.js';
-import EnergyBarGraphNode from './EnergyBarGraphNode.js';
-import EnergyDiagramControlsNode from './EnergyDiagramControlsNode.js';
-import EnergyDiagramNode from './EnergyDiagramNode.js';
+import EnergyBarGraphNode from './barGraph/EnergyBarGraphNode.js';
+import EnergyDiagramControlsNode from './energyDiagram/EnergyDiagramControlsNode.js';
+import EnergyDiagramNode from './energyDiagram/EnergyDiagramNode.js';
 import EnergyGraphDisplayModeRadioButtonGroup from './EnergyGraphDisplayModeRadioButtonGroup.js';
 import EnergyGraphLegendNode from './EnergyGraphLegendNode.js';
 

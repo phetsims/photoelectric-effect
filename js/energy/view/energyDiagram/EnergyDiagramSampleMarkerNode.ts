@@ -6,15 +6,15 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
-import ShadedSphereNode from '../../../../scenery-phet/js/ShadedSphereNode.js';
-import Circle from '../../../../scenery/js/nodes/Circle.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import EnergyGraphLayout from './EnergyGraphLayout.js';
+import type { TReadOnlyProperty } from '../../../../../axon/js/TReadOnlyProperty.js';
+import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
+import Vector2 from '../../../../../dot/js/Vector2.js';
+import ArrowNode from '../../../../../scenery-phet/js/ArrowNode.js';
+import ShadedSphereNode from '../../../../../scenery-phet/js/ShadedSphereNode.js';
+import Circle from '../../../../../scenery/js/nodes/Circle.js';
+import Node from '../../../../../scenery/js/nodes/Node.js';
+import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
+import EnergyGraphLayout from '../EnergyGraphLayout.js';
 
 // Radius for the initial-energy marker and emitted-electron marker.
 const ELECTRON_MARKER_RADIUS = 5;

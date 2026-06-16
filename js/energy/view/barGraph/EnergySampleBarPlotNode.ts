@@ -6,19 +6,19 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Multilink from '../../../../axon/js/Multilink.js';
-import BarPlot from '../../../../bamboo/js/BarPlot.js';
-import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
-import type { PaintableOptions } from '../../../../scenery/js/nodes/Paintable.js';
-import RichText from '../../../../scenery/js/nodes/RichText.js';
-import Panel from '../../../../sun/js/Panel.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import EnergyGraphSample from '../model/EnergyGraphSample.js';
-import EnergyGraphLayout from './EnergyGraphLayout.js';
+import Multilink from '../../../../../axon/js/Multilink.js';
+import BarPlot from '../../../../../bamboo/js/BarPlot.js';
+import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
+import Vector2 from '../../../../../dot/js/Vector2.js';
+import Node from '../../../../../scenery/js/nodes/Node.js';
+import type { PaintableOptions } from '../../../../../scenery/js/nodes/Paintable.js';
+import RichText from '../../../../../scenery/js/nodes/RichText.js';
+import Panel from '../../../../../sun/js/Panel.js';
+import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
+import EnergyGraphSample from '../../model/EnergyGraphSample.js';
+import EnergyGraphLayout from '../EnergyGraphLayout.js';
 
 // Bar layout in model x coordinates.
 const BAR_X_OFFSET = 0.18;

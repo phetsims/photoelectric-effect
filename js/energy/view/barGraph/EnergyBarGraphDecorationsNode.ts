@@ -6,17 +6,17 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
-import Line from '../../../../scenery/js/nodes/Line.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import EnergyGraphData from '../model/EnergyGraphData.js';
-import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
-import EnergyGraphLayout from './EnergyGraphLayout.js';
+import type { TReadOnlyProperty } from '../../../../../axon/js/TReadOnlyProperty.js';
+import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
+import Vector2 from '../../../../../dot/js/Vector2.js';
+import MathSymbols from '../../../../../scenery-phet/js/MathSymbols.js';
+import Line from '../../../../../scenery/js/nodes/Line.js';
+import Node from '../../../../../scenery/js/nodes/Node.js';
+import Text from '../../../../../scenery/js/nodes/Text.js';
+import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
+import EnergyGraphData from '../../model/EnergyGraphData.js';
+import EnergyGraphDisplayProperties from '../../model/EnergyGraphDisplayProperties.js';
+import EnergyGraphLayout from '../EnergyGraphLayout.js';
 
 // Spacing between fixed energy reference lines, in eV.
 const GRID_LINE_SPACING = 2;

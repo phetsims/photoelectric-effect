@@ -7,22 +7,22 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Multilink from '../../../../axon/js/Multilink.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
-import Range from '../../../../dot/js/Range.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
-import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import EnergyGraphData from '../model/EnergyGraphData.js';
-import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
-import EnergyGraphSample from '../model/EnergyGraphSample.js';
+import Multilink from '../../../../../axon/js/Multilink.js';
+import type { TReadOnlyProperty } from '../../../../../axon/js/TReadOnlyProperty.js';
+import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
+import Range from '../../../../../dot/js/Range.js';
+import Vector2 from '../../../../../dot/js/Vector2.js';
+import optionize, { EmptySelfOptions } from '../../../../../phet-core/js/optionize.js';
+import Node, { type NodeOptions } from '../../../../../scenery/js/nodes/Node.js';
+import Text from '../../../../../scenery/js/nodes/Text.js';
+import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
+import EnergyGraphData from '../../model/EnergyGraphData.js';
+import EnergyGraphDisplayProperties from '../../model/EnergyGraphDisplayProperties.js';
+import EnergyGraphSample from '../../model/EnergyGraphSample.js';
 import EnergyDiagramDecorationsNode from './EnergyDiagramDecorationsNode.js';
 import EnergyDiagramSampleMarkerNode from './EnergyDiagramSampleMarkerNode.js';
-import EnergyGraphLayout from './EnergyGraphLayout.js';
+import EnergyGraphLayout from '../EnergyGraphLayout.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;

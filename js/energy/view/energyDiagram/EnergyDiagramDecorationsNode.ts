@@ -6,20 +6,20 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Multilink from '../../../../axon/js/Multilink.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import ArrowNode from '../../../../scenery-phet/js/ArrowNode.js';
-import MathSymbols from '../../../../scenery-phet/js/MathSymbols.js';
-import Line from '../../../../scenery/js/nodes/Line.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
-import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import EnergyGraphLayout from './EnergyGraphLayout.js';
+import Multilink from '../../../../../axon/js/Multilink.js';
+import type { TReadOnlyProperty } from '../../../../../axon/js/TReadOnlyProperty.js';
+import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
+import Vector2 from '../../../../../dot/js/Vector2.js';
+import ArrowNode from '../../../../../scenery-phet/js/ArrowNode.js';
+import MathSymbols from '../../../../../scenery-phet/js/MathSymbols.js';
+import Line from '../../../../../scenery/js/nodes/Line.js';
+import Node from '../../../../../scenery/js/nodes/Node.js';
+import Rectangle from '../../../../../scenery/js/nodes/Rectangle.js';
+import Text from '../../../../../scenery/js/nodes/Text.js';
+import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
+import EnergyGraphLayout from '../EnergyGraphLayout.js';
 
 // View-coordinate layout for the work-function bracket.
 const WORK_FUNCTION_MARKER_X_OFFSET = 14;
