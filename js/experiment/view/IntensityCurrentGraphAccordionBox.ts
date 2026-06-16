@@ -55,7 +55,8 @@ export default class IntensityCurrentGraphAccordionBox extends GraphAssemblyAcco
           return toFixed( scaledValue, isInteger ? 0 : 2 );
         },
         fill: PhotoelectricEffectColors.intensityCurrentGraphFillColorProperty,
-        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 0 )
+        yTickLabelMode: 'all',
+        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 3 )
       },
       accessibleName: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty,

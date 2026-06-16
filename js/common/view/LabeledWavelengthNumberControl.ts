@@ -26,7 +26,7 @@ import ArrowButton from '../../../../sun/js/buttons/ArrowButton.js';
 import Slider from '../../../../sun/js/Slider.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import { wavelengthToSpectrumTrackColor } from '../model/PhotoelectricEffectUtils.js';
+import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -115,11 +115,11 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
         tandem: Tandem.OPT_OUT // because layoutFunction omits the title
       },
       spectrumSliderTrackOptions: {
-        valueToColor: wavelengthToSpectrumTrackColor,
+        // valueToColor: wavelengthToColor,
         size: TRACK_SIZE
       },
       spectrumSliderThumbOptions: {
-        valueToColor: wavelengthToSpectrumTrackColor,
+        valueToColor: wavelengthToColor,
         width: THUMB_WIDTH,
         height: THUMB_HEIGHT,
         cursorHeight: TRACK_SIZE.height

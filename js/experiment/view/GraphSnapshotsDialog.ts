@@ -66,7 +66,9 @@ export default class GraphSnapshotsDialog extends Dialog {
       // TODO: @design What should these be, and do we need to customize it per plot?
       //   17 ticks creates nice divisions for the largest range (voltage)
       xTickCount: 17,
-      yTickCount: 5
+      yTickCount: 5,
+      xTickLabelMode: 'edge',
+      yTickLabelMode: 'edge'
     } );
 
     // The bottom-most plot will have x labels, to label all stacked plots.

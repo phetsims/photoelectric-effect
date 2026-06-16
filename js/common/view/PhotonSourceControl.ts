@@ -32,7 +32,7 @@ export default class PhotonSourceControl extends Panel {
       stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
       lineWidth: 3,
       cornerRadius: 4,
-      fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,
+      fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
       align: 'center',
       isDisposable: false,
       accessibleHeading: PhotoelectricEffectFluent.a11y.photonSourcePanel.accessibleHeadingStringProperty

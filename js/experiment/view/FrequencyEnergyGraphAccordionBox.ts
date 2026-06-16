@@ -8,6 +8,7 @@
  */
 
 import Range from '../../../../dot/js/Range.js';
+import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
@@ -46,6 +47,10 @@ export default class FrequencyEnergyGraphAccordionBox extends GraphAssemblyAccor
         // TODO: @design This option is a little strange. We needed it so that the label did not overlap with the
         //   ExpandCollapseButton. Check in with design to see how the layout should ideally be done.
         yAxisLabelYOffset: 10,
+        xTickCount: 5,
+        xTickLabelMode: 'all',
+        xTickLabelFormatter: value => toFixed( value, 2 ),
+        yTickLabelMode: 'all',
         fill: PhotoelectricEffectColors.frequencyEnergyGraphFillColorProperty
       },
       accessibleName: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty,

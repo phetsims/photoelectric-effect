@@ -18,6 +18,11 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 
+// Type to customize which tick marks receive labels.
+// edge - only the range minimum, midpoint, and maximum tick marks receive labels.
+// all - every generated tick mark receives a label.
+export type TickLabelMode = 'edge' | 'all';
+
 export type GraphPlotTickSetGroup = {
   xTickLabelSet: TickLabelSet;
   yTickLabelSet: TickLabelSet;
@@ -77,7 +82,9 @@ export default class GraphPlotAxisSets {
     xTickCount: number,
     yTickCount: number,
     xTickLabelFormatter: ( ( value: number ) => string ) | null,
-    yTickLabelFormatter: ( ( value: number ) => string ) | null
+    yTickLabelFormatter: ( ( value: number ) => string ) | null,
+    xTickLabelMode: TickLabelMode,
+    yTickLabelMode: TickLabelMode
   ): GraphPlotTickSetGroup {
     const xSpacing = GraphPlotAxisSets.createTickSpacing( xRange, xTickCount );
     const ySpacing = GraphPlotAxisSets.createTickSpacing( yRange, yTickCount );
@@ -85,13 +92,13 @@ export default class GraphPlotAxisSets {
     const xTickLabelSet = new TickLabelSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
       edge: 'min',
       origin: xRange.min,
-      createLabel: GraphPlotAxisSets.createEdgeLabel( xRange, xTickLabelFormatter )
+      createLabel: GraphPlotAxisSets.createTickLabelFactory( xTickLabelMode, xRange, xTickLabelFormatter )
     } );
 
     const yTickLabelSet = new TickLabelSet( chartTransform, Orientation.VERTICAL, ySpacing, {
       edge: 'min',
       origin: yRange.min,
-      createLabel: GraphPlotAxisSets.createEdgeLabel( yRange, yTickLabelFormatter )
+      createLabel: GraphPlotAxisSets.createTickLabelFactory( yTickLabelMode, yRange, yTickLabelFormatter )
     } );
 
     const xTickMarkSet = new TickMarkSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
@@ -171,5 +178,20 @@ export default class GraphPlotAxisSets {
                      Math.abs( value - max ) <= tolerance;
       return isEdge ? GraphPlotAxisSets.createTickLabel( value, formatter ) : null;
     };
+  }
+
+  /**
+   * Creates a label factory for the requested tick-label mode.
+   */
+  private static createTickLabelFactory(
+    mode: TickLabelMode,
+    range: Range,
+    formatter: ( ( value: number ) => string ) | null
+  ): ( value: number ) => Text | null {
+    return mode === 'edge' ? GraphPlotAxisSets.createEdgeLabel( range, formatter ) :
+           mode === 'all' ? value => GraphPlotAxisSets.createTickLabel( value, formatter ) :
+           ( () => {
+             throw new Error( `unsupported tick label mode: ${mode}` );
+           } )();
   }
 }

@@ -47,8 +47,12 @@ export default class VoltageCurrentGraphAccordionBox extends GraphAssemblyAccord
       graphPlotAreaNodeOptions: {
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.voltageAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.currentAxisLabelStringProperty,
+        xTickCount: 9,
+        xTickLabelMode: 'all',
+        xTickLabelFormatter: value => toFixed( value, 0 ),
+        yTickLabelMode: 'all',
         fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty,
-        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 0 )
+        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 3 )
       },
       accessibleName: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty,

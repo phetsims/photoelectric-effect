@@ -66,7 +66,7 @@ addToMapIfDefined( 'energy_graph_noElectronEjected', 'energy.graph.noElectronEje
 addToMapIfDefined( 'energy_graph_diagramControls_label', 'energy.graph.diagramControls.labelStringProperty' );
 addToMapIfDefined( 'energy_graph_diagramControls_workFunction', 'energy.graph.diagramControls.workFunctionStringProperty' );
 addToMapIfDefined( 'energy_graph_diagramControls_photonArrow', 'energy.graph.diagramControls.photonArrowStringProperty' );
-addToMapIfDefined( 'energy_graph_legend_bindingEnergy', 'energy.graph.legend.bindingEnergyStringProperty' );
+addToMapIfDefined( 'energy_graph_legend_potentialEnergy', 'energy.graph.legend.potentialEnergyStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_photonEnergy', 'energy.graph.legend.photonEnergyStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_kineticEnergy', 'energy.graph.legend.kineticEnergyStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_emptyStates', 'energy.graph.legend.emptyStatesStringProperty' );
@@ -77,6 +77,7 @@ addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty
 addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
+addToMapIfDefined( 'photonRate_label', 'photonRate.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
@@ -203,7 +204,7 @@ const PhotoelectricEffectFluent = {
         photonArrowStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.photonArrowStringProperty' )
       },
       legend: {
-        bindingEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.bindingEnergyStringProperty' ),
+        potentialEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.potentialEnergyStringProperty' ),
         photonEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.photonEnergyStringProperty' ),
         kineticEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.kineticEnergyStringProperty' ),
         emptyStatesStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.emptyStatesStringProperty' ),
@@ -224,6 +225,9 @@ const PhotoelectricEffectFluent = {
   intensity: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.labelStringProperty' ),
     percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.percentReadoutPatternStringProperty' )
+  },
+  photonRate: {
+    labelStringProperty: _.get( PhotoelectricEffectStrings, 'photonRate.labelStringProperty' )
   },
   sourceOutput: {
     percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'sourceOutput.percentReadoutPatternStringProperty' )

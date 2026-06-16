@@ -30,7 +30,7 @@ export default class GroundedCircuitNode extends Node {
 
     const groundLineShape = new Shape().moveToPoint( targetPlate.leftCenter )
       .lineTo( targetPlate.left - 50, targetPlate.centerY )
-      .lineTo( targetPlate.left - 50, targetPlate.bottom );
+      .lineTo( targetPlate.left - 50, targetPlate.centerY + 150 );
     const groundLinePath = new Path( groundLineShape, {
       stroke: PhotoelectricEffectColors.circuitStrokeColorProperty,
       lineWidth: 5

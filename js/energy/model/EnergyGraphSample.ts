@@ -26,7 +26,7 @@ export default class EnergyGraphSample extends PhetioObject {
   public readonly hasDataProperty: Property<boolean>;
 
   // Energy before photon absorption, in eV.
-  public readonly bindingEnergyProperty: Property<number>;
+  public readonly potentialEnergyProperty: Property<number>;
 
   // Energy delivered by the photon, in eV.
   public readonly photonEnergyProperty: Property<number>;
@@ -56,11 +56,11 @@ export default class EnergyGraphSample extends PhetioObject {
       phetioDocumentation: 'Whether this Energy screen graph sample slot currently contains recorded event data'
     } );
 
-    this.bindingEnergyProperty = new NumberProperty( 0, {
-      tandem: options.tandem.createTandem( 'bindingEnergyProperty' ),
+    this.potentialEnergyProperty = new NumberProperty( 0, {
+      tandem: options.tandem.createTandem( 'potentialEnergyProperty' ),
       phetioReadOnly: true,
       phetioFeatured: true,
-      phetioDocumentation: 'Binding energy for this Energy screen graph sample, in electron volts'
+      phetioDocumentation: 'Potential energy for this Energy screen graph sample, in electron volts'
     } );
 
     this.photonEnergyProperty = new NumberProperty( 0, {
@@ -88,12 +88,12 @@ export default class EnergyGraphSample extends PhetioObject {
    * Records energy values for this sample slot.
    */
   public setData(
-    bindingEnergy: number,
+    potentialEnergy: number,
     photonEnergy: number,
     kineticEnergy: number,
     electronEmitted: boolean
   ): void {
-    this.bindingEnergyProperty.value = bindingEnergy;
+    this.potentialEnergyProperty.value = potentialEnergy;
     this.photonEnergyProperty.value = photonEnergy;
     this.kineticEnergyProperty.value = kineticEnergy;
     this.electronEmittedProperty.value = electronEmitted;
@@ -105,7 +105,7 @@ export default class EnergyGraphSample extends PhetioObject {
    */
   public clear(): void {
     this.hasDataProperty.value = false;
-    this.bindingEnergyProperty.reset();
+    this.potentialEnergyProperty.reset();
     this.photonEnergyProperty.reset();
     this.kineticEnergyProperty.reset();
     this.electronEmittedProperty.reset();

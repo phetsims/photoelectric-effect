@@ -69,7 +69,7 @@ type StringsType = {
         'photonArrowStringProperty': LocalizedStringProperty;
       };
       'legend': {
-        'bindingEnergyStringProperty': LocalizedStringProperty;
+        'potentialEnergyStringProperty': LocalizedStringProperty;
         'photonEnergyStringProperty': LocalizedStringProperty;
         'kineticEnergyStringProperty': LocalizedStringProperty;
         'emptyStatesStringProperty': LocalizedStringProperty;
@@ -89,6 +89,9 @@ type StringsType = {
   'intensity': {
     'labelStringProperty': LocalizedStringProperty;
     'percentReadoutPatternStringProperty': LocalizedStringProperty;
+  };
+  'photonRate': {
+    'labelStringProperty': LocalizedStringProperty;
   };
   'sourceOutput': {
     'percentReadoutPatternStringProperty': LocalizedStringProperty;

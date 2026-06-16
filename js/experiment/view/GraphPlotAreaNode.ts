@@ -30,7 +30,7 @@ import Color from '../../../../scenery/js/util/Color.js';
 import type TColor from '../../../../scenery/js/util/TColor.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import GraphPlotAxisSets, { type GraphPlotGridLineSetGroup, type GraphPlotTickSetGroup } from './GraphPlotAxisSets.js';
+import GraphPlotAxisSets, { type GraphPlotGridLineSetGroup, type GraphPlotTickSetGroup, type TickLabelMode } from './GraphPlotAxisSets.js';
 
 // Type to customize the border of the plot.
 // rectangle - a full rectangle outlines the chart area
@@ -44,7 +44,7 @@ const AXIS_LABEL_MARGIN = 6;
 // TODO: These are hardcoded estimates — if a graph ever produces tick labels wider/taller than these values,
 //   axis labels will overlap the ticks. Consider deriving from actual tick label bounds if that happens.
 const X_AXIS_TICK_LABEL_GUTTER = 12;
-const Y_AXIS_TICK_LABEL_GUTTER = 22;
+const Y_AXIS_TICK_LABEL_GUTTER = 35;
 
 // Default chart size in view coordinates (experiment screen graphs).
 export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH = 220;
@@ -74,6 +74,12 @@ type GraphPlotAreaSelfOptions = {
 
   // Optional formatter for y-axis tick labels.
   yTickLabelFormatter?: null | ( ( value: number ) => string );
+
+  // Controls which x-axis tick marks receive labels.
+  xTickLabelMode?: TickLabelMode;
+
+  // Controls which y-axis tick marks receive labels.
+  yTickLabelMode?: TickLabelMode;
 
   // Number of major ticks (including min/max) along the x axis.
   xTickCount?: number;
@@ -153,6 +159,8 @@ export default class GraphPlotAreaNode extends Node {
       yAxisLabelYOffset: 0,
       xTickLabelFormatter: null,
       yTickLabelFormatter: null,
+      xTickLabelMode: 'edge',
+      yTickLabelMode: 'edge',
       xTickCount: DEFAULT_X_TICK_COUNT,
       yTickCount: DEFAULT_Y_TICK_COUNT,
       rangePaddingFraction: 0.05,
@@ -257,7 +265,9 @@ export default class GraphPlotAreaNode extends Node {
       options.xTickCount,
       options.yTickCount,
       options.xTickLabelFormatter,
-      options.yTickLabelFormatter
+      options.yTickLabelFormatter,
+      options.xTickLabelMode,
+      options.yTickLabelMode
     );
     GraphPlotAreaNode.updateAxisLabelPositions(
       this.plotBounds,
@@ -325,7 +335,9 @@ export default class GraphPlotAreaNode extends Node {
         options.xTickCount,
         options.yTickCount,
         options.xTickLabelFormatter,
-        options.yTickLabelFormatter
+        options.yTickLabelFormatter,
+        options.xTickLabelMode,
+        options.yTickLabelMode
       );
       this.gridLineSets = GraphPlotAxisSets.createGridLineSets(
         this.chartTransform,

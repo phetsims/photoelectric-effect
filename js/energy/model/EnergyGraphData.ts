@@ -50,14 +50,14 @@ export default class EnergyGraphData extends PhetioObject {
    */
   public setSampleData(
     sampleIndex: number,
-    bindingEnergy: number,
+    potentialEnergy: number,
     photonEnergy: number,
     kineticEnergy: number,
     electronEmitted: boolean
   ): void {
     affirm( sampleIndex >= 0 && sampleIndex < EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES,
       'sampleIndex out of range' );
-    this.samples[ sampleIndex ].setData( bindingEnergy, photonEnergy, kineticEnergy, electronEmitted );
+    this.samples[ sampleIndex ].setData( potentialEnergy, photonEnergy, kineticEnergy, electronEmitted );
   }
 
   /**

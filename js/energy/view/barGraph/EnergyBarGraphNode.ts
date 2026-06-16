@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Bar graph display for the Energy screen. Each sample plot shows binding, photon, and kinetic energy bars in
+ * Bar graph display for the Energy screen. Each sample plot shows potential, photon, and kinetic energy bars in
  * that order, sharing a common y-axis scale and horizontal grid.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)

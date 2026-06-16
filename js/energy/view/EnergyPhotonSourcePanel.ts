@@ -15,7 +15,7 @@ import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
-import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
@@ -23,7 +23,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import ABSwitch from '../../../../sun/js/ABSwitch.js';
 import RoundPushButton from '../../../../sun/js/buttons/RoundPushButton.js';
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import LabeledWavelengthNumberControl from '../../common/view/LabeledWavelengthNumberControl.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -48,10 +47,6 @@ export default class EnergyPhotonSourcePanel extends Panel {
     providedOptions: EnergyPhotonSourcePanelOptions
   ) {
 
-    const options = optionize<EnergyPhotonSourcePanelOptions, SelfOptions, PanelOptions>()( {
-      fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty
-    }, providedOptions );
-
     const switchHeight = 20;
     const photonQuantitySwitch = new ABSwitch(
       emitSinglePhotonProperty,
@@ -66,14 +61,14 @@ export default class EnergyPhotonSourcePanel extends Panel {
         toggleSwitchOptions: {
           size: new Dimension2( switchHeight * 2, switchHeight )
         },
-        tandem: options.tandem.createTandem( 'photonQuantitySwitch' )
+        tandem: providedOptions.tandem.createTandem( 'photonQuantitySwitch' )
       } );
     const firePhotonButton = new RoundPushButton( {
       content: new Text( PhotoelectricEffectFluent.photonQuantity.fireStringProperty, {
         font: PhotoelectricEffectConstants.CONTENT_FONT,
         fill: 'white'
       } ),
-      tandem: options.tandem.createTandem( 'firePhotonButton' ),
+      tandem: providedOptions.tandem.createTandem( 'firePhotonButton' ),
       listener: () => {
         firePhotonEmitter.emit();
       },
@@ -86,7 +81,7 @@ export default class EnergyPhotonSourcePanel extends Panel {
       spacing: 10
     } );
     const wavelengthNumberControl = new LabeledWavelengthNumberControl( wavelengthProperty, {
-      tandem: options.tandem.createTandem( 'wavelengthNumberControl' )
+      tandem: providedOptions.tandem.createTandem( 'wavelengthNumberControl' )
     } );
 
     const panelContent = new VBox( {
@@ -94,6 +89,6 @@ export default class EnergyPhotonSourcePanel extends Panel {
       spacing: 10
     } );
 
-    super( panelContent, options );
+    super( panelContent, providedOptions );
   }
 }

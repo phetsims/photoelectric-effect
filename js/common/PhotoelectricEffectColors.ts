@@ -29,31 +29,12 @@ export default class PhotoelectricEffectColors {
       default: 'white'
     } );
 
-  public static readonly photonSourcePanelFillColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'photonSourcePanelFill', {
-      default: 'rgb( 238, 240, 242 )'
-    } );
-
-  public static readonly wavelengthSliderUVTrackBackgroundColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'wavelengthSliderUVTrackBackground', {
-      default: 'rgb( 225, 221, 233 )'
-    } );
-
-  public static readonly wavelengthSliderIRTrackBackgroundColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'wavelengthSliderIRTrackBackground', {
-      default: 'rgb( 233, 222, 219 )'
-    } );
-
   public static readonly photonColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonColor', {
     default: 'purple'
   } );
 
   public static readonly photonOrbInnerColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonOrbInnerColor', {
     default: 'rgba(255, 255, 255, 0.7)'
-  } );
-
-  public static readonly photonNonVisibleHaloColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonNonVisibleHaloColor', {
-    default: 'rgba( 150, 150, 150, 0.7 )'
   } );
 
   public static readonly photonVisibleSparkleColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonVisibleSparkleColor', {
@@ -118,12 +99,12 @@ export default class PhotoelectricEffectColors {
 
   public static readonly frequencyEnergyGraphFillColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'frequencyEnergyGraphFillColor', {
-      default: '#7090F5'
+      default: '#4B853E'
     } );
 
   public static readonly intensityCurrentGraphFillColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'intensityCurrentGraphFillColor', {
-      default: '#4B853E'
+      default: '#7090F5'
     } );
 
   public static readonly voltageCurrentGraphFillColorProperty = new ProfileColorProperty(
@@ -161,9 +142,9 @@ export default class PhotoelectricEffectColors {
     default: 'white'
   } );
 
-  // Color for binding energy in the Energy screen graph.
-  public static readonly bindingEnergyGraphColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'bindingEnergyGraphColor', {
+  // Color for potential energy in the Energy screen graph.
+  public static readonly potentialEnergyGraphColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'potentialEnergyGraphColor', {
       default: '#417e23'
     } );
 
@@ -177,12 +158,6 @@ export default class PhotoelectricEffectColors {
   public static readonly kineticEnergyGraphColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'kineticEnergyGraphColor', {
       default: '#2a29f5'
-    } );
-
-  // Color for the ban icon shown when a photon does not eject an electron.
-  public static readonly noElectronEjectedIconColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'noElectronEjectedIconColor', {
-      default: 'red'
     } );
 
   // Color for empty states in the Energy screen energy diagram.
