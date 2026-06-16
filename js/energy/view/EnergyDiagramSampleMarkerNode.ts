@@ -36,6 +36,7 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
   // Shaded blue marker that represents the emitted electron's kinetic energy.
   private readonly emittedEnergyMarker: ShadedSphereNode;
 
+  // TODO: JSDoc, https://github.com/phetsims/photoelectric-effect/issues/78
   public constructor( private readonly chartTransform: ChartTransform,
                       private readonly sampleIndex: number,
                       photonArrowsVisibleProperty: TReadOnlyProperty<boolean> ) {

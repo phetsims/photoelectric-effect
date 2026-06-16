@@ -21,6 +21,7 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 // Space between y-axis tick labels and the plot area.
+// TODO: Factor out these constants. https://github.com/phetsims/photoelectric-effect/issues/78
 const Y_TICK_LABEL_MARGIN = 5;
 
 // View-coordinate layout for the work-function bracket.
@@ -57,6 +58,7 @@ export default class EnergyDiagramDecorationsNode extends Node {
   private readonly zeroTickLabel: Node;
   private readonly fermiLevelTickLabel: Node;
 
+  // TODO: JSDoc, https://github.com/phetsims/photoelectric-effect/issues/78
   public constructor( chartTransform: ChartTransform,
                       workFunctionProperty: TReadOnlyProperty<number>,
                       bandDepthProperty: TReadOnlyProperty<number>,

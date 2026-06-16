@@ -20,6 +20,7 @@ import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import EnergyGraphSample from '../model/EnergyGraphSample.js';
 
 // Bar layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
+// TODO: This is duplicated now, factor this out. See https://github.com/phetsims/photoelectric-effect/issues/78
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
 const BAR_X_OFFSET = 0.18;
 const BAR_WIDTH = 9;
@@ -42,6 +43,7 @@ export default class EnergySampleBarPlotNode extends Node {
   // Message shown when sample data exists but no electron was emitted.
   private readonly noElectronEjectedPanel: Panel;
 
+  // TODO: JSDoc, https://github.com/phetsims/photoelectric-effect/issues/78
   public constructor( chartTransform: ChartTransform, sample: EnergyGraphSample, sampleIndex: number ) {
     super();
 
