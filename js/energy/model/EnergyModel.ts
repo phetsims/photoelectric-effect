@@ -9,6 +9,7 @@
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
+import Multilink from '../../../../axon/js/Multilink.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import Range from '../../../../dot/js/Range.js';
@@ -163,6 +164,17 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       }
 
       this.updatePhotonsTravelingProperty();
+    } );
+
+    // The recorded samples are tied to the target material parameters. Clear them when those parameters change so
+    // old samples do not imply a result for the new material configuration.
+    Multilink.lazyMultilinkAny( [
+      this.target.materialProperty,
+      this.target.workFunctionProperty,
+      this.target.bandDepthProperty
+    ], () => {
+      this.energyGraphData.clear();
+      this.currentSlotIndexProperty.reset();
     } );
 
     // Record sample data when a fired photon collides with the target.
