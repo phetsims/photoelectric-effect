@@ -11,9 +11,12 @@
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import PatternStringProperty from '../../../../axon/js/PatternStringProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import type Bounds2 from '../../../../dot/js/Bounds2.js';
 import type Range from '../../../../dot/js/Range.js';
+import type Vector2 from '../../../../dot/js/Vector2.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import type Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import getMaterialLabelStringProperty from '../../common/view/getMaterialLabelStringProperty.js';
@@ -22,6 +25,9 @@ import GraphSnapshot from '../model/GraphSnapshot.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 
 export default class GraphSnapshotRowNode extends HBox {
+
+  // Snapshot data displayed by this row.
+  public readonly pointsProperty: TReadOnlyProperty<ReadonlyArray<Vector2>>;
 
   // Chart area for this snapshot row.
   private readonly plotNode: GraphPlotAreaNode;
@@ -133,6 +139,7 @@ export default class GraphSnapshotRowNode extends HBox {
     } );
 
     this.plotNode = plotNode;
+    this.pointsProperty = snapshot.pointsProperty;
 
     snapshot.pointsProperty.link( points => {
       this.plotNode.setLineDataSet( [ ...points ] );
@@ -160,6 +167,56 @@ export default class GraphSnapshotRowNode extends HBox {
    */
   public setZoomLevel( zoomLevel: number ): void {
     this.plotNode.zoomLevelProperty.value = zoomLevel;
+  }
+
+  /**
+   * Bounds of the plot area in the coordinate frame of another node, typically the dialog overlay parent.
+   */
+  public getPlotBoundsInNode( node: Node ): Bounds2 {
+    return node.globalToLocalBounds( this.plotNode.localToGlobalBounds( this.plotNode.plotBounds ) );
+  }
+
+  /**
+   * Converts a model x value to the plot's local view coordinate.
+   */
+  public modelToViewX( x: number ): number {
+    return this.plotNode.modelToViewX( x );
+  }
+
+  /**
+   * Converts a model x delta to a view-coordinate delta.
+   */
+  public modelToViewDeltaX( deltaX: number ): number {
+    return this.plotNode.modelToViewDeltaX( deltaX );
+  }
+
+  /**
+   * Converts a view-coordinate x delta to a model delta.
+   */
+  public viewToModelDeltaX( deltaX: number ): number {
+    return this.plotNode.viewToModelDeltaX( deltaX );
+  }
+
+  /**
+   * Finds the nearest saved snapshot point to the provided x value and returns its y value.
+   */
+  public getClosestYValue( x: number ): number | null {
+    const points = this.pointsProperty.value;
+    if ( points.length === 0 ) {
+      return null;
+    }
+
+    let closestPoint = points[ 0 ];
+    let closestDistance = Math.abs( x - closestPoint.x );
+    for ( let i = 1; i < points.length; i++ ) {
+      const distance = Math.abs( x - points[ i ].x );
+      if ( distance < closestDistance ) {
+        closestPoint = points[ i ];
+        closestDistance = distance;
+      }
+    }
+
+    return closestPoint.y;
   }
 
   /**

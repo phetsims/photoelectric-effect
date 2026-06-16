@@ -11,6 +11,7 @@ import Range from '../../../../dot/js/Range.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
+import { electronVoltUnit } from '../../../../scenery-phet/js/units/electronVoltUnit.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -52,6 +53,15 @@ export default class FrequencyEnergyGraphAccordionBox extends GraphAssemblyAccor
         xTickLabelFormatter: value => toFixed( value, 2 ),
         yTickLabelMode: 'all',
         fill: PhotoelectricEffectColors.frequencyEnergyGraphFillColorProperty
+      },
+      referenceLineXDisplayOptions: {
+        displayRange: xRange,
+        numberFormatter: value => toFixed( value, 2 )
+      },
+      referenceLineYDisplayOptions: {
+        displayRange: new Range( 0, 12 ),
+        numberFormatter: value => electronVoltUnit.getDualString( value, { decimalPlaces: 2 } ),
+        numberFormatterDependencies: electronVoltUnit.getDependentProperties()
       },
       accessibleName: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.cameraButton.accessibleNameStringProperty,

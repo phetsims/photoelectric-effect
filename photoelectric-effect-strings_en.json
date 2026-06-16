@@ -92,6 +92,9 @@
       "snapshotLabelValuePattern": {
         "value": "{{label}}: {{value}}"
       },
+      "referenceLine": {
+        "value": "Reference Line"
+      },
       "snapshotsGalleryButtonAccessibleName": {
         "value": "View saved snapshots"
       },
@@ -311,6 +314,14 @@
     "voltageNumberControl": {
       "accessibleName": {
         "value": "Battery Voltage"
+      }
+    },
+    "referenceLine": {
+      "accessibleName": {
+        "value": "Reference Line"
+      },
+      "accessibleHelpText": {
+        "value": "Move across the stacked graphs to compare values at the same position."
       }
     },
     "intensityCurrentGraphNode": {

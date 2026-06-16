@@ -11,8 +11,10 @@ import Range from '../../../../dot/js/Range.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { voltsUnit } from '../../../../scenery-phet/js/units/voltsUnit.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import { ampsToMicroamps } from '../../common/model/PhotoelectricEffectUtils.js';
+import { microamperesUnit } from '../../common/model/microamperesUnit.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -53,6 +55,17 @@ export default class VoltageCurrentGraphAccordionBox extends GraphAssemblyAccord
         yTickLabelMode: 'all',
         fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty,
         yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 3 )
+      },
+      referenceLineXDisplayOptions: {
+        displayRange: xRange,
+        numberFormatter: value => voltsUnit.getDualString( value, { decimalPlaces: 2 } ),
+        numberFormatterDependencies: voltsUnit.getDependentProperties()
+      },
+      referenceLineYDisplayOptions: {
+        displayRange: new Range( 0, ampsToMicroamps( PhotoelectricEffectConstants.MAX_CURRENT ) ),
+        valueMapper: value => ampsToMicroamps( value ),
+        numberFormatter: value => microamperesUnit.getDualString( value, { decimalPlaces: 3 } ),
+        numberFormatterDependencies: microamperesUnit.getDependentProperties()
       },
       accessibleName: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty,

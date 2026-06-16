@@ -49,6 +49,7 @@ type StringsType = {
       'snapshotSavedStringProperty': LocalizedStringProperty;
       'materialLabelStringProperty': LocalizedStringProperty;
       'snapshotLabelValuePatternStringProperty': LocalizedStringProperty;
+      'referenceLineStringProperty': LocalizedStringProperty;
       'snapshotsGalleryButtonAccessibleNameStringProperty': LocalizedStringProperty;
       'snapshotsGalleryButtonAccessibleHelpTextStringProperty': LocalizedStringProperty;
     }
@@ -175,6 +176,10 @@ type StringsType = {
     };
     'voltageNumberControl': {
       'accessibleNameStringProperty': LocalizedStringProperty;
+    };
+    'referenceLine': {
+      'accessibleNameStringProperty': LocalizedStringProperty;
+      'accessibleHelpTextStringProperty': LocalizedStringProperty;
     };
     'intensityCurrentGraphNode': {
       'accessibleHeadingStringProperty': LocalizedStringProperty;

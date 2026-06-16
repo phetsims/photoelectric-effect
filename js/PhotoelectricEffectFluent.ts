@@ -55,6 +55,7 @@ addToMapIfDefined( 'experiment_graph_energyAxisLabel', 'experiment.graph.energyA
 addToMapIfDefined( 'experiment_graph_snapshotsDialogTitle', 'experiment.graph.snapshotsDialogTitleStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotSaved', 'experiment.graph.snapshotSavedStringProperty' );
 addToMapIfDefined( 'experiment_graph_materialLabel', 'experiment.graph.materialLabelStringProperty' );
+addToMapIfDefined( 'experiment_graph_referenceLine', 'experiment.graph.referenceLineStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleName', 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' );
 addToMapIfDefined( 'photonQuantity_single', 'photonQuantity.singleStringProperty' );
@@ -104,6 +105,8 @@ addToMapIfDefined( 'a11y_representationRadioButtonGroup_accessibleName', 'a11y.r
 addToMapIfDefined( 'a11y_representationRadioButtonGroup_groundedRadioButton_accessibleName', 'a11y.representationRadioButtonGroup.groundedRadioButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_representationRadioButtonGroup_circuitRadioButton_accessibleName', 'a11y.representationRadioButtonGroup.circuitRadioButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_voltageNumberControl_accessibleName', 'a11y.voltageNumberControl.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_referenceLine_accessibleName', 'a11y.referenceLine.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_referenceLine_accessibleHelpText', 'a11y.referenceLine.accessibleHelpTextStringProperty' );
 addToMapIfDefined( 'a11y_intensityCurrentGraphNode_accessibleHeading', 'a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty' );
 addToMapIfDefined( 'a11y_intensityCurrentGraphNode_expandCollapseButton_accessibleName', 'a11y.intensityCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_intensityCurrentGraphNode_cameraButton_accessibleName', 'a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty' );
@@ -182,6 +185,8 @@ const PhotoelectricEffectFluent = {
       snapshotSavedStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotSavedStringProperty' ),
       materialLabelStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.materialLabelStringProperty' ),
       snapshotLabelValuePatternStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotLabelValuePatternStringProperty' ),
+      _comment_1: new FluentComment( {"comment":"Experiment screen: graphs","associatedKey":"referenceLine"} ),
+      referenceLineStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.referenceLineStringProperty' ),
       snapshotsGalleryButtonAccessibleNameStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' ),
       snapshotsGalleryButtonAccessibleHelpTextStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' )
     }
@@ -319,7 +324,11 @@ const PhotoelectricEffectFluent = {
     voltageNumberControl: {
       accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageNumberControl_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageNumberControl.accessibleNameStringProperty' ) )
     },
-    _comment_7: new FluentComment( {"comment":"Experiment screen: graphs","associatedKey":"intensityCurrentGraphNode"} ),
+    _comment_7: new FluentComment( {"comment":"Experiment screen: graphs","associatedKey":"referenceLine"} ),
+    referenceLine: {
+      accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_referenceLine_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.referenceLine.accessibleNameStringProperty' ) ),
+      accessibleHelpTextStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_referenceLine_accessibleHelpText', _.get( PhotoelectricEffectStrings, 'a11y.referenceLine.accessibleHelpTextStringProperty' ) )
+    },
     intensityCurrentGraphNode: {
       accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty' ) ),
       expandCollapseButton: {

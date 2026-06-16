@@ -10,25 +10,35 @@
  * to rows so the last stored snapshot always uses that labeled bottom row, while earlier snapshots use rows above it.
  * Unused slots stay hidden via visibility. Snapshot charts share the same GraphPlotAreaNode options as the parent
  * graph (ranges, labels, grid, line styling) but omit the current-point scatter layer.
+ * A draggable reference line overlays the visible plots and reports the shared x value plus one nearest-point y value
+ * per active snapshot row.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import MagnifyingGlassZoomButtonGroup from '../../../../scenery-phet/js/MagnifyingGlassZoomButtonGroup.js';
+import ShadedSphereNode from '../../../../scenery-phet/js/ShadedSphereNode.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import Line from '../../../../scenery/js/nodes/Line.js';
+import Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import ColorConstants from '../../../../sun/js/ColorConstants.js';
+import Checkbox, { type CheckboxOptions } from '../../../../sun/js/Checkbox.js';
 import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import type { GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
+import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNode.js';
 
 export default class GraphSnapshotsDialog extends Dialog {
 
@@ -41,6 +51,8 @@ export default class GraphSnapshotsDialog extends Dialog {
    * @param yZoomRanges - Y zoom presets used by each snapshot plot.
    * @param titleStringProperty - Localized title string shown in this dialog header.
    * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
+   * @param referenceLineXDisplayOptions - Formatting and display range for the reference-line x readout.
+   * @param referenceLineYDisplayOptions - Formatting and display range for the per-snapshot y readouts.
    */
   public constructor(
     tandem: Tandem,
@@ -49,7 +61,9 @@ export default class GraphSnapshotsDialog extends Dialog {
     xRange: Range,
     yZoomRanges: Range[],
     titleStringProperty: TReadOnlyProperty<string>,
-    graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions
+    graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions,
+    referenceLineXDisplayOptions: GraphSnapshotsReferenceLineValueDisplayOptions,
+    referenceLineYDisplayOptions: GraphSnapshotsReferenceLineValueDisplayOptions
   ) {
 
     const snapshotPlotOptions = combineOptions<GraphPlotAreaNodeOptions>( {}, graphPlotAreaNodeOptions, {
@@ -87,6 +101,37 @@ export default class GraphSnapshotsDialog extends Dialog {
       children: snapshotRows
     } );
 
+    const referenceLineVisibleProperty = new BooleanProperty( true, {
+      tandem: tandem.createTandem( 'referenceLineVisibleProperty' ),
+      phetioFeatured: true,
+      phetioState: false
+    } );
+
+    const referenceLineXProperty = new NumberProperty( xRange.getCenter(), {
+      range: xRange,
+      tandem: tandem.createTandem( 'referenceLineXProperty' ),
+      phetioFeatured: true,
+      phetioState: false
+    } );
+
+    const referenceLineNode = new GraphSnapshotsReferenceLineNode(
+      snapshotRows,
+      referenceLineXProperty,
+      referenceLineVisibleProperty,
+      {
+        xDisplayOptions: referenceLineXDisplayOptions,
+        yDisplayOptions: referenceLineYDisplayOptions,
+        tandem: tandem.createTandem( 'referenceLineNode' )
+      }
+    );
+
+    const plotsOverlayNode = new Node( {
+      children: [
+        plotsGridBox,
+        referenceLineNode
+      ]
+    } );
+
     const zoomLevelProperty = new NumberProperty( parentZoomLevelProperty.value, {
       range: new Range( 1, yZoomRanges.length ),
       numberType: 'Integer',
@@ -112,7 +157,33 @@ export default class GraphSnapshotsDialog extends Dialog {
       align: 'bottom',
       children: [
         zoomButtonGroup,
-        plotsGridBox
+        plotsOverlayNode
+      ]
+    } );
+
+    const referenceLineCheckbox = new Checkbox(
+      referenceLineVisibleProperty,
+      new HBox( {
+        spacing: 8,
+        children: [
+          new Text( PhotoelectricEffectFluent.experiment.graph.referenceLineStringProperty, {
+            font: PhotoelectricEffectConstants.CONTENT_FONT
+          } ),
+          GraphSnapshotsDialog.createReferenceLineCheckboxIcon()
+        ]
+      } ),
+      combineOptions<CheckboxOptions>( {}, {
+        isDisposable: false,
+        tandem: tandem.createTandem( 'referenceLineCheckbox' )
+      } )
+    );
+
+    const contentVBox = new VBox( {
+      spacing: 8,
+      align: 'right',
+      children: [
+        contentHBox,
+        referenceLineCheckbox
       ]
     } );
 
@@ -131,22 +202,25 @@ export default class GraphSnapshotsDialog extends Dialog {
       snapshotRows.forEach( ( snapshotRowNode, i ) => {
         i < count ? snapshotRowNode.setSnapshot() : snapshotRowNode.clearSnapshot();
       } );
+      referenceLineNode.updateLayout();
     };
 
     zoomLevelProperty.link( zoomLevel => {
       snapshotRows.forEach( snapshotRowNode => {
         snapshotRowNode.setZoomLevel( zoomLevel );
       } );
+      referenceLineNode.updateLayout();
     } );
 
     const updateOnShow = () => {
       zoomLevelProperty.value = parentZoomLevelProperty.value;
       updateSnapshotPlots();
+      referenceLineNode.updateLayout();
     };
 
     updateSnapshotPlots();
 
-    super( contentHBox, {
+    super( contentVBox, {
       title: titleText,
       xSpacing: PhotoelectricEffectConstants.DIALOG_SPACING,
       cornerRadius: PhotoelectricEffectConstants.DIALOG_CORNER_RADIUS,
@@ -156,6 +230,25 @@ export default class GraphSnapshotsDialog extends Dialog {
       tandem: tandem,
       phetioReadOnly: true,
       showCallback: updateOnShow
+    } );
+  }
+
+  /**
+   * Creates the icon shown in the Reference Line checkbox.
+   */
+  private static createReferenceLineCheckboxIcon(): Node {
+    return new VBox( {
+      align: 'center',
+      spacing: -1,
+      children: [
+        new Line( 0, 0, 0, 22, {
+          stroke: PhotoelectricEffectColors.referenceLineStrokeColorProperty,
+          lineWidth: 3
+        } ),
+        new ShadedSphereNode( 14, {
+          mainColor: PhotoelectricEffectColors.referenceLineHandleColorProperty
+        } )
+      ]
     } );
   }
 }

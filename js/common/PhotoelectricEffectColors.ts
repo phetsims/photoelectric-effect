@@ -142,6 +142,18 @@ export default class PhotoelectricEffectColors {
     default: 'white'
   } );
 
+  // Stroke color for the reference line in experiment graph snapshot dialogs.
+  public static readonly referenceLineStrokeColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'referenceLineStroke', {
+      default: 'black'
+    } );
+
+  // Handle color for the reference line in experiment graph snapshot dialogs.
+  public static readonly referenceLineHandleColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'referenceLineHandle', {
+      default: '#E86C9A'
+    } );
+
   // Color for potential energy in the Energy screen graph.
   public static readonly potentialEnergyGraphColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'potentialEnergyGraphColor', {

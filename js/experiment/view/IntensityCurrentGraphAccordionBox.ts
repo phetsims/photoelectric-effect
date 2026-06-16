@@ -12,7 +12,9 @@ import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { percentUnit } from '../../../../scenery-phet/js/units/percentUnit.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
+import { microamperesUnit } from '../../common/model/microamperesUnit.js';
 import { ampsToMicroamps } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotonSource from '../../common/model/PhotonSource.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
@@ -57,6 +59,18 @@ export default class IntensityCurrentGraphAccordionBox extends GraphAssemblyAcco
         fill: PhotoelectricEffectColors.intensityCurrentGraphFillColorProperty,
         yTickLabelMode: 'all',
         yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 3 )
+      },
+      referenceLineXDisplayOptions: {
+        displayRange: new Range( 0, 100 ),
+        valueMapper: value => value * 100,
+        numberFormatter: value => percentUnit.getDualString( value, { decimalPlaces: 0 } ),
+        numberFormatterDependencies: percentUnit.getDependentProperties()
+      },
+      referenceLineYDisplayOptions: {
+        displayRange: new Range( 0, ampsToMicroamps( PhotoelectricEffectConstants.MAX_CURRENT ) ),
+        valueMapper: value => ampsToMicroamps( value ),
+        numberFormatter: value => microamperesUnit.getDualString( value, { decimalPlaces: 3 } ),
+        numberFormatterDependencies: microamperesUnit.getDependentProperties()
       },
       accessibleName: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty,

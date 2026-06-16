@@ -32,6 +32,7 @@ import GraphData from '../model/GraphData.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 import GraphSnapshotSavedMessageNode from './GraphSnapshotSavedMessageNode.js';
 import GraphSnapshotsDialog from './GraphSnapshotsDialog.js';
+import { type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNode.js';
 
 // Horizontal spacing between the chart content and the right-side button column.
 const GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 10;
@@ -53,6 +54,12 @@ type SelfOptions = {
 
   // Nested options forwarded to GraphPlotAreaNode.
   graphPlotAreaNodeOptions: GraphPlotAreaNodeOptions;
+
+  // Format options for the reference line's x-value readout in the snapshots dialog.
+  referenceLineXDisplayOptions: GraphSnapshotsReferenceLineValueDisplayOptions;
+
+  // Format options for the reference line's y-value readouts in the snapshots dialog.
+  referenceLineYDisplayOptions: GraphSnapshotsReferenceLineValueDisplayOptions;
 
   // Accessible names for each button in the right-side column.
   cameraButtonAccessibleNameProperty: TReadOnlyProperty<string>;
@@ -157,7 +164,9 @@ export default class GraphAssemblyAccordionBox extends AccordionBox {
       xRange,
       yZoomRanges,
       snapshotsDialogTitleStringProperty,
-      options.graphPlotAreaNodeOptions
+      options.graphPlotAreaNodeOptions,
+      options.referenceLineXDisplayOptions,
+      options.referenceLineYDisplayOptions
     );
 
     const trashButton = new TrashButton( combineOptions<TrashButtonOptions>( {}, actionButtonOptions, {

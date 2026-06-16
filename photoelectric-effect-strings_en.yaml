@@ -39,6 +39,7 @@ experiment:
     snapshotSaved:                            'Saved!'
     materialLabel:                            'Material'
     snapshotLabelValuePattern:                '{{label}}: {{value}}'
+    referenceLine:                            'Reference Line'
     snapshotsGalleryButtonAccessibleName:     'View saved snapshots'
     snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
 
@@ -179,6 +180,9 @@ a11y:
     accessibleName: Battery Voltage
 
   # Experiment screen: graphs
+  referenceLine:
+    accessibleName:     Reference Line
+    accessibleHelpText: Move across the stacked graphs to compare values at the same position.
   intensityCurrentGraphNode:
     accessibleHeading: Intensity vs. Current Graph
     expandCollapseButton:

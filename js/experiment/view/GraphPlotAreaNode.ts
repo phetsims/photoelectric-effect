@@ -387,6 +387,27 @@ export default class GraphPlotAreaNode extends Node {
   }
 
   /**
+   * Converts a model x value to the plot's local view coordinate.
+   */
+  public modelToViewX( x: number ): number {
+    return this.chartTransform.modelToViewX( x );
+  }
+
+  /**
+   * Converts a model x delta to a view-coordinate delta.
+   */
+  public modelToViewDeltaX( deltaX: number ): number {
+    return this.chartTransform.modelToViewDeltaX( deltaX );
+  }
+
+  /**
+   * Converts a view-coordinate x delta to a model delta.
+   */
+  public viewToModelDeltaX( deltaX: number ): number {
+    return this.chartTransform.viewToModelDeltaX( deltaX );
+  }
+
+  /**
    * Chooses the most zoomed-in level that still contains all plotted y-values.
    * This supports both zooming in and out as data is added or cleared.
    *
