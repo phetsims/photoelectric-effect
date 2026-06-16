@@ -98,12 +98,12 @@ export default class EnergyBarGraphDecorationsNode extends Node {
     this.workFunctionTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, workFunctionY );
 
     const gridLines: Line[] = [];
-    const gridLineYValues: number[] = [];
+    const horizontalLineYValues: number[] = [];
 
     // Add fixed horizontal reference lines, skipping duplicates in view coordinates.
-    const addHorizontalGridLine = ( viewY: number ) => {
-      if ( !gridLineYValues.some( gridLineY => Math.abs( gridLineY - viewY ) < 1e-6 ) ) {
-        gridLineYValues.push( viewY );
+    const addHorizontalReferenceLine = ( viewY: number ) => {
+      if ( !horizontalLineYValues.some( lineY => Math.abs( lineY - viewY ) < 1e-6 ) ) {
+        horizontalLineYValues.push( viewY );
         gridLines.push( new Line( 0, viewY, this.chartTransform.viewWidth, viewY, {
           stroke: 'rgb( 220, 220, 220 )',
           lineDash: [ 4, 4 ]
@@ -119,7 +119,7 @@ export default class EnergyBarGraphDecorationsNode extends Node {
       EnergyGraphDisplayProperties.MODEL_Y_RANGE.max + GRID_LINE_SPACING,
       GRID_LINE_SPACING
     ).filter( gridLineValue => gridLineValue !== 0 );
-    gridLineValues.forEach( gridValue => addHorizontalGridLine( this.chartTransform.modelToViewY( gridValue ) ) );
+    gridLineValues.forEach( gridValue => addHorizontalReferenceLine( this.chartTransform.modelToViewY( gridValue ) ) );
 
     // Draw the dynamic work-function reference line across the full chart width.
     gridLines.push( new Line( 0, workFunctionY, this.chartTransform.viewWidth, workFunctionY, {
