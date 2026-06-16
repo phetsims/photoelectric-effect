@@ -48,7 +48,7 @@ export class MaterialType extends EnumerationValue {
 
   // Controllable by the student, the custom material will have work function and band depth controls right
   // in the simulation. Reset should restore both properties to their initial values.
-  // Defaults and range from the physics reference Section 5.5.
+  // Defaults and range from the Material Properties section in doc/model-reference.md
   public static readonly CUSTOM = new MaterialType( 5, 5.0, {
     parametersPhetioReadOnly: false
   } );
