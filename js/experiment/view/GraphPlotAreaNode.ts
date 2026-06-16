@@ -14,52 +14,28 @@
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
-import GridLineSet from '../../../../bamboo/js/GridLineSet.js';
 import LinePlot, { type LinePlotOptions } from '../../../../bamboo/js/LinePlot.js';
 import ScatterPlot, { type ScatterPlotOptions } from '../../../../bamboo/js/ScatterPlot.js';
-import TickLabelSet from '../../../../bamboo/js/TickLabelSet.js';
-import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Range from '../../../../dot/js/Range.js';
-import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
-import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Shape from '../../../../kite/js/Shape.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
-import Orientation from '../../../../phet-core/js/Orientation.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import Line from '../../../../scenery/js/nodes/Line.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RichText from '../../../../scenery/js/nodes/RichText.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import type TColor from '../../../../scenery/js/util/TColor.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import GraphPlotAxisSets, { type GraphPlotGridLineSetGroup, type GraphPlotTickSetGroup } from './GraphPlotAxisSets.js';
 
 // Type to customize the border of the plot.
 // rectangle - a full rectangle outlines the chart area
 // line - a line along the bottom of the chart area
 type BorderStyle = 'rectangle' | 'line';
-
-type TickSetGroup = {
-  xTickLabelSet: TickLabelSet;
-  yTickLabelSet: TickLabelSet;
-  xTickMarkSet: TickMarkSet;
-  yTickMarkSet: TickMarkSet;
-};
-
-type GridLineSetGroup = {
-  verticalGridLineSet: GridLineSet;
-  horizontalGridLineSet: GridLineSet;
-};
-
-// Shared visual style for chart grid lines.
-const GRID_LINE_OPTIONS = {
-  stroke: PhotoelectricEffectColors.graphGridLineColorProperty,
-  lineDash: [ 4, 4 ]
-};
 
 // Gap between the chart/ticks and axis labels.
 const AXIS_LABEL_MARGIN = 6;
@@ -69,12 +45,6 @@ const AXIS_LABEL_MARGIN = 6;
 //   axis labels will overlap the ticks. Consider deriving from actual tick label bounds if that happens.
 const X_AXIS_TICK_LABEL_GUTTER = 12;
 const Y_AXIS_TICK_LABEL_GUTTER = 22;
-
-// Tick mark length extending away from chart edges.
-const TICK_MARK_EXTENT = 8;
-
-// Tick mark stroke width.
-const TICK_MARK_LINE_WIDTH = 3;
 
 // Default chart size in view coordinates (experiment screen graphs).
 export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH = 220;
@@ -151,10 +121,10 @@ export default class GraphPlotAreaNode extends Node {
   public readonly plotBounds: Bounds2;
 
   // Tick/label groups for the active zoom level; replaced and disposed when zoom changes.
-  private tickSets: TickSetGroup;
+  private tickSets: GraphPlotTickSetGroup;
 
   // Grid-line sets for the active zoom level; replaced and disposed when zoom changes.
-  private gridLineSets: GridLineSetGroup;
+  private gridLineSets: GraphPlotGridLineSetGroup;
 
   // Updates chart ranges and recreated tick sets when zoom level changes.
   private readonly zoomLevelObserver: ( zoomLevel: number ) => void;
@@ -240,7 +210,7 @@ export default class GraphPlotAreaNode extends Node {
     } );
     const chartContentClipArea = Shape.bounds( this.plotBounds );
 
-    this.gridLineSets = GraphPlotAreaNode.createGridLineSets(
+    this.gridLineSets = GraphPlotAxisSets.createGridLineSets(
       this.chartTransform,
       xRange,
       initialYRange,
@@ -280,7 +250,7 @@ export default class GraphPlotAreaNode extends Node {
       rotation: -Math.PI / 2
     } );
 
-    this.tickSets = GraphPlotAreaNode.createTickSets(
+    this.tickSets = GraphPlotAxisSets.createTickSets(
       this.chartTransform,
       xRange,
       initialYRange,
@@ -348,7 +318,7 @@ export default class GraphPlotAreaNode extends Node {
       const previousTickSets = this.tickSets;
       const previousGridLineSets = this.gridLineSets;
 
-      this.tickSets = GraphPlotAreaNode.createTickSets(
+      this.tickSets = GraphPlotAxisSets.createTickSets(
         this.chartTransform,
         xRange,
         yRange,
@@ -357,7 +327,7 @@ export default class GraphPlotAreaNode extends Node {
         options.xTickLabelFormatter,
         options.yTickLabelFormatter
       );
-      this.gridLineSets = GraphPlotAreaNode.createGridLineSets(
+      this.gridLineSets = GraphPlotAxisSets.createGridLineSets(
         this.chartTransform,
         xRange,
         yRange,
@@ -374,12 +344,8 @@ export default class GraphPlotAreaNode extends Node {
         [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ] :
         [ this.tickSets.yTickLabelSet ];
 
-      previousTickSets.xTickLabelSet.dispose();
-      previousTickSets.yTickLabelSet.dispose();
-      previousTickSets.xTickMarkSet.dispose();
-      previousTickSets.yTickMarkSet.dispose();
-      previousGridLineSets.verticalGridLineSet.dispose();
-      previousGridLineSets.horizontalGridLineSet.dispose();
+      GraphPlotAxisSets.disposeTickSets( previousTickSets );
+      GraphPlotAxisSets.disposeGridLineSets( previousGridLineSets );
     };
     this.zoomLevelProperty.lazyLink( this.zoomLevelObserver );
   }
@@ -457,117 +423,6 @@ export default class GraphPlotAreaNode extends Node {
   private static getPaddedRange( range: Range, paddingFraction: number ): Range {
     const padding = range.getLength() * paddingFraction;
     return new Range( range.min - padding, range.max + padding );
-  }
-
-  /**
-   * Creates one tick label node for a numeric axis value.
-   */
-  private static createTickLabel( value: number, formatter: ( ( value: number ) => string ) | null ): Text {
-
-    // Tolerate floating-point noise when deciding whether to display integer formatting.
-    const isInteger = Math.abs( value - roundSymmetric( value ) ) < 1e-6;
-    const label = formatter ? formatter( value ) : toFixed( value, isInteger ? 0 : 2 );
-    return new Text( label, {
-      font: PhotoelectricEffectConstants.GRAPH_TICK_LABEL_FONT
-    } );
-  }
-
-  /**
-   * Creates evenly spaced major tick intervals for a displayed range.
-   */
-  private static createTickSpacing( range: Range, tickCount: number ): number {
-    return range.getLength() / ( Math.max( tickCount, 2 ) - 1 );
-  }
-
-  /**
-   * Creates grid line sets whose spacing matches the tick spacing for each axis.
-   * In this design, spacing is derived from the active displayed ranges (not from chartTransform alone), so these
-   * sets must be recreated whenever zoom changes.
-   */
-  private static createGridLineSets(
-    chartTransform: ChartTransform,
-    xRange: Range,
-    yRange: Range,
-    xTickCount: number,
-    yTickCount: number
-  ): GridLineSetGroup {
-    const xSpacing = GraphPlotAreaNode.createTickSpacing( xRange, xTickCount );
-    const ySpacing = GraphPlotAreaNode.createTickSpacing( yRange, yTickCount );
-
-    return {
-      verticalGridLineSet: new GridLineSet( chartTransform, Orientation.VERTICAL, ySpacing, GRID_LINE_OPTIONS ),
-      horizontalGridLineSet: new GridLineSet( chartTransform, Orientation.HORIZONTAL, xSpacing, GRID_LINE_OPTIONS )
-    };
-  }
-
-  /**
-   * Creates a label factory that only labels the min, midpoint, and max ticks of a range.
-   */
-  private static createEdgeLabel( range: Range, formatter: ( ( value: number ) => string ) | null ): ( value: number ) => Text | null {
-    const min = range.min;
-    const max = range.max;
-    const mid = range.getCenter();
-
-    // Tolerance avoids missing edge/mid labels due to floating-point rounding in generated tick values.
-    const tolerance = Math.max( range.getLength() * 1e-6, 1e-9 );
-
-    return ( value: number ): Text | null => {
-      const isEdge = Math.abs( value - min ) <= tolerance ||
-                     Math.abs( value - mid ) <= tolerance ||
-                     Math.abs( value - max ) <= tolerance;
-      return isEdge ? GraphPlotAreaNode.createTickLabel( value, formatter ) : null;
-    };
-  }
-
-  /**
-   * Creates tick marks and labels for both chart axes for one zoom range preset.
-   * In this design, tick spacing and labeled values are derived from the active displayed ranges, so these sets must
-   * be recreated whenever zoom changes.
-   */
-  private static createTickSets(
-    chartTransform: ChartTransform,
-    xRange: Range,
-    yRange: Range,
-    xTickCount: number,
-    yTickCount: number,
-    xTickLabelFormatter: ( ( value: number ) => string ) | null,
-    yTickLabelFormatter: ( ( value: number ) => string ) | null
-  ): TickSetGroup {
-    const xSpacing = GraphPlotAreaNode.createTickSpacing( xRange, xTickCount );
-    const ySpacing = GraphPlotAreaNode.createTickSpacing( yRange, yTickCount );
-
-    const xTickLabelSet = new TickLabelSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
-      edge: 'min',
-      origin: xRange.min,
-      createLabel: GraphPlotAreaNode.createEdgeLabel( xRange, xTickLabelFormatter )
-    } );
-
-    const yTickLabelSet = new TickLabelSet( chartTransform, Orientation.VERTICAL, ySpacing, {
-      edge: 'min',
-      origin: yRange.min,
-      createLabel: GraphPlotAreaNode.createEdgeLabel( yRange, yTickLabelFormatter )
-    } );
-
-    const xTickMarkSet = new TickMarkSet( chartTransform, Orientation.HORIZONTAL, xSpacing, {
-      edge: 'min',
-      origin: xRange.min,
-      extent: TICK_MARK_EXTENT,
-      lineWidth: TICK_MARK_LINE_WIDTH
-    } );
-
-    const yTickMarkSet = new TickMarkSet( chartTransform, Orientation.VERTICAL, ySpacing, {
-      edge: 'min',
-      origin: yRange.min,
-      extent: TICK_MARK_EXTENT,
-      lineWidth: TICK_MARK_LINE_WIDTH
-    } );
-
-    return {
-      xTickLabelSet: xTickLabelSet,
-      yTickLabelSet: yTickLabelSet,
-      xTickMarkSet: xTickMarkSet,
-      yTickMarkSet: yTickMarkSet
-    };
   }
 
   /**
