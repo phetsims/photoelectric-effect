@@ -154,7 +154,7 @@ export default class GraphSnapshotsDialog extends Dialog {
 
     const contentHBox = new HBox( {
       spacing: 10,
-      align: 'bottom',
+      align: 'center',
       children: [
         zoomButtonGroup,
         plotsOverlayNode
