@@ -382,6 +382,18 @@ export default class GraphPlotAreaNode extends Node {
    * @param currentPoint - Optional latest-point marker to include in the fit.
    */
   public zoomToFitDataSetY( dataSet: ReadonlyArray<Vector2>, currentPoint: Vector2 | null ): void {
+    this.zoomLevelProperty.value = GraphPlotAreaNode.getZoomLevelForDataSetY( this.yZoomRanges, dataSet, currentPoint );
+  }
+
+  /**
+   * Returns the most zoomed-in level that still contains all plotted y-values.
+   * Falls back to the default zoomed-in view when no point data is visible.
+   */
+  private static getZoomLevelForDataSetY(
+    yZoomRanges: Range[],
+    dataSet: ReadonlyArray<Vector2>,
+    currentPoint: Vector2 | null
+  ): number {
 
     // Track both bounds for forward compatibility.
     // Current experiment graphs are non-negative and use y ranges that start at zero, but checking
@@ -394,7 +406,7 @@ export default class GraphPlotAreaNode extends Node {
     }
 
     // Defaults to most zoomed-out until we find the tightest fitting preset.
-    let updatedZoomLevel = this.yZoomRanges.length;
+    let updatedZoomLevel = yZoomRanges.length;
     if ( minimumYValue === Number.POSITIVE_INFINITY ) {
 
       // No data shown yet, so restore the default zoomed-in view.
@@ -404,16 +416,16 @@ export default class GraphPlotAreaNode extends Node {
 
       // Loop starting at most zoomed in. If the zoom range fits both data bounds,
       // we can use that zoom range.
-      for ( let i = 0; i < this.yZoomRanges.length; i++ ) {
-        if ( this.yZoomRanges[ i ].contains( minimumYValue ) &&
-             this.yZoomRanges[ i ].contains( maximumYValue ) ) {
+      for ( let i = 0; i < yZoomRanges.length; i++ ) {
+        if ( yZoomRanges[ i ].contains( minimumYValue ) &&
+             yZoomRanges[ i ].contains( maximumYValue ) ) {
           updatedZoomLevel = i + 1;
           break;
         }
       }
     }
 
-    this.zoomLevelProperty.value = updatedZoomLevel;
+    return updatedZoomLevel;
   }
 
   /**
