@@ -14,9 +14,7 @@ import ShadedSphereNode from '../../../../scenery-phet/js/ShadedSphereNode.js';
 import Circle from '../../../../scenery/js/nodes/Circle.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-
-// Horizontal layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
-const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
+import EnergyGraphLayout from './EnergyGraphLayout.js';
 
 // Radius for the initial-energy marker and emitted-electron marker.
 const ELECTRON_MARKER_RADIUS = 5;
@@ -36,12 +34,16 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
   // Shaded blue marker that represents the emitted electron's kinetic energy.
   private readonly emittedEnergyMarker: ShadedSphereNode;
 
-  // TODO: JSDoc, https://github.com/phetsims/photoelectric-effect/issues/78
+  /**
+   * @param chartTransform - Translates sample and energy coordinates into the shared chart view.
+   * @param sampleIndex - Zero-based sample slot index represented by this marker.
+   * @param photonArrowsVisibleProperty - Whether arrows showing photon energy transfer are visible.
+   */
   public constructor( private readonly chartTransform: ChartTransform,
                       private readonly sampleIndex: number,
                       photonArrowsVisibleProperty: TReadOnlyProperty<boolean> ) {
 
-    const sampleCenterX = chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) );
+    const sampleCenterX = chartTransform.modelToViewX( EnergyGraphLayout.getSampleCenterX( sampleIndex ) );
     const sampleInitialY = chartTransform.modelToViewY( 0 );
 
     const photonArrowNode = new ArrowNode( sampleCenterX, sampleInitialY, sampleCenterX, sampleInitialY, {
@@ -78,7 +80,7 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
    * Repositions persistent marker Nodes from the latest sample energies.
    */
   public updateMarkerPositions( potentialEnergy: number, kineticEnergy: number ): void {
-    const sampleCenterX = this.chartTransform.modelToViewX( getSampleCenterX( this.sampleIndex ) );
+    const sampleCenterX = this.chartTransform.modelToViewX( EnergyGraphLayout.getSampleCenterX( this.sampleIndex ) );
     const potentialEnergyY = this.chartTransform.modelToViewY( potentialEnergy );
     const kineticEnergyY = this.chartTransform.modelToViewY( kineticEnergy );
 

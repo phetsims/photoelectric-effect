@@ -18,10 +18,9 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import EnergyGraphSample from '../model/EnergyGraphSample.js';
+import EnergyGraphLayout from './EnergyGraphLayout.js';
 
-// Bar layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
-// TODO: This is duplicated now, factor this out. See https://github.com/phetsims/photoelectric-effect/issues/78
-const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
+// Bar layout in model x coordinates.
 const BAR_X_OFFSET = 0.18;
 const BAR_WIDTH = 9;
 
@@ -43,7 +42,11 @@ export default class EnergySampleBarPlotNode extends Node {
   // Message shown when sample data exists but no electron was emitted.
   private readonly noElectronEjectedPanel: Panel;
 
-  // TODO: JSDoc, https://github.com/phetsims/photoelectric-effect/issues/78
+  /**
+   * @param chartTransform - Translates sample and energy coordinates into the shared chart view.
+   * @param sample - Persistent sample slot whose Properties drive bar visibility and heights.
+   * @param sampleIndex - Zero-based sample slot index represented by this plot.
+   */
   public constructor( chartTransform: ChartTransform, sample: EnergyGraphSample, sampleIndex: number ) {
     super();
 
@@ -55,7 +58,7 @@ export default class EnergySampleBarPlotNode extends Node {
     } );
 
     this.noElectronEjectedPanel = EnergySampleBarPlotNode.createNoElectronEjectedPanel(
-      chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
+      chartTransform.modelToViewX( EnergyGraphLayout.getSampleCenterX( sampleIndex ) ),
       chartTransform.modelToViewY( NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y )
     );
 
@@ -82,7 +85,7 @@ export default class EnergySampleBarPlotNode extends Node {
    * Creates the persistent Bamboo data set for one sample, in the required energy order.
    */
   private static createDataSet( sampleIndex: number ): Vector2[] {
-    const centerX = getSampleCenterX( sampleIndex );
+    const centerX = EnergyGraphLayout.getSampleCenterX( sampleIndex );
 
     return [
       new Vector2( centerX - BAR_X_OFFSET, 0 ),
@@ -118,7 +121,7 @@ export default class EnergySampleBarPlotNode extends Node {
    * Determines bar colors from the fixed x order for a sample plot.
    */
   private static getBarPaintableOptions( sampleIndex: number, point: Vector2 ): PaintableOptions {
-    const centerX = getSampleCenterX( sampleIndex );
+    const centerX = EnergyGraphLayout.getSampleCenterX( sampleIndex );
 
     // Bars are ordered by x position within each sample group: potential on the left, photon in the center,
     // kinetic on the right.

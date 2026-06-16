@@ -16,9 +16,7 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
-
-// Space between y-axis tick labels and the plot area.
-const Y_TICK_LABEL_MARGIN = 5;
+import EnergyGraphLayout from './EnergyGraphLayout.js';
 
 // Spacing between fixed energy reference lines, in eV.
 const GRID_LINE_SPACING = 2;
@@ -26,9 +24,6 @@ const GRID_LINE_SPACING = 2;
 // Segmented zero-energy line layout. One segment is drawn for each sample so space remains between plots.
 // This is in model units.
 const ZERO_ENERGY_LINE_HALF_WIDTH = 0.4;
-
-// Sample indices are zero-based, while model x positions are one-based.
-const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
 
 export default class EnergyBarGraphDecorationsNode extends Node {
 
@@ -92,10 +87,10 @@ export default class EnergyBarGraphDecorationsNode extends Node {
     const workFunctionY = this.chartTransform.modelToViewY( -workFunction );
 
     // Position the custom tick labels for fixed energy values and the current negative work-function value.
-    this.minimumEnergyTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, minimumEnergyY );
-    this.zeroTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, zeroY );
-    this.maximumEnergyTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, maximumEnergyY );
-    this.workFunctionTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, workFunctionY );
+    this.minimumEnergyTickLabel.rightCenter = new Vector2( -EnergyGraphLayout.Y_TICK_LABEL_MARGIN, minimumEnergyY );
+    this.zeroTickLabel.rightCenter = new Vector2( -EnergyGraphLayout.Y_TICK_LABEL_MARGIN, zeroY );
+    this.maximumEnergyTickLabel.rightCenter = new Vector2( -EnergyGraphLayout.Y_TICK_LABEL_MARGIN, maximumEnergyY );
+    this.workFunctionTickLabel.rightCenter = new Vector2( -EnergyGraphLayout.Y_TICK_LABEL_MARGIN, workFunctionY );
 
     const gridLines: Line[] = [];
     const horizontalLineYValues: number[] = [];
@@ -130,7 +125,7 @@ export default class EnergyBarGraphDecorationsNode extends Node {
 
     // Draw the zero-energy reference as separate solid segments under each sample group.
     _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
-      const sampleCenterX = getSampleCenterX( sampleIndex );
+      const sampleCenterX = EnergyGraphLayout.getSampleCenterX( sampleIndex );
 
       gridLines.push( new Line(
         this.chartTransform.modelToViewX( sampleCenterX - ZERO_ENERGY_LINE_HALF_WIDTH ),

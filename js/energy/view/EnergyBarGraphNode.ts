@@ -21,6 +21,7 @@ import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
 import EnergyGraphSample from '../model/EnergyGraphSample.js';
 import EnergyBarGraphDecorationsNode from './EnergyBarGraphDecorationsNode.js';
+import EnergyGraphLayout from './EnergyGraphLayout.js';
 import EnergySampleBarPlotNode from './EnergySampleBarPlotNode.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -30,11 +31,7 @@ export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
 const CHART_VIEW_WIDTH = 240;
 const CHART_VIEW_HEIGHT = 270;
 
-// Sample indices are zero-based, while model x positions are one-based.
-const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
-
 // Space around axis labels and sample labels.
-const X_LABEL_MARGIN = 5;
 const Y_AXIS_LABEL_MARGIN = 34;
 
 export default class EnergyBarGraphNode extends Node {
@@ -84,8 +81,8 @@ export default class EnergyBarGraphNode extends Node {
         font: PhotoelectricEffectConstants.CONTENT_FONT
       } );
       label.centerTop = new Vector2(
-        this.chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
-        CHART_VIEW_HEIGHT + X_LABEL_MARGIN
+        this.chartTransform.modelToViewX( EnergyGraphLayout.getSampleCenterX( sampleIndex ) ),
+        CHART_VIEW_HEIGHT + EnergyGraphLayout.X_TICK_LABEL_MARGIN
       );
       return label;
     } );

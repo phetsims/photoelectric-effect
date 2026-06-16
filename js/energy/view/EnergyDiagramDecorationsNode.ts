@@ -19,10 +19,7 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-
-// Space between y-axis tick labels and the plot area.
-// TODO: Factor out these constants. https://github.com/phetsims/photoelectric-effect/issues/78
-const Y_TICK_LABEL_MARGIN = 5;
+import EnergyGraphLayout from './EnergyGraphLayout.js';
 
 // View-coordinate layout for the work-function bracket.
 const WORK_FUNCTION_MARKER_X_OFFSET = 14;
@@ -58,7 +55,13 @@ export default class EnergyDiagramDecorationsNode extends Node {
   private readonly zeroTickLabel: Node;
   private readonly fermiLevelTickLabel: Node;
 
-  // TODO: JSDoc, https://github.com/phetsims/photoelectric-effect/issues/78
+  /**
+   * @param chartTransform - Translates energy coordinates into the shared chart view.
+   * @param workFunctionProperty - Work function source used for the Fermi level and work-function bracket.
+   * @param bandDepthProperty - Occupied-band depth source used for the bottom of the filled states.
+   * @param labelsVisibleProperty - Whether Fermi level labels are visible.
+   * @param workFunctionVisibleProperty - Whether the work-function bracket and label are visible.
+   */
   public constructor( chartTransform: ChartTransform,
                       workFunctionProperty: TReadOnlyProperty<number>,
                       bandDepthProperty: TReadOnlyProperty<number>,
@@ -176,8 +179,8 @@ export default class EnergyDiagramDecorationsNode extends Node {
     //  energy range.
     const conductionBandBottomY = Math.min( unclippedConductionBandBottomY, chartViewHeight );
 
-    this.zeroTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, zeroY );
-    this.fermiLevelTickLabel.rightCenter = new Vector2( -Y_TICK_LABEL_MARGIN, fermiLevelY );
+    this.zeroTickLabel.rightCenter = new Vector2( -EnergyGraphLayout.Y_TICK_LABEL_MARGIN, zeroY );
+    this.fermiLevelTickLabel.rightCenter = new Vector2( -EnergyGraphLayout.Y_TICK_LABEL_MARGIN, fermiLevelY );
 
     this.conductionBandNode.setRect( 0, fermiLevelY, chartViewWidth, conductionBandBottomY - fermiLevelY );
     this.emptyStatesNode.setRect( 0, zeroY, chartViewWidth, fermiLevelY - zeroY );

@@ -22,6 +22,7 @@ import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.
 import EnergyGraphSample from '../model/EnergyGraphSample.js';
 import EnergyDiagramDecorationsNode from './EnergyDiagramDecorationsNode.js';
 import EnergyDiagramSampleMarkerNode from './EnergyDiagramSampleMarkerNode.js';
+import EnergyGraphLayout from './EnergyGraphLayout.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
@@ -29,9 +30,6 @@ export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 170;
 const CHART_VIEW_HEIGHT = 310;
-
-// Horizontal layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
-const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
 
 export default class EnergyDiagramNode extends Node {
 
@@ -113,8 +111,8 @@ export default class EnergyDiagramNode extends Node {
         font: PhotoelectricEffectConstants.CONTENT_FONT
       } );
       label.centerTop = new Vector2(
-        this.chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
-        CHART_VIEW_HEIGHT + 5
+        this.chartTransform.modelToViewX( EnergyGraphLayout.getSampleCenterX( sampleIndex ) ),
+        CHART_VIEW_HEIGHT + EnergyGraphLayout.X_TICK_LABEL_MARGIN
       );
       return label;
     } );
