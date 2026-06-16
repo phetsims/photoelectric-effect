@@ -97,6 +97,9 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
       tandem: options.tandem.createTandem( 'voltageNumberControl' )
     } );
 
+    // The manual constraint keeps components positioned when the battery flips and UI components resize due to
+    // dynamic locales. CircuitNode is included as a dependency because it lives under backgroundNode
+    // (a different parent frame), so the proxy in ManualConstraint handles the frame conversion.
     ManualConstraint.create( this, [ batteryNode, voltageNumberDisplay, voltageNumberControl, circuitNode ],
       ( batteryProxy, voltageDisplayProxy, voltageControlProxy, circuitProxy ) => {
         batteryProxy.centerX = circuitProxy.centerX - 20;
