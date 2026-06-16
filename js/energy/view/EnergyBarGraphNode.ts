@@ -7,26 +7,21 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Multilink from '../../../../axon/js/Multilink.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import BarPlot from '../../../../bamboo/js/BarPlot.js';
 import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
 import Range from '../../../../dot/js/Range.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import Node, { type NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import type { PaintableOptions } from '../../../../scenery/js/nodes/Paintable.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
-import RichText from '../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import Panel from '../../../../sun/js/Panel.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import EnergyGraphData from '../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../model/EnergyGraphDisplayProperties.js';
 import EnergyGraphSample from '../model/EnergyGraphSample.js';
 import EnergyBarGraphDecorationsNode from './EnergyBarGraphDecorationsNode.js';
+import EnergySampleBarPlotNode from './EnergySampleBarPlotNode.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
@@ -35,13 +30,8 @@ export type EnergyBarGraphNodeOptions = SelfOptions & NodeOptions;
 const CHART_VIEW_WIDTH = 240;
 const CHART_VIEW_HEIGHT = 270;
 
-// Bar layout in model x coordinates. Sample indices are zero-based, while model x positions are one-based.
+// Sample indices are zero-based, while model x positions are one-based.
 const getSampleCenterX = ( sampleIndex: number ): number => sampleIndex + 1;
-const BAR_X_OFFSET = 0.18;
-const BAR_WIDTH = 9;
-
-// In-plot message shown when a sample exists, but the photon did not eject an electron. This is in model units.
-const NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y = 8.0;
 
 // Space around axis labels and sample labels.
 const X_LABEL_MARGIN = 5;
@@ -73,56 +63,13 @@ export default class EnergyBarGraphNode extends Node {
       fill: 'white'
     } );
 
-    // BarPlot keeps a reference to its data set, including each Vector2 in the array. Keep these arrays persistent
-    // so sample changes can mutate the existing Vector2 values before BarPlot.update() is called.
-    const sampleDataSets = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
-      return EnergyBarGraphNode.createDataSet( sampleIndex );
-    } );
-
-    const sampleBarPlots = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
-      return new BarPlot( this.chartTransform, sampleDataSets[ sampleIndex ], {
-        barWidth: BAR_WIDTH,
-        pointToPaintableFields: point => this.getBarPaintableOptions( sampleIndex, point )
-      } );
-    } );
-
-    const noElectronEjectedPanels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
-      return EnergyBarGraphNode.createNoElectronEjectedPanel(
-        this.chartTransform.modelToViewX( getSampleCenterX( sampleIndex ) ),
-        this.chartTransform.modelToViewY( NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y )
-      );
-    } );
-
-    // Link each persistent sample slot to its corresponding plot.
-    samples.forEach( ( sample, sampleIndex ) => {
-      const sampleBarPlot = sampleBarPlots[ sampleIndex ];
-      const sampleDataSet = sampleDataSets[ sampleIndex ];
-
-      Multilink.multilink( [
-        sample.hasDataProperty,
-        sample.potentialEnergyProperty,
-        sample.photonEnergyProperty,
-        sample.kineticEnergyProperty,
-        sample.electronEmittedProperty
-      ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy, electronEmitted ) => {
-        noElectronEjectedPanels[ sampleIndex ].visible = hasData && !electronEmitted;
-        sampleBarPlot.visible = hasData && electronEmitted;
-        EnergyBarGraphNode.updateDataSet(
-          sampleDataSet,
-          potentialEnergy,
-          photonEnergy,
-          kineticEnergy
-        );
-        sampleBarPlot.update();
-      } );
+    const sampleBarPlotNodes = samples.map( ( sample, sampleIndex ) => {
+      return new EnergySampleBarPlotNode( this.chartTransform, sample, sampleIndex );
     } );
 
     const plotLayer = new Node( {
       clipArea: plotRectangle.getShape(),
-      children: [
-        ...sampleBarPlots,
-        ...noElectronEjectedPanels
-      ]
+      children: sampleBarPlotNodes
     } );
 
     const decorationsNode = new EnergyBarGraphDecorationsNode( this.chartTransform, workFunctionProperty );
@@ -162,71 +109,5 @@ export default class EnergyBarGraphNode extends Node {
     } );
 
     this.children = [ graphNode ];
-  }
-
-  /**
-   * Creates the persistent Bamboo data set for one sample, in the required energy order.
-   */
-  private static createDataSet( sampleIndex: number ): Vector2[] {
-    const centerX = getSampleCenterX( sampleIndex );
-
-    return [
-      new Vector2( centerX - BAR_X_OFFSET, 0 ),
-      new Vector2( centerX, 0 ),
-      new Vector2( centerX + BAR_X_OFFSET, 0 )
-    ];
-  }
-
-  /**
-   * Updates one persistent Bamboo data set by mutating the Vector2 instances that BarPlot already references.
-   */
-  private static updateDataSet( dataSet: Vector2[],
-                                potentialEnergy: number,
-                                photonEnergy: number,
-                                kineticEnergy: number ): void {
-    dataSet[ 0 ].setY( potentialEnergy );
-    dataSet[ 1 ].setY( photonEnergy );
-    dataSet[ 2 ].setY( kineticEnergy );
-  }
-
-  /**
-   * Creates the in-plot label for a sample that was recorded without electron emission.
-   */
-  private static createNoElectronEjectedPanel( centerX: number, centerY: number ): Panel {
-
-    const text = new RichText( PhotoelectricEffectFluent.energy.graph.noElectronEjectedStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT,
-      lineWrap: 80
-    } );
-
-    const panel = new Panel( text, {
-      fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
-      stroke: PhotoelectricEffectColors.iconStrokeColorProperty.value,
-      cornerRadius: 4,
-      xMargin: 6,
-      yMargin: 6,
-      visible: false
-    } );
-    panel.center = new Vector2( centerX, centerY );
-
-    return panel;
-  }
-
-  /**
-   * Determines bar colors from the fixed x order for a sample plot.
-   */
-  private getBarPaintableOptions( sampleIndex: number, point: Vector2 ): PaintableOptions {
-    const centerX = getSampleCenterX( sampleIndex );
-
-    // Bars are ordered by x position within each sample group: potential on the left, photon in the center,
-    // kinetic on the right.
-    const fillProperty = point.x < centerX ? PhotoelectricEffectColors.potentialEnergyGraphColorProperty :
-                         point.x > centerX ? PhotoelectricEffectColors.kineticEnergyGraphColorProperty :
-                         PhotoelectricEffectColors.photonEnergyGraphColorProperty;
-
-    return {
-      fill: fillProperty,
-      stroke: PhotoelectricEffectColors.iconStrokeColorProperty
-    };
   }
 }
