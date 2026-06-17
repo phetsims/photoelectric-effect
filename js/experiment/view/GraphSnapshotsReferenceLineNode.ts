@@ -141,39 +141,29 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
       return snapshotRow.visible;
     } );
 
-    if ( visibleSnapshotRows.length === 0 ) {
-      this.verticalLine.visible = false;
-      this.handleNode.visible = false;
-      this.xDisplay.visible = false;
+    if ( visibleSnapshotRows.length > 0 ) {
+      const firstVisibleSnapshotRow = visibleSnapshotRows[ 0 ];
+      const lastVisibleSnapshotRow = visibleSnapshotRows[ visibleSnapshotRows.length - 1 ];
+      const topPlotBounds = firstVisibleSnapshotRow.getPlotBoundsInNode( this );
+      const bottomPlotBounds = lastVisibleSnapshotRow.getPlotBoundsInNode( this );
+      const referenceLineX = topPlotBounds.left + firstVisibleSnapshotRow.modelToViewX(
+        this.referenceLineXProperty.value
+      );
+
+      this.verticalLine.setLine( referenceLineX, topPlotBounds.top, referenceLineX, bottomPlotBounds.bottom );
+      this.handleNode.center = new Vector2( referenceLineX, bottomPlotBounds.bottom );
+      this.handleNode.setDragPosition( this.handleNode.center );
+      this.xDisplay.updateLayout( referenceLineX, topPlotBounds );
+
+      this.dragBoundsProperty.value = new Bounds2( topPlotBounds.left, bottomPlotBounds.bottom,
+        topPlotBounds.right, bottomPlotBounds.bottom );
+
       this.yDisplays.forEach( yDisplay => {
-        yDisplay.visible = false;
+        yDisplay.updateLayout( referenceLineX, this );
       } );
-      this.dragBoundsProperty.value = Bounds2.NOTHING;
-      return;
     }
-
-    const firstVisibleSnapshotRow = visibleSnapshotRows[ 0 ];
-    const lastVisibleSnapshotRow = visibleSnapshotRows[ visibleSnapshotRows.length - 1 ];
-    const topPlotBounds = firstVisibleSnapshotRow.getPlotBoundsInNode( this );
-    const bottomPlotBounds = lastVisibleSnapshotRow.getPlotBoundsInNode( this );
-    const referenceLineX = topPlotBounds.left + firstVisibleSnapshotRow.modelToViewX(
-      this.referenceLineXProperty.value
-    );
-
-    this.verticalLine.visible = true;
-    this.handleNode.visible = true;
-    this.xDisplay.visible = true;
-
-    this.verticalLine.setLine( referenceLineX, topPlotBounds.top, referenceLineX, bottomPlotBounds.bottom );
-    this.handleNode.center = new Vector2( referenceLineX, bottomPlotBounds.bottom );
-    this.handleNode.setDragPosition( this.handleNode.center );
-    this.xDisplay.updateLayout( referenceLineX, topPlotBounds );
-
-    this.dragBoundsProperty.value = new Bounds2( topPlotBounds.left, bottomPlotBounds.bottom,
-      topPlotBounds.right, bottomPlotBounds.bottom );
-
-    this.yDisplays.forEach( yDisplay => {
-      yDisplay.updateLayout( referenceLineX, this );
-    } );
+    else {
+      this.dragBoundsProperty.value = Bounds2.NOTHING;
+    }
   }
 }

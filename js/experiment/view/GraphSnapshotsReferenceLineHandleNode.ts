@@ -53,6 +53,8 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
       minimumInterMiddleSoundTime: 0.1
     } );
 
+    // TODO: Consider accessibility for this. There is some discussion about whether this should be a "slider"
+    //   or a custom draggable. What should it be?
     this.addInputListener( new RichDragListener( {
       positionProperty: this.dragPositionProperty,
       dragBoundsProperty: dragBoundsProperty,
