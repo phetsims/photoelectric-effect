@@ -7,12 +7,12 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import BooleanProperty from '../../../../../../axon/js/BooleanProperty.js';
-import NumberProperty from '../../../../../../axon/js/NumberProperty.js';
-import Range from '../../../../../../dot/js/Range.js';
-import optionize, { EmptySelfOptions } from '../../../../../../phet-core/js/optionize.js';
-import PickRequired from '../../../../../../phet-core/js/types/PickRequired.js';
-import type { PhetioObjectOptions } from '../../../../../../tandem/js/PhetioObject.js';
+import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
+import NumberProperty from '../../../../axon/js/NumberProperty.js';
+import Range from '../../../../dot/js/Range.js';
+import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import type { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 
 type SelfOptions = EmptySelfOptions;
 

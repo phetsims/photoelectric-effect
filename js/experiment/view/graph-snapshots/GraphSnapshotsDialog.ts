@@ -34,9 +34,9 @@ import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors
 import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
 import type GraphData from '../../model/GraphData.js';
+import GraphSnapshotsReferenceLineModel from '../../model/GraphSnapshotsReferenceLineModel.js';
 import type { GraphPlotAreaNodeOptions } from '../GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
-import GraphSnapshotsReferenceLineModel from './reference-line/GraphSnapshotsReferenceLineModel.js';
 import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './reference-line/GraphSnapshotsReferenceLineNode.js';
 
 export default class GraphSnapshotsDialog extends Dialog {
