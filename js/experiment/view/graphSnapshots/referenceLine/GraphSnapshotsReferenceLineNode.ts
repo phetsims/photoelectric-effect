@@ -21,10 +21,7 @@ import PhotoelectricEffectColors from '../../../../common/PhotoelectricEffectCol
 import GraphSnapshotsReferenceLineModel from '../../../model/GraphSnapshotsReferenceLineModel.js';
 import GraphSnapshotRowNode from '../GraphSnapshotRowNode.js';
 import GraphSnapshotsReferenceLineHandleNode from './GraphSnapshotsReferenceLineHandleNode.js';
-import type {
-  GraphSnapshotsReferenceLineNumberDisplayOptions,
-  GraphSnapshotsReferenceLineValueDisplayOptions
-} from './GraphSnapshotsReferenceLineNumberDisplay.js';
+import type { GraphSnapshotsReferenceLineNumberDisplayOptions, GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 import GraphSnapshotsReferenceLineXDisplay from './GraphSnapshotsReferenceLineXDisplay.js';
 import GraphSnapshotsReferenceLineYDisplay from './GraphSnapshotsReferenceLineYDisplay.js';
 
@@ -76,9 +73,6 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
     affirm( snapshotRows.length > 0, 'GraphSnapshotsReferenceLineNode requires at least one snapshot row' );
 
     const dragBoundsProperty = new Property<Bounds2 | null>( Bounds2.NOTHING );
-    const getDragSnapshotRow = (): GraphSnapshotRowNode => {
-      return snapshotRows[ 0 ];
-    };
 
     const xDisplay = new GraphSnapshotsReferenceLineXDisplay(
       model.xProperty,
@@ -106,7 +100,7 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
     const handleNode = new GraphSnapshotsReferenceLineHandleNode(
       model.xProperty,
       dragBoundsProperty,
-      getDragSnapshotRow,
+      snapshotRows[ 0 ], // rows are stacked so it doesn't matter which we use for positioning
       providedOptions.tandem.createTandem( 'handleNode' )
     );
 

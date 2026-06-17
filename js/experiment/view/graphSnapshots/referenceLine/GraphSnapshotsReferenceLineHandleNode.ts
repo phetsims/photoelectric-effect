@@ -30,10 +30,17 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
   // Position used internally by RichDragListener for pointer and keyboard deltas.
   private readonly dragPositionProperty = new Vector2Property( new Vector2( 0, 0 ) );
 
+
+  /**
+   * @param xProperty - The x value controlled by this handle.
+   * @param dragBoundsProperty - To keep the handle in range.
+   * @param dragSnapshotRow - For coordinate transforms as we position within this row.
+   * @param tandem
+   */
   public constructor(
     xProperty: NumberProperty,
     dragBoundsProperty: TReadOnlyProperty<Bounds2 | null>,
-    getDragSnapshotRow: () => GraphSnapshotRowNode,
+    dragSnapshotRow: GraphSnapshotRowNode,
     tandem: Tandem
   ) {
 
@@ -55,13 +62,12 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
       dragBoundsProperty: dragBoundsProperty,
       keyboardDragListenerOptions: {
         keyboardDragDirection: 'leftRight',
-        dragDelta: this.getKeyboardDragDelta( getDragSnapshotRow, 0.1 ),
-        shiftDragDelta: this.getKeyboardDragDelta( getDragSnapshotRow, 0.01 ),
+        dragDelta: dragSnapshotRow.modelToViewDeltaX( 0.1 ),
+        shiftDragDelta: dragSnapshotRow.modelToViewDeltaX( 0.01 ),
         moveOnHoldInterval: 50
       },
       drag: ( event, listener ) => {
-        const snapshotRow = getDragSnapshotRow();
-        const deltaX = snapshotRow.viewToModelDeltaX( listener.modelDelta.x );
+        const deltaX = dragSnapshotRow.viewToModelDeltaX( listener.modelDelta.x );
         xProperty.value = xProperty.range.constrainValue(
           xProperty.value + deltaX
         );
@@ -80,16 +86,5 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
     if ( !this.dragPositionProperty.value.equals( position ) ) {
       this.dragPositionProperty.value = position;
     }
-  }
-
-  /**
-   * Converts a model-space keyboard step to view coordinates using the shared plot transform.
-   */
-  private getKeyboardDragDelta(
-    getDragSnapshotRow: () => GraphSnapshotRowNode,
-    modelDeltaX: number
-  ): number {
-    const snapshotRow = getDragSnapshotRow();
-    return snapshotRow.modelToViewDeltaX( modelDeltaX );
   }
 }
