@@ -149,8 +149,9 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
     const visibleSnapshotRows = this.snapshotRows.filter( snapshotRow => {
       return snapshotRow.visible;
     } );
+    const hasVisibleSnapshotRows = visibleSnapshotRows.length > 0;
 
-    if ( visibleSnapshotRows.length > 0 ) {
+    if ( hasVisibleSnapshotRows ) {
       const firstVisibleSnapshotRow = visibleSnapshotRows[ 0 ];
       const lastVisibleSnapshotRow = visibleSnapshotRows[ visibleSnapshotRows.length - 1 ];
       const topPlotBounds = firstVisibleSnapshotRow.getPlotBoundsInNode( this );
