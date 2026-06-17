@@ -8,9 +8,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import NumberProperty from '../../../../../../axon/js/NumberProperty.js';
 import Property from '../../../../../../axon/js/Property.js';
-import type { TReadOnlyProperty } from '../../../../../../axon/js/TReadOnlyProperty.js';
 import Bounds2 from '../../../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../../../dot/js/Vector2.js';
 import affirm from '../../../../../../perennial-alias/js/browser-and-node/affirm.js';
@@ -21,6 +19,7 @@ import type { PhetioObjectOptions } from '../../../../../../tandem/js/PhetioObje
 import PhotoelectricEffectColors from '../../../../common/PhotoelectricEffectColors.js';
 import GraphSnapshotRowNode from '../GraphSnapshotRowNode.js';
 import GraphSnapshotsReferenceLineHandleNode from './GraphSnapshotsReferenceLineHandleNode.js';
+import GraphSnapshotsReferenceLineModel from './GraphSnapshotsReferenceLineModel.js';
 import type { GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 import GraphSnapshotsReferenceLineXDisplay from './GraphSnapshotsReferenceLineXDisplay.js';
 import GraphSnapshotsReferenceLineYDisplay from './GraphSnapshotsReferenceLineYDisplay.js';
@@ -58,16 +57,15 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
   // Rows that provide plot geometry and nearest-point sampling.
   private readonly snapshotRows: GraphSnapshotRowNode[];
 
-  // Model-space x value for the reference line.
-  private readonly referenceLineXProperty: NumberProperty;
+  // Model component that owns the reference line's visible state and x value.
+  private readonly model: GraphSnapshotsReferenceLineModel;
 
   // Bounds used by RichDragListener to constrain horizontal drag.
   private readonly dragBoundsProperty: Property<Bounds2 | null>;
 
   public constructor(
     snapshotRows: GraphSnapshotRowNode[],
-    referenceLineXProperty: NumberProperty,
-    referenceLineVisibleProperty: TReadOnlyProperty<boolean>,
+    model: GraphSnapshotsReferenceLineModel,
     providedOptions: GraphSnapshotsReferenceLineNodeOptions
   ) {
 
@@ -79,7 +77,7 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
     };
 
     const xDisplay = new GraphSnapshotsReferenceLineXDisplay(
-      referenceLineXProperty,
+      model.xProperty,
       providedOptions.xDisplayOptions,
       providedOptions.tandem.createTandem( 'xDisplay' )
     );
@@ -87,7 +85,7 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
     const yDisplays = snapshotRows.map( ( snapshotRow, i ) => {
       return new GraphSnapshotsReferenceLineYDisplay(
         snapshotRow,
-        referenceLineXProperty,
+        model.xProperty,
         providedOptions.yDisplayOptions,
         providedOptions.tandem.createTandem( `yDisplay${i}` )
       );
@@ -100,7 +98,7 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
     } );
 
     const handleNode = new GraphSnapshotsReferenceLineHandleNode(
-      referenceLineXProperty,
+      model.xProperty,
       dragBoundsProperty,
       getDragSnapshotRow,
       providedOptions.tandem.createTandem( 'handleNode' )
@@ -108,7 +106,7 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
 
     super( {
       isDisposable: false,
-      visibleProperty: referenceLineVisibleProperty,
+      visibleProperty: model.visibleProperty,
       children: [
         verticalLine,
         xDisplay,
@@ -122,10 +120,10 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
     this.xDisplay = xDisplay;
     this.yDisplays = yDisplays;
     this.handleNode = handleNode;
-    this.referenceLineXProperty = referenceLineXProperty;
+    this.model = model;
     this.dragBoundsProperty = dragBoundsProperty;
 
-    referenceLineXProperty.lazyLink( () => {
+    model.xProperty.lazyLink( () => {
       this.updateLayout();
     } );
 
@@ -157,7 +155,7 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
       const topPlotBounds = firstVisibleSnapshotRow.getPlotBoundsInNode( this );
       const bottomPlotBounds = lastVisibleSnapshotRow.getPlotBoundsInNode( this );
       const referenceLineX = topPlotBounds.left + firstVisibleSnapshotRow.modelToViewX(
-        this.referenceLineXProperty.value
+        this.model.xProperty.value
       );
 
       this.verticalLine.setLine( referenceLineX, topPlotBounds.top, referenceLineX, bottomPlotBounds.bottom );

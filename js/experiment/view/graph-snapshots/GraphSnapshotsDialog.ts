@@ -15,7 +15,6 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import BooleanProperty from '../../../../../axon/js/BooleanProperty.js';
 import NumberProperty from '../../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../../axon/js/TReadOnlyProperty.js';
 import Range from '../../../../../dot/js/Range.js';
@@ -37,6 +36,7 @@ import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
 import type GraphData from '../../model/GraphData.js';
 import type { GraphPlotAreaNodeOptions } from '../GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
+import GraphSnapshotsReferenceLineModel from './reference-line/GraphSnapshotsReferenceLineModel.js';
 import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './reference-line/GraphSnapshotsReferenceLineNode.js';
 
 export default class GraphSnapshotsDialog extends Dialog {
@@ -93,19 +93,13 @@ export default class GraphSnapshotsDialog extends Dialog {
       children: snapshotRows
     } );
 
-    const referenceLineVisibleProperty = new BooleanProperty( true, {
-      tandem: tandem.createTandem( 'referenceLineVisibleProperty' )
-    } );
-
-    const referenceLineXProperty = new NumberProperty( xRange.getCenter(), {
-      range: xRange,
-      tandem: tandem.createTandem( 'referenceLineXProperty' )
+    const referenceLineModel = new GraphSnapshotsReferenceLineModel( xRange, {
+      tandem: tandem.createTandem( 'referenceLine' )
     } );
 
     const referenceLineNode = new GraphSnapshotsReferenceLineNode(
       snapshotRows,
-      referenceLineXProperty,
-      referenceLineVisibleProperty,
+      referenceLineModel,
       {
         xDisplayOptions: referenceLineXDisplayOptions,
         yDisplayOptions: referenceLineYDisplayOptions,
@@ -150,7 +144,7 @@ export default class GraphSnapshotsDialog extends Dialog {
     } );
 
     const referenceLineCheckbox = new Checkbox(
-      referenceLineVisibleProperty,
+      referenceLineModel.visibleProperty,
       new HBox( {
         spacing: 8,
         children: [

@@ -21,14 +21,14 @@ const X_DISPLAY_MARGIN = 6;
 export default class GraphSnapshotsReferenceLineXDisplay extends NumberDisplay {
 
   public constructor(
-    referenceLineXProperty: NumberProperty,
+    xProperty: NumberProperty,
     displayOptions: GraphSnapshotsReferenceLineValueDisplayOptions,
     tandem: Tandem
   ) {
 
     const xValueMapper = createGraphSnapshotsReferenceLineValueMapper( displayOptions );
     const xDisplayProperty = new DerivedProperty(
-      [ referenceLineXProperty ],
+      [ xProperty ],
       x => xValueMapper( x )
     );
 

@@ -31,7 +31,7 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
   private readonly dragPositionProperty = new Vector2Property( new Vector2( 0, 0 ) );
 
   public constructor(
-    referenceLineXProperty: NumberProperty,
+    xProperty: NumberProperty,
     dragBoundsProperty: TReadOnlyProperty<Bounds2 | null>,
     getDragSnapshotRow: () => GraphSnapshotRowNode,
     tandem: Tandem
@@ -62,8 +62,8 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
       drag: ( event, listener ) => {
         const snapshotRow = getDragSnapshotRow();
         const deltaX = snapshotRow.viewToModelDeltaX( listener.modelDelta.x );
-        referenceLineXProperty.value = referenceLineXProperty.range.constrainValue(
-          referenceLineXProperty.value + deltaX
+        xProperty.value = xProperty.range.constrainValue(
+          xProperty.value + deltaX
         );
       },
       tandem: tandem.createTandem( 'dragListener' )

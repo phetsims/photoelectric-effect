@@ -25,14 +25,14 @@ export default class GraphSnapshotsReferenceLineYDisplay extends NumberDisplay {
 
   public constructor(
     snapshotRow: GraphSnapshotRowNode,
-    referenceLineXProperty: NumberProperty,
+    xProperty: NumberProperty,
     displayOptions: GraphSnapshotsReferenceLineValueDisplayOptions,
     tandem: Tandem
   ) {
 
     const yValueMapper = createGraphSnapshotsReferenceLineValueMapper( displayOptions );
     const yDisplayProperty = new DerivedProperty(
-      [ referenceLineXProperty, snapshotRow.pointsProperty ],
+      [ xProperty, snapshotRow.pointsProperty ],
       x => {
         const closestYValue = snapshotRow.getClosestYValue( x );
         return closestYValue === null ? null : yValueMapper( closestYValue );
