@@ -9,13 +9,13 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import PatternStringProperty from '../../../../axon/js/PatternStringProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import type Bounds2 from '../../../../dot/js/Bounds2.js';
 import type Range from '../../../../dot/js/Range.js';
 import type Vector2 from '../../../../dot/js/Vector2.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import VSeparator from '../../../../scenery/js/layout/nodes/VSeparator.js';
 import type Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
@@ -68,60 +68,43 @@ export default class GraphSnapshotRowNode extends HBox {
       ( materialType, materialLabelKey ) => getMaterialLabelStringProperty( materialType, materialLabelKey ).value
     );
 
-    /**
-     * Each row has metadata displayed to the right. The first metadata item is the material (this is consistent across
-     * all snapshot graph types). The second and third rows depend on the snapshot type and are defined by the
-     * snapshot's metadata.
-     */
-    const materialLegendStringProperty = GraphSnapshotRowNode.formatLabelValue(
-      PhotoelectricEffectFluent.experiment.graph.materialLabelStringProperty,
-      materialLabelStringProperty
-    );
-    const secondLegendStringProperty = new PatternStringProperty(
-      PhotoelectricEffectFluent.experiment.graph.snapshotLabelValuePatternStringProperty,
-      {
-        label: snapshot.metadata.secondValueLabelProperty,
-        value: snapshot.metadata.secondValueProperty
-      },
-      {
-        maps: {
-          value: value => snapshot.metadata.formatSecondValue( value )
-        }
-      }
-    );
-    const thirdLegendStringProperty = new PatternStringProperty(
-      PhotoelectricEffectFluent.experiment.graph.snapshotLabelValuePatternStringProperty,
-      {
-        label: snapshot.metadata.thirdValueLabelProperty,
-        value: snapshot.metadata.thirdValueProperty
-      },
-      {
-        maps: {
-          value: value => snapshot.metadata.formatThirdValue( value )
-        }
-      }
-    );
+    const secondValueStringProperty = new DerivedProperty( [ snapshot.metadata.secondValueProperty ],
+      value => snapshot.metadata.formatSecondValue( value ) );
+    const thirdValueStringProperty = new DerivedProperty( [ snapshot.metadata.thirdValueProperty ],
+      value => snapshot.metadata.formatThirdValue( value ) );
 
     const snapshotNumberText = new Text( `${snapshotNumber}`, {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
-    const materialText = new Text( materialLegendStringProperty, {
-      font: PhotoelectricEffectConstants.CONTENT_FONT
+    const labelNode = new VBox( {
+      spacing: 11,
+      align: 'right',
+      children: [
+        GraphSnapshotRowNode.createMetadataText( PhotoelectricEffectFluent.experiment.graph.materialLabelStringProperty ),
+        GraphSnapshotRowNode.createMetadataText( snapshot.metadata.secondValueLabelProperty ),
+        GraphSnapshotRowNode.createMetadataText( snapshot.metadata.thirdValueLabelProperty )
+      ]
     } );
-    const secondMetadataText = new Text( secondLegendStringProperty, {
-      font: PhotoelectricEffectConstants.CONTENT_FONT
-    } );
-    const thirdMetadataText = new Text( thirdLegendStringProperty, {
-      font: PhotoelectricEffectConstants.CONTENT_FONT
-    } );
-
-    const legendNode = new VBox( {
-      spacing: 2,
+    const valueNode = new VBox( {
+      spacing: 11,
       align: 'left',
       children: [
-        materialText,
-        secondMetadataText,
-        thirdMetadataText
+        GraphSnapshotRowNode.createMetadataText( materialLabelStringProperty ),
+        GraphSnapshotRowNode.createMetadataText( secondValueStringProperty ),
+        GraphSnapshotRowNode.createMetadataText( thirdValueStringProperty )
+      ]
+    } );
+
+    const legendNode = new HBox( {
+      spacing: 7,
+      align: 'center',
+      children: [
+        labelNode,
+        new VSeparator( {
+          stroke: 'black',
+          lineWidth: 2
+        } ),
+        valueNode
       ]
     } );
 
@@ -226,19 +209,9 @@ export default class GraphSnapshotRowNode extends HBox {
     return closestPoint.y;
   }
 
-  /**
-   * Formats one legend line using the shared "label: value" string pattern.
-   */
-  private static formatLabelValue( label: TReadOnlyProperty<string>, value: TReadOnlyProperty<string> | string ): PatternStringProperty<{
-    label: TReadOnlyProperty<string>;
-    value: TReadOnlyProperty<string> | string;
-  }> {
-    return new PatternStringProperty(
-      PhotoelectricEffectFluent.experiment.graph.snapshotLabelValuePatternStringProperty,
-      {
-        label: label,
-        value: value
-      }
-    );
+  private static createMetadataText( stringProperty: TReadOnlyProperty<string> ): Text {
+    return new Text( stringProperty, {
+      font: PhotoelectricEffectConstants.CONTENT_FONT
+    } );
   }
 }
