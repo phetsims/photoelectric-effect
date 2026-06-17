@@ -9,25 +9,24 @@
 import DerivedProperty from '../../../../../../axon/js/DerivedProperty.js';
 import NumberProperty from '../../../../../../axon/js/NumberProperty.js';
 import Vector2 from '../../../../../../dot/js/Vector2.js';
-import NumberDisplay from '../../../../../../scenery-phet/js/NumberDisplay.js';
 import Node from '../../../../../../scenery/js/nodes/Node.js';
-import Tandem from '../../../../../../tandem/js/Tandem.js';
-import { createGraphSnapshotsReferenceLineNumberDisplayOptions, type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 import GraphSnapshotRowNode from '../GraphSnapshotRowNode.js';
+import GraphSnapshotsReferenceLineNumberDisplay, { type GraphSnapshotsReferenceLineNumberDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 
 // Horizontal offset so y-value readouts do not cover the vertical line.
 const Y_DISPLAY_X_MARGIN = 8;
 
-export default class GraphSnapshotsReferenceLineYDisplay extends NumberDisplay {
+export default class GraphSnapshotsReferenceLineYDisplay extends GraphSnapshotsReferenceLineNumberDisplay {
 
-  // Row sampled by this display.
-  private readonly snapshotRow: GraphSnapshotRowNode;
-
+  /**
+   * @param snapshotRow - The row sampled by this display.
+   * @param xProperty - x position of the reference line
+   * @param displayOptions
+   */
   public constructor(
-    snapshotRow: GraphSnapshotRowNode,
+    private readonly snapshotRow: GraphSnapshotRowNode,
     xProperty: NumberProperty,
-    displayOptions: GraphSnapshotsReferenceLineValueDisplayOptions,
-    tandem: Tandem
+    displayOptions: GraphSnapshotsReferenceLineNumberDisplayOptions
   ) {
 
     const yDisplayProperty = new DerivedProperty(
@@ -38,17 +37,7 @@ export default class GraphSnapshotsReferenceLineYDisplay extends NumberDisplay {
       }
     );
 
-    super(
-      yDisplayProperty,
-      displayOptions.displayRange,
-
-      // TODO: Not sure about this, see https://github.com/phetsims/photoelectric-effect/issues/112
-      createGraphSnapshotsReferenceLineNumberDisplayOptions( displayOptions, {
-        tandem: tandem
-      } )
-    );
-
-    this.snapshotRow = snapshotRow;
+    super( yDisplayProperty, displayOptions );
   }
 
   /**
