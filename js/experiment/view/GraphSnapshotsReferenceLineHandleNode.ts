@@ -34,7 +34,7 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
   public constructor(
     referenceLineXProperty: NumberProperty,
     dragBoundsProperty: TReadOnlyProperty<Bounds2 | null>,
-    getDragSnapshotRow: () => GraphSnapshotRowNode | null,
+    getDragSnapshotRow: () => GraphSnapshotRowNode,
     tandem: Tandem
   ) {
 
@@ -66,12 +66,10 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
       },
       drag: ( event, listener ) => {
         const snapshotRow = getDragSnapshotRow();
-        if ( snapshotRow ) {
-          const previousX = referenceLineXProperty.value;
-          const deltaX = snapshotRow.viewToModelDeltaX( listener.modelDelta.x );
-          referenceLineXProperty.value = referenceLineXProperty.range.constrainValue( previousX + deltaX );
-          soundPlayer.playSoundForValueChange( referenceLineXProperty.value, previousX );
-        }
+        const previousX = referenceLineXProperty.value;
+        const deltaX = snapshotRow.viewToModelDeltaX( listener.modelDelta.x );
+        referenceLineXProperty.value = referenceLineXProperty.range.constrainValue( previousX + deltaX );
+        soundPlayer.playSoundForValueChange( referenceLineXProperty.value, previousX );
       },
       tandem: tandem.createTandem( 'dragListener' )
     } ) );
@@ -93,10 +91,10 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
    * Converts a model-space keyboard step to view coordinates using the shared plot transform.
    */
   private getKeyboardDragDelta(
-    getDragSnapshotRow: () => GraphSnapshotRowNode | null,
+    getDragSnapshotRow: () => GraphSnapshotRowNode,
     modelDeltaX: number
   ): number {
     const snapshotRow = getDragSnapshotRow();
-    return snapshotRow ? snapshotRow.modelToViewDeltaX( modelDeltaX ) : 1;
+    return snapshotRow.modelToViewDeltaX( modelDeltaX );
   }
 }

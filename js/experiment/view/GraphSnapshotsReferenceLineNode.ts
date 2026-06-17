@@ -13,6 +13,7 @@ import Property from '../../../../axon/js/Property.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import Line from '../../../../scenery/js/nodes/Line.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
@@ -70,9 +71,11 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
     providedOptions: GraphSnapshotsReferenceLineNodeOptions
   ) {
 
+    affirm( snapshotRows.length > 0, 'GraphSnapshotsReferenceLineNode requires at least one snapshot row' );
+
     const dragBoundsProperty = new Property<Bounds2 | null>( Bounds2.NOTHING );
-    const getDragSnapshotRow = (): GraphSnapshotRowNode | null => {
-      return snapshotRows.length > 0 ? snapshotRows[ 0 ] : null;
+    const getDragSnapshotRow = (): GraphSnapshotRowNode => {
+      return snapshotRows[ 0 ];
     };
 
     const xDisplay = new GraphSnapshotsReferenceLineXDisplay(
