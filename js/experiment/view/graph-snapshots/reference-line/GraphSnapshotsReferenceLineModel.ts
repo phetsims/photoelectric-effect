@@ -13,7 +13,6 @@ import Range from '../../../../../../dot/js/Range.js';
 import optionize, { EmptySelfOptions } from '../../../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../../../phet-core/js/types/PickRequired.js';
 import type { PhetioObjectOptions } from '../../../../../../tandem/js/PhetioObject.js';
-import photoelectricEffect from '../../../../photoelectricEffect.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -43,5 +42,3 @@ export default class GraphSnapshotsReferenceLineModel {
     } );
   }
 }
-
-photoelectricEffect.register( 'GraphSnapshotsReferenceLineModel', GraphSnapshotsReferenceLineModel );

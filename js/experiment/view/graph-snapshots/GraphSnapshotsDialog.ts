@@ -94,7 +94,7 @@ export default class GraphSnapshotsDialog extends Dialog {
     } );
 
     const referenceLineModel = new GraphSnapshotsReferenceLineModel( xRange, {
-      tandem: tandem.createTandem( 'referenceLine' )
+      tandem: tandem.createTandem( 'referenceLineModel' )
     } );
 
     const referenceLineNode = new GraphSnapshotsReferenceLineNode(
