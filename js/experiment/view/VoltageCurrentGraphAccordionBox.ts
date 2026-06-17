@@ -58,6 +58,7 @@ export default class VoltageCurrentGraphAccordionBox extends GraphAssemblyAccord
       },
       referenceLineXDisplayOptions: {
         displayRange: xRange,
+        valueMapper: value => value,
         numberFormatter: value => voltsUnit.getDualString( value, { decimalPlaces: 2 } ),
         numberFormatterDependencies: voltsUnit.getDependentProperties()
       },

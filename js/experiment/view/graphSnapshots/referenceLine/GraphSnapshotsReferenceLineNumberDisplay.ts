@@ -19,7 +19,7 @@ export type GraphSnapshotsReferenceLineValueDisplayOptions = {
   displayRange: Range;
 
   // Converts the raw graph model value to the displayed value.
-  valueMapper?: ( value: number ) => number;
+  valueMapper: ( value: number ) => number;
 
   // Formats the displayed value for visual and accessible readouts.
   numberFormatter: ( value: number ) => string | DualStringNumber;
@@ -51,13 +51,4 @@ export const createGraphSnapshotsReferenceLineNumberDisplayOptions = (
     cornerRadius: 2,
     backgroundStroke: 'gray'
   }, providedOptions );
-};
-
-/**
- * Creates a value mapper for readout Properties.
- */
-export const createGraphSnapshotsReferenceLineValueMapper = (
-  displayOptions: GraphSnapshotsReferenceLineValueDisplayOptions
-): ( value: number ) => number => {
-  return displayOptions.valueMapper || ( value => value );
 };

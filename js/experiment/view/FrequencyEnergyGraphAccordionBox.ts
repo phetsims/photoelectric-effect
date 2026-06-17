@@ -56,10 +56,12 @@ export default class FrequencyEnergyGraphAccordionBox extends GraphAssemblyAccor
       },
       referenceLineXDisplayOptions: {
         displayRange: xRange,
+        valueMapper: value => value,
         numberFormatter: value => toFixed( value, 2 )
       },
       referenceLineYDisplayOptions: {
         displayRange: new Range( 0, 12 ),
+        valueMapper: value => value,
         numberFormatter: value => electronVoltUnit.getDualString( value, { decimalPlaces: 2 } ),
         numberFormatterDependencies: electronVoltUnit.getDependentProperties()
       },

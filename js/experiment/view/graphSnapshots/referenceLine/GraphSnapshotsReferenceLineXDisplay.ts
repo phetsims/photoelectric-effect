@@ -13,7 +13,7 @@ import { clamp } from '../../../../../../dot/js/util/clamp.js';
 import Vector2 from '../../../../../../dot/js/Vector2.js';
 import NumberDisplay from '../../../../../../scenery-phet/js/NumberDisplay.js';
 import Tandem from '../../../../../../tandem/js/Tandem.js';
-import { createGraphSnapshotsReferenceLineNumberDisplayOptions, createGraphSnapshotsReferenceLineValueMapper, type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
+import { createGraphSnapshotsReferenceLineNumberDisplayOptions, type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 
 // Space between the top of the visible plot stack and the x-value readout.
 const X_DISPLAY_MARGIN = 6;
@@ -26,15 +26,16 @@ export default class GraphSnapshotsReferenceLineXDisplay extends NumberDisplay {
     tandem: Tandem
   ) {
 
-    const xValueMapper = createGraphSnapshotsReferenceLineValueMapper( displayOptions );
     const xDisplayProperty = new DerivedProperty(
       [ xProperty ],
-      x => xValueMapper( x )
+      x => displayOptions.valueMapper( x )
     );
 
     super(
       xDisplayProperty,
       displayOptions.displayRange,
+
+      // TODO: Not sure about this, see https://github.com/phetsims/photoelectric-effect/issues/112
       createGraphSnapshotsReferenceLineNumberDisplayOptions( displayOptions, {
         tandem: tandem
       } )

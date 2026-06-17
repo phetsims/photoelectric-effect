@@ -12,7 +12,7 @@ import Vector2 from '../../../../../../dot/js/Vector2.js';
 import NumberDisplay from '../../../../../../scenery-phet/js/NumberDisplay.js';
 import Node from '../../../../../../scenery/js/nodes/Node.js';
 import Tandem from '../../../../../../tandem/js/Tandem.js';
-import { createGraphSnapshotsReferenceLineNumberDisplayOptions, createGraphSnapshotsReferenceLineValueMapper, type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
+import { createGraphSnapshotsReferenceLineNumberDisplayOptions, type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 import GraphSnapshotRowNode from '../GraphSnapshotRowNode.js';
 
 // Horizontal offset so y-value readouts do not cover the vertical line.
@@ -30,18 +30,19 @@ export default class GraphSnapshotsReferenceLineYDisplay extends NumberDisplay {
     tandem: Tandem
   ) {
 
-    const yValueMapper = createGraphSnapshotsReferenceLineValueMapper( displayOptions );
     const yDisplayProperty = new DerivedProperty(
       [ xProperty, snapshotRow.pointsProperty ],
       x => {
         const closestYValue = snapshotRow.getClosestYValue( x );
-        return closestYValue === null ? null : yValueMapper( closestYValue );
+        return closestYValue === null ? null : displayOptions.valueMapper( closestYValue );
       }
     );
 
     super(
       yDisplayProperty,
       displayOptions.displayRange,
+
+      // TODO: Not sure about this, see https://github.com/phetsims/photoelectric-effect/issues/112
       createGraphSnapshotsReferenceLineNumberDisplayOptions( displayOptions, {
         tandem: tandem
       } )
