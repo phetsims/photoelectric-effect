@@ -6,8 +6,7 @@
  *
  * Snapshot rows are created once and reused so open/close cycles avoid repeated node allocation and disposal.
  * Each row contains a snapshot number, a plot node, and three metadata legend lines.
- * The VBox keeps a fixed child order; the last row is the only one whose plot shows x-axis tick labels. Snapshots map
- * to rows so the last stored snapshot always uses that labeled bottom row, while earlier snapshots use rows above it.
+ * The VBox keeps a fixed child order; the last active row is the only one whose plot shows x-axis tick labels.
  * Unused slots stay hidden via visibility. Snapshot charts share the same GraphPlotAreaNode options as the parent
  * graph (ranges, labels, grid, line styling) but omit the current-point scatter layer.
  * A draggable reference line overlays the visible plots and reports the shared x value plus one nearest-point y value
@@ -34,8 +33,8 @@ import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import GraphData from '../model/GraphData.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import type GraphData from '../model/GraphData.js';
 import type { GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
 import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNode.js';
@@ -85,15 +84,8 @@ export default class GraphSnapshotsDialog extends Dialog {
       yTickLabelMode: 'edge'
     } );
 
-    // The bottom-most plot will have x labels, to label all stacked plots.
-    const labeledSnapshotPlotOptions = combineOptions<GraphPlotAreaNodeOptions>( {}, snapshotPlotOptions, {
-      showXLabels: true
-    } );
-
     const snapshotRows = graphData.snapshots.map( ( snapshot, i ) => {
-      // The final plot shows x labels (lining them up for all stacked plots).
-      const plotOptions = i === GraphData.MAX_SNAPSHOTS - 1 ? labeledSnapshotPlotOptions : snapshotPlotOptions;
-      return new GraphSnapshotRowNode( xRange, yZoomRanges, i + 1, snapshot, plotOptions );
+      return new GraphSnapshotRowNode( xRange, yZoomRanges, i + 1, snapshot, snapshotPlotOptions );
     } );
 
     const plotsGridBox = new VBox( {
@@ -193,14 +185,14 @@ export default class GraphSnapshotsDialog extends Dialog {
     } );
 
     /**
-     * Redraw snapshot rows from model data. Rows remain in a fixed VBox order where the last row has the plot with
-     * x-axis labels. Iterating backward assigns snapshots from newest to oldest, so the newest snapshot always lands
-     * on the labeled bottom row.
+     * Redraw snapshot rows from model data. Rows remain in a fixed VBox order, and the last active row shows the
+     * x-axis labels for the visible snapshot stack.
      */
     const updateSnapshotPlots = () => {
       const count = graphData.snapshotsCountProperty.value;
       snapshotRows.forEach( ( snapshotRowNode, i ) => {
         i < count ? snapshotRowNode.setSnapshot() : snapshotRowNode.clearSnapshot();
+        snapshotRowNode.setShowXLabels( i === count - 1 );
       } );
       referenceLineNode.updateLayout();
     };

@@ -170,6 +170,13 @@ export default class GraphSnapshotRowNode extends HBox {
   }
 
   /**
+   * Shows or hides this row's x-axis tick marks, tick labels, and axis label.
+   */
+  public setShowXLabels( showXLabels: boolean ): void {
+    this.plotNode.setShowXLabels( showXLabels );
+  }
+
+  /**
    * Bounds of the plot area in the coordinate frame of another node, typically the dialog overlay parent.
    */
   public getPlotBoundsInNode( node: Node ): Bounds2 {

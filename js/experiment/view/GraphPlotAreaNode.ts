@@ -132,6 +132,18 @@ export default class GraphPlotAreaNode extends Node {
   // Grid-line sets for the active zoom level; replaced and disposed when zoom changes.
   private gridLineSets: GraphPlotGridLineSetGroup;
 
+  // Container for current tick marks; x ticks are included only when x-axis labels are shown.
+  private readonly tickMarkNode: Node;
+
+  // Container for current tick labels; x labels are included only when x-axis labels are shown.
+  private readonly tickLabelNode: Node;
+
+  // X-axis label centered beneath the chart.
+  private readonly xAxisLabelText: RichText;
+
+  // Whether x-axis tick marks, tick labels, and the axis label are visible.
+  private showXLabels: boolean;
+
   // Updates chart ranges and recreated tick sets when zoom level changes.
   private readonly zoomLevelObserver: ( zoomLevel: number ) => void;
 
@@ -284,17 +296,15 @@ export default class GraphPlotAreaNode extends Node {
       ]
     } );
 
-    const tickMarkNode = new Node( {
-      children: options.showXLabels ?
-        [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ] :
-        [ this.tickSets.yTickMarkSet ]
-    } );
+    const tickMarkNode = new Node();
 
-    const tickLabelNode = new Node( {
-      children: options.showXLabels ?
-        [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ] :
-        [ this.tickSets.yTickLabelSet ]
-    } );
+    const tickLabelNode = new Node();
+
+    this.tickMarkNode = tickMarkNode;
+    this.tickLabelNode = tickLabelNode;
+    this.xAxisLabelText = xAxisLabelText;
+    this.showXLabels = options.showXLabels;
+    this.updateXAxisVisibility();
 
     // Layer order keeps ticks outside the clipped chart while data and grid stay within the plot rectangle.
     const chartChildren = [
@@ -302,14 +312,13 @@ export default class GraphPlotAreaNode extends Node {
       tickMaskRectangle,
       chartContentNode,
       borderNode,
-      tickLabelNode
+      tickLabelNode,
+      xAxisLabelText
     ];
-    if ( options.showXLabels ) {
-      chartChildren.push( xAxisLabelText );
-    }
     chartChildren.push( yAxisLabelText );
 
     this.addChild( new Node( {
+      excludeInvisibleChildrenFromBounds: true,
       children: chartChildren
     } ) );
 
@@ -349,12 +358,7 @@ export default class GraphPlotAreaNode extends Node {
       gridLineSetNode.children = [ this.gridLineSets.verticalGridLineSet, this.gridLineSets.horizontalGridLineSet ];
 
       chartContentNode.children = [ gridLineSetNode, plotLayer ];
-      tickMarkNode.children = options.showXLabels ?
-        [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ] :
-        [ this.tickSets.yTickMarkSet ];
-      tickLabelNode.children = options.showXLabels ?
-        [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ] :
-        [ this.tickSets.yTickLabelSet ];
+      this.updateXAxisVisibility();
 
       GraphPlotAxisSets.disposeTickSets( previousTickSets );
       GraphPlotAxisSets.disposeGridLineSets( previousGridLineSets );
@@ -383,6 +387,16 @@ export default class GraphPlotAreaNode extends Node {
   public setCurrentPointMarker( point: Vector2 | null ): void {
     if ( this.currentPointPlot ) {
       this.currentPointPlot.setDataSet( point ? [ point ] : [] );
+    }
+  }
+
+  /**
+   * Shows or hides x-axis tick marks, tick labels, and the axis label.
+   */
+  public setShowXLabels( showXLabels: boolean ): void {
+    if ( this.showXLabels !== showXLabels ) {
+      this.showXLabels = showXLabels;
+      this.updateXAxisVisibility();
     }
   }
 
@@ -416,6 +430,19 @@ export default class GraphPlotAreaNode extends Node {
    */
   public zoomToFitDataSetY( dataSet: ReadonlyArray<Vector2>, currentPoint: Vector2 | null ): void {
     this.zoomLevelProperty.value = GraphPlotAreaNode.getZoomLevelForDataSetY( this.yZoomRanges, dataSet, currentPoint );
+  }
+
+  /**
+   * Applies the current x-axis visibility to tick and label nodes.
+   */
+  private updateXAxisVisibility(): void {
+    this.tickMarkNode.children = this.showXLabels ?
+                                 [ this.tickSets.xTickMarkSet, this.tickSets.yTickMarkSet ] :
+                                 [ this.tickSets.yTickMarkSet ];
+    this.tickLabelNode.children = this.showXLabels ?
+                                  [ this.tickSets.xTickLabelSet, this.tickSets.yTickLabelSet ] :
+                                  [ this.tickSets.yTickLabelSet ];
+    this.xAxisLabelText.visible = this.showXLabels;
   }
 
   /**
