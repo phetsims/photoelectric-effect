@@ -37,7 +37,7 @@ import type GraphData from '../../model/GraphData.js';
 import GraphSnapshotsReferenceLineModel from '../../model/GraphSnapshotsReferenceLineModel.js';
 import type { GraphPlotAreaNodeOptions } from '../GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
-import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './reference-line/GraphSnapshotsReferenceLineNode.js';
+import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './referenceLine/GraphSnapshotsReferenceLineNode.js';
 
 export default class GraphSnapshotsDialog extends Dialog {
 
@@ -50,7 +50,7 @@ export default class GraphSnapshotsDialog extends Dialog {
    * @param yZoomRanges - Y zoom presets used by each snapshot plot.
    * @param titleStringProperty - Localized title string shown in this dialog header.
    * @param graphPlotAreaNodeOptions - Options used for each snapshot chart's plot area.
-   * @param referenceLineXDisplayOptions - Formatting and display range for the reference-line x readout.
+   * @param referenceLineXDisplayOptions - Formatting and display range for the reference line x readout.
    * @param referenceLineYDisplayOptions - Formatting and display range for the per-snapshot y readouts.
    */
   public constructor(

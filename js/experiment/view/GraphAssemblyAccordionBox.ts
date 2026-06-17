@@ -30,9 +30,9 @@ import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../model/GraphData.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
-import GraphSnapshotSavedMessageNode from './graph-snapshots/GraphSnapshotSavedMessageNode.js';
-import GraphSnapshotsDialog from './graph-snapshots/GraphSnapshotsDialog.js';
-import { type GraphSnapshotsReferenceLineValueDisplayOptions } from './graph-snapshots/reference-line/GraphSnapshotsReferenceLineNode.js';
+import GraphSnapshotSavedMessageNode from './graphSnapshots/GraphSnapshotSavedMessageNode.js';
+import GraphSnapshotsDialog from './graphSnapshots/GraphSnapshotsDialog.js';
+import { type GraphSnapshotsReferenceLineValueDisplayOptions } from './graphSnapshots/referenceLine/GraphSnapshotsReferenceLineNode.js';
 
 // Horizontal spacing between the chart content and the right-side button column.
 const GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 10;

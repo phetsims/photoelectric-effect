@@ -29,7 +29,7 @@ export type GraphSnapshotsReferenceLineValueDisplayOptions = {
 };
 
 /**
- * Shared NumberDisplay styling for the reference-line readouts.
+ * Shared NumberDisplay styling for the reference line readouts.
  */
 export const createGraphSnapshotsReferenceLineNumberDisplayOptions = (
   displayOptions: GraphSnapshotsReferenceLineValueDisplayOptions,

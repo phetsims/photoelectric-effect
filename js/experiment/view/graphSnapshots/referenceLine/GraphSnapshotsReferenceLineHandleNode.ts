@@ -22,7 +22,7 @@ import PhotoelectricEffectColors from '../../../../common/PhotoelectricEffectCol
 import PhotoelectricEffectFluent from '../../../../PhotoelectricEffectFluent.js';
 import GraphSnapshotRowNode from '../GraphSnapshotRowNode.js';
 
-// Diameter of the draggable reference-line handle.
+// Diameter of the draggable reference line handle.
 const HANDLE_DIAMETER = 18;
 
 export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHighlighting( ShadedSphereNode ) {
