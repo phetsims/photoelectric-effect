@@ -83,16 +83,17 @@ export default class ParticleCanvasNode extends CanvasNode {
       const y = this.modelViewTransform.modelToViewY( photon.position.y );
       const baseColor = wavelengthToColor( photon.wavelength );
 
-      // Halo: wavelength color at 40% fading to transparent at edge
+      // Halo: wavelength color for visible photons, gray for non-visible photons, fading to transparent at edge.
+      const haloColor = getHaloColor( photon.wavelength, baseColor );
       const haloGradient = context.createRadialGradient( x, y, 0, x, y, PHOTON_RADIUS );
-      haloGradient.addColorStop( 0.4, baseColor.toCSS() );
-      haloGradient.addColorStop( 1, baseColor.withAlpha( 0 ).toCSS() );
+      haloGradient.addColorStop( 0.4, haloColor.toCSS() );
+      haloGradient.addColorStop( 1, haloColor.withAlpha( 0 ).toCSS() );
       context.beginPath();
       context.arc( x, y, PHOTON_RADIUS, 0, 2 * Math.PI );
       context.fillStyle = haloGradient;
       context.fill();
 
-      // Orb: white-core gradient fading to wavelength color
+      // Orb: white-core gradient fading to wavelength color.
       const orbRadius = 0.5 * PHOTON_RADIUS;
       const orbGradient = context.createRadialGradient( x, y, 0, x, y, orbRadius );
       orbGradient.addColorStop( 0.25, PhotoelectricEffectColors.photonOrbInnerColorProperty.value.toCSS() );
@@ -109,6 +110,16 @@ export default class ParticleCanvasNode extends CanvasNode {
       drawCrosshairs( context, x, y, 0.7 * sparkleRadius, sparkleColor, toRadians( 63 ) );
     } );
   }
+}
+
+// The halo follows the photon wavelength for visible photons. UV and IR wavelengths map to white in
+// wavelengthToColor, so use a neutral halo that remains visible without making non-visible photons look white.
+// TODO: It is possible that this halo color is the same as the UV/IR color on the UI control in the
+//   LabeledWavelengthNumberControl. If so, make sure the same color/logic is used there.
+function getHaloColor( wavelength: number, baseColor: Color ): Color {
+  return VisibleColor.isUVWavelength( wavelength ) || VisibleColor.isIRWavelength( wavelength ) ?
+         PhotoelectricEffectColors.photonNonVisibleHaloColorProperty.value :
+         baseColor;
 }
 
 // The sparkle will be one color for visible wavelengths and different colors for UV and IR, so that it is visible

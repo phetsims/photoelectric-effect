@@ -37,6 +37,10 @@ export default class PhotoelectricEffectColors {
     default: 'rgba(255, 255, 255, 0.7)'
   } );
 
+  public static readonly photonNonVisibleHaloColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonNonVisibleHaloColor', {
+    default: 'rgba( 150, 150, 150, 0.7 )'
+  } );
+
   public static readonly photonVisibleSparkleColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonVisibleSparkleColor', {
     default: 'rgba(255, 255, 255, 0.4)'
   } );
