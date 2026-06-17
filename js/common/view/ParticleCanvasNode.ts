@@ -86,7 +86,7 @@ export default class ParticleCanvasNode extends CanvasNode {
       // Halo: wavelength color for visible photons, gray for non-visible photons, fading to transparent at edge.
       const haloColor = getHaloColor( photon.wavelength, baseColor );
       const haloGradient = context.createRadialGradient( x, y, 0, x, y, PHOTON_RADIUS );
-      haloGradient.addColorStop( 0.4, haloColor.toCSS() );
+      haloGradient.addColorStop( 0.1, haloColor.toCSS() );
       haloGradient.addColorStop( 1, haloColor.withAlpha( 0 ).toCSS() );
       context.beginPath();
       context.arc( x, y, PHOTON_RADIUS, 0, 2 * Math.PI );
@@ -96,8 +96,8 @@ export default class ParticleCanvasNode extends CanvasNode {
       // Orb: white-core gradient fading to wavelength color.
       const orbRadius = 0.5 * PHOTON_RADIUS;
       const orbGradient = context.createRadialGradient( x, y, 0, x, y, orbRadius );
-      orbGradient.addColorStop( 0.25, PhotoelectricEffectColors.photonOrbInnerColorProperty.value.toCSS() );
-      orbGradient.addColorStop( 1, baseColor.withAlpha( 0.5 ).toCSS() );
+      orbGradient.addColorStop( 0.15, PhotoelectricEffectColors.photonOrbInnerColorProperty.value.toCSS() );
+      orbGradient.addColorStop( 1, baseColor.withAlpha( 0.1 ).toCSS() );
       context.beginPath();
       context.arc( x, y, orbRadius, 0, 2 * Math.PI );
       context.fillStyle = orbGradient;
