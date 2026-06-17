@@ -17,7 +17,6 @@ import AccessibleInteractiveOptions from '../../../../scenery-phet/js/accessibil
 import ShadedSphereNode, { type ShadedSphereNodeOptions } from '../../../../scenery-phet/js/ShadedSphereNode.js';
 import InteractiveHighlighting from '../../../../scenery/js/accessibility/voicing/InteractiveHighlighting.js';
 import RichDragListener from '../../../../scenery/js/listeners/RichDragListener.js';
-import ValueChangeSoundPlayer from '../../../../tambo/js/sound-generators/ValueChangeSoundPlayer.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -49,10 +48,6 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
 
     super( HANDLE_DIAMETER, options );
 
-    const soundPlayer = new ValueChangeSoundPlayer( referenceLineXProperty.range, {
-      minimumInterMiddleSoundTime: 0.1
-    } );
-
     // TODO: Consider accessibility for this. There is some discussion about whether this should be a "slider"
     //   or a custom draggable. What should it be?
     this.addInputListener( new RichDragListener( {
@@ -66,10 +61,10 @@ export default class GraphSnapshotsReferenceLineHandleNode extends InteractiveHi
       },
       drag: ( event, listener ) => {
         const snapshotRow = getDragSnapshotRow();
-        const previousX = referenceLineXProperty.value;
         const deltaX = snapshotRow.viewToModelDeltaX( listener.modelDelta.x );
-        referenceLineXProperty.value = referenceLineXProperty.range.constrainValue( previousX + deltaX );
-        soundPlayer.playSoundForValueChange( referenceLineXProperty.value, previousX );
+        referenceLineXProperty.value = referenceLineXProperty.range.constrainValue(
+          referenceLineXProperty.value + deltaX
+        );
       },
       tandem: tandem.createTandem( 'dragListener' )
     } ) );
