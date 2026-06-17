@@ -134,7 +134,13 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
   }
 
   /**
-   * Repositions the line, handle, and readouts from current row visibility, plot transforms, and reference x value.
+   * Repositions the reference line overlay to match the currently visible snapshot plots.
+   *
+   * The top and bottom of the vertical line come from the first and last visible plot bounds, so the line spans the
+   * visible stack even when rows are hidden. The reference x value is transformed through the first visible row, which
+   * shares its x scale with the other rows. The handle sits at the bottom of the stack, the x readout sits above the
+   * top plot and clamps itself within that plot, and each y readout positions itself beside the line in its own row.
+   * Drag bounds are updated to the visible plot stack so pointer and keyboard drags stay on the plotted x range.
    */
   public updateLayout(): void {
     const visibleSnapshotRows = this.snapshotRows.filter( snapshotRow => {
