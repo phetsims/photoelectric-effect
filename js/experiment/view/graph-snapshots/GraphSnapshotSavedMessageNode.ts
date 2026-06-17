@@ -8,12 +8,12 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Node from '../../../../scenery/js/nodes/Node.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
-import Animation from '../../../../twixt/js/Animation.js';
-import Easing from '../../../../twixt/js/Easing.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
+import Node from '../../../../../scenery/js/nodes/Node.js';
+import Text from '../../../../../scenery/js/nodes/Text.js';
+import Animation from '../../../../../twixt/js/Animation.js';
+import Easing from '../../../../../twixt/js/Easing.js';
+import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
 
 // Delay before the message begins fading out.
 const SNAPSHOT_SAVED_MESSAGE_FADE_DELAY = 1.5;

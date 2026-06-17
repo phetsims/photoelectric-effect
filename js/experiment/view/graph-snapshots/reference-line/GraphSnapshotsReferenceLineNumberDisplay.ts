@@ -6,12 +6,12 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import type { DualStringNumber } from '../../../../axon/js/AccessibleStrings.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import Range from '../../../../dot/js/Range.js';
-import { combineOptions } from '../../../../phet-core/js/optionize.js';
-import type { NumberDisplayOptions } from '../../../../scenery-phet/js/NumberDisplay.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import type { DualStringNumber } from '../../../../../../axon/js/AccessibleStrings.js';
+import type { TReadOnlyProperty } from '../../../../../../axon/js/TReadOnlyProperty.js';
+import Range from '../../../../../../dot/js/Range.js';
+import { combineOptions } from '../../../../../../phet-core/js/optionize.js';
+import type { NumberDisplayOptions } from '../../../../../../scenery-phet/js/NumberDisplay.js';
+import PhotoelectricEffectConstants from '../../../../common/PhotoelectricEffectConstants.js';
 
 export type GraphSnapshotsReferenceLineValueDisplayOptions = {
 

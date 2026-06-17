@@ -6,13 +6,13 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import NumberProperty from '../../../../axon/js/NumberProperty.js';
-import Bounds2 from '../../../../dot/js/Bounds2.js';
-import { clamp } from '../../../../dot/js/util/clamp.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
+import DerivedProperty from '../../../../../../axon/js/DerivedProperty.js';
+import NumberProperty from '../../../../../../axon/js/NumberProperty.js';
+import Bounds2 from '../../../../../../dot/js/Bounds2.js';
+import { clamp } from '../../../../../../dot/js/util/clamp.js';
+import Vector2 from '../../../../../../dot/js/Vector2.js';
+import NumberDisplay from '../../../../../../scenery-phet/js/NumberDisplay.js';
+import Tandem from '../../../../../../tandem/js/Tandem.js';
 import { createGraphSnapshotsReferenceLineNumberDisplayOptions, createGraphSnapshotsReferenceLineValueMapper, type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 
 // Space between the top of the visible plot stack and the x-value readout.

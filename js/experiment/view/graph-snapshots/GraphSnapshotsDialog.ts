@@ -15,29 +15,29 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
-import NumberProperty from '../../../../axon/js/NumberProperty.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import Range from '../../../../dot/js/Range.js';
-import { combineOptions } from '../../../../phet-core/js/optionize.js';
-import MagnifyingGlassZoomButtonGroup from '../../../../scenery-phet/js/MagnifyingGlassZoomButtonGroup.js';
-import ShadedSphereNode from '../../../../scenery-phet/js/ShadedSphereNode.js';
-import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
-import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
-import Line from '../../../../scenery/js/nodes/Line.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
-import Checkbox, { type CheckboxOptions } from '../../../../sun/js/Checkbox.js';
-import ColorConstants from '../../../../sun/js/ColorConstants.js';
-import Dialog from '../../../../sun/js/Dialog.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import type GraphData from '../model/GraphData.js';
-import type { GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
+import BooleanProperty from '../../../../../axon/js/BooleanProperty.js';
+import NumberProperty from '../../../../../axon/js/NumberProperty.js';
+import type { TReadOnlyProperty } from '../../../../../axon/js/TReadOnlyProperty.js';
+import Range from '../../../../../dot/js/Range.js';
+import { combineOptions } from '../../../../../phet-core/js/optionize.js';
+import MagnifyingGlassZoomButtonGroup from '../../../../../scenery-phet/js/MagnifyingGlassZoomButtonGroup.js';
+import ShadedSphereNode from '../../../../../scenery-phet/js/ShadedSphereNode.js';
+import HBox from '../../../../../scenery/js/layout/nodes/HBox.js';
+import VBox from '../../../../../scenery/js/layout/nodes/VBox.js';
+import Line from '../../../../../scenery/js/nodes/Line.js';
+import Node from '../../../../../scenery/js/nodes/Node.js';
+import Text from '../../../../../scenery/js/nodes/Text.js';
+import Checkbox, { type CheckboxOptions } from '../../../../../sun/js/Checkbox.js';
+import ColorConstants from '../../../../../sun/js/ColorConstants.js';
+import Dialog from '../../../../../sun/js/Dialog.js';
+import Tandem from '../../../../../tandem/js/Tandem.js';
+import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
+import type GraphData from '../../model/GraphData.js';
+import type { GraphPlotAreaNodeOptions } from '../GraphPlotAreaNode.js';
 import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
-import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNode.js';
+import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './reference-line/GraphSnapshotsReferenceLineNode.js';
 
 export default class GraphSnapshotsDialog extends Dialog {
 

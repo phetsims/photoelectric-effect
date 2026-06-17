@@ -7,20 +7,20 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import NumberProperty from '../../../../axon/js/NumberProperty.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import Bounds2 from '../../../../dot/js/Bounds2.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import Vector2Property from '../../../../dot/js/Vector2Property.js';
-import { combineOptions } from '../../../../phet-core/js/optionize.js';
-import AccessibleInteractiveOptions from '../../../../scenery-phet/js/accessibility/AccessibleInteractiveOptions.js';
-import ShadedSphereNode, { type ShadedSphereNodeOptions } from '../../../../scenery-phet/js/ShadedSphereNode.js';
-import InteractiveHighlighting from '../../../../scenery/js/accessibility/voicing/InteractiveHighlighting.js';
-import RichDragListener from '../../../../scenery/js/listeners/RichDragListener.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
+import NumberProperty from '../../../../../../axon/js/NumberProperty.js';
+import type { TReadOnlyProperty } from '../../../../../../axon/js/TReadOnlyProperty.js';
+import Bounds2 from '../../../../../../dot/js/Bounds2.js';
+import Vector2 from '../../../../../../dot/js/Vector2.js';
+import Vector2Property from '../../../../../../dot/js/Vector2Property.js';
+import { combineOptions } from '../../../../../../phet-core/js/optionize.js';
+import AccessibleInteractiveOptions from '../../../../../../scenery-phet/js/accessibility/AccessibleInteractiveOptions.js';
+import ShadedSphereNode, { type ShadedSphereNodeOptions } from '../../../../../../scenery-phet/js/ShadedSphereNode.js';
+import InteractiveHighlighting from '../../../../../../scenery/js/accessibility/voicing/InteractiveHighlighting.js';
+import RichDragListener from '../../../../../../scenery/js/listeners/RichDragListener.js';
+import Tandem from '../../../../../../tandem/js/Tandem.js';
+import PhotoelectricEffectColors from '../../../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectFluent from '../../../../PhotoelectricEffectFluent.js';
+import GraphSnapshotRowNode from '../GraphSnapshotRowNode.js';
 
 // Diameter of the draggable reference-line handle.
 const HANDLE_DIAMETER = 18;

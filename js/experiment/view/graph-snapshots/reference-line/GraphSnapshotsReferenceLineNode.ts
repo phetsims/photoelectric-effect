@@ -8,18 +8,18 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import NumberProperty from '../../../../axon/js/NumberProperty.js';
-import Property from '../../../../axon/js/Property.js';
-import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
-import Bounds2 from '../../../../dot/js/Bounds2.js';
-import Vector2 from '../../../../dot/js/Vector2.js';
-import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
-import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import Line from '../../../../scenery/js/nodes/Line.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
-import type { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import GraphSnapshotRowNode from './GraphSnapshotRowNode.js';
+import NumberProperty from '../../../../../../axon/js/NumberProperty.js';
+import Property from '../../../../../../axon/js/Property.js';
+import type { TReadOnlyProperty } from '../../../../../../axon/js/TReadOnlyProperty.js';
+import Bounds2 from '../../../../../../dot/js/Bounds2.js';
+import Vector2 from '../../../../../../dot/js/Vector2.js';
+import affirm from '../../../../../../perennial-alias/js/browser-and-node/affirm.js';
+import PickRequired from '../../../../../../phet-core/js/types/PickRequired.js';
+import Line from '../../../../../../scenery/js/nodes/Line.js';
+import Node from '../../../../../../scenery/js/nodes/Node.js';
+import type { PhetioObjectOptions } from '../../../../../../tandem/js/PhetioObject.js';
+import PhotoelectricEffectColors from '../../../../common/PhotoelectricEffectColors.js';
+import GraphSnapshotRowNode from '../GraphSnapshotRowNode.js';
 import GraphSnapshotsReferenceLineHandleNode from './GraphSnapshotsReferenceLineHandleNode.js';
 import type { GraphSnapshotsReferenceLineValueDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 import GraphSnapshotsReferenceLineXDisplay from './GraphSnapshotsReferenceLineXDisplay.js';
