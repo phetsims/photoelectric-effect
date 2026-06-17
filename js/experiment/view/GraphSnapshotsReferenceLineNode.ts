@@ -162,8 +162,5 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
         yDisplay.updateLayout( referenceLineX, this );
       } );
     }
-    else {
-      this.dragBoundsProperty.value = Bounds2.NOTHING;
-    }
   }
 }

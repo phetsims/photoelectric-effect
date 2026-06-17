@@ -27,8 +27,8 @@ import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Line from '../../../../scenery/js/nodes/Line.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import ColorConstants from '../../../../sun/js/ColorConstants.js';
 import Checkbox, { type CheckboxOptions } from '../../../../sun/js/Checkbox.js';
+import ColorConstants from '../../../../sun/js/ColorConstants.js';
 import Dialog from '../../../../sun/js/Dialog.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
@@ -94,16 +94,12 @@ export default class GraphSnapshotsDialog extends Dialog {
     } );
 
     const referenceLineVisibleProperty = new BooleanProperty( true, {
-      tandem: tandem.createTandem( 'referenceLineVisibleProperty' ),
-      phetioFeatured: true,
-      phetioState: false
+      tandem: tandem.createTandem( 'referenceLineVisibleProperty' )
     } );
 
     const referenceLineXProperty = new NumberProperty( xRange.getCenter(), {
       range: xRange,
-      tandem: tandem.createTandem( 'referenceLineXProperty' ),
-      phetioFeatured: true,
-      phetioState: false
+      tandem: tandem.createTandem( 'referenceLineXProperty' )
     } );
 
     const referenceLineNode = new GraphSnapshotsReferenceLineNode(

@@ -189,6 +189,8 @@ export default class GraphSnapshotRowNode extends HBox {
 
   /**
    * Finds the nearest saved snapshot point to the provided x value and returns its y value.
+   *
+   * TODO: @design - I chose to use getCLosestValue instead of interpolate, is that correct?
    */
   public getClosestYValue( x: number ): number | null {
     const points = this.pointsProperty.value;
