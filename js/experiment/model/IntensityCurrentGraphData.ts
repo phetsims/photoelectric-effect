@@ -24,7 +24,9 @@ export default class IntensityCurrentGraphData extends GraphData {
     const secondValueMetadata: GraphMetadataConfig = {
       labelProperty: PhotoelectricEffectFluent.wavelength.labelStringProperty,
       valueProperty: model.wavelengthProperty,
-      formatValue: value => toFixed( value, 2 )
+      formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.wavelength.valueReadoutPatternStringProperty.value, {
+        value: toFixed( value, 0 )
+      } )
     };
     const thirdValueMetadata: GraphMetadataConfig = {
       labelProperty: PhotoelectricEffectFluent.voltage.labelStringProperty,

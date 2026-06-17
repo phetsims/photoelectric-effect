@@ -185,7 +185,7 @@
     "value": "{{value}} %"
   },
   "wavelength.label": {
-    "value": "Wavelength (nm)"
+    "value": "Wavelength"
   },
   "wavelength.valueReadoutPattern": {
     "value": "{{value}} nm"
