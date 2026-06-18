@@ -26,7 +26,7 @@ import ArrowButton from '../../../../sun/js/buttons/ArrowButton.js';
 import Slider from '../../../../sun/js/Slider.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import { wavelengthToColor, wavelengthToSpectrumTrackColor } from '../model/PhotoelectricEffectUtils.js';
+import { wavelengthToSpectrumTrackColor } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = EmptySelfOptions;
