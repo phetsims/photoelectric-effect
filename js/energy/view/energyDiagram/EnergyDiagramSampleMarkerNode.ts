@@ -25,7 +25,7 @@ const ELECTRON_MARKER_RADIUS = 5;
  */
 export default class EnergyDiagramSampleMarkerNode extends Node {
 
-  // Arrow from the electron's initial potential energy to its emitted kinetic energy.
+  // Arrow from the electron's initial binding energy to its emitted kinetic energy.
   private readonly photonArrowNode: ArrowNode;
 
   // White circle that marks the electron's initial energy in the conduction band.
@@ -79,16 +79,16 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
   /**
    * Repositions persistent marker Nodes from the latest sample energies.
    */
-  public updateMarkerPositions( potentialEnergy: number, kineticEnergy: number ): void {
+  public updateMarkerPositions( bindingEnergy: number, kineticEnergy: number ): void {
     const sampleCenterX = this.chartTransform.modelToViewX( EnergyGraphLayout.getSampleCenterX( this.sampleIndex ) );
-    const potentialEnergyY = this.chartTransform.modelToViewY( potentialEnergy );
+    const bindingEnergyY = this.chartTransform.modelToViewY( bindingEnergy );
     const kineticEnergyY = this.chartTransform.modelToViewY( kineticEnergy );
 
-    this.initialEnergyMarker.center = new Vector2( sampleCenterX, potentialEnergyY );
+    this.initialEnergyMarker.center = new Vector2( sampleCenterX, bindingEnergyY );
     this.emittedEnergyMarker.center = new Vector2( sampleCenterX, kineticEnergyY );
     this.photonArrowNode.setTailAndTip(
       sampleCenterX,
-      potentialEnergyY,
+      bindingEnergyY,
       sampleCenterX,
       kineticEnergyY + ELECTRON_MARKER_RADIUS
     );

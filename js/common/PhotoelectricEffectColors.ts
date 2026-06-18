@@ -161,9 +161,9 @@ export default class PhotoelectricEffectColors {
     default: 'white'
   } );
 
-  // Color for potential energy in the Energy screen graph.
-  public static readonly potentialEnergyGraphColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'potentialEnergyGraphColor', {
+  // Color for binding energy in the Energy screen graph.
+  public static readonly bindingEnergyGraphColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'bindingEnergyGraphColor', {
       default: '#417e23'
     } );
 

@@ -26,7 +26,7 @@ import Photon from './Photon.js';
 
 const PHOTON_COLLISION_RESULT_SCHEMA = {
   photonEnergy: NumberIO,
-  potentialEnergy: NullableIO( NumberIO ),
+  bindingEnergy: NullableIO( NumberIO ),
   kineticEnergy: NumberIO,
   electron: NullableIO( Electron.ElectronIO )
 };
@@ -209,7 +209,7 @@ export default class Target {
   ): PhotonCollisionResult {
     return {
       photonEnergy: photonEnergy,
-      potentialEnergy: bindingEnergy === null ? null : -bindingEnergy,
+      bindingEnergy: bindingEnergy === null ? null : -bindingEnergy,
       kineticEnergy: electron ? electron.energy : 0,
       electron: electron
     };

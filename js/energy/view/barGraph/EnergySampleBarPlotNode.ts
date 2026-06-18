@@ -32,7 +32,7 @@ const NO_ELECTRON_EJECTED_PANEL_CENTER_MODEL_Y = 8.0;
  */
 export default class EnergySampleBarPlotNode extends Node {
 
-  // Persistent Bamboo data set in potential, photon, kinetic energy order. BarPlot keeps references to the Vector2
+  // Persistent Bamboo data set in binding, photon, kinetic energy order. BarPlot keeps references to the Vector2
   // instances, so this array is mutated instead of replaced.
   private readonly dataSet: Vector2[];
 
@@ -69,14 +69,14 @@ export default class EnergySampleBarPlotNode extends Node {
 
     Multilink.multilink( [
       sample.hasDataProperty,
-      sample.potentialEnergyProperty,
+      sample.bindingEnergyProperty,
       sample.photonEnergyProperty,
       sample.kineticEnergyProperty,
       sample.electronEmittedProperty
-    ], ( hasData, potentialEnergy, photonEnergy, kineticEnergy, electronEmitted ) => {
+    ], ( hasData, bindingEnergy, photonEnergy, kineticEnergy, electronEmitted ) => {
       this.noElectronEjectedPanel.visible = hasData && !electronEmitted;
       this.barPlot.visible = hasData && electronEmitted;
-      this.updateDataSet( potentialEnergy, photonEnergy, kineticEnergy );
+      this.updateDataSet( bindingEnergy, photonEnergy, kineticEnergy );
       this.barPlot.update();
     } );
   }
@@ -123,9 +123,9 @@ export default class EnergySampleBarPlotNode extends Node {
   private static getBarPaintableOptions( sampleIndex: number, point: Vector2 ): PaintableOptions {
     const centerX = EnergyGraphLayout.getSampleCenterX( sampleIndex );
 
-    // Bars are ordered by x position within each sample group: potential on the left, photon in the center,
+    // Bars are ordered by x position within each sample group: binding on the left, photon in the center,
     // kinetic on the right.
-    const fillProperty = point.x < centerX ? PhotoelectricEffectColors.potentialEnergyGraphColorProperty :
+    const fillProperty = point.x < centerX ? PhotoelectricEffectColors.bindingEnergyGraphColorProperty :
                          point.x > centerX ? PhotoelectricEffectColors.kineticEnergyGraphColorProperty :
                          PhotoelectricEffectColors.photonEnergyGraphColorProperty;
 
@@ -138,8 +138,8 @@ export default class EnergySampleBarPlotNode extends Node {
   /**
    * Updates the persistent Bamboo data set by mutating the Vector2 instances that BarPlot already references.
    */
-  private updateDataSet( potentialEnergy: number, photonEnergy: number, kineticEnergy: number ): void {
-    this.dataSet[ 0 ].setY( potentialEnergy );
+  private updateDataSet( bindingEnergy: number, photonEnergy: number, kineticEnergy: number ): void {
+    this.dataSet[ 0 ].setY( bindingEnergy );
     this.dataSet[ 1 ].setY( photonEnergy );
     this.dataSet[ 2 ].setY( kineticEnergy );
   }

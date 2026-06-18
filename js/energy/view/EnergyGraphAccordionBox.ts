@@ -84,7 +84,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     const barGraphControlsNode = new EnergyGraphLegendNode( [
       [
         {
-          fill: PhotoelectricEffectColors.potentialEnergyGraphColorProperty,
+          fill: PhotoelectricEffectColors.bindingEnergyGraphColorProperty,
           labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.bindingEnergyStringProperty
         },
         {

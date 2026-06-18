@@ -73,7 +73,7 @@ export default class EnergyGraphDisplayModeRadioButtonGroup extends RectangularR
   }
 
   /**
-   * Creates an icon with bars for potential, photon, and kinetic energy.
+   * Creates an icon with bars for binding, photon, and kinetic energy.
    */
   private static createBarGraphIcon(): Node {
     const barBaselineY = DISPLAY_MODE_ICON_SIZE / 2;
@@ -86,7 +86,7 @@ export default class EnergyGraphDisplayModeRadioButtonGroup extends RectangularR
           lineWidth: 1.5
         } ),
         new Rectangle( 4, barBaselineY, energyBarWidth, 17, {
-          fill: PhotoelectricEffectColors.potentialEnergyGraphColorProperty,
+          fill: PhotoelectricEffectColors.bindingEnergyGraphColorProperty,
           stroke: PhotoelectricEffectColors.iconStrokeColorProperty
         } ),
         new Rectangle( 15, 2, energyBarWidth, barBaselineY - 2, {
