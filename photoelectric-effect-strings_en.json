@@ -134,8 +134,8 @@
         }
       },
       "legend": {
-        "potentialEnergy": {
-          "value": "Potential Energy"
+        "bindingEnergy": {
+          "value": "Binding Energy"
         },
         "photonEnergy": {
           "value": "Photon Energy"

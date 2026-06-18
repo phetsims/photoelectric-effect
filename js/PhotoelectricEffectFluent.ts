@@ -66,7 +66,7 @@ addToMapIfDefined( 'energy_graph_noElectronEjected', 'energy.graph.noElectronEje
 addToMapIfDefined( 'energy_graph_diagramControls_label', 'energy.graph.diagramControls.labelStringProperty' );
 addToMapIfDefined( 'energy_graph_diagramControls_workFunction', 'energy.graph.diagramControls.workFunctionStringProperty' );
 addToMapIfDefined( 'energy_graph_diagramControls_photonArrow', 'energy.graph.diagramControls.photonArrowStringProperty' );
-addToMapIfDefined( 'energy_graph_legend_potentialEnergy', 'energy.graph.legend.potentialEnergyStringProperty' );
+addToMapIfDefined( 'energy_graph_legend_bindingEnergy', 'energy.graph.legend.bindingEnergyStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_photonEnergy', 'energy.graph.legend.photonEnergyStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_kineticEnergy', 'energy.graph.legend.kineticEnergyStringProperty' );
 addToMapIfDefined( 'energy_graph_legend_emptyStates', 'energy.graph.legend.emptyStatesStringProperty' );
@@ -203,7 +203,7 @@ const PhotoelectricEffectFluent = {
         photonArrowStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.photonArrowStringProperty' )
       },
       legend: {
-        potentialEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.potentialEnergyStringProperty' ),
+        bindingEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.bindingEnergyStringProperty' ),
         photonEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.photonEnergyStringProperty' ),
         kineticEnergyStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.kineticEnergyStringProperty' ),
         emptyStatesStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.legend.emptyStatesStringProperty' ),

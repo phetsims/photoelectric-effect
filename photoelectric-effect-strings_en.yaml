@@ -58,7 +58,7 @@ energy:
       workFunction: 'Work Function'
       photonArrow:  'Photon Arrow'
     legend:
-      potentialEnergy: 'Potential Energy'
+      bindingEnergy: 'Binding Energy'
       photonEnergy:    'Photon Energy'
       kineticEnergy:   'Kinetic Energy'
       emptyStates:     'Empty States'

@@ -69,7 +69,7 @@ type StringsType = {
         'photonArrowStringProperty': LocalizedStringProperty;
       };
       'legend': {
-        'potentialEnergyStringProperty': LocalizedStringProperty;
+        'bindingEnergyStringProperty': LocalizedStringProperty;
         'photonEnergyStringProperty': LocalizedStringProperty;
         'kineticEnergyStringProperty': LocalizedStringProperty;
         'emptyStatesStringProperty': LocalizedStringProperty;
