@@ -14,6 +14,7 @@ import ShadedSphereNode from '../../../../../scenery-phet/js/ShadedSphereNode.js
 import Circle from '../../../../../scenery/js/nodes/Circle.js';
 import Node from '../../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
+import ElectronNode from '../../../common/view/ElectronNode.js';
 import EnergyGraphLayout from '../EnergyGraphLayout.js';
 import NoElectronEjectedIconNode from '../NoElectronEjectedIconNode.js';
 
@@ -156,14 +157,10 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
   }
 
   /**
-   * Creates a shaded electron marker, matching the light direction used by ElectronNode in Models of the Hydrogen Atom.
+   * Creates a shaded electron marker, matching the shaded-sphere electrons drawn in the play area.
    */
   private static createElectronMarker( ejected: boolean ): ShadedSphereNode {
-    return new ShadedSphereNode( 2 * ELECTRON_MARKER_RADIUS, {
-      mainColor: PhotoelectricEffectColors.electronColorProperty,
-      highlightColor: PhotoelectricEffectColors.electronHighlightColorProperty,
-      highlightXOffset: 0,
-      highlightYOffset: 0.4,
+    return new ElectronNode( 2 * ELECTRON_MARKER_RADIUS, {
       stroke: ejected ? null : PhotoelectricEffectColors.iconStrokeColorProperty,
       lineWidth: ejected ? 1 : FAILED_EJECTION_MARKER_LINE_WIDTH,
       isDisposable: false

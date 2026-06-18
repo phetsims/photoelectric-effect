@@ -10,6 +10,7 @@
  */
 
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
@@ -19,6 +20,7 @@ import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
 import CircuitNode from './CircuitNode.js';
+import ElectronNode from './ElectronNode.js';
 import PhotoelectricEffectScreenView, { PhotoelectricEffectScreenViewOptions } from './PhotoelectricEffectScreenView.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -60,9 +62,17 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
 
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
-      new Text( PhotoelectricEffectFluent.showElectronsStringProperty, {
-        font: PhotoelectricEffectConstants.CONTENT_FONT,
-        maxWidth: 170
+      new HBox( {
+        spacing: 8,
+        children: [
+          new Text( PhotoelectricEffectFluent.showElectronsStringProperty, {
+            font: PhotoelectricEffectConstants.CONTENT_FONT,
+            maxWidth: 170
+          } ),
+
+          // Icon matching the shaded-sphere electrons drawn in the play area.
+          ElectronNode.createIcon()
+        ]
       } ),
       {
         tandem: options.tandem.createTandem( 'showElectronsCheckbox' )

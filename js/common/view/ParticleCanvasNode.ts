@@ -18,15 +18,10 @@ import Electron from '../model/Electron.js';
 import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import Photon from '../model/Photon.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
+import ElectronNode from './ElectronNode.js';
 
 const PHOTON_RADIUS = 10;
 const ELECTRON_RADIUS = 2.5;
-
-// Electrons are drawn as shaded spheres on the canvas, matching ElectronNode in Models of the Hydrogen Atom.
-// These mirror ShadedSphereNode's defaults and MOTHAConstants.SHADED_SPHERE_NODE_OPTIONS (lit from bottom center).
-const ELECTRON_HIGHLIGHT_X_OFFSET = 0;
-const ELECTRON_HIGHLIGHT_Y_OFFSET = 0.4;
-const ELECTRON_HIGHLIGHT_DIAMETER_RATIO = 0.5;
 
 type SelfOptions = EmptySelfOptions;
 
@@ -67,8 +62,8 @@ export default class ParticleCanvasNode extends CanvasNode {
     const highlightColor = PhotoelectricEffectColors.electronHighlightColorProperty.value.toCSS();
     const shadowColor = Color.BLACK.toCSS();
 
-    const highlightOffsetX = ELECTRON_RADIUS * ELECTRON_HIGHLIGHT_X_OFFSET;
-    const highlightOffsetY = ELECTRON_RADIUS * ELECTRON_HIGHLIGHT_Y_OFFSET;
+    const highlightOffsetX = ELECTRON_RADIUS * ElectronNode.HIGHLIGHT_X_OFFSET;
+    const highlightOffsetY = ELECTRON_RADIUS * ElectronNode.HIGHLIGHT_Y_OFFSET;
 
     this.electrons.forEach( electron => {
       const x = this.modelViewTransform.modelToViewX( electron.position.x );
@@ -78,7 +73,7 @@ export default class ParticleCanvasNode extends CanvasNode {
       const highlightY = y + highlightOffsetY;
       const gradient = context.createRadialGradient( highlightX, highlightY, 0, highlightX, highlightY, ELECTRON_RADIUS * 2 );
       gradient.addColorStop( 0, highlightColor );
-      gradient.addColorStop( ELECTRON_HIGHLIGHT_DIAMETER_RATIO, mainColor );
+      gradient.addColorStop( ElectronNode.HIGHLIGHT_DIAMETER_RATIO, mainColor );
       gradient.addColorStop( 1, shadowColor );
 
       context.beginPath();
