@@ -179,6 +179,12 @@ export default class PhotoelectricEffectColors {
       default: '#2a29f5'
     } );
 
+  // Color for the ban icon shown when a photon does not eject an electron.
+  public static readonly noElectronEjectedIconColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'noElectronEjectedIconColor', {
+      default: 'red'
+    } );
+
   // Color for empty states in the Energy screen energy diagram.
   public static readonly emptyStatesEnergyDiagramColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'emptyStatesEnergyDiagramColor', {

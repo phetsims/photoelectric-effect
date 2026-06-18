@@ -89,8 +89,8 @@ export default class EnergyDiagramNode extends Node {
         sample.kineticEnergyProperty,
         sample.electronEmittedProperty
       ], ( hasData, bindingEnergy, kineticEnergy, electronEmitted ) => {
-        sampleMarkerNode.visible = hasData && electronEmitted;
-        sampleMarkerNode.updateMarkerPositions( bindingEnergy, kineticEnergy );
+        sampleMarkerNode.visible = hasData;
+        sampleMarkerNode.updateMarkerState( bindingEnergy, kineticEnergy, electronEmitted );
       } );
     } );
 
