@@ -15,13 +15,18 @@ import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
 import CanvasNode, { CanvasNodeOptions } from '../../../../scenery/js/nodes/CanvasNode.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import Electron from '../model/Electron.js';
-import Particle from '../model/Particle.js';
 import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import Photon from '../model/Photon.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 
 const PHOTON_RADIUS = 10;
 const ELECTRON_RADIUS = 2.5;
+
+// Electrons are drawn as shaded spheres on the canvas, matching ElectronNode in Models of the Hydrogen Atom.
+// These mirror ShadedSphereNode's defaults and MOTHAConstants.SHADED_SPHERE_NODE_OPTIONS (lit from bottom center).
+const ELECTRON_HIGHLIGHT_X_OFFSET = 0;
+const ELECTRON_HIGHLIGHT_Y_OFFSET = 0.4;
+const ELECTRON_HIGHLIGHT_DIAMETER_RATIO = 0.5;
 
 type SelfOptions = EmptySelfOptions;
 
@@ -50,22 +55,36 @@ export default class ParticleCanvasNode extends CanvasNode {
     }
 
     if ( this.showElectronsProperty.value ) {
-      this.drawParticles( context, this.electrons, ELECTRON_RADIUS, PhotoelectricEffectColors.electronColorProperty.value );
+      this.drawElectrons( context );
     }
   }
 
-  private drawParticles( context: CanvasRenderingContext2D, particles: Particle[],
-                         radius: number, fill: Color ): void {
-    context.fillStyle = fill.toCSS();
-    context.strokeStyle = 'black';
-    context.lineWidth = 0.5;
-    particles.forEach( particle => {
-      const x = this.modelViewTransform.modelToViewX( particle.position.x );
-      const y = this.modelViewTransform.modelToViewY( particle.position.y );
+  // Electrons match the style of ElectronNode in Models of the Hydrogen Atom: a shaded sphere with a specular
+  // highlight. The radial gradient mirrors ShadedSphereNode so the canvas-drawn electrons look identical to the
+  // Scenery-drawn electron markers elsewhere in the sim, while keeping the particles on canvas for performance.
+  private drawElectrons( context: CanvasRenderingContext2D ): void {
+    const mainColor = PhotoelectricEffectColors.electronColorProperty.value.toCSS();
+    const highlightColor = PhotoelectricEffectColors.electronHighlightColorProperty.value.toCSS();
+    const shadowColor = Color.BLACK.toCSS();
+
+    const highlightOffsetX = ELECTRON_RADIUS * ELECTRON_HIGHLIGHT_X_OFFSET;
+    const highlightOffsetY = ELECTRON_RADIUS * ELECTRON_HIGHLIGHT_Y_OFFSET;
+
+    this.electrons.forEach( electron => {
+      const x = this.modelViewTransform.modelToViewX( electron.position.x );
+      const y = this.modelViewTransform.modelToViewY( electron.position.y );
+
+      const highlightX = x + highlightOffsetX;
+      const highlightY = y + highlightOffsetY;
+      const gradient = context.createRadialGradient( highlightX, highlightY, 0, highlightX, highlightY, ELECTRON_RADIUS * 2 );
+      gradient.addColorStop( 0, highlightColor );
+      gradient.addColorStop( ELECTRON_HIGHLIGHT_DIAMETER_RATIO, mainColor );
+      gradient.addColorStop( 1, shadowColor );
+
       context.beginPath();
-      context.arc( x, y, radius, 0, 2 * Math.PI );
+      context.arc( x, y, ELECTRON_RADIUS, 0, 2 * Math.PI );
+      context.fillStyle = gradient;
       context.fill();
-      context.stroke();
     } );
   }
 
@@ -83,20 +102,21 @@ export default class ParticleCanvasNode extends CanvasNode {
       const y = this.modelViewTransform.modelToViewY( photon.position.y );
       const baseColor = wavelengthToColor( photon.wavelength );
 
-      // Halo: wavelength color at 40% fading to transparent at edge
+      // Halo: wavelength color for visible photons, gray for non-visible photons, fading to transparent at edge.
+      const haloColor = getHaloColor( photon.wavelength, baseColor );
       const haloGradient = context.createRadialGradient( x, y, 0, x, y, PHOTON_RADIUS );
-      haloGradient.addColorStop( 0.4, baseColor.toCSS() );
-      haloGradient.addColorStop( 1, baseColor.withAlpha( 0 ).toCSS() );
+      haloGradient.addColorStop( 0.1, haloColor.toCSS() );
+      haloGradient.addColorStop( 1, haloColor.withAlpha( 0 ).toCSS() );
       context.beginPath();
       context.arc( x, y, PHOTON_RADIUS, 0, 2 * Math.PI );
       context.fillStyle = haloGradient;
       context.fill();
 
-      // Orb: white-core gradient fading to wavelength color
+      // Orb: white-core gradient fading to wavelength color.
       const orbRadius = 0.5 * PHOTON_RADIUS;
       const orbGradient = context.createRadialGradient( x, y, 0, x, y, orbRadius );
-      orbGradient.addColorStop( 0.25, PhotoelectricEffectColors.photonOrbInnerColorProperty.value.toCSS() );
-      orbGradient.addColorStop( 1, baseColor.withAlpha( 0.5 ).toCSS() );
+      orbGradient.addColorStop( 0.15, PhotoelectricEffectColors.photonOrbInnerColorProperty.value.toCSS() );
+      orbGradient.addColorStop( 1, baseColor.withAlpha( 0.1 ).toCSS() );
       context.beginPath();
       context.arc( x, y, orbRadius, 0, 2 * Math.PI );
       context.fillStyle = orbGradient;
@@ -109,6 +129,16 @@ export default class ParticleCanvasNode extends CanvasNode {
       drawCrosshairs( context, x, y, 0.7 * sparkleRadius, sparkleColor, toRadians( 63 ) );
     } );
   }
+}
+
+// The halo follows the photon wavelength for visible photons. UV and IR wavelengths map to white in
+// wavelengthToColor, so use a neutral halo that remains visible without making non-visible photons look white.
+// TODO: It is possible that this halo color is the same as the UV/IR color on the UI control in the
+//   LabeledWavelengthNumberControl. If so, make sure the same color/logic is used there.
+function getHaloColor( wavelength: number, baseColor: Color ): Color {
+  return VisibleColor.isUVWavelength( wavelength ) || VisibleColor.isIRWavelength( wavelength ) ?
+         PhotoelectricEffectColors.photonNonVisibleHaloColorProperty.value :
+         baseColor;
 }
 
 // The sparkle will be one color for visible wavelengths and different colors for UV and IR, so that it is visible

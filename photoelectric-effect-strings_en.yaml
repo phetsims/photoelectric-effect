@@ -59,7 +59,7 @@ energy:
       workFunction: 'Work Function'
       photonArrow:  'Photon Arrow'
     legend:
-      potentialEnergy: 'Potential Energy'
+      bindingEnergy: 'Binding Energy'
       photonEnergy:    'Photon Energy'
       kineticEnergy:   'Kinetic Energy'
       emptyStates:     'Empty States'
@@ -75,7 +75,6 @@ spectrumTrack:
 workFunction.label:                 'Work Function (eV)'
 intensity.label:                    'Intensity'
 intensity.percentReadoutPattern:    '{{value}} %'
-photonRate.label:                   'Photon Rate'
 sourceOutput.percentReadoutPattern: '{{value}} %'
 wavelength.label:                   'Wavelength'
 wavelength.valueReadoutPattern:     '{{value}} nm'

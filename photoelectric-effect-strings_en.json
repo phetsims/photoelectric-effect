@@ -137,8 +137,8 @@
         }
       },
       "legend": {
-        "potentialEnergy": {
-          "value": "Potential Energy"
+        "bindingEnergy": {
+          "value": "Binding Energy"
         },
         "photonEnergy": {
           "value": "Photon Energy"
@@ -177,9 +177,6 @@
   },
   "intensity.percentReadoutPattern": {
     "value": "{{value}} %"
-  },
-  "photonRate.label": {
-    "value": "Photon Rate"
   },
   "sourceOutput.percentReadoutPattern": {
     "value": "{{value}} %"

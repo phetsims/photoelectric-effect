@@ -184,7 +184,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
 
       this.energyGraphData.setSampleData(
         slotIndex,
-        collisionResult.potentialEnergy ?? 0,
+        collisionResult.bindingEnergy ?? 0,
         collisionResult.photonEnergy,
         collisionResult.kineticEnergy,
         collisionResult.electron !== null
