@@ -27,6 +27,8 @@ const SPEED_OF_LIGHT_METERS_PER_SECOND = 299792458;
 
 // SpectrumNode samples these stops to render short gradients from the non-visible tinted grey regions into the
 // visible spectrum. Adjust these wavelengths and colors to tune the UV/IR bands.
+// TODO: Consider if this should be moved to common code. If the team likes it and we keep it, we will probably
+//  want this kind of thing for other sims.
 const UV_SPECTRUM_TRACK_COLOR_STOPS: WavelengthColorStop[] = [
   {
     wavelength: PhotoelectricEffectConstants.MIN_WAVELENGTH,
