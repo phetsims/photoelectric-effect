@@ -77,7 +77,6 @@ addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty
 addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
 addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
-addToMapIfDefined( 'photonRate_label', 'photonRate.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
@@ -225,9 +224,6 @@ const PhotoelectricEffectFluent = {
   intensity: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.labelStringProperty' ),
     percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.percentReadoutPatternStringProperty' )
-  },
-  photonRate: {
-    labelStringProperty: _.get( PhotoelectricEffectStrings, 'photonRate.labelStringProperty' )
   },
   sourceOutput: {
     percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'sourceOutput.percentReadoutPatternStringProperty' )

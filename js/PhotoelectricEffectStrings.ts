@@ -90,9 +90,6 @@ type StringsType = {
     'labelStringProperty': LocalizedStringProperty;
     'percentReadoutPatternStringProperty': LocalizedStringProperty;
   };
-  'photonRate': {
-    'labelStringProperty': LocalizedStringProperty;
-  };
   'sourceOutput': {
     'percentReadoutPatternStringProperty': LocalizedStringProperty;
   };

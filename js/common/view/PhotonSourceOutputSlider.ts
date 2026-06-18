@@ -8,7 +8,6 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
@@ -24,7 +23,6 @@ import Color from '../../../../scenery/js/util/Color.js';
 import LinearGradient from '../../../../scenery/js/util/LinearGradient.js';
 import HSlider from '../../../../sun/js/HSlider.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import PhotoelectricEffectPreferences from '../model/PhotoelectricEffectPreferences.js';
 import { wavelengthToIntensityGradientEndColor } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
@@ -79,20 +77,7 @@ export default class PhotonSourceOutputSlider extends Node {
 
     super();
 
-    const outputLabelStringProperty = new DerivedProperty(
-      [
-        PhotoelectricEffectPreferences.photonModeProperty,
-        PhotoelectricEffectFluent.intensity.labelStringProperty,
-        PhotoelectricEffectFluent.photonRate.labelStringProperty
-      ],
-      ( photonMode, intensityLabel, photonRateLabel ) => {
-        return photonMode === 'count' ? photonRateLabel :
-               photonMode === 'intensity' ? intensityLabel :
-               ( () => { throw new Error( `Unrecognized photonMode: ${photonMode}` ); } )();
-      }
-    );
-
-    const outputLabel = new Text( outputLabelStringProperty, {
+    const outputLabel = new Text( PhotoelectricEffectFluent.intensity.labelStringProperty, {
       font: PhotoelectricEffectConstants.PANEL_TITLE_FONT,
       maxWidth: OUTPUT_LABEL_MAX_WIDTH
     } );

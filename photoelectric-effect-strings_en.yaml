@@ -74,7 +74,6 @@ spectrumTrack:
 workFunction.label:                 'Work Function (eV)'
 intensity.label:                    'Intensity'
 intensity.percentReadoutPattern:    '{{value}} %'
-photonRate.label:                   'Photon Rate'
 sourceOutput.percentReadoutPattern: '{{value}} %'
 wavelength.label:                   'Wavelength (nm)'
 wavelength.valueReadoutPattern:     '{{value}} nm'

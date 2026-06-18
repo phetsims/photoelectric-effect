@@ -175,9 +175,6 @@
   "intensity.percentReadoutPattern": {
     "value": "{{value}} %"
   },
-  "photonRate.label": {
-    "value": "Photon Rate"
-  },
   "sourceOutput.percentReadoutPattern": {
     "value": "{{value}} %"
   },
