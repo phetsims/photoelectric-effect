@@ -29,6 +29,21 @@ export default class PhotoelectricEffectColors {
       default: 'white'
     } );
 
+  public static readonly photonSourcePanelFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'photonSourcePanelFill', {
+      default: 'rgb( 238, 240, 242 )'
+    } );
+
+  public static readonly wavelengthSliderUVTrackBackgroundColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'wavelengthSliderUVTrackBackground', {
+      default: 'rgb( 225, 221, 233 )'
+    } );
+
+  public static readonly wavelengthSliderIRTrackBackgroundColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'wavelengthSliderIRTrackBackground', {
+      default: 'rgb( 233, 222, 219 )'
+    } );
+
   public static readonly photonColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonColor', {
     default: 'purple'
   } );
