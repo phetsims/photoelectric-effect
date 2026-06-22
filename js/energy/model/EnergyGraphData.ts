@@ -40,8 +40,9 @@ export default class EnergyGraphData extends PhetioObject {
 
     super( options );
 
-    this.samples = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => new EnergyGraphSample( {
-      tandem: options.tandem.createTandem( `sample${sampleIndex}` )
+    const samplesTandem = options.tandem.createGroupTandem( 'sample' );
+    this.samples = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, () => new EnergyGraphSample( {
+      tandem: samplesTandem.createNextTandem()
     } ) );
   }
 
