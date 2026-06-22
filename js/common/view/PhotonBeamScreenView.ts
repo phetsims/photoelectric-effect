@@ -9,15 +9,16 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import GatedVisibleProperty from '../../../../axon/js/GatedVisibleProperty.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectModel from '../model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectPreferences from '../model/PhotoelectricEffectPreferences.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
-import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import AmmeterDisplayPanel from './AmmeterDisplayPanel.js';
 import CircuitNode from './CircuitNode.js';
 import ElectronNode from './ElectronNode.js';
@@ -79,7 +80,10 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
       }
     );
 
-    // The 'highest energy only' checkbox is nested under 'show electrons' — only meaningful when electrons are shown.
+    const highestEnergyOnlyCheckboxTandem = options.tandem.createTandem( 'highestEnergyOnlyCheckbox' );
+
+    // If the showElectronsCheckbox is hidden, hide highestEnergyOnlyCheckbox. PhET-iO clients can permanently hide
+    // the checkbox via highestEnergyOnlyCheckbox.selfVisibleProperty.
     const highestEnergyOnlyCheckbox = new Checkbox(
       model.showHighestEnergyOnlyProperty,
       new Text( PhotoelectricEffectFluent.highestEnergyOnlyStringProperty, {
@@ -88,10 +92,16 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
       } ),
       {
         enabledProperty: model.showElectronsProperty,
+
+        // For phet-io customization, this checkbox is hidden when the showElectronsCheckbox is hidden.
+        visibleProperty: new GatedVisibleProperty(
+          showElectronsCheckbox.visibleProperty,
+          highestEnergyOnlyCheckboxTandem
+        ),
         layoutOptions: {
           leftMargin: 20
         },
-        tandem: options.tandem.createTandem( 'highestEnergyOnlyCheckbox' )
+        tandem: highestEnergyOnlyCheckboxTandem
       }
     );
 

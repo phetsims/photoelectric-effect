@@ -217,26 +217,10 @@
     },
     "mysteryMaterial": {
       "label": {
-        "value": "Add second mystery material"
+        "value": "Add Second mystery material"
       },
       "description": {
-        "value": "Additional target material option with customizable physical values."
-      },
-      "workFunction": {
-        "label": {
-          "value": "Mystery Material Work Function"
-        },
-        "description": {
-          "value": "Sets the work function for Mystery 2."
-        }
-      },
-      "bandDepth": {
-        "label": {
-          "value": "Mystery Material Band Depth"
-        },
-        "description": {
-          "value": "Sets the band depth for Mystery 2."
-        }
+        "value": "Additional target material option with customizable work function value."
       }
     }
   },

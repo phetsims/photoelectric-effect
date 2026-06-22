@@ -86,10 +86,6 @@ addToMapIfDefined( 'preferences_showPhotons_label', 'preferences.showPhotons.lab
 addToMapIfDefined( 'preferences_showPhotons_description', 'preferences.showPhotons.descriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_label', 'preferences.mysteryMaterial.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_description', 'preferences.mysteryMaterial.descriptionStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_label', 'preferences.mysteryMaterial.workFunction.labelStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_description', 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterial_bandDepth_label', 'preferences.mysteryMaterial.bandDepth.labelStringProperty' );
-addToMapIfDefined( 'preferences_mysteryMaterial_bandDepth_description', 'preferences.mysteryMaterial.bandDepth.descriptionStringProperty' );
 addToMapIfDefined( 'a11y_units_microamperes_pattern', 'a11y.units.microamperes.patternStringProperty' );
 addToMapIfDefined( 'a11y_introScreen_screenSummary_playArea', 'a11y.introScreen.screenSummary.playAreaStringProperty' );
 addToMapIfDefined( 'a11y_introScreen_screenSummary_controlArea', 'a11y.introScreen.screenSummary.controlAreaStringProperty' );
@@ -261,16 +257,7 @@ const PhotoelectricEffectFluent = {
     },
     mysteryMaterial: {
       labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.labelStringProperty' ),
-      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.descriptionStringProperty' ),
-      _comment_0: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
-      workFunction: {
-        labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.workFunction.labelStringProperty' ),
-        descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' )
-      },
-      bandDepth: {
-        labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.bandDepth.labelStringProperty' ),
-        descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.bandDepth.descriptionStringProperty' )
-      }
+      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.descriptionStringProperty' )
     }
   },
   a11y: {

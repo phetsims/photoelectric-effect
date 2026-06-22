@@ -92,14 +92,8 @@ preferences:
     label: 'Show photons'
     description: 'Light source emits photons'
   mysteryMaterial:
-    label:       'Add second mystery material'
-    description: 'Additional target material option with customizable physical values.'
-    workFunction:
-      label:       'Mystery Material Work Function'
-      description: 'Sets the work function for Mystery 2.'
-    bandDepth:
-      label:       'Mystery Material Band Depth'
-      description: 'Sets the band depth for Mystery 2.'
+    label:       'Add Second mystery material'
+    description: 'Additional target material option with customizable work function value.'
 
 a11y:
 

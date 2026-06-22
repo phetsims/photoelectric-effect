@@ -189,11 +189,10 @@ export default class GraphData extends PhetioObject {
       phetioReadOnly: true,
       phetioFeatured: true
     } );
-    const snapshotsTandem = options.tandem.createGroupTandem( 'snapshot' );
-    this.snapshots = _.times( GraphData.MAX_SNAPSHOTS, () => new GraphSnapshot(
+    this.snapshots = _.times( GraphData.MAX_SNAPSHOTS, i => new GraphSnapshot(
       secondValueMetadata.labelProperty, secondValueMetadata.formatValue,
       thirdValueMetadata.labelProperty, thirdValueMetadata.formatValue,
-      { tandem: snapshotsTandem.createNextTandem() }
+      { tandem: options.tandem.createTandem( `snapshot${i}` ) }
     ) );
 
     affirm( Number.isInteger( options.binCount ) && options.binCount > 1,
