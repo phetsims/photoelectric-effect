@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * MysteryMaterialPreferencesControls groups the mystery material toggle and work function controls.
+ * MysteryMaterialPreferencesControls groups the mystery material toggle and physical-parameter controls.
  * It extends VBox so a full mystery material section can be added to preferences content as a single child.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -27,12 +27,14 @@ export default class MysteryMaterialPreferencesControls extends VBox {
   /**
    * @param enabledProperty - Whether mystery material controls should be enabled.
    * @param workFunctionProperty - The mystery material work function, in eV.
+   * @param bandDepthProperty - The mystery material band depth, in eV.
    * @param labelStringProperty - Localized label for the mystery material toggle control.
    * @param tandem - Tandem for instrumenting this grouped preferences control.
    */
   public constructor(
     enabledProperty: Property<boolean>,
     workFunctionProperty: NumberProperty,
+    bandDepthProperty: NumberProperty,
     labelStringProperty: TProperty<string>,
     tandem: Tandem
   ) {
@@ -69,7 +71,7 @@ export default class MysteryMaterialPreferencesControls extends VBox {
 
     // The work function control.
     const mysteryMaterialWorkFunctionControlTandem = tandem.createTandem( 'mysteryMaterialWorkFunctionControl' );
-    const numberControl = new NumberControl( '', workFunctionProperty, Material.WORK_FUNCTION_RANGE, {
+    const workFunctionNumberControl = new NumberControl( '', workFunctionProperty, Material.WORK_FUNCTION_RANGE, {
       delta: 0.1,
       numberDisplayOptions: {
         decimalPlaces: 1
@@ -79,14 +81,14 @@ export default class MysteryMaterialPreferencesControls extends VBox {
 
     const mysteryMaterialWorkFunctionControl = new PreferencesControl( combineOptions<PreferencesControlOptions>( {
       labelNode: new Text(
-        PhotoelectricEffectFluent.preferences.mysteryMaterial.labelStringProperty,
+        PhotoelectricEffectFluent.preferences.mysteryMaterial.workFunction.labelStringProperty,
         PreferencesDialogConstants.CONTROL_LABEL_OPTIONS
       ),
       descriptionNode: new RichText(
-        PhotoelectricEffectFluent.preferences.mysteryMaterial.descriptionStringProperty,
+        PhotoelectricEffectFluent.preferences.mysteryMaterial.workFunction.descriptionStringProperty,
         PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS
       ),
-      controlNode: numberControl,
+      controlNode: workFunctionNumberControl,
       visiblePropertyOptions: {
         phetioFeatured: true
       }
@@ -95,8 +97,36 @@ export default class MysteryMaterialPreferencesControls extends VBox {
       visibleProperty: enabledProperty
     } ) );
 
+    // The band depth control.
+    const mysteryMaterialBandDepthControlTandem = tandem.createTandem( 'mysteryMaterialBandDepthControl' );
+    const bandDepthNumberControl = new NumberControl( '', bandDepthProperty, Material.BAND_DEPTH_RANGE, {
+      delta: 0.1,
+      numberDisplayOptions: {
+        decimalPlaces: 1
+      },
+      tandem: mysteryMaterialBandDepthControlTandem.createTandem( 'numberControl' )
+    } );
+
+    const mysteryMaterialBandDepthControl = new PreferencesControl( combineOptions<PreferencesControlOptions>( {
+      labelNode: new Text(
+        PhotoelectricEffectFluent.preferences.mysteryMaterial.bandDepth.labelStringProperty,
+        PreferencesDialogConstants.CONTROL_LABEL_OPTIONS
+      ),
+      descriptionNode: new RichText(
+        PhotoelectricEffectFluent.preferences.mysteryMaterial.bandDepth.descriptionStringProperty,
+        PreferencesDialogConstants.CONTROL_DESCRIPTION_OPTIONS
+      ),
+      controlNode: bandDepthNumberControl,
+      visiblePropertyOptions: {
+        phetioFeatured: true
+      }
+    }, {
+      tandem: mysteryMaterialBandDepthControlTandem,
+      visibleProperty: enabledProperty
+    } ) );
+
     super( {
-      children: [ mysteryMaterialControl, mysteryMaterialWorkFunctionControl ],
+      children: [ mysteryMaterialControl, mysteryMaterialWorkFunctionControl, mysteryMaterialBandDepthControl ],
       spacing: 10,
       excludeInvisibleChildrenFromBounds: false
     } );

@@ -581,4 +581,4 @@ editing history / production.
     the threshold); rewrote the §8 recommendations discovery-safe; scoped the Reference Line and sonification to
     the comparison dialog. YAML re-generated (`modulify`) and type-checks.
 11. **To production:** replace each ALL-CAPS token with a Fluent `{ $variable }` bound to the §9 property, then
-    run `npm run grunt -- modulify --targets=strings --repo=photoelectric-effect` and type-check.
+    run `bin/grunt modulify --targets=strings --repo=photoelectric-effect` and type-check.

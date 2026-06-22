@@ -17,6 +17,7 @@ import Enumeration from '../../../../phet-core/js/Enumeration.js';
 import EnumerationValue from '../../../../phet-core/js/EnumerationValue.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { electronVoltUnit } from '../../../../scenery-phet/js/units/electronVoltUnit.js';
 import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
@@ -92,6 +93,12 @@ type SelfOptions = {
   // An identifier for the material label that can be used by the view layer.
   labelKey?: string | null;
 
+  // Initial work function for this Material instance, in eV.
+  workFunctionInitialValue?: number;
+
+  // Initial occupied-band depth for this Material instance, in eV.
+  bandDepthInitialValue?: number;
+
   enabled?: boolean;
 };
 
@@ -142,6 +149,8 @@ export default class Material extends PhetioObject {
 
     const options = optionize<MaterialOptions, SelfOptions, PhetioObjectOptions>()( {
       labelKey: null,
+      workFunctionInitialValue: materialType.workFunctionInitialValue,
+      bandDepthInitialValue: materialType.bandDepthInitialValue,
       enabled: true,
       phetioType: Material.MaterialIO
     }, providedOptions );
@@ -150,15 +159,17 @@ export default class Material extends PhetioObject {
     this.materialType = materialType;
     this.labelKey = options.labelKey;
 
-    this.workFunctionProperty = new NumberProperty( materialType.workFunctionInitialValue, {
+    this.workFunctionProperty = new NumberProperty( options.workFunctionInitialValue, {
       range: Material.WORK_FUNCTION_RANGE,
+      units: electronVoltUnit,
       tandem: options.tandem.createTandem( 'workFunctionProperty' ),
       phetioReadOnly: materialType.parametersPhetioReadOnly,
       phetioDocumentation: 'Minimum energy, in electron volts, required to eject an electron from this material'
     } );
 
-    this.bandDepthProperty = new NumberProperty( materialType.bandDepthInitialValue, {
+    this.bandDepthProperty = new NumberProperty( options.bandDepthInitialValue, {
       range: Material.BAND_DEPTH_RANGE,
+      units: electronVoltUnit,
       tandem: options.tandem.createTandem( 'bandDepthProperty' ),
       phetioReadOnly: materialType.parametersPhetioReadOnly,
       phetioDocumentation: 'Effective occupied-band depth, in eV, available for photoemission'
