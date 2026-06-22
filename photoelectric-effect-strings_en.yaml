@@ -86,6 +86,9 @@ units:
   microamperes:
     symbol:        μA
     symbolPattern: '{{value}} μA'
+  photonsPerSecond:
+    symbol:        photons/s
+    symbolPattern: '{{value}} photons/s'
 
 preferences:
   showPhotons:
@@ -109,6 +112,12 @@ a11y:
                { $value ->
                  [one] { $value } microampere
                  *[other] { $value } microamperes
+               }
+    photonsPerSecond:
+      pattern: |-
+               { $value ->
+                 [one] { $value } photon per second
+                 *[other] { $value } photons per second
                }
 
   # Intro screen summary

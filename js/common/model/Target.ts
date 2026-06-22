@@ -13,6 +13,7 @@ import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
+import { electronVoltUnit } from '../../../../scenery-phet/js/units/electronVoltUnit.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
@@ -82,10 +83,12 @@ export default class Target {
     } );
 
     this.workFunctionProperty = new DynamicProperty( this.materialProperty, {
+      units: electronVoltUnit,
       derive: 'workFunctionProperty'
     } );
 
     this.bandDepthProperty = new DynamicProperty( this.materialProperty, {
+      units: electronVoltUnit,
       derive: 'bandDepthProperty'
     } );
 

@@ -204,6 +204,14 @@
       "symbolPattern": {
         "value": "{{value}} μA"
       }
+    },
+    "photonsPerSecond": {
+      "symbol": {
+        "value": "photons/s"
+      },
+      "symbolPattern": {
+        "value": "{{value}} photons/s"
+      }
     }
   },
   "preferences": {
@@ -245,6 +253,11 @@
       "microamperes": {
         "pattern": {
           "value": "{ $value ->\n  [one] { $value } microampere\n  *[other] { $value } microamperes\n}"
+        }
+      },
+      "photonsPerSecond": {
+        "pattern": {
+          "value": "{ $value ->\n  [one] { $value } photon per second\n  *[other] { $value } photons per second\n}"
         }
       }
     },

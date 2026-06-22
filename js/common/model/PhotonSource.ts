@@ -14,11 +14,13 @@ import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Range from '../../../../dot/js/Range.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { nanometersUnit } from '../../../../scenery-phet/js/units/nanometersUnit.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import PhotoelectricEffectPreferences from './PhotoelectricEffectPreferences.js';
 import { normalizedOutputToPhotonRate } from './PhotoelectricEffectUtils.js';
+import { photonsPerSecondUnit } from './photonsPerSecondUnit.js';
 
 // Default normalized source output used at initialization.
 const INITIAL_NORMALIZED_OUTPUT = 0;
@@ -81,6 +83,7 @@ export default class PhotonSource {
 
     this.wavelengthProperty = new NumberProperty( INITIAL_WAVELENGTH, {
       range: WAVELENGTH_RANGE,
+      units: nanometersUnit,
       tandem: tandem.createTandem( 'wavelengthProperty' ),
       phetioDocumentation: 'Wavelength of emitted photons in nanometers'
     } );
@@ -97,6 +100,7 @@ export default class PhotonSource {
         photonMode
       ),
       {
+        units: photonsPerSecondUnit,
         tandem: tandem.createTandem( 'photonRateProperty' ),
         phetioValueType: NumberIO,
         phetioFeatured: true,

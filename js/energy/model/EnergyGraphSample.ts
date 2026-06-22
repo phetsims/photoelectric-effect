@@ -11,6 +11,7 @@ import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { electronVoltUnit } from '../../../../scenery-phet/js/units/electronVoltUnit.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -57,6 +58,7 @@ export default class EnergyGraphSample extends PhetioObject {
     } );
 
     this.bindingEnergyProperty = new NumberProperty( 0, {
+      units: electronVoltUnit,
       tandem: options.tandem.createTandem( 'bindingEnergyProperty' ),
       phetioReadOnly: true,
       phetioFeatured: true,
@@ -64,6 +66,7 @@ export default class EnergyGraphSample extends PhetioObject {
     } );
 
     this.photonEnergyProperty = new NumberProperty( 0, {
+      units: electronVoltUnit,
       tandem: options.tandem.createTandem( 'photonEnergyProperty' ),
       phetioReadOnly: true,
       phetioFeatured: true,
@@ -71,6 +74,7 @@ export default class EnergyGraphSample extends PhetioObject {
     } );
 
     this.kineticEnergyProperty = new NumberProperty( 0, {
+      units: electronVoltUnit,
       tandem: options.tandem.createTandem( 'kineticEnergyProperty' ),
       phetioReadOnly: true,
       phetioFeatured: true,
