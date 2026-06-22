@@ -33,7 +33,8 @@ export default class GraphSnapshotsReferenceLineModel {
     );
 
     this.visibleProperty = new BooleanProperty( true, {
-      tandem: options.tandem.createTandem( 'visibleProperty' )
+      tandem: options.tandem.createTandem( 'visibleProperty' ),
+      phetioFeatured: true
     } );
 
     this.xProperty = new NumberProperty( xRange.getCenter(), {
