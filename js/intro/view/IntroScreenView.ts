@@ -45,10 +45,10 @@ export default class IntroScreenView extends PhotonBeamScreenView {
     // Background circuit artwork — full circuit and grounded variant toggled by representation
     //------------------------------------------------------------------------
 
-    this.backgroundNode.addChild( new CircuitNode( this.modelViewTransform, {
+    this.backgroundNode.addChild( new CircuitNode( this.modelViewTransform, model.target.materialProperty, {
       visibleProperty: DerivedProperty.valueEqualsConstant( model.representationProperty, 'circuit' )
     } ) );
-    this.backgroundNode.addChild( new GroundedCircuitNode( this.modelViewTransform, {
+    this.backgroundNode.addChild( new GroundedCircuitNode( this.modelViewTransform, model.target.materialProperty, {
       visibleProperty: DerivedProperty.valueEqualsConstant( model.representationProperty, 'grounded' )
     } ) );
 

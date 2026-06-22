@@ -9,6 +9,7 @@
  *
  */
 
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import Shape from '../../../../kite/js/Shape.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
@@ -16,6 +17,7 @@ import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
+import type Material from '../model/Material.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import CircuitFactory from './CircuitFactory.js';
@@ -27,12 +29,16 @@ export default class CircuitNode extends Node {
   public static readonly WIRE_HEIGHT = 150;
   public static readonly WIRE_LINE_WIDTH = 10;
 
-  public constructor( modelViewTransform: ModelViewTransform2, providedOptions?: CircuitNodeOptions ) {
+  public constructor(
+    modelViewTransform: ModelViewTransform2,
+    materialProperty: TReadOnlyProperty<Material>,
+    providedOptions?: CircuitNodeOptions
+  ) {
 
     /**
      * Create the collectors and plate that the electrons travel between
      */
-    const targetPlate = CircuitFactory.createPlateWithMaterial( {
+    const targetPlate = CircuitFactory.createPlateWithMaterial( materialProperty, {
       rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 )
     } );
 

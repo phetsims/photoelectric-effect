@@ -57,7 +57,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     // Background circuit artwork
     //------------------------------------------------------------------------
 
-    const circuitNode = new CircuitNode( this.modelViewTransform );
+    const circuitNode = new CircuitNode( this.modelViewTransform, model.target.materialProperty );
     this.backgroundNode.addChild( circuitNode );
 
     //------------------------------------------------------------------------

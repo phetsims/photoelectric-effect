@@ -46,7 +46,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
     super( model, options );
 
     // Grounded circuit artwork sits behind everything else.
-    const groundedCircuitNode = new GroundedCircuitNode( this.modelViewTransform );
+    const groundedCircuitNode = new GroundedCircuitNode( this.modelViewTransform, model.target.materialProperty );
     this.backgroundNode.addChild( groundedCircuitNode );
 
     // Added after super() so the arrows layer in front of the electrons drawn by the particle canvas.

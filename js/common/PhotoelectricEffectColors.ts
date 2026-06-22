@@ -84,9 +84,41 @@ export default class PhotoelectricEffectColors {
     default: '#2284c5'
   } );
 
+  // Gray fallback for configurable/non-real target materials, such as Custom and Mystery 2.
   public static readonly targetPlateFillColorProperty = new ProfileColorProperty( photoelectricEffect, 'targetPlateFill', {
     default: 'gray'
   } );
+
+  // Target plate fill colors for real metals. See https://github.com/phetsims/photoelectric-effect/issues/104.
+  public static readonly targetPlateSodiumFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'targetPlateSodiumFill', {
+      default: '#BEBEBA'
+    } );
+
+  public static readonly targetPlateCalciumFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'targetPlateCalciumFill', {
+      default: '#D2CBB4'
+    } );
+
+  public static readonly targetPlateMagnesiumFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'targetPlateMagnesiumFill', {
+      default: '#A7ABAD'
+    } );
+
+  public static readonly targetPlateZincFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'targetPlateZincFill', {
+      default: '#98A8B6'
+    } );
+
+  public static readonly targetPlateCopperFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'targetPlateCopperFill', {
+      default: '#B7703F'
+    } );
+
+  public static readonly targetPlatePlatinumFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'targetPlatePlatinumFill', {
+      default: '#DADDE1'
+    } );
 
   public static readonly collectorColorProperty = new ProfileColorProperty( photoelectricEffect, 'collector', {
     default: 'black'

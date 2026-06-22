@@ -9,6 +9,7 @@
  * @author Marla Schulz (PhET Interactive Simulations)
  */
 
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import Shape from '../../../../kite/js/Shape.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import StrictOmit from '../../../../phet-core/js/types/StrictOmit.js';
@@ -17,14 +18,19 @@ import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import type Material from '../../common/model/Material.js';
 import CircuitFactory from '../../common/view/CircuitFactory.js';
 
 type SelfOptions = EmptySelfOptions;
 type GroundedCircuitNodeOptions = SelfOptions & StrictOmit<NodeOptions, 'children'>;
 
 export default class GroundedCircuitNode extends Node {
-  public constructor( modelViewTransform: ModelViewTransform2, providedOptions?: GroundedCircuitNodeOptions ) {
-    const targetPlate = CircuitFactory.createPlateWithMaterial( {
+  public constructor(
+    modelViewTransform: ModelViewTransform2,
+    materialProperty: TReadOnlyProperty<Material>,
+    providedOptions?: GroundedCircuitNodeOptions
+  ) {
+    const targetPlate = CircuitFactory.createPlateWithMaterial( materialProperty, {
       rightCenter: modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 )
     } );
 
