@@ -15,6 +15,7 @@ import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
+import { electronVoltUnit } from '../../../../scenery-phet/js/units/electronVoltUnit.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -61,11 +62,13 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
     // These DynamicProperties are bidirectional so the NumberControls edit the currently selected Material directly.
     const workFunctionProperty = new DynamicProperty<number, number, Material>( materialProperty, {
       bidirectional: true,
+      units: electronVoltUnit,
       derive: 'workFunctionProperty'
     } );
 
     const bandWidthProperty = new DynamicProperty<number, number, Material>( materialProperty, {
       bidirectional: true,
+      units: electronVoltUnit,
       derive: 'bandDepthProperty'
     } );
 
@@ -110,8 +113,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
         font: PhotoelectricEffectConstants.CONTENT_FONT
       },
       numberDisplayOptions: {
-        decimalPlaces: 1,
-        valuePattern: '{{value}} eV'
+        decimalPlaces: 1
       },
       sliderOptions: {
         trackSize: CONTROL_TRACK_SIZE,

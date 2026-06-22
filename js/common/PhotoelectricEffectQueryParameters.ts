@@ -9,6 +9,7 @@
 
 import logGlobal from '../../../phet-core/js/logGlobal.js';
 import { QueryStringMachine } from '../../../query-string-machine/js/QueryStringMachineModule.js';
+import Material from './model/Material.js';
 import { PhotonModeValues } from './model/PhotonMode.js';
 
 const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
@@ -23,7 +24,16 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
   mysteryMaterial2WorkFunction: {
     public: true,
     type: 'number',
-    defaultValue: 5
+    defaultValue: 5,
+    isValidValue: value => Material.WORK_FUNCTION_RANGE.contains( value )
+  },
+
+  // Initial band depth (in eV) for mystery material 2.
+  mysteryMaterial2BandDepth: {
+    public: true,
+    type: 'number',
+    defaultValue: 5,
+    isValidValue: value => Material.BAND_DEPTH_RANGE.contains( value )
   },
 
   // Whether the photon source control directly sets the photon emission rate.

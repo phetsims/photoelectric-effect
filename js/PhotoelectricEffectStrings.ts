@@ -119,6 +119,14 @@ type StringsType = {
     'mysteryMaterial': {
       'labelStringProperty': LocalizedStringProperty;
       'descriptionStringProperty': LocalizedStringProperty;
+      'workFunction': {
+        'labelStringProperty': LocalizedStringProperty;
+        'descriptionStringProperty': LocalizedStringProperty;
+      };
+      'bandDepth': {
+        'labelStringProperty': LocalizedStringProperty;
+        'descriptionStringProperty': LocalizedStringProperty;
+      }
     }
   };
   'a11y': {

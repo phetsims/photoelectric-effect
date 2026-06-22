@@ -7,8 +7,8 @@
  * but it can change from PhET-iO. It is still global and when the work function is changed, it applies to
  * all screens.
  *
- * PREFERENCES_MYSTERY_MATERIAL_2 is enabled and user-configurable via the Preferences dialog. Its work function
- * is exposed through PhotoelectricEffectPreferences and persists across sessions.
+ * PREFERENCES_MYSTERY_MATERIAL_2 is user-configurable via the Preferences dialog. Its enabled state, work function,
+ * and band depth are initialized by query parameters and persist across sessions as preferences.
  *
  * PHET_IO_MYSTERY_MATERIAL_1 through _3 are reserved for PhET-iO clients (e.g. Studio)
  * who need additional controllable mystery materials. Their work functions are set exclusively
@@ -22,6 +22,7 @@
  */
 
 import Tandem from '../../../../tandem/js/Tandem.js';
+import PhotoelectricEffectQueryParameters from '../PhotoelectricEffectQueryParameters.js';
 import Material, { MaterialType } from './Material.js';
 
 const PREFERENCES_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
@@ -32,7 +33,9 @@ const PREFERENCES_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
 const PREFERENCES_MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial2' ),
   labelKey: 'mystery2',
-  enabled: false
+  workFunctionInitialValue: PhotoelectricEffectQueryParameters.mysteryMaterial2WorkFunction,
+  bandDepthInitialValue: PhotoelectricEffectQueryParameters.mysteryMaterial2BandDepth,
+  enabled: PhotoelectricEffectQueryParameters.mysteryMaterial2Enabled
 } );
 const PHET_IO_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial1' ),
