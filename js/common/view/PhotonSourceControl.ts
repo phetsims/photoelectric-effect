@@ -51,8 +51,6 @@ export default class PhotonSourceControl extends Panel {
       tandem: options.tandem.createTandem( 'wavelengthNumberControl' )
     } );
 
-    // BEWARE: The localBounds of the outputSlider are overridden to exclude the value readout so that
-    // the slider and number control appear more logically centered.
     const content = new VBox( {
       spacing: 12,
       align: 'center',
