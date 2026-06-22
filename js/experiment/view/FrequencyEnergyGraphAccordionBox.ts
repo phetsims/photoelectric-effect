@@ -16,7 +16,7 @@ import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from './GraphAssemblyAccordionBox.js';
+import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from './graph/GraphAssemblyAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
 

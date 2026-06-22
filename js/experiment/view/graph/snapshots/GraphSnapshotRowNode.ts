@@ -8,20 +8,20 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import DerivedProperty from '../../../../../axon/js/DerivedProperty.js';
-import type { TReadOnlyProperty } from '../../../../../axon/js/TReadOnlyProperty.js';
-import type Bounds2 from '../../../../../dot/js/Bounds2.js';
-import type Range from '../../../../../dot/js/Range.js';
-import type Vector2 from '../../../../../dot/js/Vector2.js';
-import HBox from '../../../../../scenery/js/layout/nodes/HBox.js';
-import VBox from '../../../../../scenery/js/layout/nodes/VBox.js';
-import VSeparator from '../../../../../scenery/js/layout/nodes/VSeparator.js';
-import type Node from '../../../../../scenery/js/nodes/Node.js';
-import Text from '../../../../../scenery/js/nodes/Text.js';
-import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
-import getMaterialLabelStringProperty from '../../../common/view/getMaterialLabelStringProperty.js';
-import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
-import GraphSnapshot from '../../model/GraphSnapshot.js';
+import DerivedProperty from '../../../../../../axon/js/DerivedProperty.js';
+import type { TReadOnlyProperty } from '../../../../../../axon/js/TReadOnlyProperty.js';
+import type Bounds2 from '../../../../../../dot/js/Bounds2.js';
+import type Range from '../../../../../../dot/js/Range.js';
+import type Vector2 from '../../../../../../dot/js/Vector2.js';
+import HBox from '../../../../../../scenery/js/layout/nodes/HBox.js';
+import VBox from '../../../../../../scenery/js/layout/nodes/VBox.js';
+import VSeparator from '../../../../../../scenery/js/layout/nodes/VSeparator.js';
+import type Node from '../../../../../../scenery/js/nodes/Node.js';
+import Text from '../../../../../../scenery/js/nodes/Text.js';
+import PhotoelectricEffectConstants from '../../../../common/PhotoelectricEffectConstants.js';
+import getMaterialLabelStringProperty from '../../../../common/view/getMaterialLabelStringProperty.js';
+import PhotoelectricEffectFluent from '../../../../PhotoelectricEffectFluent.js';
+import GraphSnapshot from '../../../model/GraphSnapshot.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from '../GraphPlotAreaNode.js';
 
 export default class GraphSnapshotRowNode extends HBox {
@@ -190,7 +190,7 @@ export default class GraphSnapshotRowNode extends HBox {
   /**
    * Finds the nearest saved snapshot point to the provided x value and returns its y value.
    *
-   * TODO: @design - I chose to use getCLosestValue instead of interpolate, is that correct?
+   * TODO: @design - I chose to use getClosestYValue instead of interpolation, is that correct?
    */
   public getClosestYValue( x: number ): number | null {
     const points = this.pointsProperty.value;

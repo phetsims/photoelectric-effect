@@ -26,7 +26,7 @@ import PhotonSourceControl from '../../common/view/PhotonSourceControl.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import FrequencyEnergyGraphAccordionBox from './FrequencyEnergyGraphAccordionBox.js';
-import GraphAssemblyAccordionBox from './GraphAssemblyAccordionBox.js';
+import GraphAssemblyAccordionBox from './graph/GraphAssemblyAccordionBox.js';
 import IntensityCurrentGraphAccordionBox from './IntensityCurrentGraphAccordionBox.js';
 import VoltageCurrentGraphAccordionBox from './VoltageCurrentGraphAccordionBox.js';
 import VoltageNumberControl from './VoltageNumberControl.js';

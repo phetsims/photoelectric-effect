@@ -13,13 +13,13 @@ import { type EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { voltsUnit } from '../../../../scenery-phet/js/units/voltsUnit.js';
 import type { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
-import { ampsToMicroamps } from '../../common/model/PhotoelectricEffectUtils.js';
 import { microamperesUnit } from '../../common/model/microamperesUnit.js';
+import { ampsToMicroamps } from '../../common/model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
-import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from './GraphAssemblyAccordionBox.js';
+import GraphAssemblyAccordionBox, { type GraphAssemblyAccordionBoxOptions } from './graph/GraphAssemblyAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
 

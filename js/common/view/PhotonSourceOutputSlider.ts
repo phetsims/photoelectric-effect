@@ -10,12 +10,15 @@
 
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
+import Bounds2 from '../../../../dot/js/Bounds2.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Range from '../../../../dot/js/Range.js';
-import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { combineOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberDisplay, { NumberDisplayOptions } from '../../../../scenery-phet/js/NumberDisplay.js';
+import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
+import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import HStrut from '../../../../scenery/js/nodes/HStrut.js';
 import Node, { NodeOptions } from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -109,19 +112,41 @@ export default class PhotonSourceOutputSlider extends Node {
       }
     ) );
 
-    this.addChild( outputLabel );
-    this.addChild( outputGradientRectangle );
-    this.addChild( outputSlider );
-    this.addChild( outputReadout );
+    const sliderStack = new Node( {
+      children: [
+        outputGradientRectangle,
+        outputSlider
+      ]
+    } );
 
+    // An invisible strut balances the visible readout so the slider remains centered in the parent layout.
+    const readoutBalanceStrut = new HStrut( 0, {
+      pickable: false,
+      visibleProperty: outputReadout.visibleProperty
+    } );
+    outputReadout.localBoundsProperty.link( bounds => {
+      readoutBalanceStrut.localBounds = new Bounds2( 0, 0, bounds.width, 0 );
+    } );
+
+    const content = new VBox( {
+      spacing: LABEL_SLIDER_SPACING,
+      align: 'center',
+      children: [
+        outputLabel,
+        new HBox( {
+          spacing: READOUT_SPACING,
+          align: 'center',
+          children: [
+            readoutBalanceStrut,
+            sliderStack,
+            outputReadout
+          ]
+        } )
+      ]
+    } );
+
+    this.addChild( content );
     this.mutate( options );
-
-    // Static layout - slider and gradient are at the origin, output label centered above, with
-    // output readout centered to the right.
-    outputLabel.centerX = outputGradientRectangle.centerX;
-    outputLabel.bottom = outputGradientRectangle.top - LABEL_SLIDER_SPACING;
-    outputReadout.left = outputGradientRectangle.right + READOUT_SPACING;
-    outputReadout.centerY = outputGradientRectangle.centerY;
 
     // Update gradient for the backplate when selected wavelength changes.
     const gradientWidth = outputGradientRectangle.rectWidth;
@@ -130,20 +155,6 @@ export default class PhotonSourceOutputSlider extends Node {
       outputGradientRectangle.fill = new LinearGradient( 0, 0, gradientWidth, 0 )
         .addColorStop( 0, Color.BLACK )
         .addColorStop( 1, endColor );
-    } );
-
-    // Override local bounds for this component when the output string changes (likely from
-    // dynamic locales). The logical bounds includes the backplate rectangle and the output label,
-    // but excludes the output readout for layout purposes when used in panels.
-    const backplateBounds = outputGradientRectangle.bounds;
-    outputLabel.boundsProperty.link( () => {
-      outputLabel.centerX = outputGradientRectangle.centerX;
-      outputLabel.bottom = outputGradientRectangle.top - LABEL_SLIDER_SPACING;
-
-      const layoutBoundsLocal = outputLabel.bounds.union( backplateBounds );
-
-      affirm( layoutBoundsLocal.isValid(), 'Bounds should be valid before overriding local bounds' );
-      this.setLocalBounds( layoutBoundsLocal );
     } );
   }
 }

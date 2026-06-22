@@ -22,6 +22,7 @@ import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
 import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
+import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
 import Path from '../../../../scenery/js/nodes/Path.js';
@@ -112,17 +113,32 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // First control point of the cubic curve below the start and second control point above the end create the S
     // regardless of height difference.
     const S_BEND = 200;
+    const WIRE_PANEL_OVERLAP = 2;
     const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
-    const photonSourceWireEnd = this.photonSourcePanel.rightCenter.plusXY( -2, 0 ); // So the wire end overlaps with the panel.
-    const photonSourceWireNode = new Path( new Shape()
-      .moveToPoint( photonSourceWireStart )
-      .cubicCurveToPoint(
-        photonSourceWireStart.plusXY( 0, -S_BEND ),
-        photonSourceWireEnd.plusXY( 0, S_BEND ),
-        photonSourceWireEnd
-      ), {
+    const getPhotonSourceWireEnd = ( photonSourcePanelRightCenter: Vector2 ): Vector2 => {
+
+      // Overlap with the panel so the wire appears tucked under the panel border.
+      return photonSourcePanelRightCenter.plusXY( -WIRE_PANEL_OVERLAP, 0 );
+    };
+    const createPhotonSourceWireShape = ( photonSourceWireEnd: Vector2 ): Shape => {
+      return new Shape()
+        .moveToPoint( photonSourceWireStart )
+        .cubicCurveToPoint(
+          photonSourceWireStart.plusXY( 0, -S_BEND ),
+          photonSourceWireEnd.plusXY( 0, S_BEND ),
+          photonSourceWireEnd
+        );
+    };
+    const photonSourceWireNode = new Path( createPhotonSourceWireShape(
+      getPhotonSourceWireEnd( this.photonSourcePanel.rightCenter )
+    ), {
       stroke: PhotoelectricEffectColors.circuitStrokeColorProperty,
       lineWidth: 3
+    } );
+    ManualConstraint.create( this, [ this.photonSourcePanel ], photonSourcePanelProxy => {
+      photonSourceWireNode.shape = createPhotonSourceWireShape(
+        getPhotonSourceWireEnd( photonSourcePanelProxy.rightCenter )
+      );
     } );
 
     //------------------------------------------------------------------------

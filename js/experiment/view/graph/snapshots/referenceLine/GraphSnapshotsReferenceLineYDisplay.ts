@@ -6,10 +6,10 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import DerivedProperty from '../../../../../../axon/js/DerivedProperty.js';
-import NumberProperty from '../../../../../../axon/js/NumberProperty.js';
-import Vector2 from '../../../../../../dot/js/Vector2.js';
-import Node from '../../../../../../scenery/js/nodes/Node.js';
+import DerivedProperty from '../../../../../../../axon/js/DerivedProperty.js';
+import NumberProperty from '../../../../../../../axon/js/NumberProperty.js';
+import Vector2 from '../../../../../../../dot/js/Vector2.js';
+import Node from '../../../../../../../scenery/js/nodes/Node.js';
 import GraphSnapshotRowNode from '../GraphSnapshotRowNode.js';
 import GraphSnapshotsReferenceLineNumberDisplay, { type GraphSnapshotsReferenceLineNumberDisplayOptions } from './GraphSnapshotsReferenceLineNumberDisplay.js';
 

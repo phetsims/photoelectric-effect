@@ -6,17 +6,17 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import ChartTransform from '../../../../bamboo/js/ChartTransform.js';
-import GridLineSet from '../../../../bamboo/js/GridLineSet.js';
-import TickLabelSet from '../../../../bamboo/js/TickLabelSet.js';
-import TickMarkSet from '../../../../bamboo/js/TickMarkSet.js';
-import Range from '../../../../dot/js/Range.js';
-import { roundSymmetric } from '../../../../dot/js/util/roundSymmetric.js';
-import { toFixed } from '../../../../dot/js/util/toFixed.js';
-import Orientation from '../../../../phet-core/js/Orientation.js';
-import Text from '../../../../scenery/js/nodes/Text.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
-import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
+import GridLineSet from '../../../../../bamboo/js/GridLineSet.js';
+import TickLabelSet from '../../../../../bamboo/js/TickLabelSet.js';
+import TickMarkSet from '../../../../../bamboo/js/TickMarkSet.js';
+import Range from '../../../../../dot/js/Range.js';
+import { roundSymmetric } from '../../../../../dot/js/util/roundSymmetric.js';
+import { toFixed } from '../../../../../dot/js/util/toFixed.js';
+import Orientation from '../../../../../phet-core/js/Orientation.js';
+import Text from '../../../../../scenery/js/nodes/Text.js';
+import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
 
 // Type to customize which tick marks receive labels.
 // edge - only the range minimum, midpoint, and maximum tick marks receive labels.
@@ -164,7 +164,10 @@ export default class GraphPlotAxisSets {
   /**
    * Creates a label factory that only labels the min, midpoint, and max ticks of a range.
    */
-  private static createEdgeLabel( range: Range, formatter: ( ( value: number ) => string ) | null ): ( value: number ) => Text | null {
+  private static createEdgeLabel(
+    range: Range,
+    formatter: ( ( value: number ) => string ) | null
+  ): ( value: number ) => Text | null {
     const min = range.min;
     const max = range.max;
     const mid = range.getCenter();
