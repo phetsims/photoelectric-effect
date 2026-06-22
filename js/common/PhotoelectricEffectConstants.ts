@@ -151,6 +151,10 @@ export default class PhotoelectricEffectConstants {
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
   public static readonly SCREEN_VIEW_Y_MARGIN = 15;
 
+  // Shared visual styling for the photon source panels on all screens.
+  public static readonly PHOTON_SOURCE_PANEL_LINE_WIDTH = 3;
+  public static readonly PHOTON_SOURCE_PANEL_CORNER_RADIUS = 4;
+
   // Maximum text width used by dialogs for readable line lengths.
   public static readonly DIALOG_MAX_CONTENT_WIDTH = 480;
 

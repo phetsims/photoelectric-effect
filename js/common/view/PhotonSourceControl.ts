@@ -15,6 +15,7 @@ import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import LabeledWavelengthNumberControl from './LabeledWavelengthNumberControl.js';
 import PhotonSourceOutputSlider from './PhotonSourceOutputSlider.js';
 
@@ -30,8 +31,8 @@ export default class PhotonSourceControl extends Panel {
   public constructor( photonSource: PhotonSource, providedOptions: PhotonSourceControlOptions ) {
     const options = optionize<PhotonSourceControlOptions, SelfOptions, PanelOptions>()( {
       stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
-      lineWidth: 3,
-      cornerRadius: 4,
+      lineWidth: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_LINE_WIDTH,
+      cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_CORNER_RADIUS,
       fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,
       align: 'center',
       isDisposable: false,
@@ -51,6 +52,8 @@ export default class PhotonSourceControl extends Panel {
       tandem: options.tandem.createTandem( 'wavelengthNumberControl' )
     } );
 
+    // BEWARE: The localBounds of the outputSlider are overridden to exclude the value readout so that
+    // the slider and number control appear more logically centered.
     const content = new VBox( {
       spacing: 12,
       align: 'center',
