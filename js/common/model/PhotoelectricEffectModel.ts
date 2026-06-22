@@ -530,15 +530,9 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
     const electronsPerSecondToAnode = electronsPerSecondFromTarget * fractionMoreEnergeticThanRetardingVoltage;
 
-    // Quantum efficiency (η) scales the ejection probability uniformly; keeps the analytical current consistent
-    // with the per-photon emission path, which applies the same factor.
-    const physicalElectronsPerSecond =
-      electronsPerSecondToAnode * PhotoelectricEffectConstants.QUANTUM_EFFICIENCY;
-
-    // I = e · N_electrons_physical · η · accessibleBandFraction · fractionReachingCollector (see the "Analytical
-    // Current Formula" section of doc/model-reference.md). The photon rate fed into this calculation is already
-    // the physical flux, so no further magnification is needed.
-    return physicalElectronsPerSecond * PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
+    // I = e * N_electrons_physical. The photon rate fed into this calculation is already the physical flux, and
+    // the accessible-band fraction and collector-reaching fraction have already been applied above.
+    return electronsPerSecondToAnode * PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
   }
 
   // Aggregate state for transient particles. ReferenceArrayIO mutates the existing arrays during restore so views that

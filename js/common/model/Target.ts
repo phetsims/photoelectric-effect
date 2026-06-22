@@ -123,11 +123,11 @@ export default class Target {
    *
    * @param photon
    * @param highestEnergyOnly - When true, use the highest available electron energy for emitted particles, matching
-   *   Java "simple-mode" absorption behavior. This does not guarantee emission; the normal quantum-efficiency gate
-   *   and accessible-band rejection still apply, so the electron rate remains probabilistic.
-   * @param emitAllAbsorbedPhotons - When true, bypass the quantum-efficiency gate and sample only from the portion
-   *   of the occupied band that can escape. This guarantees emission for every photon above the work-function
-   *   threshold while preserving a continuous emitted-energy distribution.
+   *   Java "simple-mode" absorption behavior. This does not guarantee emission; visible electrons remain a small
+   *   sample, and photons at or below the work-function threshold still do not emit.
+   * @param emitAllAbsorbedPhotons - When true, sample only from the portion of the occupied band that can escape.
+   *   This guarantees emission for every photon above the work-function threshold while preserving a continuous
+   *   emitted-energy distribution.
    */
   public handlePhotonCollision(
     photon: Photon,
@@ -136,6 +136,7 @@ export default class Target {
   ): PhotonCollisionResult {
     const photonEnergy = photon.getEnergy();
     const workFunction = this.workFunctionProperty.value;
+    const bandDepth = this.bandDepthProperty.value;
 
     // TODO: @design If emitAllAbsorbedPhotons and highestEnergyOnly are both true, emitAllAbsorbedPhotons wins.
     //  Discuss whether this should instead be represented as mutually exclusive modes. But if so,
@@ -148,18 +149,10 @@ export default class Target {
     // TODO: @design Was emitAllAbsorbedPhotons intended only for the 3rd screen? If so, maybe it should be a
     //  checkbox on screen instead of a simulation preference?
 
-    // The emit-all preference bypasses quantum efficiency so that above-threshold photons always emit.
-    // Quantum efficiency rejection: even when a photon has enough energy to eject an electron, only a fraction
-    // η of such absorptions actually produces one. The remaining fraction is treated as absorbed-to-heat with
-    // no electron emitted.
-    if ( !emitAllAbsorbedPhotons && dotRandom.nextDouble() > PhotoelectricEffectConstants.QUANTUM_EFFICIENCY ) {
-      return Target.createCollisionResult( photonEnergy, null, null );
-    }
-
     let bindingEnergy: number | null;
     if ( emitAllAbsorbedPhotons ) {
       bindingEnergy = Material.sampleBindingEnergyForGuaranteedPhotonEmission(
-        photonEnergy, workFunction, this.bandDepthProperty.value
+        photonEnergy, workFunction, bandDepth
       );
     }
     else if ( highestEnergyOnly ) {
@@ -172,7 +165,7 @@ export default class Target {
       bindingEnergy = dotRandom.nextDouble() < 1 / 20 ? workFunction : null;
     }
     else {
-      bindingEnergy = Material.sampleBindingEnergy( workFunction, this.bandDepthProperty.value );
+      bindingEnergy = Material.sampleBindingEnergy( workFunction, bandDepth );
     }
 
     if ( bindingEnergy === null ) {

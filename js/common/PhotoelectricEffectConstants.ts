@@ -60,14 +60,6 @@ export default class PhotoelectricEffectConstants {
   // KNOBS
   // ------------------------------------------------
 
-  // Quantum efficiency (η) of the photoemission process: the probability, given a photon with enough energy
-  // to access at least some of the occupied band, that an electron is actually ejected. Applied as a single
-  // scale factor on ejection probability (see the "Quantum Efficiency" section of doc/model-reference.md).
-  // Affects both the visible emission rate and the analytical current. Defaults to 0.5; tune for
-  // visual/pedagogical effect.
-  // TODO: Maybe this isn't a knob? Maybe we get rid of it?
-  public static readonly QUANTUM_EFFICIENCY = 1;
-
   // TODO: Our most powerful lever?
   // Number of physical photons each on-screen photon represents (and therefore the number of physical
   // electrons each visible ejection contributes to the ammeter reading). Visible photons are a sampled
@@ -119,9 +111,8 @@ export default class PhotoelectricEffectConstants {
 
   // Maximum expected current for the ammeter display, graphs, and model when in photon rate mode. When the photon rate
   // is normalized the ceiling will be about 6% lower than this calculated number, however we only need this one constant
-  // since it covers the expected max current for both modes. Derived from max photon rate and quantum efficiency.
+  // since it covers the expected max current for both modes. Derived from the max photon rate.
   public static readonly MAX_CURRENT = PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND *
-    PhotoelectricEffectConstants.QUANTUM_EFFICIENCY *
     PhotoelectricEffectConstants.ELEMENTARY_CHARGE;
 
   // Acceleration scale from voltage to model units (model units per V·s²).
