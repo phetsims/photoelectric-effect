@@ -81,12 +81,13 @@ export default class GraphSnapshotsReferenceLineNode extends Node {
       } )
     );
 
-    const yDisplays = snapshotRows.map( ( snapshotRow, i ) => {
+    const yDisplaysTandem = providedOptions.tandem.createGroupTandem( 'yDisplay' );
+    const yDisplays = snapshotRows.map( snapshotRow => {
       return new GraphSnapshotsReferenceLineYDisplay(
         snapshotRow,
         model.xProperty,
         combineOptions<GraphSnapshotsReferenceLineNumberDisplayOptions>( {}, providedOptions.yDisplayOptions, {
-          tandem: providedOptions.tandem.createTandem( `yDisplay${i}` )
+          tandem: yDisplaysTandem.createNextTandem()
         } )
       );
     } );
