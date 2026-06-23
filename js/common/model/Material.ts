@@ -2,7 +2,8 @@
 
 /**
  * Material is an instantiable class representing a target material with its own physical parameter Properties.
- * MaterialType is the enumeration of available materials and their initial physical parameter values.
+ * MaterialType is the enumeration of available materials, their initial physical parameter values, and their target
+ * plate colors.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -11,6 +12,7 @@
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import EnabledProperty from '../../../../axon/js/EnabledProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
+import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Range from '../../../../dot/js/Range.js';
 import Enumeration from '../../../../phet-core/js/Enumeration.js';
@@ -18,11 +20,16 @@ import EnumerationValue from '../../../../phet-core/js/EnumerationValue.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { electronVoltUnit } from '../../../../scenery-phet/js/units/electronVoltUnit.js';
-import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
+import type Color from '../../../../scenery/js/util/Color.js';
+import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
+import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 
 type MaterialTypeOptions = {
+
+  // Color used for the target plate material strip when this type is selected.
+  targetPlateFillColorProperty: TReadOnlyProperty<Color>;
 
   // Whether the material's physical parameters are read-only through PhET-iO. Defaults to true because most
   // material types represent fixed physical materials.
@@ -34,16 +41,27 @@ export class MaterialType extends EnumerationValue {
   // Work functions (φ, eV) and occupied-band depths as prescribed by design.
   // Band depth is the effective range of binding energies available for photoemission, measured downward from
   // the Fermi level. It determines both the KE spread of ejected electrons and where the I-vs-f curve saturates.
-  public static readonly SODIUM = new MaterialType( 2.46, 3.24 );
-  public static readonly COPPER = new MaterialType( 4.70, 7.00 );
-  public static readonly CALCIUM = new MaterialType( 2.87, 4.69 );
-  public static readonly PLATINUM = new MaterialType( 6.35, 6.0 );
-  public static readonly ZINC = new MaterialType( 4.31, 9.47 );
+  public static readonly SODIUM = new MaterialType( 2.46, 3.24, {
+    targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateSodiumFillColorProperty
+  } );
+  public static readonly COPPER = new MaterialType( 4.70, 7.00, {
+    targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateCopperFillColorProperty
+  } );
+  public static readonly CALCIUM = new MaterialType( 2.87, 4.69, {
+    targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateCalciumFillColorProperty
+  } );
+  public static readonly PLATINUM = new MaterialType( 6.35, 6.0, {
+    targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlatePlatinumFillColorProperty
+  } );
+  public static readonly ZINC = new MaterialType( 4.31, 9.47, {
+    targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateZincFillColorProperty
+  } );
 
   // Mystery materials are for teachers and PhET-iO clients. Their physical parameters will only be set from
   // preferences or with a PhET-iO customization. As such, simulation reset should not affect mystery materials.
   // Work function and band depth match Magnesium (φ=3.66 eV, bandDepth=7.08 eV).
   public static readonly MYSTERY = new MaterialType( 3.66, 7.08, {
+    targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateFillColorProperty,
     parametersPhetioReadOnly: false
   } );
 
@@ -51,6 +69,7 @@ export class MaterialType extends EnumerationValue {
   // in the simulation. Reset should restore both properties to their initial values.
   // Defaults and range from the Material Properties section in doc/model-reference.md
   public static readonly CUSTOM = new MaterialType( 5, 5.0, {
+    targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateFillColorProperty,
     parametersPhetioReadOnly: false
   } );
 
@@ -63,7 +82,12 @@ export class MaterialType extends EnumerationValue {
   public readonly parametersPhetioReadOnly: boolean;
 
   /**
-   * Creates a material type with physics parameters and PhET-iO mutability policy.
+   * Color used for the target plate material strip when this type is selected.
+   */
+  public readonly targetPlateFillColorProperty: TReadOnlyProperty<Color>;
+
+  /**
+   * Creates a material type with physics parameters, target-plate color, and PhET-iO mutability policy.
    *
    * @param workFunctionInitialValue - minimum energy to eject an electron from the Fermi level, in eV (φ)
    * @param bandDepthInitialValue - effective occupied-band depth available for photoemission, in eV
@@ -72,7 +96,7 @@ export class MaterialType extends EnumerationValue {
   public constructor(
     public readonly workFunctionInitialValue: number,
     public readonly bandDepthInitialValue: number,
-    providedOptions?: MaterialTypeOptions
+    providedOptions: MaterialTypeOptions
   ) {
     super();
 
@@ -81,6 +105,7 @@ export class MaterialType extends EnumerationValue {
     }, providedOptions );
 
     this.parametersPhetioReadOnly = options.parametersPhetioReadOnly;
+    this.targetPlateFillColorProperty = options.targetPlateFillColorProperty;
   }
 }
 

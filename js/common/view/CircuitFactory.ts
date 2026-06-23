@@ -9,15 +9,15 @@
  *
  */
 
-import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import DynamicProperty from '../../../../axon/js/DynamicProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
-import Node, { NodeOptions, NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
-import Rectangle, { RectangleOptions } from '../../../../scenery/js/nodes/Rectangle.js';
+import Node, { type NodeOptions, type NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
+import Rectangle, { type RectangleOptions } from '../../../../scenery/js/nodes/Rectangle.js';
+import type Color from '../../../../scenery/js/util/Color.js';
 import type Material from '../model/Material.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
-import getTargetPlateFillColorProperty from './getTargetPlateFillColorProperty.js';
 
 export default class CircuitFactory {
 
@@ -45,18 +45,9 @@ export default class CircuitFactory {
     translationOptions?: NodeTranslationOptions
   ): Node {
 
-    // Include each target-plate color Property so color-profile edits update the selected material fill.
-    const targetPlateFillProperty = new DerivedProperty( [
-        materialProperty,
-        PhotoelectricEffectColors.targetPlateFillColorProperty,
-        PhotoelectricEffectColors.targetPlateSodiumFillColorProperty,
-        PhotoelectricEffectColors.targetPlateCalciumFillColorProperty,
-        PhotoelectricEffectColors.targetPlateMagnesiumFillColorProperty,
-        PhotoelectricEffectColors.targetPlateZincFillColorProperty,
-        PhotoelectricEffectColors.targetPlateCopperFillColorProperty,
-        PhotoelectricEffectColors.targetPlatePlatinumFillColorProperty
-      ],
-      material => getTargetPlateFillColorProperty( material ).value );
+    const targetPlateFillProperty = new DynamicProperty<Color, Color, Material>( materialProperty, {
+      derive: material => material.materialType.targetPlateFillColorProperty
+    } );
 
     const material = new Rectangle( PhotoelectricEffectConstants.PLATE_MATERIAL_BOUNDS, {
       fill: targetPlateFillProperty,
