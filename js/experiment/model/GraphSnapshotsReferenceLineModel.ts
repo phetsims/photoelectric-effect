@@ -32,7 +32,8 @@ export default class GraphSnapshotsReferenceLineModel {
       providedOptions
     );
 
-    this.visibleProperty = new BooleanProperty( true, {
+    // Default hidden to indicate it is interactive, see https://github.com/phetsims/photoelectric-effect/issues/117.
+    this.visibleProperty = new BooleanProperty( false, {
       tandem: options.tandem.createTandem( 'visibleProperty' ),
       phetioFeatured: true
     } );
