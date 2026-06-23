@@ -13,6 +13,7 @@ import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
 import Range from '../../../../../dot/js/Range.js';
 import Vector2 from '../../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../../phet-core/js/optionize.js';
+import ManualConstraint from '../../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import Node, { type NodeOptions } from '../../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
@@ -20,9 +21,9 @@ import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
 import EnergyGraphData from '../../model/EnergyGraphData.js';
 import EnergyGraphDisplayProperties from '../../model/EnergyGraphDisplayProperties.js';
 import EnergyGraphSample from '../../model/EnergyGraphSample.js';
+import EnergyGraphLayout from '../EnergyGraphLayout.js';
 import EnergyDiagramDecorationsNode from './EnergyDiagramDecorationsNode.js';
 import EnergyDiagramSampleMarkerNode from './EnergyDiagramSampleMarkerNode.js';
-import EnergyGraphLayout from '../EnergyGraphLayout.js';
 
 type SelfOptions = EmptySelfOptions;
 export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
@@ -30,6 +31,9 @@ export type EnergyDiagramNodeOptions = SelfOptions & NodeOptions;
 // View size of the shared chart rectangle.
 const CHART_VIEW_WIDTH = 170;
 const CHART_VIEW_HEIGHT = 310;
+
+// Space between the y-axis label's right edge and the chart's y-axis.
+const Y_AXIS_LABEL_MARGIN = 96;
 
 export default class EnergyDiagramNode extends Node {
 
@@ -124,15 +128,19 @@ export default class EnergyDiagramNode extends Node {
       ]
     } );
 
-    yAxisLabel.rightCenter = new Vector2( -96, CHART_VIEW_HEIGHT / 2 );
+    const graphNode = new Node( {
+      children: [
+        yAxisLabel,
+        chartNode
+      ]
+    } );
 
-    this.children = [
-      new Node( {
-        children: [
-          yAxisLabel,
-          chartNode
-        ]
-      } )
-    ];
+    // dynamic locales - keep the y axis label in place when the language changes
+    ManualConstraint.create( graphNode, [ yAxisLabel ], yAxisLabelProxy => {
+      yAxisLabelProxy.right = -Y_AXIS_LABEL_MARGIN;
+      yAxisLabelProxy.top = 0;
+    } );
+
+    this.children = [ graphNode ];
   }
 }
