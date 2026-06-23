@@ -45,7 +45,7 @@ import IOType from '../../../../tandem/js/types/IOType.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import type PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
-import PhotoelectricEffectQueryParameters from '../../common/PhotoelectricEffectQueryParameters.js';
+import PhotoelectricEffectPreferences from '../../common/model/PhotoelectricEffectPreferences.js';
 import GraphSnapshot from './GraphSnapshot.js';
 
 type SelfOptions = {
@@ -245,6 +245,11 @@ export default class GraphData extends PhetioObject {
       this.dataChangedEmitter.emit();
     } );
 
+    // Changing this preference only changes which cached bins get returned by getDataPoints().
+    PhotoelectricEffectPreferences.showAllGraphDataProperty.lazyLink( () => {
+      this.dataChangedEmitter.emit();
+    } );
+
     Multilink.lazyMultilinkAny( clearDependencies, () => {
 
       // Deterministic bins cache y-values for one physical configuration.
@@ -265,12 +270,12 @@ export default class GraphData extends PhetioObject {
 
   /**
    * Points in model/chart coordinates in ascending chart x. By default, this returns revealed bins only.
-   * With ?showAllGraphData, this returns every deterministic bin. Do not mutate; use clear() to empty.
+   * With the showAllGraphData preference, this returns every deterministic bin. Do not mutate; use clear() to empty.
    */
   public getDataPoints(): ReadonlyArray<Vector2> {
     const dataPoints: Vector2[] = [];
     this.bins.forEach( bin => {
-      if ( PhotoelectricEffectQueryParameters.showAllGraphData || bin.revealed ) {
+      if ( PhotoelectricEffectPreferences.showAllGraphDataProperty.value || bin.revealed ) {
         dataPoints.push( bin.dataPoint );
       }
     } );

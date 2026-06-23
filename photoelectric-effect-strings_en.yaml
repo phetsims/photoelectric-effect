@@ -94,6 +94,9 @@ preferences:
   showPhotons:
     label: 'Show photons'
     description: 'Light source emits photons'
+  showAllGraphData:
+    label: 'Show all graph data'
+    description: 'Display all data points for the current experiment parameters.'
   mysteryMaterial:
     label:       'Add second mystery material'
     description: 'Additional target material option with customizable physical values.'

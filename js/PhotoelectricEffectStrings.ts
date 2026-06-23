@@ -120,6 +120,10 @@ type StringsType = {
       'labelStringProperty': LocalizedStringProperty;
       'descriptionStringProperty': LocalizedStringProperty;
     };
+    'showAllGraphData': {
+      'labelStringProperty': LocalizedStringProperty;
+      'descriptionStringProperty': LocalizedStringProperty;
+    };
     'mysteryMaterial': {
       'labelStringProperty': LocalizedStringProperty;
       'descriptionStringProperty': LocalizedStringProperty;

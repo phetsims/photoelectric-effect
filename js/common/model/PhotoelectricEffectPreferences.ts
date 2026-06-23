@@ -58,4 +58,14 @@ export default class PhotoelectricEffectPreferences {
       phetioDocumentation: 'Whether the light source emits visible photons'
     }
   );
+
+  // Whether experiment graphs display every deterministic data point for the current parameters.
+  public static readonly showAllGraphDataProperty = new BooleanProperty(
+    PhotoelectricEffectQueryParameters.showAllGraphData,
+    {
+      tandem: Tandem.PREFERENCES.createTandem( 'showAllGraphDataProperty' ),
+      phetioFeatured: true,
+      phetioDocumentation: 'Whether experiment graphs display every deterministic data point for the current parameters'
+    }
+  );
 }

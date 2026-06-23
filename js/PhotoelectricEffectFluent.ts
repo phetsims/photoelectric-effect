@@ -85,6 +85,8 @@ addToMapIfDefined( 'units_microamperes_symbol', 'units.microamperes.symbolString
 addToMapIfDefined( 'units_photonsPerSecond_symbol', 'units.photonsPerSecond.symbolStringProperty' );
 addToMapIfDefined( 'preferences_showPhotons_label', 'preferences.showPhotons.labelStringProperty' );
 addToMapIfDefined( 'preferences_showPhotons_description', 'preferences.showPhotons.descriptionStringProperty' );
+addToMapIfDefined( 'preferences_showAllGraphData_label', 'preferences.showAllGraphData.labelStringProperty' );
+addToMapIfDefined( 'preferences_showAllGraphData_description', 'preferences.showAllGraphData.descriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_label', 'preferences.mysteryMaterial.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_description', 'preferences.mysteryMaterial.descriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_label', 'preferences.mysteryMaterial.workFunction.labelStringProperty' );
@@ -264,6 +266,10 @@ const PhotoelectricEffectFluent = {
     showPhotons: {
       labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.showPhotons.labelStringProperty' ),
       descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.showPhotons.descriptionStringProperty' )
+    },
+    showAllGraphData: {
+      labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.showAllGraphData.labelStringProperty' ),
+      descriptionStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.showAllGraphData.descriptionStringProperty' )
     },
     mysteryMaterial: {
       labelStringProperty: _.get( PhotoelectricEffectStrings, 'preferences.mysteryMaterial.labelStringProperty' ),

@@ -52,16 +52,16 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
   },
 
   // Whether the light source emits visible photons.
+  // This is the default value and can be controlled from Preferences.
   showPhotons: {
     public: true,
     type: 'flag'
   },
 
   // Whether experiment graph data returns every deterministic bin instead of only bins revealed by interaction.
-  // This is just for testing, not sure if we want this feature for now. It may become a PreferencesDialog
-  // setting.
+  // This is the default value and can be controlled from Preferences.
   showAllGraphData: {
-    public: false,
+    public: true,
     type: 'flag'
   }
 } );

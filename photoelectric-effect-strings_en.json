@@ -223,6 +223,14 @@
         "value": "Light source emits photons"
       }
     },
+    "showAllGraphData": {
+      "label": {
+        "value": "Show all graph data"
+      },
+      "description": {
+        "value": "Display all data points for the current experiment parameters."
+      }
+    },
     "mysteryMaterial": {
       "label": {
         "value": "Add second mystery material"

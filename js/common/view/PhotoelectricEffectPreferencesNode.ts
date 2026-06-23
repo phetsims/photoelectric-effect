@@ -18,6 +18,7 @@ import PhotoelectricEffectMysteryMaterials from '../model/PhotoelectricEffectMys
 import EmitAllAbsorbedPhotonsControl from './EmitAllAbsorbedPhotonsControl.js';
 import MysteryMaterialPreferencesControls from './MysteryMaterialPreferencesControls.js';
 import PhotonModeControl from './PhotonModeControl.js';
+import ShowAllGraphDataControl from './ShowAllGraphDataControl.js';
 import ShowPhotonsControl from './ShowPhotonsControl.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -56,10 +57,15 @@ export default class PhotoelectricEffectPreferencesNode extends PreferencesPanel
       tandem: options.tandem.createTandem( 'showPhotonsControl' )
     } );
 
+    const showAllGraphDataControl = new ShowAllGraphDataControl( {
+      tandem: options.tandem.createTandem( 'showAllGraphDataControl' )
+    } );
+
     options.content = [
       photonModeControl,
       emitAllAbsorbedPhotonsControl,
       showPhotonsControl,
+      showAllGraphDataControl,
       mysteryMaterialControls
     ];
 
