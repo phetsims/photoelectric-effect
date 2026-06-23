@@ -41,7 +41,8 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
         model.firePhotonEmitter,
         model.photonsTravelingProperty,
         { tandem: tandem }
-      )
+      ),
+      timeSpeedProperty: model.timeSpeedProperty
     }, providedOptions );
     super( model, options );
 

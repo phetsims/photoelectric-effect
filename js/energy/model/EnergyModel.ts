@@ -9,6 +9,7 @@
 
 import BooleanProperty from '../../../../axon/js/BooleanProperty.js';
 import Emitter from '../../../../axon/js/Emitter.js';
+import EnumerationProperty from '../../../../axon/js/EnumerationProperty.js';
 import Multilink from '../../../../axon/js/Multilink.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
@@ -17,6 +18,7 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import WithRequired from '../../../../phet-core/js/types/WithRequired.js';
+import TimeSpeed from '../../../../scenery-phet/js/TimeSpeed.js';
 import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 import NullableIO from '../../../../tandem/js/types/NullableIO.js';
@@ -36,6 +38,8 @@ type QueuedPhotonEmission = {
   slotIndex: number;
   remainingTime: number;
 };
+
+const SLOW_TIME_SPEED_MULTIPLIER = 0.5;
 
 // PhET-iO serialized state for the Energy model.
 type EnergyModelStateObject = PhotoelectricEffectModelStateObject & {
@@ -80,6 +84,9 @@ export default class EnergyModel extends PhotoelectricEffectModel {
 
   // Whether the velocity vector arrows drawn in front of emitted electrons are visible.
   public readonly velocityVectorsVisibleProperty: BooleanProperty;
+
+  // The play speed for the Energy screen.
+  public readonly timeSpeedProperty: EnumerationProperty<TimeSpeed>;
 
   // Properties that control Energy screen graph mode and diagram visibility.
   public readonly energyGraphDisplayProperties: EnergyGraphDisplayProperties;
@@ -131,6 +138,13 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       tandem: options.tandem.createTandem( 'photonsTravelingProperty' ),
       phetioReadOnly: true,
       phetioDocumentation: 'Whether photons fired from the Energy screen are still traveling toward the target'
+    } );
+
+    this.timeSpeedProperty = new EnumerationProperty( TimeSpeed.NORMAL, {
+      tandem: options.tandem.createTandem( 'timeSpeedProperty' ),
+      validValues: [ TimeSpeed.NORMAL, TimeSpeed.SLOW ],
+      phetioFeatured: true,
+      phetioDocumentation: 'The play speed for the Energy screen as it moves through time'
     } );
 
     this.velocityVectorsVisibleProperty = new BooleanProperty( true, {
@@ -215,11 +229,13 @@ export default class EnergyModel extends PhotoelectricEffectModel {
    * @param dt - time step, in seconds
    */
   protected override stepModel( dt: number ): void {
-    if ( dt > 0 ) {
-      this.stepQueuedPhotonEmissions( dt );
-      this.stepPhotons( dt );
+    const timeScaledDt = dt * ( this.timeSpeedProperty.value === TimeSpeed.SLOW ? SLOW_TIME_SPEED_MULTIPLIER : 1 );
+
+    if ( timeScaledDt > 0 ) {
+      this.stepQueuedPhotonEmissions( timeScaledDt );
+      this.stepPhotons( timeScaledDt );
       this.updatePhotonsTravelingProperty();
-      this.stepElectrons( dt );
+      this.stepElectrons( timeScaledDt );
     }
   }
 
@@ -309,6 +325,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   public override reset(): void {
     super.reset();
 
+    this.timeSpeedProperty.reset();
     this.photonsTravelingProperty.reset();
     this.velocityVectorsVisibleProperty.reset();
     this.queuedPhotonEmissions.length = 0;

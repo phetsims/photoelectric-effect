@@ -123,7 +123,7 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
     this.pdomControlAreaNode.pdomOrder = [
       showElectronsCheckbox,
       highestEnergyOnlyCheckbox,
-      this.playPauseStepButtonGroup,
+      this.timeControlNode,
       this.resetAllButton
     ];
   }

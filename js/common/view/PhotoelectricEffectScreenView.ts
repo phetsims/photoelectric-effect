@@ -12,6 +12,7 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
+import type EnumerationProperty from '../../../../axon/js/EnumerationProperty.js';
 import TinyProperty from '../../../../axon/js/TinyProperty.js';
 import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
@@ -20,8 +21,9 @@ import ScreenView, { ScreenViewOptions } from '../../../../joist/js/ScreenView.j
 import Shape from '../../../../kite/js/Shape.js';
 import optionize from '../../../../phet-core/js/optionize.js';
 import ModelViewTransform2 from '../../../../phetcommon/js/view/ModelViewTransform2.js';
-import PlayPauseStepButtonGroup from '../../../../scenery-phet/js/buttons/PlayPauseStepButtonGroup.js';
 import ResetAllButton from '../../../../scenery-phet/js/buttons/ResetAllButton.js';
+import TimeControlNode from '../../../../scenery-phet/js/TimeControlNode.js';
+import type TimeSpeed from '../../../../scenery-phet/js/TimeSpeed.js';
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node from '../../../../scenery/js/nodes/Node.js';
@@ -35,6 +37,8 @@ import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
 import LightBeamNode from './LightBeamNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
+
+const TIME_CONTROL_NODE_FLOW_BOX_SPACING = 24;
 
 // Minimal interface every screen-specific light source node must satisfy.
 export type LightSourceNodeInterface = Node & { readonly cordAttachmentPoint: Vector2 };
@@ -51,6 +55,9 @@ type SelfOptions = {
   // always visible, so screens that emit single photons (e.g. Energy) are unaffected. Continuous-beam screens
   // pass the 'show photons' preference here.
   photonsVisibleProperty?: TReadOnlyProperty<boolean>;
+
+  // Optional time-speed Property. When provided, the shared TimeControlNode includes Normal/Slow radio buttons.
+  timeSpeedProperty?: EnumerationProperty<TimeSpeed> | null;
 };
 
 export type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
@@ -65,7 +72,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
   // Exposed for subclasses to wire into pdom order and to position screen-specific content relative to.
   protected readonly materialsComboBox: Node;
   protected readonly photonSourcePanel: Node;
-  protected readonly playPauseStepButtonGroup: Node;
+  protected readonly timeControlNode: TimeControlNode;
   protected readonly resetAllButton: Node;
 
   private readonly particleCanvasNode: ParticleCanvasNode;
@@ -75,7 +82,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const options = optionize<PhotoelectricEffectScreenViewOptions, SelfOptions, ScreenViewOptions>()( {
 
       // Photons are rendered by default; continuous-beam screens override this with the 'show photons' preference.
-      photonsVisibleProperty: new TinyProperty( true )
+      photonsVisibleProperty: new TinyProperty( true ),
+      timeSpeedProperty: null
     }, providedOptions );
 
     super( options );
@@ -189,14 +197,18 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // Time controls and reset
     //------------------------------------------------------------------------
 
-    this.playPauseStepButtonGroup = new PlayPauseStepButtonGroup( model.isPlayingProperty, {
-      tandem: options.tandem.createTandem( 'playPauseStepButtonGroup' ),
-      stepForwardButtonOptions: {
-        listener: () => {
-          model.stepForwardInTime( PhotoelectricEffectConstants.MANUAL_STEP_DT );
+    this.timeControlNode = new TimeControlNode( model.isPlayingProperty, {
+      timeSpeedProperty: options.timeSpeedProperty,
+      flowBoxSpacing: TIME_CONTROL_NODE_FLOW_BOX_SPACING,
+      playPauseStepButtonOptions: {
+        stepForwardButtonOptions: {
+          listener: () => {
+            model.stepForwardInTime( PhotoelectricEffectConstants.MANUAL_STEP_DT );
+          }
         }
       },
-      centerBottom: this.layoutBounds.centerBottom.minusXY( -200, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN )
+      tandem: options.tandem.createTandem( 'timeControlNode' ),
+      leftCenter: this.layoutBounds.centerBottom.minusXY( -160, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN + 25 )
     } );
 
     this.resetAllButton = new ResetAllButton( {
@@ -208,12 +220,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       tandem: options.tandem.createTandem( 'resetAllButton' )
     } );
 
-    this.addChild( this.playPauseStepButtonGroup );
+    this.addChild( this.timeControlNode );
     this.addChild( this.resetAllButton );
 
     // Default PDOM order for the control area. Subclasses may prepend additional items by reassigning this.
     this.pdomControlAreaNode.pdomOrder = [
-      this.playPauseStepButtonGroup,
+      this.timeControlNode,
       this.resetAllButton
     ];
 
