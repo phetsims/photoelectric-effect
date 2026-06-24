@@ -55,7 +55,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
       showTitleWhenExpanded: false
     }, providedOptions );
 
-    // TODO: Should Target's workFunctionProperty and bandWidthProperty be bidirectional DynamicProperties so
+    // TODO: Should Target's workFunctionProperty and bandDepthProperty be bidirectional DynamicProperties so
     //  views can edit the active material through Target directly? Pro: Target would be the single active-material API,
     //  avoiding duplicate DynamicProperties in view code. Con: writable convenience Properties may obscure that setting
     //  them mutates whichever Material is currently selected.
@@ -67,7 +67,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
       derive: 'workFunctionProperty'
     } );
 
-    const bandWidthProperty = new DynamicProperty<number, number, Material>( materialProperty, {
+    const bandDepthProperty = new DynamicProperty<number, number, Material>( materialProperty, {
       bidirectional: true,
       units: electronVoltUnit,
       derive: 'bandDepthProperty'
@@ -80,11 +80,11 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
       options.tandem.createTandem( 'workFunctionControl' )
     );
 
-    const bandWidthControl = MaterialPropertiesAccordionBox.createMaterialPropertyNumberControl(
+    const bandDepthControl = MaterialPropertiesAccordionBox.createMaterialPropertyNumberControl(
       'Band Depth',
-      bandWidthProperty,
+      bandDepthProperty,
       Material.BAND_DEPTH_RANGE,
-      options.tandem.createTandem( 'bandWidthControl' )
+      options.tandem.createTandem( 'bandDepthControl' )
     );
 
     const controlsNode = new HBox( {
@@ -92,7 +92,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
       spacing: 55,
       children: [
         workFunctionControl,
-        bandWidthControl
+        bandDepthControl
       ]
     } );
 
