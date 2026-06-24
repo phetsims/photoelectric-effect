@@ -151,9 +151,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       phetioDocumentation: 'Sample slot index a single-photon fire writes into; advances after each single-photon fire'
     } );
 
-    this.firePhotonEmitter = new Emitter( {
-      tandem: options.tandem.createTandem( 'firePhotonEmitter' )
-    } );
+    this.firePhotonEmitter = new Emitter();
 
     this.firePhotonEmitter.addListener( () => {
       affirm( !this.photonsTravelingProperty.value, 'Cannot fire photons while previous photons are still traveling' );
