@@ -13,7 +13,9 @@ import optionize from '../../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../../phet-core/js/types/PickRequired.js';
 import HBox from '../../../../../scenery/js/layout/nodes/HBox.js';
 import Node from '../../../../../scenery/js/nodes/Node.js';
+import Text from '../../../../../scenery/js/nodes/Text.js';
 import AccordionBox, { type AccordionBoxOptions } from '../../../../../sun/js/AccordionBox.js';
+import Tandem from '../../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
 import GraphData from '../../model/GraphData.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from './GraphPlotAreaNode.js';
@@ -74,6 +76,9 @@ export default class GraphAssemblyAccordionBox extends AccordionBox {
       contentYMargin: 0,
 
       // These graphs have no visible title, so pin the expand/collapse button to the top.
+      titleNode: new Text( '', {
+        tandem: Tandem.OPT_OUT
+      } ),
       titleAlignY: 'top',
       buttonYMargin: 0,
       titleYMargin: 0,
