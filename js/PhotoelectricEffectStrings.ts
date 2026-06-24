@@ -54,7 +54,7 @@ type StringsType = {
       'snapshotsGalleryButtonAccessibleHelpTextStringProperty': LocalizedStringProperty;
     }
   };
-  'photonQuantity': {
+  'photonEmitter': {
     'singleStringProperty': LocalizedStringProperty;
     'burstStringProperty': LocalizedStringProperty;
     'fireStringProperty': LocalizedStringProperty;

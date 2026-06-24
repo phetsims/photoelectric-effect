@@ -58,9 +58,9 @@ addToMapIfDefined( 'experiment_graph_materialLabel', 'experiment.graph.materialL
 addToMapIfDefined( 'experiment_graph_referenceLine', 'experiment.graph.referenceLineStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleName', 'experiment.graph.snapshotsGalleryButtonAccessibleNameStringProperty' );
 addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' );
-addToMapIfDefined( 'photonQuantity_single', 'photonQuantity.singleStringProperty' );
-addToMapIfDefined( 'photonQuantity_burst', 'photonQuantity.burstStringProperty' );
-addToMapIfDefined( 'photonQuantity_fire', 'photonQuantity.fireStringProperty' );
+addToMapIfDefined( 'photonEmitter_single', 'photonEmitter.singleStringProperty' );
+addToMapIfDefined( 'photonEmitter_burst', 'photonEmitter.burstStringProperty' );
+addToMapIfDefined( 'photonEmitter_fire', 'photonEmitter.fireStringProperty' );
 addToMapIfDefined( 'energy_graph_yAxisLabel', 'energy.graph.yAxisLabelStringProperty' );
 addToMapIfDefined( 'energy_graph_fermiLevelLabel', 'energy.graph.fermiLevelLabelStringProperty' );
 addToMapIfDefined( 'energy_graph_noElectronEjected', 'energy.graph.noElectronEjectedStringProperty' );
@@ -199,10 +199,10 @@ const PhotoelectricEffectFluent = {
       snapshotsGalleryButtonAccessibleHelpTextStringProperty: _.get( PhotoelectricEffectStrings, 'experiment.graph.snapshotsGalleryButtonAccessibleHelpTextStringProperty' )
     }
   },
-  photonQuantity: {
-    singleStringProperty: _.get( PhotoelectricEffectStrings, 'photonQuantity.singleStringProperty' ),
-    burstStringProperty: _.get( PhotoelectricEffectStrings, 'photonQuantity.burstStringProperty' ),
-    fireStringProperty: _.get( PhotoelectricEffectStrings, 'photonQuantity.fireStringProperty' )
+  photonEmitter: {
+    singleStringProperty: _.get( PhotoelectricEffectStrings, 'photonEmitter.singleStringProperty' ),
+    burstStringProperty: _.get( PhotoelectricEffectStrings, 'photonEmitter.burstStringProperty' ),
+    fireStringProperty: _.get( PhotoelectricEffectStrings, 'photonEmitter.fireStringProperty' )
   },
   _comment_2: new FluentComment( {"comment":"Energy graphs","associatedKey":"energy"} ),
   energy: {

@@ -43,7 +43,7 @@ experiment:
     snapshotsGalleryButtonAccessibleName:     'View saved snapshots'
     snapshotsGalleryButtonAccessibleHelpText: 'Opens a dialog with a plot of each saved snapshot.'
 
-photonQuantity:
+photonEmitter:
   single: 'Single'
   burst:  'Burst'
   fire:   'Fire'

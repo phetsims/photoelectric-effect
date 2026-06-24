@@ -103,7 +103,7 @@
       }
     }
   },
-  "photonQuantity": {
+  "photonEmitter": {
     "single": {
       "value": "Single"
     },

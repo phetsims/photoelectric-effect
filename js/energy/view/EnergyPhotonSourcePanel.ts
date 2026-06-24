@@ -56,23 +56,23 @@ export default class EnergyPhotonSourcePanel extends Panel {
     }, providedOptions );
 
     const switchHeight = 20;
-    const photonQuantitySwitch = new ABSwitch(
+    const singleBurstSwitch = new ABSwitch(
       emitSinglePhotonProperty,
-      true, new Text( PhotoelectricEffectFluent.photonQuantity.singleStringProperty, {
+      true, new Text( PhotoelectricEffectFluent.photonEmitter.singleStringProperty, {
         font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: 100
       } ),
-      false, new Text( PhotoelectricEffectFluent.photonQuantity.burstStringProperty, {
+      false, new Text( PhotoelectricEffectFluent.photonEmitter.burstStringProperty, {
         font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: 100
       } ), {
         toggleSwitchOptions: {
           size: new Dimension2( switchHeight * 2, switchHeight )
         },
-        tandem: options.tandem.createTandem( 'photonQuantitySwitch' )
+        tandem: options.tandem.createTandem( 'singleBurstSwitch' )
       } );
     const firePhotonButton = new RoundPushButton( {
-      content: new Text( PhotoelectricEffectFluent.photonQuantity.fireStringProperty, {
+      content: new Text( PhotoelectricEffectFluent.photonEmitter.fireStringProperty, {
         font: PhotoelectricEffectConstants.CONTENT_FONT,
         fill: 'white'
       } ),
@@ -85,7 +85,7 @@ export default class EnergyPhotonSourcePanel extends Panel {
     } );
 
     const emitPhotonHBox = new HBox( {
-      children: [ photonQuantitySwitch, firePhotonButton ],
+      children: [ singleBurstSwitch, firePhotonButton ],
       spacing: 10
     } );
     const wavelengthNumberControl = new LabeledWavelengthNumberControl( wavelengthProperty, {
