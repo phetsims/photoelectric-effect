@@ -82,8 +82,7 @@ export default class AmmeterDisplayPanel extends Panel {
         backgroundStroke: 'black',
         textOptions: {
           font: PhotoelectricEffectConstants.READOUT_FONT
-        },
-        tandem: options.tandem.createTandem( 'currentDisplay' )
+        }
       }
     );
 

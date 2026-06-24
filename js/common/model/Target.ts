@@ -78,7 +78,8 @@ export default class Target {
       validValues: materials,
       tandem: tandem.createTandem( 'materialProperty' ),
       phetioFeatured: true,
-      phetioDocumentation: 'Currently selected target material',
+      phetioDocumentation: 'The currently selected target material. Valid values include all materials, ' +
+                           'including mystery materials not yet visible in the combo box.',
       phetioValueType: ReferenceIO( Material.MaterialIO )
     } );
 

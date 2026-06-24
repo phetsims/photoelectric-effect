@@ -80,6 +80,7 @@ type StringsType = {
   };
   'showElectronsStringProperty': LocalizedStringProperty;
   'highestEnergyOnlyStringProperty': LocalizedStringProperty;
+  'velocityVectorsStringProperty': LocalizedStringProperty;
   'spectrumTrack': {
     'uvLabelStringProperty': LocalizedStringProperty;
     'irLabelStringProperty': LocalizedStringProperty;

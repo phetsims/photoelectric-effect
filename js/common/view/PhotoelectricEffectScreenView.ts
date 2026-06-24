@@ -91,7 +91,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // y centered in the layout bounds.
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point — the target is the origin
-      new Vector2( 250, this.layoutBounds.centerY + 30 ),      // view point — pixels from the left edge of the screen
+      new Vector2( 250, this.layoutBounds.centerY + 20 ),      // view point
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE
     );
 
@@ -170,7 +170,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // Combo box should appear to the left of the target plate and above the wire that extends from center.
     this.materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
       left: this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-      bottom: this.modelViewTransform.modelToViewY( 0 ) - 35,
+      top: this.modelViewTransform.modelToViewY( 0 ) - PhotoelectricEffectConstants.PLATE_BOUNDS.height / 2,
       tandem: options.tandem.createTandem( 'materialsComboBox' )
     } );
 

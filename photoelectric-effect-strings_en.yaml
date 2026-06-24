@@ -67,6 +67,7 @@ energy:
 
 showElectrons:                      'Show Electrons'
 highestEnergyOnly:                  'Highest Energy Only'
+velocityVectors:                    'Velocity Vectors'
 
 spectrumTrack:
   uvLabel: 'UV'

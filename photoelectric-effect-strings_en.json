@@ -161,6 +161,9 @@
   "highestEnergyOnly": {
     "value": "Highest Energy Only"
   },
+  "velocityVectors": {
+    "value": "Velocity Vectors"
+  },
   "spectrumTrack": {
     "uvLabel": {
       "value": "UV"

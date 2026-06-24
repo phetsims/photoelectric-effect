@@ -103,7 +103,7 @@ export default class EnergySampleBarPlotNode extends Node {
     // Bars are ordered by x position within each sample group: binding on the left, photon in the center,
     // kinetic on the right.
     const fillProperty = point.x < centerX ? PhotoelectricEffectColors.bindingEnergyGraphColorProperty :
-                         point.x > centerX ? PhotoelectricEffectColors.kineticEnergyGraphColorProperty :
+                         point.x > centerX ? PhotoelectricEffectColors.kineticEnergyColorProperty :
                          PhotoelectricEffectColors.photonEnergyGraphColorProperty;
 
     return {

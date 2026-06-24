@@ -161,6 +161,10 @@ export default class PhotoelectricEffectConstants {
 
   public static readonly DEFAULT_BATTERY_VOLTAGE = 0;
 
+  // Particle dimensions
+  public static readonly ELECTRON_RADIUS = 2.5;
+  public static readonly PHOTON_RADIUS = 10;
+
   //------------------------------------------------------------
   // Fonts
   //------------------------------------------------------------

@@ -44,14 +44,15 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
       buttonXMargin: 10,
       buttonYMargin: 10,
       contentXMargin: 10,
-      contentYMargin: 10,
+      contentYMargin: 15,
       titleAlignX: 'left',
       fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
 
       // TODO: i18n
       titleNode: new Text( 'Material Properties', {
         font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
-      } )
+      } ),
+      showTitleWhenExpanded: false
     }, providedOptions );
 
     // TODO: Should Target's workFunctionProperty and bandWidthProperty be bidirectional DynamicProperties so

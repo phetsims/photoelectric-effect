@@ -70,15 +70,24 @@ export class GraphSnapshotMetadata {
     } );
     this.materialLabelKeyProperty = new Property<string | null>( null, {
       tandem: tandem.createTandem( 'materialLabelKeyProperty' ),
+      phetioDocumentation: 'The label key identifying which mystery material instance was active when this ' +
+                           'snapshot was taken. Used to display the correct label (e.g. Mystery 1 vs Mystery 2) ' +
+                           'in snapshot rows, since all mystery materials share MaterialType.MYSTERY.',
       phetioValueType: NullableIO( StringIO ),
       phetioReadOnly: true
     } );
     this.secondValueProperty = new NumberProperty( 0, {
       tandem: tandem.createTandem( 'secondValueProperty' ),
+      phetioDocumentation: 'The experimental parameter captured alongside this snapshot. Represents wavelength ' +
+                           '(nm) for intensity-current and voltage-current snapshots, or intensity (%) for ' +
+                           'frequency-energy snapshots.',
       phetioReadOnly: true
     } );
     this.thirdValueProperty = new NumberProperty( 0, {
       tandem: tandem.createTandem( 'thirdValueProperty' ),
+      phetioDocumentation: 'The experimental parameter captured alongside this snapshot. Represents voltage ' +
+                           '(V) for intensity-current and frequency-energy snapshots, or intensity (%) for ' +
+                           'voltage-current snapshots.',
       phetioReadOnly: true
     } );
 

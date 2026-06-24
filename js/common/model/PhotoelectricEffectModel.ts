@@ -134,6 +134,9 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
 
     this.photonCollidedEmitter = new Emitter<[ Photon, PhotonCollisionResult ]>( {
       tandem: tandem.createTandem( 'photonCollidedEmitter' ),
+      phetioDocumentation: 'Emits when a photon collides with the target. On the Energy screen, fires once per ' +
+                           'deliberate user-triggered shot. On Intro and Experiment, fires at a rate proportional ' +
+                           'to photon source intensity.',
       parameters: [
         {
           name: 'photon',

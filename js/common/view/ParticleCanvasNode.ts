@@ -18,10 +18,11 @@ import Electron from '../model/Electron.js';
 import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import Photon from '../model/Photon.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import ElectronNode from './ElectronNode.js';
 
-const PHOTON_RADIUS = 10;
-const ELECTRON_RADIUS = 2.5;
+const PHOTON_RADIUS = PhotoelectricEffectConstants.PHOTON_RADIUS;
+const ELECTRON_RADIUS = PhotoelectricEffectConstants.ELECTRON_RADIUS;
 
 type SelfOptions = EmptySelfOptions;
 

@@ -78,6 +78,9 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   // Whether photons fired from the Energy screen are still traveling toward the target.
   public readonly photonsTravelingProperty: BooleanProperty;
 
+  // Whether the velocity vector arrows drawn in front of emitted electrons are visible.
+  public readonly velocityVectorsVisibleProperty: BooleanProperty;
+
   // Properties that control Energy screen graph mode and diagram visibility.
   public readonly energyGraphDisplayProperties: EnergyGraphDisplayProperties;
 
@@ -120,13 +123,20 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     } );
 
     this.emitSinglePhotonProperty = new BooleanProperty( false, {
-      tandem: options.tandem.createTandem( 'emitSinglePhotonProperty' )
+      tandem: options.tandem.createTandem( 'emitSinglePhotonProperty' ),
+      phetioDocumentation: 'Whether the photon source fires a single photon (true) or a burst (false).'
     } );
 
     this.photonsTravelingProperty = new BooleanProperty( false, {
       tandem: options.tandem.createTandem( 'photonsTravelingProperty' ),
       phetioReadOnly: true,
       phetioDocumentation: 'Whether photons fired from the Energy screen are still traveling toward the target'
+    } );
+
+    this.velocityVectorsVisibleProperty = new BooleanProperty( true, {
+      phetioFeatured: true,
+      tandem: options.tandem.createTandem( 'velocityVectorsVisibleProperty' ),
+      phetioDocumentation: 'Whether the velocity vector arrows drawn in front of emitted electrons are visible'
     } );
 
     this.energyGraphDisplayProperties = new EnergyGraphDisplayProperties(
@@ -302,6 +312,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     super.reset();
 
     this.photonsTravelingProperty.reset();
+    this.velocityVectorsVisibleProperty.reset();
     this.queuedPhotonEmissions.length = 0;
     this.energyGraphData.clear();
     this.energyGraphDisplayProperties.reset();

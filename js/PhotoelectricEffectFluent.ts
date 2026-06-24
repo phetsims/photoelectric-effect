@@ -74,6 +74,7 @@ addToMapIfDefined( 'energy_graph_legend_emptyStates', 'energy.graph.legend.empty
 addToMapIfDefined( 'energy_graph_legend_filledStates', 'energy.graph.legend.filledStatesStringProperty' );
 addToMapIfDefined( 'showElectrons', 'showElectronsStringProperty' );
 addToMapIfDefined( 'highestEnergyOnly', 'highestEnergyOnlyStringProperty' );
+addToMapIfDefined( 'velocityVectors', 'velocityVectorsStringProperty' );
 addToMapIfDefined( 'spectrumTrack_uvLabel', 'spectrumTrack.uvLabelStringProperty' );
 addToMapIfDefined( 'spectrumTrack_irLabel', 'spectrumTrack.irLabelStringProperty' );
 addToMapIfDefined( 'workFunction_label', 'workFunction.labelStringProperty' );
@@ -226,6 +227,7 @@ const PhotoelectricEffectFluent = {
   },
   showElectronsStringProperty: _.get( PhotoelectricEffectStrings, 'showElectronsStringProperty' ),
   highestEnergyOnlyStringProperty: _.get( PhotoelectricEffectStrings, 'highestEnergyOnlyStringProperty' ),
+  velocityVectorsStringProperty: _.get( PhotoelectricEffectStrings, 'velocityVectorsStringProperty' ),
   spectrumTrack: {
     uvLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.uvLabelStringProperty' ),
     irLabelStringProperty: _.get( PhotoelectricEffectStrings, 'spectrumTrack.irLabelStringProperty' )

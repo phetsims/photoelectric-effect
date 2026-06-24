@@ -94,7 +94,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       ],
       [
         {
-          fill: PhotoelectricEffectColors.kineticEnergyGraphColorProperty,
+          fill: PhotoelectricEffectColors.kineticEnergyColorProperty,
           labelStringProperty: PhotoelectricEffectFluent.energy.graph.legend.kineticEnergyStringProperty
         }
       ]

@@ -186,8 +186,8 @@ export default class PhotoelectricEffectColors {
     } );
 
   // Color for kinetic energy in the Energy screen graph.
-  public static readonly kineticEnergyGraphColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'kineticEnergyGraphColor', {
+  public static readonly kineticEnergyColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'kineticEnergyColor', {
       default: '#2a29f5'
     } );
 

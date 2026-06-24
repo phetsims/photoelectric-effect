@@ -94,7 +94,7 @@ export default class EnergyGraphDisplayModeRadioButtonGroup extends RectangularR
           stroke: PhotoelectricEffectColors.iconStrokeColorProperty
         } ),
         new Rectangle( 26, 12, energyBarWidth, barBaselineY - 12, {
-          fill: PhotoelectricEffectColors.kineticEnergyGraphColorProperty,
+          fill: PhotoelectricEffectColors.kineticEnergyColorProperty,
           stroke: PhotoelectricEffectColors.iconStrokeColorProperty
         } )
       ]
