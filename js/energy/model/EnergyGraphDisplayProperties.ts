@@ -25,7 +25,7 @@ export default class EnergyGraphDisplayProperties {
   public readonly diagramLabelsVisibleProperty: Property<boolean>;
 
   // Whether the work function label is visible on the energy diagram.
-  public readonly diagramWorkFunctionVisibleProperty: Property<boolean>;
+  public readonly workFunctionVisibleProperty: Property<boolean>;
 
   // Whether photon energy transfer arrows are visible on the energy diagram.
   public readonly diagramPhotonArrowsVisibleProperty: Property<boolean>;
@@ -44,9 +44,9 @@ export default class EnergyGraphDisplayProperties {
       phetioDocumentation: 'Whether descriptive labels are visible on the Energy screen energy diagram'
     } );
 
-    this.diagramWorkFunctionVisibleProperty = new BooleanProperty( true, {
+    this.workFunctionVisibleProperty = new BooleanProperty( true, {
       phetioFeatured: true,
-      tandem: tandem.createTandem( 'diagramWorkFunctionVisibleProperty' ),
+      tandem: tandem.createTandem( 'workFunctionVisibleProperty' ),
       phetioDocumentation: 'Whether the work function label is visible on the Energy screen energy diagram'
     } );
 
@@ -63,7 +63,7 @@ export default class EnergyGraphDisplayProperties {
   public reset(): void {
     this.displayModeProperty.reset();
     this.diagramLabelsVisibleProperty.reset();
-    this.diagramWorkFunctionVisibleProperty.reset();
+    this.workFunctionVisibleProperty.reset();
     this.diagramPhotonArrowsVisibleProperty.reset();
   }
 
