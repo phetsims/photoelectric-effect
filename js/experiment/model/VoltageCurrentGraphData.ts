@@ -29,7 +29,7 @@ export default class VoltageCurrentGraphData extends GraphData {
     };
     const thirdValueMetadata: GraphMetadataConfig = {
       labelProperty: PhotoelectricEffectFluent.intensity.labelStringProperty,
-      valueProperty: model.photonSource.normalizedOutputPercentProperty,
+      valueProperty: model.photonSource.intensityPercentProperty,
       formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty.value, {
         value: toFixed( value, 0 )
       } )

@@ -48,7 +48,7 @@ export default class PhotonSource {
   /**
    * Source output as a percentage (100 × normalized output), for UI and clients that prefer percent units.
    */
-  public readonly normalizedOutputPercentProperty: TReadOnlyProperty<number>;
+  public readonly intensityPercentProperty: TReadOnlyProperty<number>;
 
   // Derived photon emission rate for the current normalized source output and emission mode.
   public readonly photonRateProperty: TReadOnlyProperty<number>;
@@ -71,11 +71,11 @@ export default class PhotonSource {
       phetioDocumentation: 'Normalized photon source output from 0 to 1, interpreted by the selected emission mode'
     } );
 
-    this.normalizedOutputPercentProperty = new DerivedProperty(
+    this.intensityPercentProperty = new DerivedProperty(
       [ this.normalizedOutputProperty ],
       normalizedOutput => 100 * normalizedOutput,
       {
-        tandem: tandem.createTandem( 'normalizedOutputPercentProperty' ),
+        tandem: tandem.createTandem( 'intensityPercentProperty' ),
         phetioValueType: NumberIO,
         phetioDocumentation: 'Photon source output as a percentage from 0 to 100'
       }

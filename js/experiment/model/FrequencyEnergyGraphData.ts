@@ -39,7 +39,7 @@ export default class FrequencyEnergyGraphData extends GraphData {
 
     const secondValueMetadata: GraphMetadataConfig = {
       labelProperty: PhotoelectricEffectFluent.intensity.labelStringProperty,
-      valueProperty: model.photonSource.normalizedOutputPercentProperty,
+      valueProperty: model.photonSource.intensityPercentProperty,
       formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.intensity.percentReadoutPatternStringProperty.value, {
         value: toFixed( value, 0 )
       } )

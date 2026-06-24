@@ -42,7 +42,7 @@ export default class PhotonSourceControl extends Panel {
     // TODO: To match the tandem, rename this class to PhotonIntensityControl.
     const intensityControl = new PhotonSourceOutputSlider(
       photonSource.normalizedOutputProperty,
-      photonSource.normalizedOutputPercentProperty,
+      photonSource.intensityPercentProperty,
       photonSource.wavelengthProperty,
       {
         tandem: options.tandem.createTandem( 'intensityControl' )
