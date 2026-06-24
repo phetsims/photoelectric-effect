@@ -51,7 +51,7 @@ type SelfOptions = {
   // always visible, so screens that emit single photons (e.g. Energy) are unaffected. Continuous-beam screens
   // pass the 'show photons' preference here.
   photonsVisibleProperty?: TReadOnlyProperty<boolean>;
-}
+};
 
 export type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
 
