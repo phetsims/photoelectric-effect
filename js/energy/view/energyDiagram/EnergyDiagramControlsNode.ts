@@ -60,7 +60,7 @@ export default class EnergyDiagramControlsNode extends VBox {
           } ), {
             boxWidth: CHECKBOX_BOX_WIDTH,
             spacing: 4,
-            tandem: providedOptions.tandem.createTandem( 'labelsCheckbox' )
+            tandem: providedOptions.tandem.createTandem( 'labelCheckbox' )
           }
         ),
 
