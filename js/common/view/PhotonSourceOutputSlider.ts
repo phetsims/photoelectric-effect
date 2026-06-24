@@ -85,13 +85,13 @@ export default class PhotonSourceOutputSlider extends Node {
       maxWidth: OUTPUT_LABEL_MAX_WIDTH
     } );
 
-    const outputSlider = new HSlider( normalizedOutputProperty, normalizedOutputProperty.range, {
-      tandem: options.tandem.createTandem( 'outputSlider' ),
+    const slider = new HSlider( normalizedOutputProperty, normalizedOutputProperty.range, {
+      tandem: options.tandem.createTandem( 'slider' ),
       trackSize: options.trackSize,
       thumbSize: options.thumbSize
     } );
 
-    const outputGradientRectangle = new Rectangle( outputSlider.localBounds, {
+    const outputGradientRectangle = new Rectangle( slider.localBounds, {
       stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
       lineWidth: 1
     } );
@@ -115,7 +115,7 @@ export default class PhotonSourceOutputSlider extends Node {
     const sliderStack = new Node( {
       children: [
         outputGradientRectangle,
-        outputSlider
+        slider
       ]
     } );
 

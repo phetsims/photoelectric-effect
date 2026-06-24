@@ -39,12 +39,13 @@ export default class PhotonSourceControl extends Panel {
       accessibleHeading: PhotoelectricEffectFluent.a11y.photonSourcePanel.accessibleHeadingStringProperty
     }, providedOptions );
 
-    const outputSlider = new PhotonSourceOutputSlider(
+    // TODO: To match the tandem, rename this class to PhotonIntensityControl.
+    const intensityControl = new PhotonSourceOutputSlider(
       photonSource.normalizedOutputProperty,
       photonSource.normalizedOutputPercentProperty,
       photonSource.wavelengthProperty,
       {
-        tandem: options.tandem.createTandem( 'outputSlider' )
+        tandem: options.tandem.createTandem( 'intensityControl' )
       }
     );
 
@@ -56,7 +57,7 @@ export default class PhotonSourceControl extends Panel {
       spacing: 12,
       align: 'center',
       children: [
-        outputSlider,
+        intensityControl,
         wavelengthNumberControl
       ]
     } );
