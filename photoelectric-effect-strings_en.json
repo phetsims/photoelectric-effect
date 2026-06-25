@@ -115,6 +115,11 @@
     }
   },
   "energy": {
+    "energyGraphAccordionBox": {
+      "title": {
+        "value": "Energy Graphs"
+      }
+    },
     "graph": {
       "yAxisLabel": {
         "value": "Energy (eV)"

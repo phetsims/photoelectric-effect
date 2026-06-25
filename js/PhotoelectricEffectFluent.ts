@@ -61,6 +61,7 @@ addToMapIfDefined( 'experiment_graph_snapshotsGalleryButtonAccessibleHelpText', 
 addToMapIfDefined( 'photonEmitter_single', 'photonEmitter.singleStringProperty' );
 addToMapIfDefined( 'photonEmitter_burst', 'photonEmitter.burstStringProperty' );
 addToMapIfDefined( 'photonEmitter_fire', 'photonEmitter.fireStringProperty' );
+addToMapIfDefined( 'energy_energyGraphAccordionBox_title', 'energy.energyGraphAccordionBox.titleStringProperty' );
 addToMapIfDefined( 'energy_graph_yAxisLabel', 'energy.graph.yAxisLabelStringProperty' );
 addToMapIfDefined( 'energy_graph_fermiLevelLabel', 'energy.graph.fermiLevelLabelStringProperty' );
 addToMapIfDefined( 'energy_graph_noElectronEjected', 'energy.graph.noElectronEjectedStringProperty' );
@@ -206,6 +207,9 @@ const PhotoelectricEffectFluent = {
   },
   _comment_2: new FluentComment( {"comment":"Energy graphs","associatedKey":"energy"} ),
   energy: {
+    energyGraphAccordionBox: {
+      titleStringProperty: _.get( PhotoelectricEffectStrings, 'energy.energyGraphAccordionBox.titleStringProperty' )
+    },
     graph: {
       yAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.yAxisLabelStringProperty' ),
       fermiLevelLabelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.fermiLevelLabelStringProperty' ),

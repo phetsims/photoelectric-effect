@@ -50,6 +50,8 @@ photonEmitter:
 
 # Energy graphs
 energy:
+  energyGraphAccordionBox:
+    title: 'Energy Graphs'
   graph:
     yAxisLabel:        'Energy (eV)'
     fermiLevelLabel:   'Fermi Level'
