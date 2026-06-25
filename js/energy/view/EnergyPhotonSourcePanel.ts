@@ -35,14 +35,14 @@ export default class EnergyPhotonSourcePanel extends Panel {
 
   /**
    * @param wavelengthProperty - Wavelength controlled by the slider.
-   * @param emitSinglePhotonProperty - Whether the Fire button emits one photon or a burst.
+   * @param isSinglePhotonModeProperty - Whether the Fire button emits one photon or a burst.
    * @param firePhotonEmitter - Emits when the Fire button is pressed.
    * @param photonsTravelingProperty - The fire button is enabled only when no fired photons are in flight.
    * @param providedOptions
    */
   public constructor(
     wavelengthProperty: NumberProperty,
-    emitSinglePhotonProperty: Property<boolean>,
+    isSinglePhotonModeProperty: Property<boolean>,
     firePhotonEmitter: Emitter,
     photonsTravelingProperty: TReadOnlyProperty<boolean>,
     providedOptions: EnergyPhotonSourcePanelOptions
@@ -57,7 +57,7 @@ export default class EnergyPhotonSourcePanel extends Panel {
 
     const switchHeight = 20;
     const singleBurstSwitch = new ABSwitch(
-      emitSinglePhotonProperty,
+      isSinglePhotonModeProperty,
       true, new Text( PhotoelectricEffectFluent.photonEmitter.singleStringProperty, {
         font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: 100

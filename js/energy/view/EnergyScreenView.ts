@@ -37,7 +37,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
       createLightSourceNode: beamStartCenter => new EnergyLightSourceNode( beamStartCenter ),
       createPhotonSourcePanel: tandem => new EnergyPhotonSourcePanel(
         model.wavelengthProperty,
-        model.emitSinglePhotonProperty,
+        model.isSinglePhotonModeProperty,
         model.firePhotonEmitter,
         model.photonsTravelingProperty,
         { tandem: tandem }

@@ -73,7 +73,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       } )
     } );
 
-  public readonly emitSinglePhotonProperty: Property<boolean>;
+  public readonly isSinglePhotonModeProperty: Property<boolean>;
 
   // Whether photons fired from the Energy screen are still traveling toward the target.
   public readonly photonsTravelingProperty: BooleanProperty;
@@ -122,8 +122,8 @@ export default class EnergyModel extends PhotoelectricEffectModel {
       phetioDocumentation: 'Recorded sample data shown by the Energy screen graph displays'
     } );
 
-    this.emitSinglePhotonProperty = new BooleanProperty( false, {
-      tandem: options.tandem.createTandem( 'emitSinglePhotonProperty' ),
+    this.isSinglePhotonModeProperty = new BooleanProperty( false, {
+      tandem: options.tandem.createTandem( 'isSinglePhotonModeProperty' ),
       phetioDocumentation: 'Whether the photon source fires a single photon (true) or a burst (false).'
     } );
 
@@ -156,7 +156,7 @@ export default class EnergyModel extends PhotoelectricEffectModel {
     this.firePhotonEmitter.addListener( () => {
       affirm( !this.photonsTravelingProperty.value, 'Cannot fire photons while previous photons are still traveling' );
 
-      if ( this.emitSinglePhotonProperty.value ) {
+      if ( this.isSinglePhotonModeProperty.value ) {
         const slotIndex = this.currentSlotIndexProperty.value;
         this.energyGraphData.samples[ slotIndex ].clear();
         this.clearElectronsForSlot( slotIndex );
