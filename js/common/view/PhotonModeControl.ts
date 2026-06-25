@@ -26,8 +26,8 @@ export default class PhotonModeControl extends PreferencesControl {
     //  out in this sim? This combineOptions appears twice currently. May not be worth it.
     const toggleSwitch = new ToggleSwitch(
       PhotoelectricEffectPreferences.photonModeProperty,
-      'count',
-      'intensity', combineOptions<ToggleSwitchOptions>(
+      'intensity',
+      'count', combineOptions<ToggleSwitchOptions>(
         {},
         {
           tandem: providedOptions.tandem.createTandem( 'toggleSwitch' ),
