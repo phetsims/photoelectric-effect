@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * PhotonSourceOutputSlider controls the normalized intensity of the photon source. Depending on the selected emission
+ * PhotonSourceIntensitySlider controls the normalized intensity of the photon source. Depending on the selected emission
  * mode, the same normalized value is interpreted as either light intensity or photon rate.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
@@ -36,7 +36,7 @@ type SelfOptions = {
   readoutMaxWidth?: number;
 };
 
-export type PhotonSourceOutputSliderOptions = SelfOptions & PickRequired<NodeOptions, 'tandem'>;
+export type PhotonSourceIntensitySliderOptions = SelfOptions & PickRequired<NodeOptions, 'tandem'>;
 
 // Horizontal gap between the gradient rectangle and the percent readout.
 const READOUT_SPACING = 6;
@@ -56,7 +56,7 @@ const NUMBER_DISPLAY_BASE: NumberDisplayOptions = {
   xMargin: 2
 };
 
-export default class PhotonSourceOutputSlider extends Node {
+export default class PhotonSourceIntensitySlider extends Node {
 
   /**
    * @param normalizedIntensityProperty - normalized source intensity
@@ -68,10 +68,10 @@ export default class PhotonSourceOutputSlider extends Node {
     normalizedIntensityProperty: NumberProperty,
     normalizedOutputPercentProperty: TReadOnlyProperty<number>,
     wavelengthProperty: TReadOnlyProperty<number>,
-    providedOptions: PhotonSourceOutputSliderOptions
+    providedOptions: PhotonSourceIntensitySliderOptions
   ) {
 
-    const options = optionize<PhotonSourceOutputSliderOptions, SelfOptions, NodeOptions>()( {
+    const options = optionize<PhotonSourceIntensitySliderOptions, SelfOptions, NodeOptions>()( {
       trackSize: new Dimension2( 125, 5 ),
       thumbSize: new Dimension2( 13, 26 ),
       readoutMaxWidth: 72,

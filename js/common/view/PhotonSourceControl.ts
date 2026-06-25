@@ -17,7 +17,7 @@ import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import LabeledWavelengthNumberControl from './LabeledWavelengthNumberControl.js';
-import PhotonSourceOutputSlider from './PhotonSourceOutputSlider.js';
+import PhotonSourceIntensitySlider from './PhotonSourceIntensitySlider.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -40,7 +40,7 @@ export default class PhotonSourceControl extends Panel {
     }, providedOptions );
 
     // TODO: To match the tandem, rename this class to PhotonIntensityControl.
-    const intensityControl = new PhotonSourceOutputSlider(
+    const intensityControl = new PhotonSourceIntensitySlider(
       photonSource.normalizedIntensityProperty,
       photonSource.intensityPercentProperty,
       photonSource.wavelengthProperty,
