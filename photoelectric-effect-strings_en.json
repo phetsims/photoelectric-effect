@@ -143,13 +143,13 @@
       },
       "legend": {
         "bindingEnergy": {
-          "value": "Binding Energy"
+          "value": "Electron Binding Energy"
         },
         "photonEnergy": {
           "value": "Photon Energy"
         },
         "kineticEnergy": {
-          "value": "Kinetic Energy"
+          "value": "Electron Kinetic Energy"
         },
         "emptyStates": {
           "value": "Empty States"

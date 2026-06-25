@@ -1,5 +1,5 @@
 # Title
-photoelectric-effect.title:         'Photoelectric Effect'
+photoelectric-effect.title:            'Photoelectric Effect'
 
 # Screens
 screen:
@@ -61,29 +61,29 @@ energy:
       workFunction: 'Work Function'
       photonArrow:  'Photon Arrow'
     legend:
-      bindingEnergy: 'Binding Energy'
-      photonEnergy:    'Photon Energy'
-      kineticEnergy:   'Kinetic Energy'
-      emptyStates:     'Empty States'
-      filledStates:    'Filled States'
+      bindingEnergy: 'Electron Binding Energy'
+      photonEnergy:  'Photon Energy'
+      kineticEnergy: 'Electron Kinetic Energy'
+      emptyStates:   'Empty States'
+      filledStates:  'Filled States'
 
-showElectrons:                      'Show Electrons'
-highestEnergyOnly:                  'Highest Energy Only'
-velocityVectors:                    'Velocity Vectors'
+showElectrons:                         'Show Electrons'
+highestEnergyOnly:                     'Highest Energy Only'
+velocityVectors:                       'Velocity Vectors'
 
 spectrumTrack:
   uvLabel: 'UV'
   irLabel: 'IR'
 
-workFunction.label:                 'Work Function (eV)'
-intensity.label:                    'Intensity'
-intensity.percentReadoutPattern:    '{{value}} %'
+workFunction.label:                    'Work Function (eV)'
+intensity.label:                       'Intensity'
+intensity.percentReadoutPattern:       '{{value}} %'
 sourceIntensity.percentReadoutPattern: '{{value}} %'
-wavelength.label:                   'Wavelength'
-wavelength.valueReadoutPattern:     '{{value}} nm'
-voltage.label:                      'Voltage'
-voltage.valueReadoutPattern:        '{{value}} V'
-current.label:                      'Current'
+wavelength.label:                      'Wavelength'
+wavelength.valueReadoutPattern:        '{{value}} nm'
+voltage.label:                         'Voltage'
+voltage.valueReadoutPattern:           '{{value}} V'
+current.label:                         'Current'
 
 units:
   microamperes:
@@ -95,10 +95,10 @@ units:
 
 preferences:
   showPhotons:
-    label: 'Show photons'
+    label:       'Show photons'
     description: 'Light source emits photons'
   showAllGraphData:
-    label: 'Show all graph data'
+    label:       'Show all graph data'
     description: 'Display all data points for the current experiment parameters.'
   mysteryMaterial:
     label:       'Add second mystery material'
@@ -138,13 +138,13 @@ a11y:
                        let you pause, step, or restart the action, and Reset All returns the simulation to its starting state.
       currentDetails:
         leadingParagraph: >-
-          Currently,
-
-            The target material is MATERIAL.
-            The representation is set to REPRESENTATION.
-            Light source intensity is INTENSITY percent.
-            Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.
-            Electron emission is EMISSIONSTATE.
+                          Currently,
+                          
+                            The target material is MATERIAL.
+                            The representation is set to REPRESENTATION.
+                            Light source intensity is INTENSITY percent.
+                            Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.
+                            Electron emission is EMISSIONSTATE.
       interactionHint: Turn up the light source intensity, then adjust the wavelength to find when electrons start to fly off the metal.
 
   # Experiment screen summary
@@ -161,14 +161,14 @@ a11y:
                        let you pause, step, or restart the action, and Reset All returns the simulation to its starting state.
       currentDetails:
         leadingParagraph: >-
-          Currently,
-
-            The target material is MATERIAL.
-            Light source intensity is INTENSITY percent.
-            Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.
-            Battery voltage is VOLTAGE volts.
-            Electron emission is EMISSIONSTATE.
-            The ammeter reads CURRENT.
+                          Currently,
+                          
+                            The target material is MATERIAL.
+                            Light source intensity is INTENSITY percent.
+                            Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.
+                            Battery voltage is VOLTAGE volts.
+                            Electron emission is EMISSIONSTATE.
+                            The ammeter reads CURRENT.
       interactionHint: Turn up the light source intensity and adjust the wavelength, voltage, and material to start collecting data in the graphs.
 
   # Photon source panel and its inner controls
