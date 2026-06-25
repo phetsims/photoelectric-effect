@@ -81,7 +81,7 @@ export default class PhotoelectricEffectConstants {
   // Elementary charge in coulombs (SI 2019 exact value).
   public static readonly ELEMENTARY_CHARGE = 1.602176634e-19;
 
-  // Physical photon emission rate (photons per second) at 100% source output. This is the actual flux used
+  // Physical photon emission rate (photons per second) at 100% source intensity. This is the actual flux used
   // by the analytical current calculation. The on-screen photon density is derived from this by sampling
   // one in every PHYSICAL_PHOTONS_PER_VISIBLE_PHOTON. Some flexibility for tuning since there is a range of reasonable
   // values for "typical" photon sources

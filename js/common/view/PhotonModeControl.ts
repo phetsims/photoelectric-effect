@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * PhotonModeControl toggles how the photon source output maps to photon emission rate.
+ * PhotonModeControl toggles how the photon source intensity maps to photon emission rate.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */

@@ -42,7 +42,7 @@ export default class GraphSnapshotsReferenceLineModel {
       range: xRange,
       tandem: options.tandem.createTandem( 'xProperty' ),
       phetioDocumentation: 'The x position of the reference line in model space. Units depend on the graph: ' +
-                           'normalized output (0-1) for the intensity-current graph, frequency in units of ' +
+                           'normalized intensity (0-1) for the intensity-current graph, frequency in units of ' +
                            '10^15 Hz for the frequency-energy graph, and volts for the voltage-current graph.'
     } );
   }

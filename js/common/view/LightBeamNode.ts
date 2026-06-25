@@ -9,7 +9,7 @@
  * The near edge is recessed back into the lens so its flat starting edge is occluded by the light source node,
  * making the beam appear to emerge from the aperture rather than showing a hard line across it.
  * Its color tracks the photon source wavelength (white for UV/IR), matching the rendered photons, and its
- * opacity tracks the normalized source output, so a dimmer source produces a fainter beam.
+ * opacity tracks the normalized source intensity, so a dimmer source produces a fainter beam.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  */
@@ -24,7 +24,7 @@ import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import { LENS_WIDTH, LENS_Y_RADIUS } from './LightSourceNode.js';
 
-// Opacity of the beam at maximum source output, so the target plate, vacuum tube, and electrons remain visible.
+// Opacity of the beam at maximum source intensity, so the target plate, vacuum tube, and electrons remain visible.
 const MAX_BEAM_OPACITY = 0.6;
 
 export default class LightBeamNode extends Path {
@@ -33,12 +33,12 @@ export default class LightBeamNode extends Path {
    * @param beamStart - view position of the light source aperture, where the beam begins
    * @param beamEnd - view position of the target plate face center, where the beam ends
    * @param wavelengthProperty - photon source wavelength, in nm
-   * @param normalizedOutputProperty - normalized source output in [ 0, 1 ], controls the beam opacity
+   * @param normalizedIntensityProperty - normalized source intensity in [ 0, 1 ], controls the beam opacity
    * @param providedOptions
    */
   public constructor( beamStart: Vector2, beamEnd: Vector2,
                       wavelengthProperty: TReadOnlyProperty<number>,
-                      normalizedOutputProperty: TReadOnlyProperty<number>,
+                      normalizedIntensityProperty: TReadOnlyProperty<number>,
                       providedOptions?: PathOptions ) {
 
     // Near edge: spans the aperture width, perpendicular to the beam direction. The origin is recessed back into
@@ -74,8 +74,8 @@ export default class LightBeamNode extends Path {
                     null;
     } );
 
-    // A dimmer source produces a fainter beam; no output means no visible beam.
-    normalizedOutputProperty.link( normalizedOutput => {
+    // A dimmer source produces a fainter beam; no intensity means no visible beam.
+    normalizedIntensityProperty.link( normalizedOutput => {
       this.opacity = MAX_BEAM_OPACITY * normalizedOutput;
     } );
   }

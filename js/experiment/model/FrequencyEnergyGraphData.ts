@@ -72,10 +72,10 @@ export default class FrequencyEnergyGraphData extends GraphData {
         xDomain: frequencyXDomain,
         drivingValueToChartX: wavelength => wavelengthToFrequency( wavelength ),
 
-        // KEmax is only measurable while the source emits photons, so no new data plots while the source output
+        // KEmax is only measurable while the source emits photons, so no new data plots while the source intensity
         // is at 0% (mimics the Java sim), see https://github.com/phetsims/photoelectric-effect/issues/102
         samplingEnabledProperty: new DerivedProperty(
-          [ model.photonSource.normalizedOutputProperty ],
+          [ model.photonSource.normalizedIntensityProperty ],
           normalizedOutput => normalizedOutput > 0
         )
       } )

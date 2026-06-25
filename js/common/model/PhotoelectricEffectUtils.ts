@@ -109,7 +109,7 @@ export const intensityToPhotonRate = ( intensity: number, wavelength: number ): 
 };
 
 /**
- * Converts normalized photon source output to photons-per-second for the selected emission mode.
+ * Converts normalized photon source intensity to photons-per-second for the selected emission mode.
  * This is a direct port from the java.
  */
 export const normalizedOutputToPhotonRate = (

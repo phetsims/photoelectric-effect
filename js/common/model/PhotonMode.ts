@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * PhotonMode describes how the normalized photon source output is interpreted.
+ * PhotonMode describes how the normalized photon source intensity is interpreted.
  * This is factored out into a separate file to avoid a circular dependency between
  * PhotonSource, PhotoelectricEffectQueryParameters, and PhotoelectricEffectPreferences.
  *

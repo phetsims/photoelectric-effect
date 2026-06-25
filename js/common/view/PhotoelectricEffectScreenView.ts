@@ -150,7 +150,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       beamStartCenter,
       this.modelViewTransform.modelToViewXY( PhotoelectricEffectConstants.TARGET_X, 0 ),
       model.wavelengthProperty,
-      model.photonSource.normalizedOutputProperty,
+      model.photonSource.normalizedIntensityProperty,
       {
         visibleProperty: DerivedProperty.not( options.photonsVisibleProperty )
       }

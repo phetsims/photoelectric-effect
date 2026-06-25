@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Graph samples for intensity (x) vs analytic current (y), driven by normalized photon source output.
+ * Graph samples for intensity (x) vs analytic current (y), driven by normalized photon source intensity.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -37,7 +37,7 @@ export default class IntensityCurrentGraphData extends GraphData {
     };
 
     super(
-      model.photonSource.normalizedOutputProperty,
+      model.photonSource.normalizedIntensityProperty,
       normalizedOutput => new Vector2( normalizedOutput, model.getCurrentForNormalizedOutput( normalizedOutput ) ),
       model,
       secondValueMetadata,

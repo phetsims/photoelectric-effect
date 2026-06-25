@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * Panel with source output and wavelength controls for the photon source.
+ * Panel with source intensity and wavelength controls for the photon source.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -41,7 +41,7 @@ export default class PhotonSourceControl extends Panel {
 
     // TODO: To match the tandem, rename this class to PhotonIntensityControl.
     const intensityControl = new PhotonSourceOutputSlider(
-      photonSource.normalizedOutputProperty,
+      photonSource.normalizedIntensityProperty,
       photonSource.intensityPercentProperty,
       photonSource.wavelengthProperty,
       {

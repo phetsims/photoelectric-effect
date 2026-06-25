@@ -1,7 +1,7 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * PhotonSourceOutputSlider controls the normalized output of the photon source. Depending on the selected emission
+ * PhotonSourceOutputSlider controls the normalized intensity of the photon source. Depending on the selected emission
  * mode, the same normalized value is interpreted as either light intensity or photon rate.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
@@ -41,7 +41,7 @@ export type PhotonSourceOutputSliderOptions = SelfOptions & PickRequired<NodeOpt
 // Horizontal gap between the gradient rectangle and the percent readout.
 const READOUT_SPACING = 6;
 
-// Vertical gap between the output title and the slider track.
+// Vertical gap between the intensity title and the slider track.
 const LABEL_SLIDER_SPACING = 5;
 
 const OUTPUT_LABEL_MAX_WIDTH = 200;
@@ -59,13 +59,13 @@ const NUMBER_DISPLAY_BASE: NumberDisplayOptions = {
 export default class PhotonSourceOutputSlider extends Node {
 
   /**
-   * @param normalizedOutputProperty - normalized source output
-   * @param normalizedOutputPercentProperty - source output reported as a percentage for display
+   * @param normalizedIntensityProperty - normalized source intensity
+   * @param normalizedOutputPercentProperty - source intensity reported as a percentage for display
    * @param wavelengthProperty - wavelength of emitted photons
    * @param providedOptions
    */
   public constructor(
-    normalizedOutputProperty: NumberProperty,
+    normalizedIntensityProperty: NumberProperty,
     normalizedOutputPercentProperty: TReadOnlyProperty<number>,
     wavelengthProperty: TReadOnlyProperty<number>,
     providedOptions: PhotonSourceOutputSliderOptions
@@ -80,25 +80,25 @@ export default class PhotonSourceOutputSlider extends Node {
 
     super();
 
-    const outputLabel = new Text( PhotoelectricEffectFluent.intensity.labelStringProperty, {
+    const intensityLabel = new Text( PhotoelectricEffectFluent.intensity.labelStringProperty, {
       font: PhotoelectricEffectConstants.PANEL_TITLE_FONT,
       maxWidth: OUTPUT_LABEL_MAX_WIDTH
     } );
 
-    const slider = new HSlider( normalizedOutputProperty, normalizedOutputProperty.range, {
+    const slider = new HSlider( normalizedIntensityProperty, normalizedIntensityProperty.range, {
       tandem: options.tandem.createTandem( 'slider' ),
       trackSize: options.trackSize,
       thumbSize: options.thumbSize
     } );
 
-    const outputGradientRectangle = new Rectangle( slider.localBounds, {
+    const intensityGradientRectangle = new Rectangle( slider.localBounds, {
       stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
       lineWidth: 1
     } );
 
-    const outputReadout = new NumberDisplay( normalizedOutputPercentProperty, new Range(
-      normalizedOutputProperty.range.min * 100,
-      normalizedOutputProperty.range.max * 100
+    const intensityReadout = new NumberDisplay( normalizedOutputPercentProperty, new Range(
+      normalizedIntensityProperty.range.min * 100,
+      normalizedIntensityProperty.range.max * 100
     ), combineOptions<NumberDisplayOptions>(
       {},
       NUMBER_DISPLAY_BASE,
@@ -108,13 +108,13 @@ export default class PhotonSourceOutputSlider extends Node {
           font: PhotoelectricEffectConstants.READOUT_FONT,
           maxWidth: options.readoutMaxWidth
         },
-        tandem: options.tandem.createTandem( 'outputReadout' )
+        tandem: options.tandem.createTandem( 'intensityReadout' )
       }
     ) );
 
     const sliderStack = new Node( {
       children: [
-        outputGradientRectangle,
+        intensityGradientRectangle,
         slider
       ]
     } );
@@ -122,9 +122,9 @@ export default class PhotonSourceOutputSlider extends Node {
     // An invisible strut balances the visible readout so the slider remains centered in the parent layout.
     const readoutBalanceStrut = new HStrut( 0, {
       pickable: false,
-      visibleProperty: outputReadout.visibleProperty
+      visibleProperty: intensityReadout.visibleProperty
     } );
-    outputReadout.localBoundsProperty.link( bounds => {
+    intensityReadout.localBoundsProperty.link( bounds => {
       readoutBalanceStrut.localBounds = new Bounds2( 0, 0, bounds.width, 0 );
     } );
 
@@ -132,14 +132,14 @@ export default class PhotonSourceOutputSlider extends Node {
       spacing: LABEL_SLIDER_SPACING,
       align: 'center',
       children: [
-        outputLabel,
+        intensityLabel,
         new HBox( {
           spacing: READOUT_SPACING,
           align: 'center',
           children: [
             readoutBalanceStrut,
             sliderStack,
-            outputReadout
+            intensityReadout
           ]
         } )
       ]
@@ -149,10 +149,10 @@ export default class PhotonSourceOutputSlider extends Node {
     this.mutate( options );
 
     // Update gradient for the backplate when selected wavelength changes.
-    const gradientWidth = outputGradientRectangle.rectWidth;
+    const gradientWidth = intensityGradientRectangle.rectWidth;
     wavelengthProperty.link( wavelength => {
       const endColor = wavelengthToIntensityGradientEndColor( wavelength );
-      outputGradientRectangle.fill = new LinearGradient( 0, 0, gradientWidth, 0 )
+      intensityGradientRectangle.fill = new LinearGradient( 0, 0, gradientWidth, 0 )
         .addColorStop( 0, Color.BLACK )
         .addColorStop( 1, endColor );
     } );

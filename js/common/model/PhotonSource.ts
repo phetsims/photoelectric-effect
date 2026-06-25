@@ -22,7 +22,7 @@ import PhotoelectricEffectPreferences from './PhotoelectricEffectPreferences.js'
 import { normalizedOutputToPhotonRate } from './PhotoelectricEffectUtils.js';
 import { photonsPerSecondUnit } from './photonsPerSecondUnit.js';
 
-// Default normalized source output used at initialization.
+// Default normalized source intensity used at initialization.
 const INITIAL_NORMALIZED_OUTPUT = 0;
 
 // Default wavelength in nanometers used at initialization.
@@ -36,21 +36,21 @@ type PhotonSourceOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
 
 export default class PhotonSource {
 
-  // Allowed normalized source output range.
+  // Allowed normalized source intensity range.
   public static readonly NORMALIZED_OUTPUT_RANGE = new Range( 0, 1 );
 
   /**
-   * Controls the source output as a normalized value.
+   * Controls the source intensity as a normalized value.
    * The selected emission mode determines how this value maps to photons per second.
    */
-  public readonly normalizedOutputProperty: NumberProperty;
+  public readonly normalizedIntensityProperty: NumberProperty;
 
   /**
-   * Source output as a percentage (100 × normalized output), for UI and clients that prefer percent units.
+   * Source intensity as a percentage (100 × normalized intensity), for UI and clients that prefer percent units.
    */
   public readonly intensityPercentProperty: TReadOnlyProperty<number>;
 
-  // Derived photon emission rate for the current normalized source output and emission mode.
+  // Derived photon emission rate for the current normalized source intensity and emission mode.
   public readonly photonRateProperty: TReadOnlyProperty<number>;
 
   /**
@@ -60,24 +60,24 @@ export default class PhotonSource {
   public readonly wavelengthProperty: NumberProperty;
 
   /**
-   * Creates a photon source with its own source output and wavelength Properties.
+   * Creates a photon source with its own source intensity and wavelength Properties.
    */
   public constructor( providedOptions: PhotonSourceOptions ) {
     const tandem = providedOptions.tandem;
 
-    this.normalizedOutputProperty = new NumberProperty( INITIAL_NORMALIZED_OUTPUT, {
+    this.normalizedIntensityProperty = new NumberProperty( INITIAL_NORMALIZED_OUTPUT, {
       range: PhotonSource.NORMALIZED_OUTPUT_RANGE,
-      tandem: tandem.createTandem( 'normalizedOutputProperty' ),
-      phetioDocumentation: 'Normalized photon source output from 0 to 1, interpreted by the selected emission mode'
+      tandem: tandem.createTandem( 'normalizedIntensityProperty' ),
+      phetioDocumentation: 'Normalized photon source intensity from 0 to 1, interpreted by the selected emission mode'
     } );
 
     this.intensityPercentProperty = new DerivedProperty(
-      [ this.normalizedOutputProperty ],
+      [ this.normalizedIntensityProperty ],
       normalizedOutput => 100 * normalizedOutput,
       {
         tandem: tandem.createTandem( 'intensityPercentProperty' ),
         phetioValueType: NumberIO,
-        phetioDocumentation: 'Photon source output as a percentage from 0 to 100'
+        phetioDocumentation: 'Photon source intensity as a percentage from 0 to 100'
       }
     );
 
@@ -90,7 +90,7 @@ export default class PhotonSource {
 
     this.photonRateProperty = new DerivedProperty(
       [
-        this.normalizedOutputProperty,
+        this.normalizedIntensityProperty,
         this.wavelengthProperty,
         PhotoelectricEffectPreferences.photonModeProperty
       ],
@@ -110,7 +110,7 @@ export default class PhotonSource {
   }
 
   /**
-   * Gets the photon emission rate for an arbitrary normalized source output, using the current wavelength
+   * Gets the photon emission rate for an arbitrary normalized source intensity, using the current wavelength
    * and selected emission mode.
    */
   public getPhotonRateForNormalizedOutput( normalizedOutput: number ): number {
@@ -122,10 +122,10 @@ export default class PhotonSource {
   }
 
   /**
-   * Resets source output and wavelength to their initial values.
+   * Resets source intensity and wavelength to their initial values.
    */
   public reset(): void {
-    this.normalizedOutputProperty.reset();
+    this.normalizedIntensityProperty.reset();
     this.wavelengthProperty.reset();
   }
 }

@@ -19,14 +19,14 @@ export default class PhotoelectricEffectPreferences {
     // This class is not intended to be instantiated.
   }
 
-  // How the photon source output control maps to photon emission rate.
+  // How the photon source intensity control maps to photon emission rate.
   public static readonly photonModeProperty = new StringUnionProperty<PhotonMode>(
     PhotoelectricEffectQueryParameters.photonMode as PhotonMode,
     {
       validValues: PhotonModeValues,
       tandem: Tandem.PREFERENCES.createTandem( 'photonModeProperty' ),
       phetioFeatured: true,
-      phetioDocumentation: 'How the photon source output control maps to photon emission rate'
+      phetioDocumentation: 'How the photon source intensity control maps to photon emission rate'
     }
   );
 
