@@ -20,7 +20,7 @@ import Vector2 from '../../../../dot/js/Vector2.js';
 import Shape from '../../../../kite/js/Shape.js';
 import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
 import Path, { PathOptions } from '../../../../scenery/js/nodes/Path.js';
-import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
+import { wavelengthToColorWithGradient } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import { LENS_WIDTH, LENS_Y_RADIUS } from './LightSourceNode.js';
 
@@ -68,7 +68,7 @@ export default class LightBeamNode extends Path {
       PhotoelectricEffectColors.photonUVSparkleColorProperty,
       PhotoelectricEffectColors.photonIRSparkleColorProperty
     ], ( wavelength, uvSparkleColor, irSparkleColor ) => {
-      this.fill = wavelengthToColor( wavelength );
+      this.fill = wavelengthToColorWithGradient( wavelength );
       this.stroke = VisibleColor.isUVWavelength( wavelength ) ? uvSparkleColor :
                     VisibleColor.isIRWavelength( wavelength ) ? irSparkleColor :
                     null;

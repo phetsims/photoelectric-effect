@@ -19,7 +19,7 @@ import Path from '../../../../scenery/js/nodes/Path.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import Color from '../../../../scenery/js/util/Color.js';
 import RadialGradient from '../../../../scenery/js/util/RadialGradient.js';
-import { wavelengthToColor } from '../model/PhotoelectricEffectUtils.js';
+import { wavelengthToColorWithGradient } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
@@ -75,7 +75,7 @@ export default class LightSourceNode extends Node {
       const midColor = sourceOff ? PhotoelectricEffectColors.apertureGradientMidColorProperty.value :
                        VisibleColor.isUVWavelength( wavelength ) ? uvSparkleColor :
                        VisibleColor.isIRWavelength( wavelength ) ? irSparkleColor :
-                       wavelengthToColor( wavelength );
+                       wavelengthToColorWithGradient( wavelength );
 
       const edgeColor = sourceOff ? PhotoelectricEffectColors.apertureGradientEdgeColorProperty.value :
                         midColor.colorUtilsDarker( 0.15 );

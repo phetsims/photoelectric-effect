@@ -148,7 +148,7 @@ export const wavelengthToColor = ( wavelength: number ): Color => {
  * VisibleColor directly. UV and IR use photoelectric-specific gradient stops so the non-visible regions can be
  * tuned independently from shared scenery-phet color behavior.
  */
-export const wavelengthToSpectrumTrackColor = ( wavelength: number ): Color => {
+export const wavelengthToColorWithGradient = ( wavelength: number ): Color => {
   if ( VisibleColor.isUVWavelength( wavelength ) ) {
     return wavelengthToColorFromStops( wavelength, UV_SPECTRUM_TRACK_COLOR_STOPS );
   }
