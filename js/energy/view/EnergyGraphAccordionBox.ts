@@ -59,7 +59,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
       model.energyGraphData.samples,
       model.target.workFunctionProperty,
       model.target.bandDepthProperty,
-      displayProperties.diagramLabelsVisibleProperty,
+      displayProperties.fermiLevelLabelVisibleProperty,
       displayProperties.workFunctionVisibleProperty,
       displayProperties.photonArrowsVisibleProperty,
       {
@@ -116,7 +116,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
     ] );
 
     const energyDiagramControlsNode = new EnergyDiagramControlsNode(
-      displayProperties.diagramLabelsVisibleProperty,
+      displayProperties.fermiLevelLabelVisibleProperty,
       displayProperties.workFunctionVisibleProperty,
       displayProperties.photonArrowsVisibleProperty, {
         layoutOptions: {

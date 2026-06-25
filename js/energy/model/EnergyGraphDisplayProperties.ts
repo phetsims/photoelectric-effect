@@ -22,7 +22,7 @@ export default class EnergyGraphDisplayProperties {
   public readonly displayModeProperty: StringUnionProperty<EnergyGraphDisplayMode>;
 
   // Whether descriptive labels are visible on the energy diagram.
-  public readonly diagramLabelsVisibleProperty: Property<boolean>;
+  public readonly fermiLevelLabelVisibleProperty: Property<boolean>;
 
   // Whether the work function label is visible on the energy diagram.
   public readonly workFunctionVisibleProperty: Property<boolean>;
@@ -38,9 +38,9 @@ export default class EnergyGraphDisplayProperties {
       phetioDocumentation: 'Currently selected Energy screen graph display mode'
     } );
 
-    this.diagramLabelsVisibleProperty = new BooleanProperty( true, {
+    this.fermiLevelLabelVisibleProperty = new BooleanProperty( true, {
       phetioFeatured: true,
-      tandem: tandem.createTandem( 'diagramLabelsVisibleProperty' ),
+      tandem: tandem.createTandem( 'fermiLevelLabelVisibleProperty' ),
       phetioDocumentation: 'Whether descriptive labels are visible on the Energy screen energy diagram'
     } );
 
@@ -62,7 +62,7 @@ export default class EnergyGraphDisplayProperties {
    */
   public reset(): void {
     this.displayModeProperty.reset();
-    this.diagramLabelsVisibleProperty.reset();
+    this.fermiLevelLabelVisibleProperty.reset();
     this.workFunctionVisibleProperty.reset();
     this.photonArrowsVisibleProperty.reset();
   }
