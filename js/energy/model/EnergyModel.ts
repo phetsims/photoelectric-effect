@@ -105,9 +105,11 @@ export default class EnergyModel extends PhotoelectricEffectModel {
   // into the matching slot. Uses a WeakMap so entries clear when photons are released by this.photons.
   private readonly photonToSampleIndexMap = new WeakMap<Photon, number>();
 
-  // Tracks which sample slot each emitted electron corresponds to, so the electron can be cleared together with
-  // its slot's graph data on the next fire. Uses a WeakMap so entries clear when electrons are released by
-  // this.electrons.
+  // Tracks which sample slot each emitted electron corresponds to. In single-photon mode, re-firing a slot clears
+  // only that slot's electron particle (see clearElectronsForSlot), leaving the other slots' electrons on screen;
+  // this map is what scopes the clear to one slot. A WeakMap is used purely to avoid a
+  // leak: culled electrons (removed from this.electrons) are garbage-collected along with their entry, with no
+  // manual cleanup.
   private readonly electronToSampleIndexMap = new WeakMap<Electron, number>();
 
   // Delayed burst-mode photon emissions. Each entry counts down in model time until its photon should be fired.
