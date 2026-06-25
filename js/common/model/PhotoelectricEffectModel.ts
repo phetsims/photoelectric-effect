@@ -484,12 +484,12 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   /**
    * Get the analytic current for the provided normalized source intensity, with other variables from the current system.
    */
-  public getCurrentForNormalizedOutput( normalizedOutput: number ): number {
+  public getCurrentForNormalizedIntensity( normalizedIntensity: number ): number {
     const voltage = this.battery.voltageProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
     const bandDepth = this.target.bandDepthProperty.value;
-    const photonsPerSecond = this.photonSource.getPhotonRateForNormalizedOutput( normalizedOutput );
+    const photonsPerSecond = this.photonSource.getPhotonRateForNormalizedIntensity( normalizedIntensity );
     return this.getCurrentForSystem( voltage, photonsPerSecond, wavelength, workFunction, bandDepth );
   }
 

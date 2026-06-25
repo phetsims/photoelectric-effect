@@ -19,11 +19,11 @@ import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import PhotoelectricEffectPreferences from './PhotoelectricEffectPreferences.js';
-import { normalizedOutputToPhotonRate } from './PhotoelectricEffectUtils.js';
+import { normalizedIntensityToPhotonRate } from './PhotoelectricEffectUtils.js';
 import { photonsPerSecondUnit } from './photonsPerSecondUnit.js';
 
 // Default normalized source intensity used at initialization.
-const INITIAL_NORMALIZED_OUTPUT = 0;
+const INITIAL_NORMALIZED_INTENSITY = 0;
 
 // Default wavelength in nanometers used at initialization.
 const INITIAL_WAVELENGTH = 400;
@@ -37,7 +37,7 @@ type PhotonSourceOptions = PickRequired<PhetioObjectOptions, 'tandem'>;
 export default class PhotonSource {
 
   // Allowed normalized source intensity range.
-  public static readonly NORMALIZED_OUTPUT_RANGE = new Range( 0, 1 );
+  public static readonly NORMALIZED_INTENSITY_RANGE = new Range( 0, 1 );
 
   /**
    * Controls the source intensity as a normalized value.
@@ -65,15 +65,15 @@ export default class PhotonSource {
   public constructor( providedOptions: PhotonSourceOptions ) {
     const tandem = providedOptions.tandem;
 
-    this.normalizedIntensityProperty = new NumberProperty( INITIAL_NORMALIZED_OUTPUT, {
-      range: PhotonSource.NORMALIZED_OUTPUT_RANGE,
+    this.normalizedIntensityProperty = new NumberProperty( INITIAL_NORMALIZED_INTENSITY, {
+      range: PhotonSource.NORMALIZED_INTENSITY_RANGE,
       tandem: tandem.createTandem( 'normalizedIntensityProperty' ),
       phetioDocumentation: 'Normalized photon source intensity from 0 to 1, interpreted by the selected emission mode'
     } );
 
     this.intensityPercentProperty = new DerivedProperty(
       [ this.normalizedIntensityProperty ],
-      normalizedOutput => 100 * normalizedOutput,
+      normalizedIntensity => 100 * normalizedIntensity,
       {
         tandem: tandem.createTandem( 'intensityPercentProperty' ),
         phetioValueType: NumberIO,
@@ -94,8 +94,8 @@ export default class PhotonSource {
         this.wavelengthProperty,
         PhotoelectricEffectPreferences.photonModeProperty
       ],
-      ( normalizedOutput, wavelength, photonMode ) => normalizedOutputToPhotonRate(
-        normalizedOutput,
+      ( normalizedIntensity, wavelength, photonMode ) => normalizedIntensityToPhotonRate(
+        normalizedIntensity,
         wavelength,
         photonMode
       ),
@@ -113,9 +113,9 @@ export default class PhotonSource {
    * Gets the photon emission rate for an arbitrary normalized source intensity, using the current wavelength
    * and selected emission mode.
    */
-  public getPhotonRateForNormalizedOutput( normalizedOutput: number ): number {
-    return normalizedOutputToPhotonRate(
-      normalizedOutput,
+  public getPhotonRateForNormalizedIntensity( normalizedIntensity: number ): number {
+    return normalizedIntensityToPhotonRate(
+      normalizedIntensity,
       this.wavelengthProperty.value,
       PhotoelectricEffectPreferences.photonModeProperty.value
     );

@@ -75,8 +75,8 @@ export default class LightBeamNode extends Path {
     } );
 
     // A dimmer source produces a fainter beam; no intensity means no visible beam.
-    normalizedIntensityProperty.link( normalizedOutput => {
-      this.opacity = MAX_BEAM_OPACITY * normalizedOutput;
+    normalizedIntensityProperty.link( normalizedIntensity => {
+      this.opacity = MAX_BEAM_OPACITY * normalizedIntensity;
     } );
   }
 }

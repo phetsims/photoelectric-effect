@@ -76,7 +76,7 @@ spectrumTrack:
 workFunction.label:                 'Work Function (eV)'
 intensity.label:                    'Intensity'
 intensity.percentReadoutPattern:    '{{value}} %'
-sourceOutput.percentReadoutPattern: '{{value}} %'
+sourceIntensity.percentReadoutPattern: '{{value}} %'
 wavelength.label:                   'Wavelength'
 wavelength.valueReadoutPattern:     '{{value}} nm'
 voltage.label:                      'Voltage'
@@ -128,7 +128,7 @@ a11y:
   introScreen:
     screenSummary:
       playArea:        >-
-                       A light source shines light onto a metal target. Adjust the output and wavelength of the light, and
+                       A light source shines light onto a metal target. Adjust the intensity and wavelength of the light, and
                        choose the target material, to explore when light ejects electrons from the metal. A representation
                        toggle switches between a Grounded target and a full Circuit with an ammeter that reads the current.
       controlArea:     >-
@@ -140,16 +140,16 @@ a11y:
 
             The target material is MATERIAL.
             The representation is set to REPRESENTATION.
-            Light source output is INTENSITY percent.
+            Light source intensity is INTENSITY percent.
             Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.
             Electron emission is EMISSIONSTATE.
-      interactionHint: Turn up the light source output, then adjust the wavelength to find when electrons start to fly off the metal.
+      interactionHint: Turn up the light source intensity, then adjust the wavelength to find when electrons start to fly off the metal.
 
   # Experiment screen summary
   experimentScreen:
     screenSummary:
       playArea:        >-
-                       A light source shines light onto a metal target inside a circuit. Adjust the output and wavelength of
+                       A light source shines light onto a metal target inside a circuit. Adjust the intensity and wavelength of
                        the light, choose the target material, and set the battery voltage across the plates to explore what
                        affects the current and the energy of the ejected electrons. Three graphs plot intensity versus current,
                        frequency versus electron energy, and voltage versus current, and you can capture snapshots to compare
@@ -162,12 +162,12 @@ a11y:
           Currently,
 
             The target material is MATERIAL.
-            Light source output is INTENSITY percent.
+            Light source intensity is INTENSITY percent.
             Wavelength is WAVELENGTH nanometers, in the SPECTRUMREGION part of the spectrum.
             Battery voltage is VOLTAGE volts.
             Electron emission is EMISSIONSTATE.
             The ammeter reads CURRENT.
-      interactionHint: Turn up the light source output and adjust the wavelength, voltage, and material to start collecting data in the graphs.
+      interactionHint: Turn up the light source intensity and adjust the wavelength, voltage, and material to start collecting data in the graphs.
 
   # Photon source panel and its inner controls
   photonSourcePanel:

@@ -76,7 +76,7 @@ export default class FrequencyEnergyGraphData extends GraphData {
         // is at 0% (mimics the Java sim), see https://github.com/phetsims/photoelectric-effect/issues/102
         samplingEnabledProperty: new DerivedProperty(
           [ model.photonSource.normalizedIntensityProperty ],
-          normalizedOutput => normalizedOutput > 0
+          normalizedIntensity => normalizedIntensity > 0
         )
       } )
     );

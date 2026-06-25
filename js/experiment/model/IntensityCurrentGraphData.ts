@@ -38,7 +38,7 @@ export default class IntensityCurrentGraphData extends GraphData {
 
     super(
       model.photonSource.normalizedIntensityProperty,
-      normalizedOutput => new Vector2( normalizedOutput, model.getCurrentForNormalizedOutput( normalizedOutput ) ),
+      normalizedIntensity => new Vector2( normalizedIntensity, model.getCurrentForNormalizedIntensity( normalizedIntensity ) ),
       model,
       secondValueMetadata,
       thirdValueMetadata,

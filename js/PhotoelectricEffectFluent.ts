@@ -240,8 +240,8 @@ const PhotoelectricEffectFluent = {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.labelStringProperty' ),
     percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'intensity.percentReadoutPatternStringProperty' )
   },
-  sourceOutput: {
-    percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'sourceOutput.percentReadoutPatternStringProperty' )
+  sourceIntensity: {
+    percentReadoutPatternStringProperty: _.get( PhotoelectricEffectStrings, 'sourceIntensity.percentReadoutPatternStringProperty' )
   },
   wavelength: {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'wavelength.labelStringProperty' ),

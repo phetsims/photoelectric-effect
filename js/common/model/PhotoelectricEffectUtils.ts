@@ -112,16 +112,16 @@ export const intensityToPhotonRate = ( intensity: number, wavelength: number ): 
  * Converts normalized photon source intensity to photons-per-second for the selected emission mode.
  * This is a direct port from the java.
  */
-export const normalizedOutputToPhotonRate = (
-  normalizedOutput: number,
+export const normalizedIntensityToPhotonRate = (
+  normalizedIntensity: number,
   wavelength: number,
   photonMode: PhotonMode
 ): number => {
 
   // Sanity check.
-  const clampedNormalizedOutput = Math.max( 0, Math.min( normalizedOutput, 1 ) );
-  return photonMode === 'count' ? clampedNormalizedOutput * PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND :
-         photonMode === 'intensity' ? intensityToPhotonRate( clampedNormalizedOutput, wavelength ) :
+  const clampedNormalizedIntensity = Math.max( 0, Math.min( normalizedIntensity, 1 ) );
+  return photonMode === 'count' ? clampedNormalizedIntensity * PhotoelectricEffectConstants.MAX_PHOTONS_PER_SECOND :
+         photonMode === 'intensity' ? intensityToPhotonRate( clampedNormalizedIntensity, wavelength ) :
          ( () => { throw new Error( `Unrecognized photonMode: ${photonMode}` ); } )();
 };
 

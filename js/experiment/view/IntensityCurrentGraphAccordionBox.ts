@@ -35,7 +35,7 @@ export default class IntensityCurrentGraphAccordionBox extends GraphAssemblyAcco
    */
   public constructor( model: ExperimentModel, providedOptions: IntensityCurrentGraphAccordionBoxOptions ) {
 
-    const xRange = PhotonSource.NORMALIZED_OUTPUT_RANGE;
+    const xRange = PhotonSource.NORMALIZED_INTENSITY_RANGE;
 
     // Preset y-axis domains used by zoom controls (most zoomed-in to most zoomed-out after sorting).
     const yZoomRanges = [

@@ -92,7 +92,7 @@ type StringsType = {
     'labelStringProperty': LocalizedStringProperty;
     'percentReadoutPatternStringProperty': LocalizedStringProperty;
   };
-  'sourceOutput': {
+  'sourceIntensity': {
     'percentReadoutPatternStringProperty': LocalizedStringProperty;
   };
   'wavelength': {

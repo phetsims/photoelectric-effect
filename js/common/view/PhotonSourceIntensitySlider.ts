@@ -44,7 +44,7 @@ const READOUT_SPACING = 6;
 // Vertical gap between the intensity title and the slider track.
 const LABEL_SLIDER_SPACING = 5;
 
-const OUTPUT_LABEL_MAX_WIDTH = 200;
+const INTENSITY_LABEL_MAX_WIDTH = 200;
 
 const NUMBER_DISPLAY_BASE: NumberDisplayOptions = {
   decimalPlaces: 0,
@@ -60,13 +60,13 @@ export default class PhotonSourceIntensitySlider extends Node {
 
   /**
    * @param normalizedIntensityProperty - normalized source intensity
-   * @param normalizedOutputPercentProperty - source intensity reported as a percentage for display
+   * @param normalizedIntensityPercentProperty - source intensity reported as a percentage for display
    * @param wavelengthProperty - wavelength of emitted photons
    * @param providedOptions
    */
   public constructor(
     normalizedIntensityProperty: NumberProperty,
-    normalizedOutputPercentProperty: TReadOnlyProperty<number>,
+    normalizedIntensityPercentProperty: TReadOnlyProperty<number>,
     wavelengthProperty: TReadOnlyProperty<number>,
     providedOptions: PhotonSourceIntensitySliderOptions
   ) {
@@ -82,7 +82,7 @@ export default class PhotonSourceIntensitySlider extends Node {
 
     const intensityLabel = new Text( PhotoelectricEffectFluent.intensity.labelStringProperty, {
       font: PhotoelectricEffectConstants.PANEL_TITLE_FONT,
-      maxWidth: OUTPUT_LABEL_MAX_WIDTH
+      maxWidth: INTENSITY_LABEL_MAX_WIDTH
     } );
 
     const slider = new HSlider( normalizedIntensityProperty, normalizedIntensityProperty.range, {
@@ -96,14 +96,14 @@ export default class PhotonSourceIntensitySlider extends Node {
       lineWidth: 1
     } );
 
-    const intensityReadout = new NumberDisplay( normalizedOutputPercentProperty, new Range(
+    const intensityReadout = new NumberDisplay( normalizedIntensityPercentProperty, new Range(
       normalizedIntensityProperty.range.min * 100,
       normalizedIntensityProperty.range.max * 100
     ), combineOptions<NumberDisplayOptions>(
       {},
       NUMBER_DISPLAY_BASE,
       {
-        valuePattern: PhotoelectricEffectFluent.sourceOutput.percentReadoutPatternStringProperty,
+        valuePattern: PhotoelectricEffectFluent.sourceIntensity.percentReadoutPatternStringProperty,
         textOptions: {
           font: PhotoelectricEffectConstants.READOUT_FONT,
           maxWidth: options.readoutMaxWidth
