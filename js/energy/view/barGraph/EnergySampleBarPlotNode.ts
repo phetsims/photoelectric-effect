@@ -10,8 +10,12 @@ import Multilink from '../../../../../axon/js/Multilink.js';
 import BarPlot from '../../../../../bamboo/js/BarPlot.js';
 import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
 import Vector2 from '../../../../../dot/js/Vector2.js';
+import Line from '../../../../../scenery/js/nodes/Line.js';
 import Node from '../../../../../scenery/js/nodes/Node.js';
 import type { PaintableOptions } from '../../../../../scenery/js/nodes/Paintable.js';
+import Rectangle from '../../../../../scenery/js/nodes/Rectangle.js';
+import type Color from '../../../../../scenery/js/util/Color.js';
+import NodePattern from '../../../../../scenery/js/util/NodePattern.js';
 import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
 import EnergyGraphSample from '../../model/EnergyGraphSample.js';
 import EnergyGraphLayout from '../EnergyGraphLayout.js';
@@ -25,6 +29,8 @@ const BAR_WIDTH = 9;
 const NO_ELECTRON_EJECTED_ICON_CENTER_MODEL_Y = 8.0;
 
 const NO_ELECTRON_EJECTED_ICON_WIDTH = 32;
+const PHOTON_ENERGY_PATTERN_TILE_SIZE = 8;
+const PHOTON_ENERGY_PATTERN_RESOLUTION = 2;
 
 export default class EnergySampleBarPlotNode extends Node {
 
@@ -32,11 +38,14 @@ export default class EnergySampleBarPlotNode extends Node {
   // instances, so this array is mutated instead of replaced.
   private readonly dataSet: Vector2[];
 
-  // Bar display for samples that produced an emitted electron.
+  // Bar display for recorded samples.
   private readonly barPlot: BarPlot;
 
   // Icon shown when sample data exists but no electron was emitted.
   private readonly noElectronEjectedIconNode: NoElectronEjectedIconNode;
+
+  // Pattern fill for the photon-energy bar when the photon did not eject an electron.
+  private photonEnergyPattern: NodePattern;
 
   /**
    * @param chartTransform - Translates sample and energy coordinates into the shared chart view.
@@ -47,10 +56,15 @@ export default class EnergySampleBarPlotNode extends Node {
     super();
 
     this.dataSet = EnergySampleBarPlotNode.createDataSet( sampleIndex );
+    this.photonEnergyPattern = EnergySampleBarPlotNode.createPhotonEnergyPattern(
+      PhotoelectricEffectColors.photonEnergyGraphColorProperty.value
+    );
 
     this.barPlot = new BarPlot( chartTransform, this.dataSet, {
       barWidth: BAR_WIDTH,
-      pointToPaintableFields: point => EnergySampleBarPlotNode.getBarPaintableOptions( sampleIndex, point )
+      pointToPaintableFields: point => this.getBarPaintableOptions(
+        sampleIndex, sample.electronEmittedProperty.value, point
+      )
     } );
 
     this.noElectronEjectedIconNode = new NoElectronEjectedIconNode( NO_ELECTRON_EJECTED_ICON_WIDTH, {
@@ -79,6 +93,11 @@ export default class EnergySampleBarPlotNode extends Node {
       this.barPlot.update();
       this.updateBarVisibility( electronEmitted );
     } );
+
+    PhotoelectricEffectColors.photonEnergyGraphColorProperty.lazyLink( photonEnergyColor => {
+      this.photonEnergyPattern = EnergySampleBarPlotNode.createPhotonEnergyPattern( photonEnergyColor );
+      this.barPlot.update();
+    } );
   }
 
   /**
@@ -97,19 +116,54 @@ export default class EnergySampleBarPlotNode extends Node {
   /**
    * Determines bar colors from the fixed x order for a sample plot.
    */
-  private static getBarPaintableOptions( sampleIndex: number, point: Vector2 ): PaintableOptions {
+  private getBarPaintableOptions( sampleIndex: number, electronEmitted: boolean, point: Vector2 ): PaintableOptions {
     const centerX = EnergyGraphLayout.getSampleCenterX( sampleIndex );
 
     // Bars are ordered by x position within each sample group: binding on the left, photon in the center,
     // kinetic on the right.
-    const fillProperty = point.x < centerX ? PhotoelectricEffectColors.bindingEnergyGraphColorProperty :
-                         point.x > centerX ? PhotoelectricEffectColors.kineticEnergyColorProperty :
-                         PhotoelectricEffectColors.photonEnergyGraphColorProperty;
+    const fill = point.x < centerX ? PhotoelectricEffectColors.bindingEnergyGraphColorProperty :
+                 point.x > centerX ? PhotoelectricEffectColors.kineticEnergyColorProperty :
+                 electronEmitted ? PhotoelectricEffectColors.photonEnergyGraphColorProperty :
+                 this.photonEnergyPattern;
 
     return {
-      fill: fillProperty,
+      fill: fill,
       stroke: PhotoelectricEffectColors.iconStrokeColorProperty
     };
+  }
+
+  /**
+   * Creates the hashed fill for a photon-energy bar that did not eject an electron.
+   */
+  private static createPhotonEnergyPattern( photonEnergyColor: Color ): NodePattern {
+    return new NodePattern(
+      new Node( {
+        children: [
+          new Rectangle( 0, 0, PHOTON_ENERGY_PATTERN_TILE_SIZE, PHOTON_ENERGY_PATTERN_TILE_SIZE, {
+            fill: photonEnergyColor
+          } ),
+          new Line( 0, 0, PHOTON_ENERGY_PATTERN_TILE_SIZE, PHOTON_ENERGY_PATTERN_TILE_SIZE, {
+            stroke: 'white',
+            lineWidth: 1
+          } ),
+          new Line( -PHOTON_ENERGY_PATTERN_TILE_SIZE, 0, 0, PHOTON_ENERGY_PATTERN_TILE_SIZE, {
+            stroke: 'white',
+            lineWidth: 1
+          } ),
+          new Line(
+            PHOTON_ENERGY_PATTERN_TILE_SIZE, 0,
+            2 * PHOTON_ENERGY_PATTERN_TILE_SIZE, PHOTON_ENERGY_PATTERN_TILE_SIZE, {
+              stroke: 'white',
+              lineWidth: 1
+            } )
+        ]
+      } ),
+      PHOTON_ENERGY_PATTERN_RESOLUTION,
+      0,
+      0,
+      PHOTON_ENERGY_PATTERN_TILE_SIZE,
+      PHOTON_ENERGY_PATTERN_TILE_SIZE
+    );
   }
 
   /**
@@ -122,11 +176,11 @@ export default class EnergySampleBarPlotNode extends Node {
   }
 
   /**
-   * Shows only the binding-energy bar when the sample did not produce an emitted electron.
+   * Shows binding and photon-energy bars when the sample did not produce an emitted electron.
    */
   private updateBarVisibility( electronEmitted: boolean ): void {
     this.barPlot.rectangles[ 0 ].visible = true;
-    this.barPlot.rectangles[ 1 ].visible = electronEmitted;
+    this.barPlot.rectangles[ 1 ].visible = true;
     this.barPlot.rectangles[ 2 ].visible = electronEmitted;
   }
 }
