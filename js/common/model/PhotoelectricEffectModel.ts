@@ -17,16 +17,16 @@ import type ReadOnlyProperty from '../../../../axon/js/ReadOnlyProperty.js';
 import dotRandom from '../../../../dot/js/dotRandom.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import TModel from '../../../../joist/js/TModel.js';
-import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import optionize from '../../../../phet-core/js/optionize.js';
 import PickOptional from '../../../../phet-core/js/types/PickOptional.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import { voltsUnit } from '../../../../scenery-phet/js/units/voltsUnit.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import ReferenceArrayIO from '../../../../tandem/js/types/ReferenceArrayIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
-import Battery from './Battery.js';
 import Collector from './Collector.js';
 import Electron, { type ElectronStateObject } from './Electron.js';
 import Material, { MaterialType } from './Material.js';
@@ -36,7 +36,12 @@ import Photon, { type PhotonStateObject } from './Photon.js';
 import PhotonSource from './PhotonSource.js';
 import Target, { type PhotonCollisionResult } from './Target.js';
 
-type SelfOptions = EmptySelfOptions;
+type SelfOptions = {
+
+  // Whether PhET-iO clients can set the voltage Property.
+  voltagePropertyPhetioReadOnly?: boolean;
+};
+
 export type PhotoelectricEffectModelOptions = SelfOptions &
   PickRequired<PhetioObjectOptions, 'tandem'> &
   PickOptional<PhetioObjectOptions, 'phetioType'>;
@@ -73,9 +78,8 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   // Used to determine current flow in the intro screen.
   public readonly collector: Collector;
 
-  // Battery that sets the potential difference between plates.
-  // Controls the electric field that accelerates or decelerates electrons.
-  public readonly battery: Battery;
+  // Voltage across the plates, in volts. Controls the electric field that accelerates or decelerates electrons.
+  public readonly voltageProperty: NumberProperty;
 
   // Photon source that emits toward the target.
   public readonly photonSource: PhotonSource;
@@ -123,6 +127,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
   ) {
 
     const options = optionize<PhotoelectricEffectModelOptions, SelfOptions, PhetioObjectOptions>()( {
+      voltagePropertyPhetioReadOnly: true,
       phetioType: PhotoelectricEffectModel.PhotoelectricEffectModelIO,
       phetioState: true
     }, providedOptions );
@@ -175,11 +180,17 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
     this.wavelengthProperty = this.photonSource.wavelengthProperty;
 
     this.collector = new Collector( PhotoelectricEffectConstants.COLLECTOR_X );
-    this.battery = new Battery( tandem.createTandem( 'battery' ) );
+
+    this.voltageProperty = new NumberProperty( PhotoelectricEffectConstants.DEFAULT_BATTERY_VOLTAGE, {
+      range: PhotoelectricEffectConstants.VOLTAGE_RANGE,
+      units: voltsUnit,
+      tandem: tandem.createTandem( 'voltageProperty' ),
+      phetioReadOnly: options.voltagePropertyPhetioReadOnly
+    } );
 
     this.currentProperty = new DerivedProperty(
       [
-        this.battery.voltageProperty,
+        this.voltageProperty,
         this.photonSource.photonRateProperty,
         this.photonSource.wavelengthProperty,
         this.target.workFunctionProperty,
@@ -234,7 +245,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
    */
   public reset(): void {
     this.target.reset();
-    this.battery.reset();
+    this.voltageProperty.reset();
     this.photonSource.reset();
     this.isPlayingProperty.reset();
     this.showElectronsProperty.reset();
@@ -457,7 +468,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
    * Computes the acceleration applied to electrons from the plate voltage.
    */
   private getElectronAcceleration(): Vector2 {
-    const accelerationMagnitude = ( this.battery.voltageProperty.value *
+    const accelerationMagnitude = ( this.voltageProperty.value *
                                     PhotoelectricEffectConstants.ELECTRON_ACCELERATION_SCALE ) /
                                   PhotoelectricEffectConstants.PLATE_SEPARATION;
     return new Vector2( accelerationMagnitude, 0 );
@@ -485,7 +496,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
    * Get the analytic current for the provided normalized source intensity, with other variables from the current system.
    */
   public getCurrentForNormalizedIntensity( normalizedIntensity: number ): number {
-    const voltage = this.battery.voltageProperty.value;
+    const voltage = this.voltageProperty.value;
     const wavelength = this.photonSource.wavelengthProperty.value;
     const workFunction = this.target.workFunctionProperty.value;
     const bandDepth = this.target.bandDepthProperty.value;

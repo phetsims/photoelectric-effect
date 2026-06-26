@@ -7,6 +7,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import Material from '../../common/model/Material.js';
 import PhotoelectricEffectModel, { PhotoelectricEffectModelOptions } from '../../common/model/PhotoelectricEffectModel.js';
 import FrequencyEnergyGraphData from './FrequencyEnergyGraphData.js';
@@ -24,7 +25,9 @@ export default class ExperimentModel extends PhotoelectricEffectModel {
     super(
       mysteryMaterials,
       null,
-      providedOptions
+      combineOptions<PhotoelectricEffectModelOptions>( {}, providedOptions, {
+        voltagePropertyPhetioReadOnly: false
+      } )
     );
 
     this.intensityCurrentGraphData = new IntensityCurrentGraphData( this, {

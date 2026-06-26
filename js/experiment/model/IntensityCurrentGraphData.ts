@@ -30,7 +30,7 @@ export default class IntensityCurrentGraphData extends GraphData {
     };
     const thirdValueMetadata: GraphMetadataConfig = {
       labelProperty: PhotoelectricEffectFluent.voltage.labelStringProperty,
-      valueProperty: model.battery.voltageProperty,
+      valueProperty: model.voltageProperty,
       formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.voltage.valueReadoutPatternStringProperty.value, {
         value: toFixed( value, 2 )
       } )
@@ -43,7 +43,7 @@ export default class IntensityCurrentGraphData extends GraphData {
       secondValueMetadata,
       thirdValueMetadata,
       [
-        model.battery.voltageProperty,
+        model.voltageProperty,
         model.wavelengthProperty,
         model.target.materialProperty,
         model.target.workFunctionProperty,

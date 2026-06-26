@@ -1,12 +1,13 @@
 // Copyright 2026, University of Colorado Boulder
 
 /**
- * VoltageNumberControl is the NumberControl used to set battery voltage in the Experiment screen.
+ * VoltageNumberControl is the NumberControl used to set plate voltage in the Experiment screen.
  * It centralizes slider range, tick labels, and sizing.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import type NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
@@ -14,7 +15,6 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberControl, { type NumberControlOptions } from '../../../../scenery-phet/js/NumberControl.js';
 import { NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import Battery from '../../common/model/Battery.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
@@ -23,10 +23,10 @@ export type VoltageNumberControlOptions = PickRequired<NumberControlOptions, 'ta
 export default class VoltageNumberControl extends NumberControl {
 
   /**
-   * @param battery - Provides the voltage Property controlled by this UI.
+   * @param voltageProperty - Voltage Property controlled by this UI.
    * @param providedOptions - NumberControl options and required instrumentation tandem.
    */
-  public constructor( battery: Battery, providedOptions: VoltageNumberControlOptions ) {
+  public constructor( voltageProperty: NumberProperty, providedOptions: VoltageNumberControlOptions ) {
 
     const options = optionize<VoltageNumberControlOptions, EmptySelfOptions, NumberControlOptions>()( {
       delta: 0.01,
@@ -59,14 +59,14 @@ export default class VoltageNumberControl extends NumberControl {
         majorTickLength: 8,
 
         // To produce one minor tick at 0.
-        minorTickSpacing: battery.voltageProperty.range.getLength() / 2
+        minorTickSpacing: voltageProperty.range.getLength() / 2
       }
     }, providedOptions );
 
     super(
       PhotoelectricEffectFluent.voltage.labelStringProperty,
-      battery.voltageProperty,
-      battery.voltageProperty.range,
+      voltageProperty,
+      voltageProperty.range,
       options );
   }
 }

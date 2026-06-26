@@ -46,7 +46,7 @@ export default class FrequencyEnergyGraphData extends GraphData {
     };
     const thirdValueMetadata: GraphMetadataConfig = {
       labelProperty: PhotoelectricEffectFluent.voltage.labelStringProperty,
-      valueProperty: model.battery.voltageProperty,
+      valueProperty: model.voltageProperty,
       formatValue: value => StringUtils.fillIn( PhotoelectricEffectFluent.voltage.valueReadoutPatternStringProperty.value, {
         value: toFixed( value, 2 )
       } )

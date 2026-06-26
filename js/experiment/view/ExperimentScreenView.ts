@@ -17,7 +17,6 @@ import BatteryNode from '../../../../scenery-phet/js/BatteryNode.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
-import Battery from '../../common/model/Battery.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import CircuitNode from '../../common/view/CircuitNode.js';
 import LightSourceNode from '../../common/view/LightSourceNode.js';
@@ -87,13 +86,12 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     //------------------------------------------------------------------------
     // Battery / voltage control (centered between the plates, offset to make room for the ammeter)
     //------------------------------------------------------------------------
-    const battery = model.battery;
     const batteryNode = new BatteryNode( { size: new Dimension2( 110, 57 ) } );
-    const voltageNumberDisplay = new NumberDisplay( battery.voltageProperty, Battery.RANGE, {
+    const voltageNumberDisplay = new NumberDisplay( model.voltageProperty, model.voltageProperty.range, {
       center: batteryNode.center,
       decimalPlaces: 2
     } );
-    const voltageNumberControl = new VoltageNumberControl( model.battery, {
+    const voltageNumberControl = new VoltageNumberControl( model.voltageProperty, {
       tandem: options.tandem.createTandem( 'voltageNumberControl' )
     } );
 
@@ -110,7 +108,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
 
       } );
 
-    battery.voltageProperty.link( voltage => {
+    model.voltageProperty.link( voltage => {
       voltage < 0 ? batteryNode.matrix = Matrix3.X_REFLECTION : batteryNode.matrix = Matrix3.IDENTITY;
     } );
 

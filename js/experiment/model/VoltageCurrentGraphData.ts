@@ -36,7 +36,7 @@ export default class VoltageCurrentGraphData extends GraphData {
     };
 
     super(
-      model.battery.voltageProperty,
+      model.voltageProperty,
       voltage => new Vector2( voltage, model.getCurrentForVoltage( voltage ) ),
       model,
       secondValueMetadata,
