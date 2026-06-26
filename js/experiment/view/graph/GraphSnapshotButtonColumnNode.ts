@@ -13,10 +13,11 @@ import Dimension2 from '../../../../../dot/js/Dimension2.js';
 import { combineOptions } from '../../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../../phet-core/js/types/PickRequired.js';
 import CameraButton, { type CameraButtonOptions } from '../../../../../scenery-phet/js/buttons/CameraButton.js';
-import InfoButton, { type InfoButtonOptions } from '../../../../../scenery-phet/js/buttons/InfoButton.js';
 import TrashButton, { type TrashButtonOptions } from '../../../../../scenery-phet/js/buttons/TrashButton.js';
 import VBox from '../../../../../scenery/js/layout/nodes/VBox.js';
-import { type RectangularPushButtonOptions } from '../../../../../sun/js/buttons/RectangularPushButton.js';
+import Path from '../../../../../scenery/js/nodes/Path.js';
+import expandSolidShape from '../../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
+import RectangularPushButton, { type RectangularPushButtonOptions } from '../../../../../sun/js/buttons/RectangularPushButton.js';
 import type { PhetioObjectOptions } from '../../../../../tandem/js/PhetioObject.js';
 import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
 import GraphData from '../../model/GraphData.js';
@@ -61,12 +62,6 @@ export default class GraphSnapshotButtonColumnNode extends VBox {
       xMargin: 6,
       yMargin: 6
     };
-    const infoButtonOptions: InfoButtonOptions = {
-      radius: actionButtonSideLength / 2,
-      baseColor: 'white',
-      xMargin: 6,
-      yMargin: 6
-    };
 
     const cameraButton = new CameraButton( combineOptions<CameraButtonOptions>( {}, actionButtonOptions, {
       listener: () => graphData.captureSnapshot(),
@@ -77,7 +72,10 @@ export default class GraphSnapshotButtonColumnNode extends VBox {
       accessibleName: options.cameraButtonAccessibleNameProperty
     } ) );
 
-    const snapshotsGalleryButton = new InfoButton( combineOptions<InfoButtonOptions>( {}, infoButtonOptions, {
+    const snapshotsGalleryButton = new RectangularPushButton( combineOptions<RectangularPushButtonOptions>( {}, actionButtonOptions, {
+      content: new Path( expandSolidShape, {
+        fill: PhotoelectricEffectColors.iconStrokeColorProperty
+      } ),
       listener: showSnapshotsDialog,
       enabledProperty: new DerivedProperty(
         [ graphData.snapshotsCountProperty ],
