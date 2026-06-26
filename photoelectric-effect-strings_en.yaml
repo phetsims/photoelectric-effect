@@ -57,7 +57,7 @@ energy:
     fermiLevelLabel:   'E<sub>F</sub>'
     noElectronEjected: 'No electron ejected'
     diagramControls:
-      label:        'Label'
+      label:        'Fermi Level E<sub>F</sub>'
       workFunction: 'Work Function'
       photonArrow:  'Photon Arrow'
     legend:

@@ -132,7 +132,7 @@
       },
       "diagramControls": {
         "label": {
-          "value": "Label"
+          "value": "Fermi Level E<sub>F</sub>"
         },
         "workFunction": {
           "value": "Work Function"

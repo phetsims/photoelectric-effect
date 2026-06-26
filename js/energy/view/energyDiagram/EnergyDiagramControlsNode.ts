@@ -12,6 +12,7 @@ import optionize, { EmptySelfOptions } from '../../../../../phet-core/js/optioni
 import PickRequired from '../../../../../phet-core/js/types/PickRequired.js';
 import MathSymbols from '../../../../../scenery-phet/js/MathSymbols.js';
 import VBox, { type VBoxOptions } from '../../../../../scenery/js/layout/nodes/VBox.js';
+import RichText from '../../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../../sun/js/Checkbox.js';
 import Tandem from '../../../../../tandem/js/Tandem.js';
@@ -65,7 +66,7 @@ export default class EnergyDiagramControlsNode extends VBox {
 
         new Checkbox(
           labelsVisibleProperty,
-          new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.labelStringProperty, {
+          new RichText( PhotoelectricEffectFluent.energy.graph.diagramControls.labelStringProperty, {
             font: PhotoelectricEffectConstants.CONTENT_FONT,
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
