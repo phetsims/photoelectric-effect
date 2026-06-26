@@ -185,6 +185,7 @@ export default class PhotoelectricEffectModel extends PhetioObject implements TM
       range: PhotoelectricEffectConstants.VOLTAGE_RANGE,
       units: voltsUnit,
       tandem: tandem.createTandem( 'voltageProperty' ),
+      phetioFeatured: true,
       phetioReadOnly: options.voltagePropertyPhetioReadOnly
     } );
 
