@@ -90,11 +90,12 @@ export default class EnergyDiagramNode extends Node {
       Multilink.multilink( [
         sample.hasDataProperty,
         sample.bindingEnergyProperty,
+        sample.photonEnergyProperty,
         sample.kineticEnergyProperty,
         sample.electronEmittedProperty
-      ], ( hasData, bindingEnergy, kineticEnergy, electronEmitted ) => {
+      ], ( hasData, bindingEnergy, photonEnergy, kineticEnergy, electronEmitted ) => {
         sampleMarkerNode.visible = hasData;
-        sampleMarkerNode.updateMarkerState( bindingEnergy, kineticEnergy, electronEmitted );
+        sampleMarkerNode.updateMarkerState( bindingEnergy, photonEnergy, kineticEnergy, electronEmitted );
       } );
     } );
 

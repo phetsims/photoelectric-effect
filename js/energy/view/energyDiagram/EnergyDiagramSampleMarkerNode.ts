@@ -22,6 +22,14 @@ import NoElectronEjectedIconNode from '../NoElectronEjectedIconNode.js';
 const ELECTRON_MARKER_RADIUS = 5;
 const INITIAL_ENERGY_MARKER_LINE_WIDTH = 1.5;
 const FAILED_EJECTION_MARKER_LINE_WIDTH = 3;
+const PHOTON_ARROW_TAIL_WIDTH = 1.25;
+const PHOTON_ARROW_HEAD_WIDTH = 8;
+const PHOTON_ARROW_HEAD_HEIGHT = 8;
+const FAILED_PHOTON_ARROW_TAIL_WIDTH = 0.8;
+const FAILED_PHOTON_ARROW_HEAD_WIDTH = 7;
+const FAILED_PHOTON_ARROW_HEAD_HEIGHT = 7;
+const FAILED_PHOTON_ARROW_LINE_WIDTH = 1;
+const FAILED_PHOTON_ARROW_LINE_DASH = [ 4, 3 ];
 const NO_ELECTRON_EJECTED_ICON_WIDTH = 22;
 const NO_ELECTRON_EJECTED_ICON_MODEL_Y = 6;
 
@@ -33,6 +41,9 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
 
   // Arrow from the electron's initial binding energy to its emitted kinetic energy.
   private readonly photonArrowNode: ArrowNode;
+
+  // Dashed arrow from the electron's initial binding energy to the energy it would have after photon absorption.
+  private readonly failedPhotonArrowNode: ArrowNode;
 
   // White circle that marks the electron's initial energy in the conduction band.
   private readonly initialEnergyMarker: Circle;
@@ -66,9 +77,19 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
     const photonArrowNode = new ArrowNode( sampleCenterX, sampleInitialY, sampleCenterX, sampleInitialY, {
       fill: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
       stroke: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
-      tailWidth: 1.25,
-      headWidth: 8,
-      headHeight: 8
+      tailWidth: PHOTON_ARROW_TAIL_WIDTH,
+      headWidth: PHOTON_ARROW_HEAD_WIDTH,
+      headHeight: PHOTON_ARROW_HEAD_HEIGHT
+    } );
+
+    const failedPhotonArrowNode = new ArrowNode( sampleCenterX, sampleInitialY, sampleCenterX, sampleInitialY, {
+      fill: null,
+      stroke: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
+      lineWidth: FAILED_PHOTON_ARROW_LINE_WIDTH,
+      lineDash: FAILED_PHOTON_ARROW_LINE_DASH,
+      tailWidth: FAILED_PHOTON_ARROW_TAIL_WIDTH,
+      headWidth: FAILED_PHOTON_ARROW_HEAD_WIDTH,
+      headHeight: FAILED_PHOTON_ARROW_HEAD_HEIGHT
     } );
 
     const initialEnergyMarker = new Circle( ELECTRON_MARKER_RADIUS, {
@@ -87,6 +108,7 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
       visible: false,
       children: [
         photonArrowNode,
+        failedPhotonArrowNode,
         initialEnergyMarker,
         failedInitialEnergyMarker,
         emittedEnergyMarker,
@@ -95,6 +117,7 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
     } );
 
     this.photonArrowNode = photonArrowNode;
+    this.failedPhotonArrowNode = failedPhotonArrowNode;
     this.initialEnergyMarker = initialEnergyMarker;
     this.emittedEnergyMarker = emittedEnergyMarker;
     this.failedInitialEnergyMarker = failedInitialEnergyMarker;
@@ -116,13 +139,19 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
   }
 
   /**
-   * Repositions and update visibility for persistent marker component Nodes from the latest sample energies.
+   * Repositions and updates visibility for persistent marker component Nodes from the latest sample energies.
    */
-  public updateMarkerState( bindingEnergy: number, kineticEnergy: number, electronEmitted: boolean ): void {
+  public updateMarkerState(
+    bindingEnergy: number,
+    photonEnergy: number,
+    kineticEnergy: number,
+    electronEmitted: boolean
+  ): void {
     this.electronEmitted = electronEmitted;
 
     const sampleCenterX = this.chartTransform.modelToViewX( EnergyGraphLayout.getSampleCenterX( this.sampleIndex ) );
     const bindingEnergyY = this.chartTransform.modelToViewY( bindingEnergy );
+    const failedPhotonTipY = this.chartTransform.modelToViewY( bindingEnergy + photonEnergy );
     const kineticEnergyY = this.chartTransform.modelToViewY( kineticEnergy );
 
     this.initialEnergyMarker.center = new Vector2( sampleCenterX, bindingEnergyY );
@@ -146,6 +175,12 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
       sampleCenterX,
       kineticEnergyY + ELECTRON_MARKER_RADIUS
     );
+    this.failedPhotonArrowNode.setTailAndTip(
+      sampleCenterX,
+      bindingEnergyY,
+      sampleCenterX,
+      failedPhotonTipY
+    );
     this.updatePhotonArrowVisibility();
   }
 
@@ -154,6 +189,7 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
    */
   private updatePhotonArrowVisibility(): void {
     this.photonArrowNode.visible = this.electronEmitted && this.photonArrowsVisible;
+    this.failedPhotonArrowNode.visible = !this.electronEmitted && this.photonArrowsVisible;
   }
 
   /**
