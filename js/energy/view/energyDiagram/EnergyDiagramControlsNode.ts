@@ -6,12 +6,15 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import DerivedStringProperty from '../../../../../axon/js/DerivedStringProperty.js';
 import Property from '../../../../../axon/js/Property.js';
 import optionize, { EmptySelfOptions } from '../../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../../phet-core/js/types/PickRequired.js';
+import MathSymbols from '../../../../../scenery-phet/js/MathSymbols.js';
 import VBox, { type VBoxOptions } from '../../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../../sun/js/Checkbox.js';
+import Tandem from '../../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../../PhotoelectricEffectFluent.js';
 
@@ -30,10 +33,18 @@ const CHECKBOX_BOX_WIDTH = 17;
  */
 export default class EnergyDiagramControlsNode extends VBox {
 
+  private readonly disposeEnergyDiagramControlsNode: () => void;
+
   public constructor( labelsVisibleProperty: Property<boolean>,
                       workFunctionVisibleProperty: Property<boolean>,
                       photonArrowsVisibleProperty: Property<boolean>,
                       providedOptions: EnergyDiagramControlsNodeOptions ) {
+
+    const workFunctionLabelStringProperty = new DerivedStringProperty(
+      [ PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionStringProperty ],
+      workFunctionLabel => `${workFunctionLabel} (${MathSymbols.PHI_SYMBOL})`,
+      { tandem: Tandem.OPT_OUT }
+    );
 
     const options = optionize<EnergyDiagramControlsNodeOptions, SelfOptions, VBoxOptions>()( {
       align: 'left',
@@ -42,7 +53,7 @@ export default class EnergyDiagramControlsNode extends VBox {
 
         new Checkbox(
           workFunctionVisibleProperty,
-          new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionStringProperty, {
+          new Text( workFunctionLabelStringProperty, {
             font: PhotoelectricEffectConstants.CONTENT_FONT,
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
@@ -79,5 +90,14 @@ export default class EnergyDiagramControlsNode extends VBox {
     }, providedOptions );
 
     super( options );
+
+    this.disposeEnergyDiagramControlsNode = () => {
+      workFunctionLabelStringProperty.dispose();
+    };
+  }
+
+  public override dispose(): void {
+    this.disposeEnergyDiagramControlsNode();
+    super.dispose();
   }
 }
