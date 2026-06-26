@@ -36,12 +36,12 @@ export default class PhotoelectricEffectColors {
 
   public static readonly wavelengthSliderUVTrackBackgroundColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'wavelengthSliderUVTrackBackground', {
-      default: 'rgb( 225, 221, 233 )'
+      default: 'rgb(213, 210, 218)'
     } );
 
   public static readonly wavelengthSliderIRTrackBackgroundColorProperty = new ProfileColorProperty(
     photoelectricEffect, 'wavelengthSliderIRTrackBackground', {
-      default: 'rgb( 233, 222, 219 )'
+      default: 'rgb(218, 209, 207)'
     } );
 
   public static readonly photonColorProperty = new ProfileColorProperty( photoelectricEffect, 'photonColor', {
