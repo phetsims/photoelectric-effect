@@ -54,7 +54,7 @@ energy:
     title: 'Energy Graphs'
   graph:
     yAxisLabel:        'Energy (eV)'
-    fermiLevelLabel:   'Fermi Level'
+    fermiLevelLabel:   'E<sub>F</sub>'
     noElectronEjected: 'No electron ejected'
     diagramControls:
       label:        'Label'

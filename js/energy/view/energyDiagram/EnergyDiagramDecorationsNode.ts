@@ -15,6 +15,7 @@ import MathSymbols from '../../../../../scenery-phet/js/MathSymbols.js';
 import Line from '../../../../../scenery/js/nodes/Line.js';
 import Node from '../../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../../scenery/js/nodes/Rectangle.js';
+import RichText from '../../../../../scenery/js/nodes/RichText.js';
 import Text from '../../../../../scenery/js/nodes/Text.js';
 import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
@@ -134,7 +135,7 @@ export default class EnergyDiagramDecorationsNode extends Node {
       font: PhotoelectricEffectConstants.CONTENT_FONT
     } );
 
-    this.fermiLevelTickLabel = new Text( PhotoelectricEffectFluent.energy.graph.fermiLevelLabelStringProperty, {
+    this.fermiLevelTickLabel = new RichText( PhotoelectricEffectFluent.energy.graph.fermiLevelLabelStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
       visibleProperty: labelsVisibleProperty
     } );

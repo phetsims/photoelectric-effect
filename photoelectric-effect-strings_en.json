@@ -125,7 +125,7 @@
         "value": "Energy (eV)"
       },
       "fermiLevelLabel": {
-        "value": "Fermi Level"
+        "value": "E<sub>F</sub>"
       },
       "noElectronEjected": {
         "value": "No electron ejected"
