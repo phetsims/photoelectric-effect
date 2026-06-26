@@ -75,7 +75,8 @@ export default class PhotonSourceIntensitySlider extends Node {
       trackSize: new Dimension2( 125, 5 ),
       thumbSize: new Dimension2( 13, 26 ),
       readoutMaxWidth: 72,
-      isDisposable: false
+      isDisposable: false,
+      phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 
     super();
@@ -88,7 +89,8 @@ export default class PhotonSourceIntensitySlider extends Node {
     const slider = new HSlider( normalizedIntensityProperty, normalizedIntensityProperty.range, {
       tandem: options.tandem.createTandem( 'slider' ),
       trackSize: options.trackSize,
-      thumbSize: options.thumbSize
+      thumbSize: options.thumbSize,
+      phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     } );
 
     const intensityGradientRectangle = new Rectangle( slider.localBounds, {

@@ -51,10 +51,6 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
 
   public constructor( wavelengthProperty: NumberProperty, providedOptions: LabeledWavelengthNumberControlOptions ) {
 
-    const options = optionize<LabeledWavelengthNumberControlOptions, SelfOptions, WavelengthNumberControlOptions>()( {
-      isDisposable: false
-    }, providedOptions );
-
     const layoutFunction = ( titleNode: Node, numberDisplay: NumberDisplay, slider: Slider, decrementButton: ArrowButton | null, incrementButton: ArrowButton | null ): Node => {
       affirm( decrementButton, 'A decrementButton is required.' );
       affirm( incrementButton, 'An incrementButton is required.' );
@@ -106,7 +102,7 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
       } );
     };
 
-    super( wavelengthProperty, {
+    const options = optionize<LabeledWavelengthNumberControlOptions, SelfOptions, WavelengthNumberControlOptions>()( {
       isDisposable: false,
       range: wavelengthProperty.range,
       accessibleName: PhotoelectricEffectFluent.a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty,
@@ -114,15 +110,20 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
       titleNodeOptions: {
         tandem: Tandem.OPT_OUT // because layoutFunction omits the title
       },
+      sliderOptions: {
+        phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
+      },
       spectrumSliderTrackOptions: {
         valueToColor: wavelengthToColorWithGradient,
-        size: TRACK_SIZE
+        size: TRACK_SIZE,
+        phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
       },
       spectrumSliderThumbOptions: {
         valueToColor: wavelengthToColorWithGradient,
         width: THUMB_WIDTH,
         height: THUMB_HEIGHT,
-        cursorHeight: TRACK_SIZE.height
+        cursorHeight: TRACK_SIZE.height,
+        phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
       },
       numberDisplayOptions: combineOptions<NumberDisplayOptions>(
         {},
@@ -135,7 +136,10 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
           }
         }
       ),
-      tandem: options.tandem
-    } );
+      phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
+    }, providedOptions );
+
+
+    super( wavelengthProperty, options );
   }
 }

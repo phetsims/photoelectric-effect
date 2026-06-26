@@ -52,7 +52,8 @@ export default class EnergyPhotonSourcePanel extends Panel {
       stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
       lineWidth: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_LINE_WIDTH,
       cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_CORNER_RADIUS,
-      fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty
+      fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,
+      phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 
     const switchHeight = 20;
@@ -81,7 +82,8 @@ export default class EnergyPhotonSourcePanel extends Panel {
         firePhotonEmitter.emit();
       },
       enabledProperty: DerivedProperty.not( photonsTravelingProperty ),
-      baseColor: 'purple'
+      baseColor: 'purple',
+      phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     } );
 
     const emitPhotonHBox = new HBox( {

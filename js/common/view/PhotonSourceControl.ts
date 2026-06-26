@@ -36,7 +36,8 @@ export default class PhotonSourceControl extends Panel {
       fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,
       align: 'center',
       isDisposable: false,
-      accessibleHeading: PhotoelectricEffectFluent.a11y.photonSourcePanel.accessibleHeadingStringProperty
+      accessibleHeading: PhotoelectricEffectFluent.a11y.photonSourcePanel.accessibleHeadingStringProperty,
+      phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 
     // TODO: To match the tandem, rename this class to PhotonIntensityControl.
