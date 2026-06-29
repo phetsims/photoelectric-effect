@@ -15,12 +15,12 @@ import type { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js
 import Range from '../../../../dot/js/Range.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import { nanometersUnit } from '../../../../scenery-phet/js/units/nanometersUnit.js';
+import { photonsPerSecondUnit } from '../../../../scenery-phet/js/units/photonsPerSecondUnit.js';
 import { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import NumberIO from '../../../../tandem/js/types/NumberIO.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 import PhotoelectricEffectPreferences from './PhotoelectricEffectPreferences.js';
 import { normalizedIntensityToPhotonRate } from './PhotoelectricEffectUtils.js';
-import { photonsPerSecondUnit } from './photonsPerSecondUnit.js';
 
 // Default normalized source intensity used at initialization.
 const INITIAL_NORMALIZED_INTENSITY = 0;

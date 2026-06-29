@@ -109,12 +109,6 @@ type StringsType = {
   'current': {
     'labelStringProperty': LocalizedStringProperty;
   };
-  'units': {
-    'photonsPerSecond': {
-      'symbolStringProperty': LocalizedStringProperty;
-      'symbolPatternStringProperty': LocalizedStringProperty;
-    }
-  };
   'preferences': {
     'showPhotons': {
       'labelStringProperty': LocalizedStringProperty;
@@ -138,11 +132,6 @@ type StringsType = {
     }
   };
   'a11y': {
-    'units': {
-      'photonsPerSecond': {
-        'patternStringProperty': LocalizedStringProperty;
-      }
-    };
     'introScreen': {
       'screenSummary': {
         'playAreaStringProperty': LocalizedStringProperty;

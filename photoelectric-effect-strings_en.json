@@ -204,16 +204,6 @@
   "current.label": {
     "value": "Current"
   },
-  "units": {
-    "photonsPerSecond": {
-      "symbol": {
-        "value": "photons/s"
-      },
-      "symbolPattern": {
-        "value": "{{value}} photons/s"
-      }
-    }
-  },
   "preferences": {
     "showPhotons": {
       "label": {
@@ -257,13 +247,6 @@
     }
   },
   "a11y": {
-    "units": {
-      "photonsPerSecond": {
-        "pattern": {
-          "value": "{ $value ->\n  [one] { $value } photon per second\n  *[other] { $value } photons per second\n}"
-        }
-      }
-    },
     "introScreen": {
       "screenSummary": {
         "playArea": {

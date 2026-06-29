@@ -85,11 +85,6 @@ voltage.label:                         'Voltage'
 voltage.valueReadoutPattern:           '{{value}} V'
 current.label:                         'Current'
 
-units:
-  photonsPerSecond:
-    symbol:        photons/s
-    symbolPattern: '{{value}} photons/s'
-
 preferences:
   showPhotons:
     label:       'Show photons'
@@ -108,14 +103,6 @@ preferences:
       description: 'Sets the band depth for Mystery 2.'
 
 a11y:
-
-  units:
-    photonsPerSecond:
-      pattern: |-
-               { $value ->
-                 [one] { $value } photon per second
-                 *[other] { $value } photons per second
-               }
 
   # Intro screen summary
   introScreen:
