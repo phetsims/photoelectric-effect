@@ -61,7 +61,7 @@ export default class PhotoelectricEffectConstants {
   // KNOBS
   // ------------------------------------------------
 
-  // TODO: Our most powerful lever?
+  // TODO: Our most powerful lever? JG: Why is this TODO here?
   // Number of physical photons each on-screen photon represents (and therefore the number of physical
   // electrons each visible ejection contributes to the ammeter reading). Visible photons are a sampled
   // subset of the actual photon flux, since a realistic flux would be orders of magnitude denser than

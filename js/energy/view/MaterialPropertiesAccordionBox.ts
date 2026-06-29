@@ -40,7 +40,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
       isDisposable: false,
       expandedDefaultValue: false,
 
-      // todo: factor out into constants, since these are shared with the energy diagram accordion box
+      // todo: factor out into constants, since these are shared with the energy diagram accordion box, see https://github.com/phetsims/photoelectric-effect/issues/158
       buttonXMargin: 10,
       buttonYMargin: 10,
       contentXMargin: 10,
@@ -48,7 +48,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
       titleAlignX: 'left',
       fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
 
-      // TODO: i18n
+      // TODO: i18n, https://github.com/phetsims/photoelectric-effect/issues/158
       titleNode: new Text( 'Material Properties', {
         font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
       } ),
@@ -58,7 +58,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
     // TODO: Should Target's workFunctionProperty and bandDepthProperty be bidirectional DynamicProperties so
     //  views can edit the active material through Target directly? Pro: Target would be the single active-material API,
     //  avoiding duplicate DynamicProperties in view code. Con: writable convenience Properties may obscure that setting
-    //  them mutates whichever Material is currently selected.
+    //  them mutates whichever Material is currently selected. (requires discussion)
 
     // These DynamicProperties are bidirectional so the NumberControls edit the currently selected Material directly.
     const workFunctionProperty = new DynamicProperty<number, number, Material>( materialProperty, {
