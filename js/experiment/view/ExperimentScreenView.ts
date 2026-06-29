@@ -67,8 +67,6 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
       spacing: GraphAssemblyAccordionBox.GRAPH_ASSEMBLY_SPACING,
       align: 'right',
       children: [
-
-        // TODO: Rename these to AccordionBox now
         new IntensityCurrentGraphAccordionBox( model, {
           tandem: options.tandem.createTandem( 'intensityCurrentGraphAccordionBox' )
         } ),

@@ -40,7 +40,8 @@ export default class PhotonSourceControl extends Panel {
       phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 
-    // TODO: To match the tandem, rename this class to PhotonIntensityControl.
+    // TODO: To match the tandem, rename this class and file to PhotonIntensityControl. Use git to make sure
+    //   we preserve history. See https://github.com/phetsims/photoelectric-effect/issues/158.
     const intensityControl = new PhotonSourceIntensitySlider(
       photonSource.normalizedIntensityProperty,
       photonSource.intensityPercentProperty,

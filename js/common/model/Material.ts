@@ -201,6 +201,7 @@ export default class Material extends PhetioObject {
     } );
 
     // TODO: @design (phet-io) All EnabledProperty instances are featured. Do we want that for all Materials?
+    //   NOTE: This is going to be replaced, see https://github.com/phetsims/photoelectric-effect/issues/157
     this.enabledProperty = new EnabledProperty( options.enabled, {
       tandem: options.tandem.createTandem( EnabledProperty.TANDEM_NAME ),
       phetioDocumentation: 'Whether this material is available for selection'

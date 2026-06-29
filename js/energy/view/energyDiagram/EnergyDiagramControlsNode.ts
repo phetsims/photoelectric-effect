@@ -44,7 +44,7 @@ const PHOTON_ARROW_CHECKBOX_LABEL_MAX_WIDTH = CHECKBOX_LABEL_MAX_WIDTH - PHOTON_
  */
 export default class EnergyDiagramControlsNode extends VBox {
 
-  // TODO: Remove disposal code and mark this Node as dispose: false, we don't need to dispose it.
+  // TODO: Remove disposal code and mark this Node as dispose: false, we don't need to dispose it. https://github.com/phetsims/photoelectric-effect/issues/158
   private readonly disposeEnergyDiagramControlsNode: () => void;
 
   public constructor( labelsVisibleProperty: Property<boolean>,
@@ -52,7 +52,7 @@ export default class EnergyDiagramControlsNode extends VBox {
                       photonArrowsVisibleProperty: Property<boolean>,
                       providedOptions: EnergyDiagramControlsNodeOptions ) {
 
-    // TODO: Create a string pattern in the yaml for this so translators can arrange the order.
+    // TODO: Create a string pattern in the yaml for this so translators can arrange the order. https://github.com/phetsims/photoelectric-effect/issues/158
     const workFunctionLabelStringProperty = new DerivedStringProperty(
       [ PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionStringProperty ],
       workFunctionLabel => `${workFunctionLabel} (${MathSymbols.PHI_SYMBOL})`,
@@ -100,7 +100,7 @@ export default class EnergyDiagramControlsNode extends VBox {
               } ),
 
               // Icon matching the photon arrows drawn in the energy diagram.
-              // TODO: Factor out into some kind of icon factory, see https://github.com/phetsims/photoelectric-effect/issues/153
+              // TODO: Factor out into some kind of icon factory, see https://github.com/phetsims/photoelectric-effect/issues/158
               new ArrowNode( 0, PHOTON_ARROW_ICON_LENGTH, 0, 0, {
                 fill: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
                 stroke: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,

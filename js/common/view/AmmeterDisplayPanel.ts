@@ -68,7 +68,7 @@ export default class AmmeterDisplayPanel extends Panel {
               } ),
               accessibleString: microamperesUnit.accessiblePattern!.format( {
 
-                // TODO: a11y i18n? Or just remove this.
+                // TODO: a11y i18n? Or just remove this. Wait until we see a11y designs to implement.
                 value: 'less than 0.001'
               } )
             };

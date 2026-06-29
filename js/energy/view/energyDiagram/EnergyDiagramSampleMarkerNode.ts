@@ -83,7 +83,7 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
     } );
 
     // TODO This is meant to be a dashed arrow, see https://github.com/phetsims/scenery-phet/issues/533 and
-    // custom DashedArrowNode in sims.
+    //   custom DashedArrowNode in sims.
     const failedPhotonArrowNode = new ArrowNode( sampleCenterX, sampleInitialY, sampleCenterX, sampleInitialY, {
       fill: null,
       stroke: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,

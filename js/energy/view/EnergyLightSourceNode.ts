@@ -24,7 +24,7 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 import LightSourceNode from '../../common/view/LightSourceNode.js';
 
 // TODO: Currently this matches the width of the LightSourceNode in Intro and Experiment. Is that important or are the
-//  dimensions between the two empirical?
+//  dimensions between the two empirical? Revisit this when the design is more final.
 const BODY_WIDTH = 125;
 const BODY_HEIGHT = 50;
 const SMALL_LENS_WIDTH = 28;
