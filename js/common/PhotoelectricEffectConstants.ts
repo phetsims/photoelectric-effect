@@ -11,6 +11,8 @@ import Bounds2 from '../../../dot/js/Bounds2.js';
 import Range from '../../../dot/js/Range.js';
 import Vector2 from '../../../dot/js/Vector2.js';
 import PhetFont from '../../../scenery-phet/js/PhetFont.js';
+import type { AccordionBoxOptions } from '../../../sun/js/AccordionBox.js';
+import PhotoelectricEffectColors from './PhotoelectricEffectColors.js';
 
 // Width of the lamp opening which will emit our photons in view units.
 // Defined here so that our model constant can derive the length of the line along which photons will emit.
@@ -151,6 +153,15 @@ export default class PhotoelectricEffectConstants {
 
   // Shared side length for square rectangular radio buttons.
   public static readonly SQUARE_RADIO_BUTTON_SIDE_LENGTH = 64;
+
+  // Shared options for AccordionBoxes in the Energy screen.
+  public static readonly ENERGY_ACCORDION_BOX_OPTIONS: AccordionBoxOptions = {
+    isDisposable: false,
+    buttonXMargin: 10,
+    buttonYMargin: 10,
+    contentXMargin: 10,
+    fill: PhotoelectricEffectColors.screenBackgroundColorProperty
+  };
 
   // Maximum text width used by dialogs for readable line lengths.
   public static readonly DIALOG_MAX_CONTENT_WIDTH = 480;

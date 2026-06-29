@@ -12,7 +12,7 @@ import type Property from '../../../../axon/js/Property.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
 import type Range from '../../../../dot/js/Range.js';
 import { toFixed } from '../../../../dot/js/util/toFixed.js';
-import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import { EmptySelfOptions, optionize4 } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import NumberControl from '../../../../scenery-phet/js/NumberControl.js';
 import { electronVoltUnit } from '../../../../scenery-phet/js/units/electronVoltUnit.js';
@@ -22,7 +22,6 @@ import Text from '../../../../scenery/js/nodes/Text.js';
 import AccordionBox, { type AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
 import type Tandem from '../../../../tandem/js/Tandem.js';
 import Material from '../../common/model/Material.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
@@ -37,23 +36,22 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
 
   public constructor( materialProperty: Property<Material>, providedOptions: MaterialPropertiesAccordionBoxOptions ) {
 
-    const options = optionize<MaterialPropertiesAccordionBoxOptions, SelfOptions, AccordionBoxOptions>()( {
-      isDisposable: false,
-      expandedDefaultValue: false,
+    const options = optionize4<MaterialPropertiesAccordionBoxOptions, SelfOptions, AccordionBoxOptions>()(
+      {},
+      PhotoelectricEffectConstants.ENERGY_ACCORDION_BOX_OPTIONS,
+      {
+        expandedDefaultValue: false,
 
-      // todo: factor out into constants, since these are shared with the energy diagram accordion box, see https://github.com/phetsims/photoelectric-effect/issues/158
-      buttonXMargin: 10,
-      buttonYMargin: 10,
-      contentXMargin: 10,
-      contentYMargin: 15,
-      titleAlignX: 'left',
-      fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
+        contentYMargin: 15,
+        titleAlignX: 'left',
 
-      titleNode: new Text( PhotoelectricEffectFluent.energy.materialPropertiesAccordionBox.titleStringProperty, {
-        font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
-      } ),
-      showTitleWhenExpanded: false
-    }, providedOptions );
+        titleNode: new Text( PhotoelectricEffectFluent.energy.materialPropertiesAccordionBox.titleStringProperty, {
+          font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
+        } ),
+        showTitleWhenExpanded: false
+      },
+      providedOptions
+    );
 
     // TODO: Should Target's workFunctionProperty and bandDepthProperty be bidirectional DynamicProperties so
     //  views can edit the active material through Target directly? Pro: Target would be the single active-material API,

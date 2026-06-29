@@ -7,13 +7,13 @@
  */
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
-import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import { EmptySelfOptions, optionize4 } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Node, { type NodeTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import AccordionBox, { AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
+import AccordionBox, { type AccordionBoxOptions } from '../../../../sun/js/AccordionBox.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -33,18 +33,18 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
 
   public constructor( model: EnergyModel, providedOptions: EnergyGraphAccordionBoxOptions ) {
 
-    const options = optionize<EnergyGraphAccordionBoxOptions, SelfOptions, AccordionBoxOptions>()( {
-      isDisposable: false,
-      buttonXMargin: 10,
-      buttonYMargin: 10,
-      contentXMargin: 10,
-      contentYMargin: 10,
-      fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
+    const options = optionize4<EnergyGraphAccordionBoxOptions, SelfOptions, AccordionBoxOptions>()(
+      {},
+      PhotoelectricEffectConstants.ENERGY_ACCORDION_BOX_OPTIONS,
+      {
+        contentYMargin: 10,
 
-      titleNode: new Text( PhotoelectricEffectFluent.energy.energyGraphAccordionBox.titleStringProperty, {
-        font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
-      } )
-    }, providedOptions );
+        titleNode: new Text( PhotoelectricEffectFluent.energy.energyGraphAccordionBox.titleStringProperty, {
+          font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
+        } )
+      },
+      providedOptions
+    );
 
     const displayProperties = model.energyGraphDisplayProperties;
 
