@@ -24,6 +24,7 @@ import type Tandem from '../../../../tandem/js/Tandem.js';
 import Material from '../../common/model/Material.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -48,8 +49,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
       titleAlignX: 'left',
       fill: PhotoelectricEffectColors.screenBackgroundColorProperty,
 
-      // TODO: i18n, https://github.com/phetsims/photoelectric-effect/issues/158
-      titleNode: new Text( 'Material Properties', {
+      titleNode: new Text( PhotoelectricEffectFluent.energy.materialPropertiesAccordionBox.titleStringProperty, {
         font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
       } ),
       showTitleWhenExpanded: false

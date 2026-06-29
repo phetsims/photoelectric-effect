@@ -52,6 +52,8 @@ photonEmitter:
 energy:
   energyGraphAccordionBox:
     title: 'Energy Graphs'
+  materialPropertiesAccordionBox:
+    title: 'Material Properties'
   graph:
     yAxisLabel:        'Energy (eV)'
     fermiLevelLabel:   'E<sub>F</sub>'

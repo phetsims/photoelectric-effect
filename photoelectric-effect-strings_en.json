@@ -120,6 +120,11 @@
         "value": "Energy Graphs"
       }
     },
+    "materialPropertiesAccordionBox": {
+      "title": {
+        "value": "Material Properties"
+      }
+    },
     "graph": {
       "yAxisLabel": {
         "value": "Energy (eV)"

@@ -60,6 +60,7 @@ addToMapIfDefined( 'photonEmitter_single', 'photonEmitter.singleStringProperty' 
 addToMapIfDefined( 'photonEmitter_burst', 'photonEmitter.burstStringProperty' );
 addToMapIfDefined( 'photonEmitter_fire', 'photonEmitter.fireStringProperty' );
 addToMapIfDefined( 'energy_energyGraphAccordionBox_title', 'energy.energyGraphAccordionBox.titleStringProperty' );
+addToMapIfDefined( 'energy_materialPropertiesAccordionBox_title', 'energy.materialPropertiesAccordionBox.titleStringProperty' );
 addToMapIfDefined( 'energy_graph_yAxisLabel', 'energy.graph.yAxisLabelStringProperty' );
 addToMapIfDefined( 'energy_graph_fermiLevelLabel', 'energy.graph.fermiLevelLabelStringProperty' );
 addToMapIfDefined( 'energy_graph_noElectronEjected', 'energy.graph.noElectronEjectedStringProperty' );
@@ -203,6 +204,9 @@ const PhotoelectricEffectFluent = {
   energy: {
     energyGraphAccordionBox: {
       titleStringProperty: _.get( PhotoelectricEffectStrings, 'energy.energyGraphAccordionBox.titleStringProperty' )
+    },
+    materialPropertiesAccordionBox: {
+      titleStringProperty: _.get( PhotoelectricEffectStrings, 'energy.materialPropertiesAccordionBox.titleStringProperty' )
     },
     graph: {
       yAxisLabelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.yAxisLabelStringProperty' ),

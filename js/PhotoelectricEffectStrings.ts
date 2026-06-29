@@ -63,6 +63,9 @@ type StringsType = {
     'energyGraphAccordionBox': {
       'titleStringProperty': LocalizedStringProperty;
     };
+    'materialPropertiesAccordionBox': {
+      'titleStringProperty': LocalizedStringProperty;
+    };
     'graph': {
       'yAxisLabelStringProperty': LocalizedStringProperty;
       'fermiLevelLabelStringProperty': LocalizedStringProperty;
