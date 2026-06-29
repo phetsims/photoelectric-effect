@@ -44,9 +44,6 @@ const PHOTON_ARROW_CHECKBOX_LABEL_MAX_WIDTH = CHECKBOX_LABEL_MAX_WIDTH - PHOTON_
  */
 export default class EnergyDiagramControlsNode extends VBox {
 
-  // TODO: Remove disposal code and mark this Node as dispose: false, we don't need to dispose it. https://github.com/phetsims/photoelectric-effect/issues/158
-  private readonly disposeEnergyDiagramControlsNode: () => void;
-
   public constructor( labelsVisibleProperty: Property<boolean>,
                       workFunctionVisibleProperty: Property<boolean>,
                       photonArrowsVisibleProperty: Property<boolean>,
@@ -60,6 +57,7 @@ export default class EnergyDiagramControlsNode extends VBox {
     );
 
     const options = optionize<EnergyDiagramControlsNodeOptions, SelfOptions, VBoxOptions>()( {
+      isDisposable: false,
       align: 'left',
       spacing: CHECKBOX_SPACING,
       children: [
@@ -119,14 +117,5 @@ export default class EnergyDiagramControlsNode extends VBox {
     }, providedOptions );
 
     super( options );
-
-    this.disposeEnergyDiagramControlsNode = () => {
-      workFunctionLabelStringProperty.dispose();
-    };
-  }
-
-  public override dispose(): void {
-    this.disposeEnergyDiagramControlsNode();
-    super.dispose();
   }
 }
