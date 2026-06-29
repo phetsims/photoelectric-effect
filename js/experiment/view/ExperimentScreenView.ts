@@ -21,7 +21,7 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 import CircuitNode from '../../common/view/CircuitNode.js';
 import LightSourceNode from '../../common/view/LightSourceNode.js';
 import PhotonBeamScreenView, { PhotonBeamScreenViewOptions } from '../../common/view/PhotonBeamScreenView.js';
-import PhotonSourceControl from '../../common/view/PhotonSourceControl.js';
+import PhotonIntensityControl from '../../common/view/PhotonIntensityControl.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import FrequencyEnergyGraphAccordionBox from './FrequencyEnergyGraphAccordionBox.js';
@@ -41,7 +41,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     const options = optionize<ExperimentScreenViewOptions, SelfOptions, PhotonBeamScreenViewOptions>()( {
       createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter,
         model.photonSource.wavelengthProperty, model.photonSource.photonRateProperty ),
-      createPhotonSourcePanel: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
+      createPhotonSourcePanel: tandem => new PhotonIntensityControl( model.photonSource, { tandem: tandem } ),
       screenSummaryContent: new ScreenSummaryContent( {
         playAreaContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.playAreaStringProperty,
         controlAreaContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.controlAreaStringProperty,

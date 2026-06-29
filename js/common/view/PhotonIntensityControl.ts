@@ -21,15 +21,15 @@ import PhotonSourceIntensitySlider from './PhotonSourceIntensitySlider.js';
 
 type SelfOptions = EmptySelfOptions;
 
-type PhotonSourceControlOptions =
+type PhotonIntensityControlOptions =
   SelfOptions &
   NodeBoundsBasedTranslationOptions &
   PickRequired<PanelOptions, 'tandem'>;
 
-export default class PhotonSourceControl extends Panel {
+export default class PhotonIntensityControl extends Panel {
 
-  public constructor( photonSource: PhotonSource, providedOptions: PhotonSourceControlOptions ) {
-    const options = optionize<PhotonSourceControlOptions, SelfOptions, PanelOptions>()( {
+  public constructor( photonSource: PhotonSource, providedOptions: PhotonIntensityControlOptions ) {
+    const options = optionize<PhotonIntensityControlOptions, SelfOptions, PanelOptions>()( {
       stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
       lineWidth: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_LINE_WIDTH,
       cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_CORNER_RADIUS,
@@ -40,8 +40,6 @@ export default class PhotonSourceControl extends Panel {
       phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 
-    // TODO: To match the tandem, rename this class and file to PhotonIntensityControl. Use git to make sure
-    //   we preserve history. See https://github.com/phetsims/photoelectric-effect/issues/158.
     const intensityControl = new PhotonSourceIntensitySlider(
       photonSource.normalizedIntensityProperty,
       photonSource.intensityPercentProperty,

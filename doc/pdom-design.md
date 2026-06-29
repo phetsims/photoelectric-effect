@@ -226,7 +226,7 @@ Voltage (Experiment) → apparatus/ammeter → graphs (Experiment).
 
 ### 5.1 Light Source ✅ (heading + wavelength name) / ⚠ (output-slider name unwired) / 💡 (help + responses)
 
-- **Heading:** Light Source ✅ (`PhotonSourceControl.ts:38`).
+- **Heading:** Light Source ✅ (`PhotonIntensityControl.ts:39`).
 - **Output / Intensity** slider — ⚠ **accessible name is currently unwired.** `PhotonSourceOutputSlider` sets no
   `accessibleName`, and the Fluent key `a11y.photonSourcePanel.intensitySlider.accessibleName` ("Intensity") is
   **defined but never consumed** (dangling). This is the primary light control and is presently nameless in the
