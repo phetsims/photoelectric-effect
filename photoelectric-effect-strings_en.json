@@ -142,6 +142,9 @@
         "workFunction": {
           "value": "Work Function"
         },
+        "workFunctionWithSymbolPattern": {
+          "value": "{{workFunction}} ({{symbol}})"
+        },
         "photonArrow": {
           "value": "Photon Arrow"
         }

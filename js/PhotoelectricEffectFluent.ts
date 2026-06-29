@@ -216,6 +216,7 @@ const PhotoelectricEffectFluent = {
         labelStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.labelStringProperty' ),
         _comment_0: new FluentComment( {"comment":"TODO: @design What should these be?","associatedKey":"workFunction"} ),
         workFunctionStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.workFunctionStringProperty' ),
+        workFunctionWithSymbolPatternStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.workFunctionWithSymbolPatternStringProperty' ),
         photonArrowStringProperty: _.get( PhotoelectricEffectStrings, 'energy.graph.diagramControls.photonArrowStringProperty' )
       },
       legend: {

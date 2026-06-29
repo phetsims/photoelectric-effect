@@ -59,9 +59,10 @@ energy:
     fermiLevelLabel:   'E<sub>F</sub>'
     noElectronEjected: 'No electron ejected'
     diagramControls:
-      label:        'Fermi Level E<sub>F</sub>'
-      workFunction: 'Work Function'
-      photonArrow:  'Photon Arrow'
+      label:                         'Fermi Level E<sub>F</sub>'
+      workFunction:                  'Work Function'
+      workFunctionWithSymbolPattern: '{{workFunction}} ({{symbol}})'
+      photonArrow:                   'Photon Arrow'
     legend:
       bindingEnergy: 'Electron Binding Energy'
       photonEnergy:  'Photon Energy'

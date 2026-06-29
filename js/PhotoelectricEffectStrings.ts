@@ -73,6 +73,7 @@ type StringsType = {
       'diagramControls': {
         'labelStringProperty': LocalizedStringProperty;
         'workFunctionStringProperty': LocalizedStringProperty;
+        'workFunctionWithSymbolPatternStringProperty': LocalizedStringProperty;
         'photonArrowStringProperty': LocalizedStringProperty;
       };
       'legend': {

@@ -10,6 +10,7 @@ import DerivedStringProperty from '../../../../../axon/js/DerivedStringProperty.
 import Property from '../../../../../axon/js/Property.js';
 import optionize, { EmptySelfOptions } from '../../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../../phet-core/js/types/PickRequired.js';
+import StringUtils from '../../../../../phetcommon/js/util/StringUtils.js';
 import ArrowNode from '../../../../../scenery-phet/js/ArrowNode.js';
 import MathSymbols from '../../../../../scenery-phet/js/MathSymbols.js';
 import HBox from '../../../../../scenery/js/layout/nodes/HBox.js';
@@ -49,10 +50,15 @@ export default class EnergyDiagramControlsNode extends VBox {
                       photonArrowsVisibleProperty: Property<boolean>,
                       providedOptions: EnergyDiagramControlsNodeOptions ) {
 
-    // TODO: Create a string pattern in the yaml for this so translators can arrange the order. https://github.com/phetsims/photoelectric-effect/issues/158
     const workFunctionLabelStringProperty = new DerivedStringProperty(
-      [ PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionStringProperty ],
-      workFunctionLabel => `${workFunctionLabel} (${MathSymbols.PHI_SYMBOL})`,
+      [
+        PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionWithSymbolPatternStringProperty,
+        PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionStringProperty
+      ],
+      ( workFunctionWithSymbolPattern, workFunction ) => StringUtils.fillIn( workFunctionWithSymbolPattern, {
+        workFunction: workFunction,
+        symbol: MathSymbols.PHI_SYMBOL
+      } ),
       { tandem: Tandem.OPT_OUT }
     );
 
