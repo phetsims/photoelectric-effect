@@ -12,6 +12,7 @@ import Range from '../../../dot/js/Range.js';
 import Vector2 from '../../../dot/js/Vector2.js';
 import PhetFont from '../../../scenery-phet/js/PhetFont.js';
 import type { AccordionBoxOptions } from '../../../sun/js/AccordionBox.js';
+import type { RectangularRadioButtonGroupOptions } from '../../../sun/js/buttons/RectangularRadioButtonGroup.js';
 import PhotoelectricEffectColors from './PhotoelectricEffectColors.js';
 
 // Width of the lamp opening which will emit our photons in view units.
@@ -153,6 +154,13 @@ export default class PhotoelectricEffectConstants {
 
   // Shared side length for square rectangular radio buttons.
   public static readonly SQUARE_RADIO_BUTTON_SIDE_LENGTH = 64;
+
+  // Shared visual styling for square radio buttons.
+  public static readonly SQUARE_RADIO_BUTTON_OPTIONS: NonNullable<RectangularRadioButtonGroupOptions[ 'radioButtonOptions' ]> = {
+    baseColor: PhotoelectricEffectColors.screenBackgroundColorProperty,
+    minWidth: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH,
+    minHeight: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH
+  };
 
   // Shared options for AccordionBoxes in the Energy screen.
   public static readonly ENERGY_ACCORDION_BOX_OPTIONS: AccordionBoxOptions = {

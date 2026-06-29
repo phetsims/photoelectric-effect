@@ -37,11 +37,7 @@ export default class EnergyGraphDisplayModeRadioButtonGroup extends RectangularR
       RectangularRadioButtonGroupOptions
     >()( {
       orientation: 'horizontal',
-      radioButtonOptions: {
-        baseColor: PhotoelectricEffectColors.screenBackgroundColorProperty,
-        minWidth: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH,
-        minHeight: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH
-      },
+      radioButtonOptions: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_OPTIONS,
       isDisposable: false
     }, providedOptions );
 

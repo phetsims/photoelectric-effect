@@ -14,7 +14,6 @@ import Image from '../../../../scenery/js/nodes/Image.js';
 import RectangularRadioButtonGroup, { RectangularRadioButtonGroupItem, RectangularRadioButtonGroupOptions } from '../../../../sun/js/buttons/RectangularRadioButtonGroup.js';
 import circuit_svg from '../../../images/circuit_svg.js';
 import ground_svg from '../../../images/ground_svg.js';
-import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import type { IntroRepresentation } from '../model/IntroModel.js';
@@ -31,11 +30,7 @@ export default class RepresentationRadioButtonGroup extends RectangularRadioButt
 
       // RectangularRadioButtonGroupOptions
       orientation: 'horizontal',
-      radioButtonOptions: {
-        baseColor: PhotoelectricEffectColors.screenBackgroundColorProperty,
-        minWidth: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH,
-        minHeight: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH
-      },
+      radioButtonOptions: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_OPTIONS,
       accessibleName: PhotoelectricEffectFluent.a11y.representationRadioButtonGroup.accessibleNameStringProperty,
 
       // Component should exist for life of simulation.
