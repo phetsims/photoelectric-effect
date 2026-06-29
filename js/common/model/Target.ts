@@ -113,9 +113,6 @@ export default class Target {
   /**
    * Handles a photon-target collision, producing an electron and collision metadata when emission occurs.
    *
-   * TODO: I suspect this function would be easier to understand without early return statements. Consider
-   *   implementing it with a single collision result return. See https://github.com/phetsims/photoelectric-effect/issues/158
-   *
    * TODO: Revisit closer to publication/code review:
    *   We are not sure if we need PhotonCollisionResult anymore. It allows us to plot the binding energy when
    *   no electron is produced. Not clear if that is desireable. Currently, if no electron is produced, we don't
@@ -169,29 +166,26 @@ export default class Target {
       bindingEnergy = Material.sampleBindingEnergy( workFunction, bandDepth );
     }
 
-    if ( bindingEnergy === null ) {
-      return Target.createCollisionResult( photonEnergy, null, null );
+    let electron: Electron | null = null;
+    if ( bindingEnergy !== null ) {
+      const kineticEnergy = photonEnergy - bindingEnergy;
+
+      // Non-positive kinetic energy means the photon did not leave an electron with enough energy to escape.
+      // Treat it as no-emission before computing speed, which requires positive energy.
+      if ( kineticEnergy > 0 ) {
+        const speed = Electron.determineNewElectronSpeed( kineticEnergy );
+        let angle = 0;
+        if ( Target.ELECTRON_DISPERSION_ANGLE !== 0 ) {
+          angle = dotRandom.nextDouble() * Target.ELECTRON_DISPERSION_ANGLE -
+                  Target.ELECTRON_DISPERSION_ANGLE / 2;
+        }
+
+        const velocity = new Vector2( speed * Math.cos( angle ), speed * Math.sin( angle ) );
+        const emissionY = this.getPhotonTargetCrossingY( photon );
+        const emissionPosition = new Vector2( this.x + Target.EMISSION_OFFSET, emissionY );
+        electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), kineticEnergy );
+      }
     }
-
-    const kineticEnergy = photonEnergy - bindingEnergy;
-
-    // Non-positive kinetic energy means the photon did not leave an electron with enough energy to escape.
-    // Treat it as no-emission before computing speed, which requires positive energy.
-    if ( kineticEnergy <= 0 ) {
-      return Target.createCollisionResult( photonEnergy, bindingEnergy, null );
-    }
-
-    const speed = Electron.determineNewElectronSpeed( kineticEnergy );
-    let angle = 0;
-    if ( Target.ELECTRON_DISPERSION_ANGLE !== 0 ) {
-      angle = dotRandom.nextDouble() * Target.ELECTRON_DISPERSION_ANGLE -
-              Target.ELECTRON_DISPERSION_ANGLE / 2;
-    }
-
-    const velocity = new Vector2( speed * Math.cos( angle ), speed * Math.sin( angle ) );
-    const emissionY = this.getPhotonTargetCrossingY( photon );
-    const emissionPosition = new Vector2( this.x + Target.EMISSION_OFFSET, emissionY );
-    const electron = new Electron( emissionPosition, velocity, new Vector2( 0, 0 ), kineticEnergy );
 
     return Target.createCollisionResult( photonEnergy, bindingEnergy, electron );
   }
