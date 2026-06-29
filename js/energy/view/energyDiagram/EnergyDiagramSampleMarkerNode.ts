@@ -28,7 +28,7 @@ const PHOTON_ARROW_HEAD_HEIGHT = 8;
 const FAILED_PHOTON_ARROW_TAIL_WIDTH = 0.8;
 const FAILED_PHOTON_ARROW_HEAD_WIDTH = 7;
 const FAILED_PHOTON_ARROW_HEAD_HEIGHT = 7;
-const FAILED_PHOTON_ARROW_LINE_WIDTH = 1;
+const FAILED_PHOTON_ARROW_LINE_WIDTH = 1.5;
 const FAILED_PHOTON_ARROW_LINE_DASH = [ 4, 3 ];
 const NO_ELECTRON_EJECTED_ICON_WIDTH = 22;
 const NO_ELECTRON_EJECTED_ICON_MODEL_Y = 6;
@@ -82,6 +82,8 @@ export default class EnergyDiagramSampleMarkerNode extends Node {
       headHeight: PHOTON_ARROW_HEAD_HEIGHT
     } );
 
+    // This is meant to be a dashed arrow, see https://github.com/phetsims/scenery-phet/issues/533 and
+    // custom DashedArrowNode in sims.
     const failedPhotonArrowNode = new ArrowNode( sampleCenterX, sampleInitialY, sampleCenterX, sampleInitialY, {
       fill: null,
       stroke: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
