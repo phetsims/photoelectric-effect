@@ -96,16 +96,7 @@ export default class EnergyDiagramControlsNode extends VBox {
                 font: PhotoelectricEffectConstants.CONTENT_FONT,
                 maxWidth: PHOTON_ARROW_CHECKBOX_LABEL_MAX_WIDTH
               } ),
-
-              // Icon matching the photon arrows drawn in the energy diagram.
-              // TODO: Factor out into some kind of icon factory, see https://github.com/phetsims/photoelectric-effect/issues/158
-              new ArrowNode( 0, PHOTON_ARROW_ICON_LENGTH, 0, 0, {
-                fill: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
-                stroke: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
-                tailWidth: PHOTON_ARROW_ICON_TAIL_WIDTH,
-                headWidth: PHOTON_ARROW_ICON_HEAD_WIDTH,
-                headHeight: PHOTON_ARROW_ICON_HEAD_HEIGHT
-              } )
+              EnergyDiagramControlsNode.createPhotonArrowIcon()
             ]
           } ), {
             boxWidth: CHECKBOX_BOX_WIDTH,
@@ -117,5 +108,18 @@ export default class EnergyDiagramControlsNode extends VBox {
     }, providedOptions );
 
     super( options );
+  }
+
+  /**
+   * Creates the icon shown in the Photon Arrow checkbox.
+   */
+  private static createPhotonArrowIcon(): ArrowNode {
+    return new ArrowNode( 0, PHOTON_ARROW_ICON_LENGTH, 0, 0, {
+      fill: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
+      stroke: PhotoelectricEffectColors.photonArrowEnergyDiagramColorProperty,
+      tailWidth: PHOTON_ARROW_ICON_TAIL_WIDTH,
+      headWidth: PHOTON_ARROW_ICON_HEAD_WIDTH,
+      headHeight: PHOTON_ARROW_ICON_HEAD_HEIGHT
+    } );
   }
 }
