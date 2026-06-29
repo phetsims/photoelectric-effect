@@ -86,9 +86,6 @@ voltage.valueReadoutPattern:           '{{value}} V'
 current.label:                         'Current'
 
 units:
-  microamperes:
-    symbol:        μA
-    symbolPattern: '{{value}} μA'
   photonsPerSecond:
     symbol:        photons/s
     symbolPattern: '{{value}} photons/s'
@@ -113,12 +110,6 @@ preferences:
 a11y:
 
   units:
-    microamperes:
-      pattern: |-
-               { $value ->
-                 [one] { $value } microampere
-                 *[other] { $value } microamperes
-               }
     photonsPerSecond:
       pattern: |-
                { $value ->

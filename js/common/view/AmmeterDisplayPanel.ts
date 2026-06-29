@@ -14,12 +14,12 @@ import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import StringUtils from '../../../../phetcommon/js/util/StringUtils.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
+import { microamperesUnit } from '../../../../scenery-phet/js/units/microamperesUnit.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import type { NodeBoundsBasedTranslationOptions } from '../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Panel, { PanelOptions } from '../../../../sun/js/Panel.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
-import { microamperesUnit } from '../model/microamperesUnit.js';
 import { ampsToMicroamps } from '../model/PhotoelectricEffectUtils.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';

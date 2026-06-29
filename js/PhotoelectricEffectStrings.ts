@@ -110,10 +110,6 @@ type StringsType = {
     'labelStringProperty': LocalizedStringProperty;
   };
   'units': {
-    'microamperes': {
-      'symbolStringProperty': LocalizedStringProperty;
-      'symbolPatternStringProperty': LocalizedStringProperty;
-    };
     'photonsPerSecond': {
       'symbolStringProperty': LocalizedStringProperty;
       'symbolPatternStringProperty': LocalizedStringProperty;
@@ -143,9 +139,6 @@ type StringsType = {
   };
   'a11y': {
     'units': {
-      'microamperes': {
-        'patternStringProperty': LocalizedStringProperty;
-      };
       'photonsPerSecond': {
         'patternStringProperty': LocalizedStringProperty;
       }

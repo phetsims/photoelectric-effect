@@ -205,14 +205,6 @@
     "value": "Current"
   },
   "units": {
-    "microamperes": {
-      "symbol": {
-        "value": "μA"
-      },
-      "symbolPattern": {
-        "value": "{{value}} μA"
-      }
-    },
     "photonsPerSecond": {
       "symbol": {
         "value": "photons/s"
@@ -266,11 +258,6 @@
   },
   "a11y": {
     "units": {
-      "microamperes": {
-        "pattern": {
-          "value": "{ $value ->\n  [one] { $value } microampere\n  *[other] { $value } microamperes\n}"
-        }
-      },
       "photonsPerSecond": {
         "pattern": {
           "value": "{ $value ->\n  [one] { $value } photon per second\n  *[other] { $value } photons per second\n}"

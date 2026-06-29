@@ -114,7 +114,7 @@ export default class Target {
    * Handles a photon-target collision, producing an electron and collision metadata when emission occurs.
    *
    * TODO: I suspect this function would be easier to understand without early return statements. Consider
-   *   implementing it with a single collision result return.
+   *   implementing it with a single collision result return. See https://github.com/phetsims/photoelectric-effect/issues/158
    *
    * TODO: Revisit closer to publication/code review:
    *   We are not sure if we need PhotonCollisionResult anymore. It allows us to plot the binding energy when

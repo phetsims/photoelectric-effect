@@ -83,7 +83,6 @@ addToMapIfDefined( 'intensity_label', 'intensity.labelStringProperty' );
 addToMapIfDefined( 'wavelength_label', 'wavelength.labelStringProperty' );
 addToMapIfDefined( 'voltage_label', 'voltage.labelStringProperty' );
 addToMapIfDefined( 'current_label', 'current.labelStringProperty' );
-addToMapIfDefined( 'units_microamperes_symbol', 'units.microamperes.symbolStringProperty' );
 addToMapIfDefined( 'units_photonsPerSecond_symbol', 'units.photonsPerSecond.symbolStringProperty' );
 addToMapIfDefined( 'preferences_showPhotons_label', 'preferences.showPhotons.labelStringProperty' );
 addToMapIfDefined( 'preferences_showPhotons_description', 'preferences.showPhotons.descriptionStringProperty' );
@@ -95,7 +94,6 @@ addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_label', 'preference
 addToMapIfDefined( 'preferences_mysteryMaterial_workFunction_description', 'preferences.mysteryMaterial.workFunction.descriptionStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_bandDepth_label', 'preferences.mysteryMaterial.bandDepth.labelStringProperty' );
 addToMapIfDefined( 'preferences_mysteryMaterial_bandDepth_description', 'preferences.mysteryMaterial.bandDepth.descriptionStringProperty' );
-addToMapIfDefined( 'a11y_units_microamperes_pattern', 'a11y.units.microamperes.patternStringProperty' );
 addToMapIfDefined( 'a11y_units_photonsPerSecond_pattern', 'a11y.units.photonsPerSecond.patternStringProperty' );
 addToMapIfDefined( 'a11y_introScreen_screenSummary_playArea', 'a11y.introScreen.screenSummary.playAreaStringProperty' );
 addToMapIfDefined( 'a11y_introScreen_screenSummary_controlArea', 'a11y.introScreen.screenSummary.controlAreaStringProperty' );
@@ -259,10 +257,6 @@ const PhotoelectricEffectFluent = {
     labelStringProperty: _.get( PhotoelectricEffectStrings, 'current.labelStringProperty' )
   },
   units: {
-    microamperes: {
-      symbolStringProperty: _.get( PhotoelectricEffectStrings, 'units.microamperes.symbolStringProperty' ),
-      symbolPatternStringProperty: _.get( PhotoelectricEffectStrings, 'units.microamperes.symbolPatternStringProperty' )
-    },
     photonsPerSecond: {
       symbolStringProperty: _.get( PhotoelectricEffectStrings, 'units.photonsPerSecond.symbolStringProperty' ),
       symbolPatternStringProperty: _.get( PhotoelectricEffectStrings, 'units.photonsPerSecond.symbolPatternStringProperty' )
@@ -293,9 +287,6 @@ const PhotoelectricEffectFluent = {
   },
   a11y: {
     units: {
-      microamperes: {
-        pattern: new FluentPattern<{ value: number | 'one' | number | 'other' | TReadOnlyProperty<number | 'one' | number | 'other'> }>( fluentSupport.bundleProperty, 'a11y_units_microamperes_pattern', _.get( PhotoelectricEffectStrings, 'a11y.units.microamperes.patternStringProperty' ), [{"name":"value","variants":[{"type":"number","value":"one"},{"type":"number","value":"other"}]}] )
-      },
       photonsPerSecond: {
         pattern: new FluentPattern<{ value: number | 'one' | number | 'other' | TReadOnlyProperty<number | 'one' | number | 'other'> }>( fluentSupport.bundleProperty, 'a11y_units_photonsPerSecond_pattern', _.get( PhotoelectricEffectStrings, 'a11y.units.photonsPerSecond.patternStringProperty' ), [{"name":"value","variants":[{"type":"number","value":"one"},{"type":"number","value":"other"}]}] )
       }
