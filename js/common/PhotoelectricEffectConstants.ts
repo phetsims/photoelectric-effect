@@ -149,6 +149,9 @@ export default class PhotoelectricEffectConstants {
   public static readonly PHOTON_SOURCE_PANEL_LINE_WIDTH = 3;
   public static readonly PHOTON_SOURCE_PANEL_CORNER_RADIUS = 4;
 
+  // Shared side length for square rectangular radio buttons.
+  public static readonly SQUARE_RADIO_BUTTON_SIDE_LENGTH = 64;
+
   // Maximum text width used by dialogs for readable line lengths.
   public static readonly DIALOG_MAX_CONTENT_WIDTH = 480;
 

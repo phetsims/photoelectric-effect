@@ -15,6 +15,7 @@ import Node from '../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../scenery/js/nodes/Rectangle.js';
 import RectangularRadioButtonGroup, { RectangularRadioButtonGroupItem, RectangularRadioButtonGroupOptions } from '../../../../sun/js/buttons/RectangularRadioButtonGroup.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import type { EnergyGraphDisplayMode } from '../model/EnergyGraphDisplayProperties.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -38,11 +39,8 @@ export default class EnergyGraphDisplayModeRadioButtonGroup extends RectangularR
       orientation: 'horizontal',
       radioButtonOptions: {
         baseColor: PhotoelectricEffectColors.screenBackgroundColorProperty,
-
-        // To create square radio buttons
-        // TODO: Factor out into constants now that we have multiple radio button groups with this style, see https://github.com/phetsims/photoelectric-effect/issues/158
-        minWidth: 64,
-        minHeight: 64
+        minWidth: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH,
+        minHeight: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH
       },
       isDisposable: false
     }, providedOptions );

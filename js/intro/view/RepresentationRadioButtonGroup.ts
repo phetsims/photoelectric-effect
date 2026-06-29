@@ -15,6 +15,7 @@ import RectangularRadioButtonGroup, { RectangularRadioButtonGroupItem, Rectangul
 import circuit_svg from '../../../images/circuit_svg.js';
 import ground_svg from '../../../images/ground_svg.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import type { IntroRepresentation } from '../model/IntroModel.js';
 
@@ -32,10 +33,8 @@ export default class RepresentationRadioButtonGroup extends RectangularRadioButt
       orientation: 'horizontal',
       radioButtonOptions: {
         baseColor: PhotoelectricEffectColors.screenBackgroundColorProperty,
-
-        // To create square shaped buttons.
-        minWidth: 64,
-        minHeight: 64
+        minWidth: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH,
+        minHeight: PhotoelectricEffectConstants.SQUARE_RADIO_BUTTON_SIDE_LENGTH
       },
       accessibleName: PhotoelectricEffectFluent.a11y.representationRadioButtonGroup.accessibleNameStringProperty,
 
