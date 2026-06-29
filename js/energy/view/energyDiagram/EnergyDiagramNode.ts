@@ -12,6 +12,7 @@ import type { TReadOnlyProperty } from '../../../../../axon/js/TReadOnlyProperty
 import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
 import Range from '../../../../../dot/js/Range.js';
 import Vector2 from '../../../../../dot/js/Vector2.js';
+import Shape from '../../../../../kite/js/Shape.js';
 import optionize, { EmptySelfOptions } from '../../../../../phet-core/js/optionize.js';
 import ManualConstraint from '../../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import Node, { type NodeOptions } from '../../../../../scenery/js/nodes/Node.js';
@@ -99,10 +100,17 @@ export default class EnergyDiagramNode extends Node {
       } );
     } );
 
+    // Sample markers can be positioned outside the plotted energy range. Clip them so they do not expand the graph's
+    // layout bounds, while leaving decorations free to draw outside the chart rectangle.
+    const sampleMarkerLayer = new Node( {
+      clipArea: Shape.rect( 0, 0, CHART_VIEW_WIDTH, CHART_VIEW_HEIGHT ),
+      children: sampleMarkerNodes
+    } );
+
     const plotLayer = new Node( {
       children: [
         decorationsNode,
-        ...sampleMarkerNodes
+        sampleMarkerLayer
       ]
     } );
 
