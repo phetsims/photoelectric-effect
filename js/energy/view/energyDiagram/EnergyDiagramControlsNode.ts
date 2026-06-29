@@ -44,6 +44,7 @@ const PHOTON_ARROW_CHECKBOX_LABEL_MAX_WIDTH = CHECKBOX_LABEL_MAX_WIDTH - PHOTON_
  */
 export default class EnergyDiagramControlsNode extends VBox {
 
+  // TODO: Remove disposal code and mark this Node as dispose: false, we don't need to dispose it.
   private readonly disposeEnergyDiagramControlsNode: () => void;
 
   public constructor( labelsVisibleProperty: Property<boolean>,
@@ -51,6 +52,7 @@ export default class EnergyDiagramControlsNode extends VBox {
                       photonArrowsVisibleProperty: Property<boolean>,
                       providedOptions: EnergyDiagramControlsNodeOptions ) {
 
+    // TODO: Create a string pattern in the yaml for this so translators can arrange the order.
     const workFunctionLabelStringProperty = new DerivedStringProperty(
       [ PhotoelectricEffectFluent.energy.graph.diagramControls.workFunctionStringProperty ],
       workFunctionLabel => `${workFunctionLabel} (${MathSymbols.PHI_SYMBOL})`,

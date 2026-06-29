@@ -94,6 +94,7 @@ export default class EnergySampleBarPlotNode extends Node {
       this.updateBarVisibility( electronEmitted );
     } );
 
+    // The color Property can potentially change at runtime, re-generate pattern and update bars if necesssary.
     PhotoelectricEffectColors.photonEnergyGraphColorProperty.lazyLink( photonEnergyColor => {
       this.photonEnergyPattern = EnergySampleBarPlotNode.createPhotonEnergyPattern( photonEnergyColor );
       this.barPlot.update();
