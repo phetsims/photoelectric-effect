@@ -29,6 +29,28 @@ export default class CircuitNode extends Node {
   public static readonly WIRE_HEIGHT = 150;
   public static readonly WIRE_LINE_WIDTH = 10;
 
+  // How far the circuit wire extends horizontally beyond the outer edge of each plate.
+  public static readonly WIRE_PLATE_EXTENSION = 50;
+
+  /**
+   * Computes the view x-coordinate for the target (model x = TARGET_X) that horizontally centers the circuit
+   * artwork at circuitCenterX. The circuit's horizontal extent is defined by the wire, which extends
+   * WIRE_PLATE_EXTENSION beyond the outer edge of each plate. The circuit is not symmetric about the midpoint
+   * between the plates because the target side is wider than the collector side by the material strip.
+   */
+  public static getTargetViewXToCenterCircuit( circuitCenterX: number ): number {
+
+    // Horizontal extent of the circuit relative to the target anchor at modelToViewX( TARGET_X ). Stroke widths
+    // extend both ends equally and therefore do not affect the center.
+    const circuitLeft = -( PhotoelectricEffectConstants.PLATE_BOUNDS.width +
+                           PhotoelectricEffectConstants.PLATE_MATERIAL_BOUNDS.width +
+                           CircuitNode.WIRE_PLATE_EXTENSION );
+    const circuitRight = PhotoelectricEffectConstants.PLATE_SEPARATION * PhotoelectricEffectConstants.MODEL_VIEW_SCALE +
+                         PhotoelectricEffectConstants.PLATE_BOUNDS.width +
+                         CircuitNode.WIRE_PLATE_EXTENSION;
+    return circuitCenterX - ( circuitLeft + circuitRight ) / 2;
+  }
+
   public constructor(
     modelViewTransform: ModelViewTransform2,
     materialProperty: TReadOnlyProperty<Material>,
@@ -50,7 +72,7 @@ export default class CircuitNode extends Node {
      * Create the shape for the circuit wire that connects the collectors.
      */
     const circuitWireHeight = CircuitNode.WIRE_HEIGHT;
-    const circuitWirePlateExtension = 50;
+    const circuitWirePlateExtension = CircuitNode.WIRE_PLATE_EXTENSION;
     const circuitWireLineWidth = CircuitNode.WIRE_LINE_WIDTH;
     const circuitWireShape = new Shape().moveToPoint( targetPlate.leftCenter )
       .lineTo( targetPlate.left - circuitWirePlateExtension, targetPlate.centerY )

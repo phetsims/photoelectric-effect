@@ -45,8 +45,6 @@ const PhotoelectricEffectQueryParameters = QueryStringMachine.getAll( {
   },
 
   // TODO: @design Is emitAllAbsorbedPhotons the right name for this preference?
-  //  NOTE: We are keeping this feature. Rename query param and Property to "photonAlwaysEjectsElectron"
-  //  Photon always ejects electron ---> label for the Preferences control
   // Whether every photon with enough energy emits an electron, while preserving an emitted energy distribution.
   emitAllAbsorbedPhotons: {
     public: true,

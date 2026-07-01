@@ -9,6 +9,7 @@
 
 import DerivedProperty from '../../../../axon/js/DerivedProperty.js';
 import ScreenSummaryContent from '../../../../joist/js/ScreenSummaryContent.js';
+import ScreenView from '../../../../joist/js/ScreenView.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
@@ -32,6 +33,9 @@ export default class IntroScreenView extends PhotonBeamScreenView {
       createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter,
         model.photonSource.wavelengthProperty, model.photonSource.photonRateProperty ),
       createPhotonSourcePanel: tandem => new PhotonIntensityControl( model.photonSource, { tandem: tandem } ),
+
+      // Center the circuit artwork horizontally in the layout bounds
+      targetViewX: CircuitNode.getTargetViewXToCenterCircuit( ScreenView.DEFAULT_LAYOUT_BOUNDS.centerX ),
       screenSummaryContent: new ScreenSummaryContent( {
         playAreaContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.playAreaStringProperty,
         controlAreaContent: PhotoelectricEffectFluent.a11y.introScreen.screenSummary.controlAreaStringProperty,

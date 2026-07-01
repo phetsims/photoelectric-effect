@@ -40,6 +40,10 @@ import ParticleCanvasNode from './ParticleCanvasNode.js';
 
 const TIME_CONTROL_NODE_FLOW_BOX_SPACING = 24;
 
+// Vertical gap between the bottom of the materials combo box and the top of the target plate. Sized to clear the
+// vacuum tube artwork, which extends a bit above the plate.
+const MATERIALS_COMBO_BOX_PLATE_GAP = 25;
+
 // Minimal interface every screen-specific light source node must satisfy.
 export type LightSourceNodeInterface = Node & { readonly cordAttachmentPoint: Vector2 };
 
@@ -58,6 +62,12 @@ type SelfOptions = {
 
   // Optional time-speed Property. When provided, the shared TimeControlNode includes Normal/Slow radio buttons.
   timeSpeedProperty?: EnumerationProperty<TimeSpeed> | null;
+
+  // View x-coordinate where the target (model x = TARGET_X, the right face of the target plate) is placed.
+  // All play-area elements (lamp, beam, circuit, plates, particles, photon source panel, materials combo box)
+  // position themselves through the resulting transform, so changing this shifts the apparatus as a group
+  // without moving layout-bounds-anchored controls.
+  targetViewX?: number;
 };
 
 export type PhotoelectricEffectScreenViewOptions = SelfOptions & ScreenViewOptions;
@@ -83,7 +93,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
       // Photons are rendered by default; continuous-beam screens override this with the 'show photons' preference.
       photonsVisibleProperty: new TinyProperty( true ),
-      timeSpeedProperty: null
+      timeSpeedProperty: null,
+      targetViewX: 250
     }, providedOptions );
 
     super( options );
@@ -96,22 +107,40 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( this.backgroundNode );
 
     // Model-view transform places the model x origin at the target plate, and a view origin at an x-offset with
-    // y centered in the layout bounds.
+    // y centered in the layout bounds. Screens may shift the whole apparatus via targetViewX.
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
-      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ), // model point — the target is the origin
-      new Vector2( 250, this.layoutBounds.centerY + 20 ),      // view point
+      new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ),           // model point — the target is the origin
+      new Vector2( options.targetViewX, this.layoutBounds.centerY + 20 ), // view point
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE
     );
 
     //------------------------------------------------------------------------
-    // Photon source group: panel (top-left), light source lamp, S-shaped wire
+    // Target material controls: combo box above the target plate. Constructed before the photon source panel,
+    // which left-aligns to it. Added to the scene graph after the photon source group for z-ordering.
+    //------------------------------------------------------------------------
+
+    this.materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
+      right: this.modelViewTransform.modelToViewX( PhotoelectricEffectConstants.TARGET_X ),
+      bottom: this.modelViewTransform.modelToViewY( 0 ) - PhotoelectricEffectConstants.PLATE_BOUNDS.height / 2 -
+              MATERIALS_COMBO_BOX_PLATE_GAP,
+      tandem: options.tandem.createTandem( 'materialsComboBox' )
+    } );
+    this.addChild( this.materialsComboBox );
+
+    //------------------------------------------------------------------------
+    // Photon source group: panel (top, left-aligned with the materials combo box), light source lamp, S-shaped wire
     //------------------------------------------------------------------------
 
     this.photonSourcePanel = options.createPhotonSourcePanel( options.tandem.createTandem( 'photonSourcePanel' ) );
-    this.photonSourcePanel.leftTop = this.layoutBounds.leftTop.plusXY(
-      PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-      PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-    );
+
+    // Keep the panel left-aligned with the combo box when dynamic strings resize either node.
+    ManualConstraint.create( this, [ this.photonSourcePanel, this.materialsComboBox ],
+      ( photonSourcePanelProxy, materialsComboBoxProxy ) => {
+        photonSourcePanelProxy.leftTop = new Vector2(
+          materialsComboBoxProxy.left,
+          this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
+        );
+      } );
 
     // Light source node: aperture at local origin, placed at the beam-start view position.
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
@@ -170,19 +199,6 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( photonSourceWireNode );
     this.addChild( lightSourceNode );
     this.addChild( this.photonSourcePanel );
-
-    //------------------------------------------------------------------------
-    // Target material controls
-    //------------------------------------------------------------------------
-
-    // Combo box should appear to the left of the target plate and above the wire that extends from center.
-    this.materialsComboBox = new MaterialsComboBox( model.target.materialProperty, model.target.materials, this, {
-      left: this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-      top: this.modelViewTransform.modelToViewY( 0 ) - PhotoelectricEffectConstants.PLATE_BOUNDS.height / 2,
-      tandem: options.tandem.createTandem( 'materialsComboBox' )
-    } );
-
-    this.addChild( this.materialsComboBox );
 
     //------------------------------------------------------------------------
     // Particle canvas: renders photons and electrons in the play area
