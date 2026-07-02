@@ -62,6 +62,15 @@ export default class CircuitNode extends Node {
            CircuitNode.CIRCUIT_RIGHT_OFFSET + CircuitNode.WIRE_LINE_WIDTH / 2;
   }
 
+  /**
+   * View x-coordinate of the horizontal center of the circuit artwork, for positioning other UI components
+   * relative to the circuit.
+   */
+  public static getCircuitCenterX( modelViewTransform: ModelViewTransform2 ): number {
+    return modelViewTransform.modelToViewX( PhotoelectricEffectConstants.TARGET_X ) +
+           ( CircuitNode.CIRCUIT_LEFT_OFFSET + CircuitNode.CIRCUIT_RIGHT_OFFSET ) / 2;
+  }
+
   public constructor(
     modelViewTransform: ModelViewTransform2,
     materialProperty: TReadOnlyProperty<Material>,

@@ -13,6 +13,7 @@ import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
 import Bounds2 from '../../../../../dot/js/Bounds2.js';
 import Range from '../../../../../dot/js/Range.js';
 import Shape from '../../../../../kite/js/Shape.js';
+import ManualConstraint from '../../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import Line from '../../../../../scenery/js/nodes/Line.js';
 import Node from '../../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../../scenery/js/nodes/Rectangle.js';
@@ -169,19 +170,20 @@ export default class GraphPlotAxesNode extends Node {
     } );
 
     const xAxisLabelText = new RichText( options.xAxisLabelStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT
+      font: PhotoelectricEffectConstants.READOUT_FONT,
+
+      // Long strings scale down to the chart width rather than growing the layout.
+      maxWidth: plotBounds.width
     } );
 
     const yAxisLabelText = new RichText( options.yAxisLabelStringProperty, {
       font: PhotoelectricEffectConstants.READOUT_FONT,
-      rotation: -Math.PI / 2
+      rotation: -Math.PI / 2,
+
+      // The label is rotated along the chart's left side, so the text length becomes vertical extent — limit it
+      // to the chart height so long strings scale down rather than growing the layout.
+      maxWidth: plotBounds.height
     } );
-    GraphPlotAxesNode.updateAxisLabelPositions(
-      plotBounds,
-      options.yAxisLabelYOffset,
-      xAxisLabelText,
-      yAxisLabelText
-    );
 
     const tickMarkNode = new Node();
     const tickLabelNode = new Node();
@@ -197,6 +199,14 @@ export default class GraphPlotAxesNode extends Node {
         xAxisLabelText,
         yAxisLabelText
       ]
+    } );
+
+    // Positions the axis labels outside the ticks, and keeps them anchored when dynamic strings resize them.
+    ManualConstraint.create( this, [ xAxisLabelText, yAxisLabelText ], ( xAxisLabelProxy, yAxisLabelProxy ) => {
+      xAxisLabelProxy.centerTop = plotBounds.centerBottom.plusXY( 0, AXIS_LABEL_MARGIN + X_AXIS_TICK_LABEL_GUTTER );
+      yAxisLabelProxy.rightCenter = plotBounds.leftCenter
+        .minusXY( AXIS_LABEL_MARGIN + Y_AXIS_TICK_LABEL_GUTTER, 0 )
+        .plusXY( 0, options.yAxisLabelYOffset );
     } );
 
     this.chartTransform = chartTransform;
@@ -291,18 +301,4 @@ export default class GraphPlotAxesNode extends Node {
            ( () => { throw new Error( `Unrecognized borderStyle: ${borderStyle}` ); } )();
   }
 
-  /**
-   * Positions optional axis labels so they sit outside ticks and track the current tick label bounds.
-   */
-  private static updateAxisLabelPositions(
-    chartBounds: Bounds2,
-    yAxisLabelYOffset: number,
-    xAxisLabelText: RichText,
-    yAxisLabelText: RichText
-  ): void {
-    xAxisLabelText.centerTop = chartBounds.centerBottom.plusXY( 0, AXIS_LABEL_MARGIN + X_AXIS_TICK_LABEL_GUTTER );
-    yAxisLabelText.rightCenter = chartBounds.leftCenter
-      .minusXY( AXIS_LABEL_MARGIN + Y_AXIS_TICK_LABEL_GUTTER, 0 )
-      .plusXY( 0, yAxisLabelYOffset );
-  }
 }

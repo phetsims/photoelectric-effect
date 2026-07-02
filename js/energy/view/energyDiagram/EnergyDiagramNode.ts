@@ -116,7 +116,11 @@ export default class EnergyDiagramNode extends Node {
 
     const yAxisLabel = new Text( PhotoelectricEffectFluent.energy.graph.yAxisLabelStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
-      rotation: -Math.PI / 2
+      rotation: -Math.PI / 2,
+
+      // The label is rotated along the chart's left side, so the text length becomes vertical extent — limit it
+      // to the chart height so long strings scale down rather than growing the layout.
+      maxWidth: CHART_VIEW_HEIGHT
     } );
 
     const xLabels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {

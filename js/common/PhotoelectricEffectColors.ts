@@ -160,7 +160,7 @@ export default class PhotoelectricEffectColors {
 
   // Stroke color shared by panel borders and the slider gradient rectangle outline.
   public static readonly panelStrokeColorProperty = new ProfileColorProperty( photoelectricEffect, 'panelStroke', {
-    default: 'black'
+    default: 'dark grey'
   } );
 
   // Stroke color shared by circuit visual elements (wires, plate material outline, ground symbol).

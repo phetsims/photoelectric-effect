@@ -12,7 +12,6 @@
 import GatedVisibleProperty from '../../../../axon/js/GatedVisibleProperty.js';
 import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
-import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -49,13 +48,14 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
     super( model, options );
 
     //------------------------------------------------------------------------
-    // Ammeter readout (positioned along the collector-side wire)
+    // Ammeter readout (on the bottom wire, offset right of the circuit center, mirroring the battery on the
+    // Experiment screen)
     //------------------------------------------------------------------------
 
     this.ammeterDisplayPanel = new AmmeterDisplayPanel( model.currentProperty, {
       tandem: options.tandem.createTandem( 'ammeterDisplayPanel' ),
-      center: this.modelViewTransform.modelToViewXY( model.collector.x, 0 )
-        .plusXY( 0, CircuitNode.WIRE_HEIGHT )
+      left: CircuitNode.getCircuitCenterX( this.modelViewTransform ) + PhotoelectricEffectConstants.WIRE_COMPONENT_CENTER_OFFSET,
+      centerY: this.modelViewTransform.modelToViewY( 0 ) + CircuitNode.WIRE_HEIGHT
     } );
     this.addChild( this.ammeterDisplayPanel );
 
@@ -113,18 +113,13 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
       children: [
         showElectronsCheckbox,
         highestEnergyOnlyCheckbox
-      ]
-    } );
-    this.addChild( this.electronVisibilityControls );
-
-    // Right-aligned with the circuit artwork, along the bottom of the screen. The constraint keeps the alignment
-    // when dynamic strings resize the checkboxes.
-    ManualConstraint.create( this, [ this.electronVisibilityControls ], electronVisibilityControlsProxy => {
-      electronVisibilityControlsProxy.rightBottom = new Vector2(
+      ],
+      rightBottom: new Vector2(
         CircuitNode.getCircuitRightX( this.modelViewTransform ),
         this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      );
+      )
     } );
+    this.addChild( this.electronVisibilityControls );
 
     // Insert the electron visibility checkboxes ahead of the base's default control area order.
     this.pdomControlAreaNode.pdomOrder = [

@@ -147,8 +147,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const lightSourceNode = options.createLightSourceNode( beamStartCenter );
 
     // Wire from the left side of the lamp to the right side of the photon source panel. It travels directly
-    // between the endpoints, with a slight downward sag at the midpoint for a natural cord look.
-    const WIRE_SAG = 25;
+    // between the endpoints, with a slight curve
+    const WIRE_CURVE = 25;
     const WIRE_PANEL_OVERLAP = 2;
     const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
     const getPhotonSourceWireEnd = ( photonSourcePanelRightCenter: Vector2 ): Vector2 => {
@@ -160,7 +160,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       return new Shape()
         .moveToPoint( photonSourceWireStart )
         .quadraticCurveToPoint(
-          photonSourceWireStart.average( photonSourceWireEnd ).plusXY( 0, WIRE_SAG ),
+          photonSourceWireStart.average( photonSourceWireEnd ).plusXY( 0, -WIRE_CURVE ),
           photonSourceWireEnd
         );
     };
@@ -221,18 +221,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           }
         }
       },
+
+      // Left align with combo box and photon source panel.
+      leftCenter: new Vector2( this.materialsComboBox.left,
+        this.layoutBounds.bottom - ( PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN + 25 ) ),
       tandem: options.tandem.createTandem( 'timeControlNode' )
     } );
-
-    // Left-aligned with the materials combo box and photon source panel, along the bottom of the screen. The
-    // constraint keeps the alignment when dynamic strings resize the combo box.
-    ManualConstraint.create( this, [ this.timeControlNode, this.materialsComboBox ],
-      ( timeControlNodeProxy, materialsComboBoxProxy ) => {
-        timeControlNodeProxy.leftCenter = new Vector2(
-          materialsComboBoxProxy.left,
-          this.layoutBounds.bottom - ( PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN + 25 )
-        );
-      } );
 
     this.resetAllButton = new ResetAllButton( {
       listener: () => {

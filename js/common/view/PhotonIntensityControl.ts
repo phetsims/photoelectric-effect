@@ -16,8 +16,8 @@ import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotonSource from '../model/PhotonSource.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
+import IntensityNumberControl from './IntensityNumberControl.js';
 import LabeledWavelengthNumberControl from './LabeledWavelengthNumberControl.js';
-import PhotonSourceIntensitySlider from './PhotonSourceIntensitySlider.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -31,7 +31,6 @@ export default class PhotonIntensityControl extends Panel {
   public constructor( photonSource: PhotonSource, providedOptions: PhotonIntensityControlOptions ) {
     const options = optionize<PhotonIntensityControlOptions, SelfOptions, PanelOptions>()( {
       stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
-      lineWidth: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_LINE_WIDTH,
       cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_CORNER_RADIUS,
       fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,
       align: 'center',
@@ -40,9 +39,8 @@ export default class PhotonIntensityControl extends Panel {
       phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 
-    const intensityControl = new PhotonSourceIntensitySlider(
+    const intensityControl = new IntensityNumberControl(
       photonSource.normalizedIntensityProperty,
-      photonSource.intensityPercentProperty,
       photonSource.wavelengthProperty,
       {
         tandem: options.tandem.createTandem( 'intensityControl' )
@@ -54,7 +52,7 @@ export default class PhotonIntensityControl extends Panel {
     } );
 
     const content = new VBox( {
-      spacing: 12,
+      spacing: 20,
       align: 'center',
       children: [
         intensityControl,

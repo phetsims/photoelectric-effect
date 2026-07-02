@@ -12,6 +12,7 @@ import ChartTransform from '../../../../../bamboo/js/ChartTransform.js';
 import Range from '../../../../../dot/js/Range.js';
 import Vector2 from '../../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../../phet-core/js/optionize.js';
+import ManualConstraint from '../../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import Node, { type NodeOptions } from '../../../../../scenery/js/nodes/Node.js';
 import Rectangle from '../../../../../scenery/js/nodes/Rectangle.js';
 import Text from '../../../../../scenery/js/nodes/Text.js';
@@ -73,7 +74,11 @@ export default class EnergyBarGraphNode extends Node {
 
     const yAxisLabel = new Text( PhotoelectricEffectFluent.energy.graph.yAxisLabelStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
-      rotation: -Math.PI / 2
+      rotation: -Math.PI / 2,
+
+      // The label is rotated along the chart's left side, so the text length becomes vertical extent — limit it
+      // to the chart height so long strings scale down rather than growing the layout.
+      maxWidth: CHART_VIEW_HEIGHT
     } );
 
     const xLabels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
@@ -96,13 +101,16 @@ export default class EnergyBarGraphNode extends Node {
       ]
     } );
 
-    yAxisLabel.rightCenter = plotRectangle.leftCenter.minusXY( Y_AXIS_LABEL_MARGIN, 0 );
-
     const graphNode = new Node( {
       children: [
         yAxisLabel,
         chartNode
       ]
+    } );
+
+    // dynamic locales - keep the y axis label in place when the language changes
+    ManualConstraint.create( graphNode, [ yAxisLabel ], yAxisLabelProxy => {
+      yAxisLabelProxy.rightCenter = plotRectangle.leftCenter.minusXY( Y_AXIS_LABEL_MARGIN, 0 );
     } );
 
     this.children = [ graphNode ];

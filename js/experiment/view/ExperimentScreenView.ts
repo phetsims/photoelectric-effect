@@ -82,7 +82,8 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     } );
 
     //------------------------------------------------------------------------
-    // Battery / voltage control (centered on the left half of the circuit)
+    // Battery / voltage control: the battery sits on the bottom wire, offset left of the circuit center
+    // (mirroring the ammeter on the right), with the slider directly below it.
     //------------------------------------------------------------------------
     const batteryNode = new BatteryNode( { size: new Dimension2( 110, 57 ) } );
     const voltageNumberDisplay = new NumberDisplay( model.voltageProperty, model.voltageProperty.range, {
@@ -98,12 +99,15 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     // (a different parent frame), so the proxy in ManualConstraint handles the frame conversion.
     ManualConstraint.create( this, [ batteryNode, voltageNumberDisplay, voltageNumberControl, circuitNode ],
       ( batteryProxy, voltageDisplayProxy, voltageControlProxy, circuitProxy ) => {
-        batteryProxy.centerX = ( circuitProxy.left + circuitProxy.centerX ) / 2;
+        // The battery drives the group's horizontal position; the slider centers below it so the two stay coupled.
+        // TODO: The slider centers under the battery, so wide locale strings can extend it toward the time
+        //  controls. Check long-string locales (?stringTest=dynamic),
+        //  see https://github.com/phetsims/photoelectric-effect/issues/134
+        batteryProxy.right = circuitProxy.centerX - PhotoelectricEffectConstants.WIRE_COMPONENT_CENTER_OFFSET;
         batteryProxy.centerY = circuitProxy.bottom - CircuitNode.WIRE_LINE_WIDTH / 2;
         voltageControlProxy.centerX = batteryProxy.centerX;
         voltageControlProxy.bottom = this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;
         voltageDisplayProxy.center = batteryProxy.center;
-
       } );
 
     model.voltageProperty.link( voltage => {

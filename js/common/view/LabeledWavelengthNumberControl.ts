@@ -2,6 +2,7 @@
 
 /**
  * Wavelength control with labeled spectrum track, spectrum thumb, NumberDisplay (nm), and arrow buttons.
+ * The UV/IR labels are drawn directly on the spectrum track, so no custom layout is needed.
  *
  * TODO: Highly duplicated with MonochromaticWavelengthControl. Consider moving to scenery-phet or
  *   improving WavelengthNumberControl.
@@ -12,118 +13,94 @@
 
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Dimension2 from '../../../../dot/js/Dimension2.js';
-import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import optionize, { combineOptions, EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
-import NumberDisplay, { NumberDisplayOptions } from '../../../../scenery-phet/js/NumberDisplay.js';
+import NumberControl, { NumberControlOptions } from '../../../../scenery-phet/js/NumberControl.js';
+import { NumberDisplayOptions } from '../../../../scenery-phet/js/NumberDisplay.js';
+import SpectrumSliderThumb from '../../../../scenery-phet/js/SpectrumSliderThumb.js';
+import SpectrumSliderTrack from '../../../../scenery-phet/js/SpectrumSliderTrack.js';
 import VisibleColor from '../../../../scenery-phet/js/VisibleColor.js';
-import WavelengthNumberControl, { WavelengthNumberControlOptions } from '../../../../scenery-phet/js/WavelengthNumberControl.js';
-import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
-import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
-import Node from '../../../../scenery/js/nodes/Node.js';
+import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
-import ArrowButton from '../../../../sun/js/buttons/ArrowButton.js';
 import Slider from '../../../../sun/js/Slider.js';
-import Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import { wavelengthToColorWithGradient } from '../model/PhotoelectricEffectUtils.js';
+import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 type SelfOptions = EmptySelfOptions;
-export type LabeledWavelengthNumberControlOptions = SelfOptions & PickRequired<WavelengthNumberControlOptions, 'tandem'>;
+export type LabeledWavelengthNumberControlOptions = SelfOptions & PickRequired<NumberControlOptions, 'tandem'>;
 
 const TRACK_SIZE = new Dimension2( 240, 20 );
 const THUMB_WIDTH = 18;
 const THUMB_HEIGHT = 25;
 const READOUT_MAX_WIDTH = 100;
+const TITLE_MAX_WIDTH = 100;
 
 const DEFAULT_NUMBER_DISPLAY_OPTIONS: NumberDisplayOptions = {
-  decimalPlaces: 0,
-  cornerRadius: 4,
-  backgroundFill: 'white',
-  backgroundStroke: 'black',
-  backgroundLineWidth: 1,
+  cornerRadius: 5,
+  backgroundStroke: PhotoelectricEffectColors.panelStrokeColorProperty,
   align: 'center',
   xMargin: 2
 };
 
-export default class LabeledWavelengthNumberControl extends WavelengthNumberControl {
+export default class LabeledWavelengthNumberControl extends NumberControl {
 
   public constructor( wavelengthProperty: NumberProperty, providedOptions: LabeledWavelengthNumberControlOptions ) {
 
-    const layoutFunction = ( titleNode: Node, numberDisplay: NumberDisplay, slider: Slider, decrementButton: ArrowButton | null, incrementButton: ArrowButton | null ): Node => {
-      affirm( decrementButton, 'A decrementButton is required.' );
-      affirm( incrementButton, 'An incrementButton is required.' );
+    const wavelengthRange = wavelengthProperty.range;
+    const sliderTandem = providedOptions.tandem.createTandem( NumberControl.SLIDER_TANDEM_NAME );
 
-      const uvText = new Text( PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty, {
-        font: PhotoelectricEffectConstants.READOUT_FONT,
-        maxWidth: 75
-      } );
+    // Spectrum track with the UV/IR labels drawn directly on it, in the track's simple local coordinate frame.
+    const trackNode = new SpectrumSliderTrack( wavelengthProperty, wavelengthRange, {
+      valueToColor: wavelengthToColorWithGradient,
+      size: TRACK_SIZE,
+      tandem: sliderTandem.createTandem( Slider.TRACK_NODE_TANDEM_NAME ),
+      phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
+    } );
 
-      const irText = new Text( PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty, {
-        font: PhotoelectricEffectConstants.READOUT_FONT,
-        maxWidth: 18
-      } );
+    const uvText = new Text( PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty, {
+      font: PhotoelectricEffectConstants.READOUT_FONT,
+      maxWidth: 75
+    } );
+    const irText = new Text( PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty, {
+      font: PhotoelectricEffectConstants.READOUT_FONT,
+      maxWidth: 18
+    } );
+    trackNode.addChild( uvText );
+    trackNode.addChild( irText );
 
-      const sliderWrapper = new Node( {
-        children: [ slider, uvText, irText ]
-      } );
+    // Center each label over its segment of the track: UV between the range min and the start of the visible
+    // spectrum, IR between the end of the visible spectrum and the range max. The constraint keeps the labels
+    // centered when dynamic strings resize them.
+    const trackRangeLength = wavelengthRange.getLength();
+    ManualConstraint.create( trackNode, [ uvText, irText ], ( uvTextProxy, irTextProxy ) => {
+      uvTextProxy.centerX = TRACK_SIZE.width * ( VisibleColor.MIN_WAVELENGTH - wavelengthRange.min ) / trackRangeLength / 2;
+      uvTextProxy.centerY = TRACK_SIZE.height / 2;
+      irTextProxy.centerX = TRACK_SIZE.width * ( VisibleColor.MAX_WAVELENGTH - wavelengthRange.min ) / trackRangeLength +
+                            TRACK_SIZE.width * ( wavelengthRange.max - VisibleColor.MAX_WAVELENGTH ) / trackRangeLength / 2;
+      irTextProxy.centerY = TRACK_SIZE.height / 2;
+    } );
 
-      const updateLabelLayout = () => {
-        const wavelengthRange = wavelengthProperty.range;
-        const trackRangeLength = wavelengthRange.getLength();
-        const trackLeft = slider.x + 1; // + 1 to account for slider track lineWidth
-        const trackCenterY = slider.top + TRACK_SIZE.height / 2 + 1; // + 1 to account for slider track lineWidth
+    const thumbNode = new SpectrumSliderThumb( wavelengthProperty, {
+      valueToColor: wavelengthToColorWithGradient,
+      width: THUMB_WIDTH,
+      height: THUMB_HEIGHT,
+      cursorHeight: TRACK_SIZE.height,
+      tandem: sliderTandem.createTandem( Slider.THUMB_NODE_TANDEM_NAME ),
+      phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
+    } );
 
-        uvText.centerX = trackLeft +
-                         TRACK_SIZE.width * ( VisibleColor.MIN_WAVELENGTH - wavelengthRange.min ) / trackRangeLength / 2;
-        uvText.centerY = trackCenterY;
-
-        irText.centerX = trackLeft +
-                         TRACK_SIZE.width * ( VisibleColor.MAX_WAVELENGTH - wavelengthRange.min ) / trackRangeLength +
-                         TRACK_SIZE.width * ( wavelengthRange.max - VisibleColor.MAX_WAVELENGTH ) / trackRangeLength / 2;
-        irText.centerY = trackCenterY;
-      };
-
-      // For dynamic locales
-      uvText.localBoundsProperty.link( updateLabelLayout );
-      irText.localBoundsProperty.link( updateLabelLayout );
-
-      return new VBox( {
-        align: 'center',
-        spacing: 5,
-        children: [
-          new HBox( {
-            spacing: 5,
-            children: [ decrementButton, numberDisplay, incrementButton ]
-          } ),
-          sliderWrapper
-        ]
-      } );
-    };
-
-    const options = optionize<LabeledWavelengthNumberControlOptions, SelfOptions, WavelengthNumberControlOptions>()( {
+    const options = optionize<LabeledWavelengthNumberControlOptions, SelfOptions, NumberControlOptions>()( {
       isDisposable: false,
-      range: wavelengthProperty.range,
+      layoutFunction: NumberControl.createLayoutFunction2( {
+        align: 'left',
+        xSpacing: 10
+      } ),
       accessibleName: PhotoelectricEffectFluent.a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty,
-      layoutFunction: layoutFunction,
       titleNodeOptions: {
-        tandem: Tandem.OPT_OUT // because layoutFunction omits the title
-      },
-      sliderOptions: {
-        phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
-      },
-      spectrumSliderTrackOptions: {
-        valueToColor: wavelengthToColorWithGradient,
-        size: TRACK_SIZE,
-        phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
-      },
-      spectrumSliderThumbOptions: {
-        valueToColor: wavelengthToColorWithGradient,
-        width: THUMB_WIDTH,
-        height: THUMB_HEIGHT,
-        cursorHeight: TRACK_SIZE.height,
-        phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
+        font: PhotoelectricEffectConstants.PANEL_TITLE_FONT,
+        maxWidth: TITLE_MAX_WIDTH
       },
       numberDisplayOptions: combineOptions<NumberDisplayOptions>(
         {},
@@ -136,10 +113,14 @@ export default class LabeledWavelengthNumberControl extends WavelengthNumberCont
           }
         }
       ),
+      sliderOptions: {
+        trackNode: trackNode,
+        thumbNode: thumbNode,
+        phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
+      },
       phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 
-
-    super( wavelengthProperty, options );
+    super( PhotoelectricEffectFluent.wavelength.labelStringProperty, wavelengthProperty, wavelengthRange, options );
   }
 }
