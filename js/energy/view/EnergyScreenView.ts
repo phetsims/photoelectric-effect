@@ -8,12 +8,15 @@
  */
 
 import derived from '../../../../axon/js/derived.js';
+import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
 import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
+import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
 import Checkbox from '../../../../sun/js/Checkbox.js';
 import { MaterialType } from '../../common/model/Material.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import CircuitNode from '../../common/view/CircuitNode.js';
 import PhotoelectricEffectScreenView, { PhotoelectricEffectScreenViewOptions } from '../../common/view/PhotoelectricEffectScreenView.js';
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import GroundedCircuitNode from '../../intro/view/GroundedCircuitNode.js';
@@ -55,7 +58,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
       model.electrons, this.modelViewTransform, model.velocityVectorsVisibleProperty );
     this.addChild( this.electronVelocityVectorsNode );
 
-    // Checkbox to toggle the electron velocity vectors, positioned below the circuit.
+    // Checkbox to toggle the electron velocity vectors.
     const velocityVectorsCheckbox = new Checkbox(
       model.velocityVectorsVisibleProperty,
       new Text( PhotoelectricEffectFluent.velocityVectorsStringProperty, {
@@ -63,12 +66,20 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
         maxWidth: 170
       } ),
       {
-        tandem: options.tandem.createTandem( 'velocityVectorsCheckbox' ),
-        left: this.layoutBounds.left + PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-        bottom: this.layoutBounds.maxY - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
+        tandem: options.tandem.createTandem( 'velocityVectorsCheckbox' )
       }
     );
     this.addChild( velocityVectorsCheckbox );
+
+    // Right-aligned with the circuit artwork, along the bottom of the screen — the same alignment as the electron
+    // visibility checkboxes on the other screens. The constraint keeps the alignment when dynamic strings resize
+    // the checkbox.
+    ManualConstraint.create( this, [ velocityVectorsCheckbox ], velocityVectorsCheckboxProxy => {
+      velocityVectorsCheckboxProxy.rightBottom = new Vector2(
+        CircuitNode.getCircuitRightX( this.modelViewTransform ),
+        this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
+      );
+    } );
 
     const energyGraphAccordionBox = new EnergyGraphAccordionBox( model, {
       right: this.layoutBounds.maxX - PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,

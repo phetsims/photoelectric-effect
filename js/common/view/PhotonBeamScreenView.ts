@@ -10,7 +10,9 @@
  */
 
 import GatedVisibleProperty from '../../../../axon/js/GatedVisibleProperty.js';
+import Vector2 from '../../../../dot/js/Vector2.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
+import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import HBox from '../../../../scenery/js/layout/nodes/HBox.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
 import Text from '../../../../scenery/js/nodes/Text.js';
@@ -111,13 +113,18 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
       children: [
         showElectronsCheckbox,
         highestEnergyOnlyCheckbox
-      ],
-      leftBottom: this.layoutBounds.leftBottom.plusXY(
-        PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN,
-        -PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
-      )
+      ]
     } );
     this.addChild( this.electronVisibilityControls );
+
+    // Right-aligned with the circuit artwork, along the bottom of the screen. The constraint keeps the alignment
+    // when dynamic strings resize the checkboxes.
+    ManualConstraint.create( this, [ this.electronVisibilityControls ], electronVisibilityControlsProxy => {
+      electronVisibilityControlsProxy.rightBottom = new Vector2(
+        CircuitNode.getCircuitRightX( this.modelViewTransform ),
+        this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
+      );
+    } );
 
     // Insert the electron visibility checkboxes ahead of the base's default control area order.
     this.pdomControlAreaNode.pdomOrder = [

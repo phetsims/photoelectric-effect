@@ -94,7 +94,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       // Photons are rendered by default; continuous-beam screens override this with the 'show photons' preference.
       photonsVisibleProperty: new TinyProperty( true ),
       timeSpeedProperty: null,
-      targetViewX: 250
+      targetViewX: 140 // TODO: This should be centered in the space between graphs and left edge of screen
     }, providedOptions );
 
     super( options );
@@ -128,7 +128,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     this.addChild( this.materialsComboBox );
 
     //------------------------------------------------------------------------
-    // Photon source group: panel (top, left-aligned with the materials combo box), light source lamp, S-shaped wire
+    // Photon source group: panel (top, left-aligned with the materials combo box), light source lamp, connecting wire
     //------------------------------------------------------------------------
 
     this.photonSourcePanel = options.createPhotonSourcePanel( options.tandem.createTandem( 'photonSourcePanel' ) );
@@ -146,10 +146,9 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const beamStartCenter = this.modelViewTransform.modelToViewPosition( PhotoelectricEffectConstants.PHOTON_SOURCE_POSITION );
     const lightSourceNode = options.createLightSourceNode( beamStartCenter );
 
-    // S-shaped wire from the back of the lamp to the right side of the photon source panel.
-    // First control point of the cubic curve below the start and second control point above the end create the S
-    // regardless of height difference.
-    const S_BEND = 200;
+    // Wire from the left side of the lamp to the right side of the photon source panel. It travels directly
+    // between the endpoints, with a slight downward sag at the midpoint for a natural cord look.
+    const WIRE_SAG = 25;
     const WIRE_PANEL_OVERLAP = 2;
     const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
     const getPhotonSourceWireEnd = ( photonSourcePanelRightCenter: Vector2 ): Vector2 => {
@@ -160,9 +159,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const createPhotonSourceWireShape = ( photonSourceWireEnd: Vector2 ): Shape => {
       return new Shape()
         .moveToPoint( photonSourceWireStart )
-        .cubicCurveToPoint(
-          photonSourceWireStart.plusXY( 0, -S_BEND ),
-          photonSourceWireEnd.plusXY( 0, S_BEND ),
+        .quadraticCurveToPoint(
+          photonSourceWireStart.average( photonSourceWireEnd ).plusXY( 0, WIRE_SAG ),
           photonSourceWireEnd
         );
     };
@@ -223,9 +221,18 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           }
         }
       },
-      tandem: options.tandem.createTandem( 'timeControlNode' ),
-      leftCenter: this.layoutBounds.centerBottom.minusXY( -160, PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN + 25 )
+      tandem: options.tandem.createTandem( 'timeControlNode' )
     } );
+
+    // Left-aligned with the materials combo box and photon source panel, along the bottom of the screen. The
+    // constraint keeps the alignment when dynamic strings resize the combo box.
+    ManualConstraint.create( this, [ this.timeControlNode, this.materialsComboBox ],
+      ( timeControlNodeProxy, materialsComboBoxProxy ) => {
+        timeControlNodeProxy.leftCenter = new Vector2(
+          materialsComboBoxProxy.left,
+          this.layoutBounds.bottom - ( PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN + 25 )
+        );
+      } );
 
     this.resetAllButton = new ResetAllButton( {
       listener: () => {

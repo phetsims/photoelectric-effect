@@ -82,7 +82,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     } );
 
     //------------------------------------------------------------------------
-    // Battery / voltage control (centered between the plates, offset to make room for the ammeter)
+    // Battery / voltage control (centered on the left half of the circuit)
     //------------------------------------------------------------------------
     const batteryNode = new BatteryNode( { size: new Dimension2( 110, 57 ) } );
     const voltageNumberDisplay = new NumberDisplay( model.voltageProperty, model.voltageProperty.range, {
@@ -98,7 +98,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     // (a different parent frame), so the proxy in ManualConstraint handles the frame conversion.
     ManualConstraint.create( this, [ batteryNode, voltageNumberDisplay, voltageNumberControl, circuitNode ],
       ( batteryProxy, voltageDisplayProxy, voltageControlProxy, circuitProxy ) => {
-        batteryProxy.centerX = circuitProxy.centerX - 20;
+        batteryProxy.centerX = ( circuitProxy.left + circuitProxy.centerX ) / 2;
         batteryProxy.centerY = circuitProxy.bottom - CircuitNode.WIRE_LINE_WIDTH / 2;
         voltageControlProxy.centerX = batteryProxy.centerX;
         voltageControlProxy.bottom = this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN;

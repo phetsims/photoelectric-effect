@@ -25,7 +25,7 @@ import GraphPlotDataNode from './GraphPlotDataNode.js';
 import { getPaddedRange, getZoomLevelForDataSetY, sortYZoomRanges } from './GraphPlotRangeUtils.js';
 
 // Default chart size in view coordinates (experiment screen graphs).
-export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH = 220;
+export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH = 285;
 export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT = 136;
 
 // Default major tick counts (including min/max endpoints).

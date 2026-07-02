@@ -34,10 +34,10 @@ export default class PhotoelectricEffectConstants {
   public static readonly TARGET_X = 0;
 
   // X position of the collector plate center in model coordinates.
-  public static readonly COLLECTOR_X = 100;
+  public static readonly COLLECTOR_X = 105;
 
   // Photon emission origin, positioned above and to the right of the target.
-  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 70, 50 );
+  public static readonly PHOTON_SOURCE_POSITION = new Vector2( 85, 50 );
 
   // Angle of the photon beam direction, in radians, counter-clockwise from the positive x-axis.
   // Defaults to pointing from PHOTON_SOURCE_POSITION directly toward the target center (x=0, y=0).

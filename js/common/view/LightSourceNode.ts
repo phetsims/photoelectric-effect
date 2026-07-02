@@ -44,7 +44,8 @@ const createApertureGradient = ( midColor: Color, edgeColor: Color ): RadialGrad
 
 export default class LightSourceNode extends Node {
 
-  // Center of the back face of the lamp body in ScreenView coordinates — the wire attachment point.
+  // Center of the left side of the lamp body (the side facing the photon source panel) in ScreenView
+  // coordinates — the wire attachment point.
   public readonly cordAttachmentPoint: Vector2;
 
   // In view space (y-down), the beam direction angle is the negative of the model-space angle.
@@ -109,6 +110,6 @@ export default class LightSourceNode extends Node {
     this.addChild( container );
 
     // Overlap by 1 pixel so the cord end appears to be coming out from the light source body
-    this.cordAttachmentPoint = container.localToParentPoint( body.centerTop.plusXY( 0, 1 ) );
+    this.cordAttachmentPoint = container.localToParentPoint( body.leftCenter.plusXY( 1, 0 ) );
   }
 }
