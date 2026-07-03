@@ -44,9 +44,6 @@ export default class FrequencyEnergyGraphAccordionBox extends GraphAssemblyAccor
       graphPlotAreaNodeOptions: {
         xAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.frequencyAxisLabelStringProperty,
         yAxisLabelStringProperty: PhotoelectricEffectFluent.experiment.graph.energyAxisLabelStringProperty,
-
-        // TODO: @design This option is a little strange. We needed it so that the label did not overlap with the
-        //   ExpandCollapseButton. Check in with design to see how the layout should ideally be done.
         yAxisLabelYOffset: 10,
         xTickCount: 5,
         xTickLabelMode: 'all',

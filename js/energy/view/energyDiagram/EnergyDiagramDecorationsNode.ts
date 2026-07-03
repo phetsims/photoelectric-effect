@@ -176,8 +176,6 @@ export default class EnergyDiagramDecorationsNode extends Node {
     const fermiLevelY = this.chartTransform.modelToViewY( -workFunction );
     const unclippedConductionBandBottomY = this.chartTransform.modelToViewY( -workFunction - bandDepth );
 
-    // TODO: @design Discuss how to represent occupied states when the material band depth extends below the plotted
-    //  energy range.
     const conductionBandBottomY = Math.min( unclippedConductionBandBottomY, chartViewHeight );
 
     this.zeroTickLabel.rightCenter = new Vector2( -EnergyGraphLayout.Y_TICK_LABEL_MARGIN, zeroY );

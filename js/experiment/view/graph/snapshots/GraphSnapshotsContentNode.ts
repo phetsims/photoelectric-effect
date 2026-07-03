@@ -69,8 +69,8 @@ export default class GraphSnapshotsContentNode extends VBox {
       showXLabels: false,
       borderStyle: 'line',
 
-      // TODO: @design What should these be, and do we need to customize it per plot?
-      //   17 ticks creates nice divisions for the largest range (voltage).
+      // TODO: Mockups are coming for this. The x tick count will likely be static, while y tick count changes
+      //   with zoom. On hold until we refine teh snapshots accordion box content.
       xTickCount: 17,
       yTickCount: 5,
       xTickLabelMode: 'edge',
