@@ -71,6 +71,7 @@ export default class IntensityCurrentGraphAccordionBox extends GraphAssemblyAcco
         numberFormatter: value => microamperesUnit.getDualString( value, { decimalPlaces: 3 } ),
         numberFormatterDependencies: microamperesUnit.getDependentProperties()
       },
+      accessibleName: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty,
       trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.trashButton.accessibleNameStringProperty,
       snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,

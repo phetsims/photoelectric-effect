@@ -189,6 +189,9 @@ type StringsType = {
     };
     'intensityCurrentGraphNode': {
       'accessibleHeadingStringProperty': LocalizedStringProperty;
+      'expandCollapseButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
       'cameraButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
       };
@@ -202,6 +205,9 @@ type StringsType = {
     };
     'frequencyEnergyGraphNode': {
       'accessibleHeadingStringProperty': LocalizedStringProperty;
+      'expandCollapseButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
       'cameraButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
       };
@@ -215,6 +221,9 @@ type StringsType = {
     };
     'voltageCurrentGraphNode': {
       'accessibleHeadingStringProperty': LocalizedStringProperty;
+      'expandCollapseButton': {
+        'accessibleNameStringProperty': LocalizedStringProperty;
+      };
       'cameraButton': {
         'accessibleNameStringProperty': LocalizedStringProperty;
       };

@@ -24,9 +24,9 @@ materials:
 # Experiment graphs
 experiment:
   graph:
-    voltageCurrentTitle:                      'Current vs Voltage'
-    intensityCurrentTitle:                    'Current vs Intensity'
-    frequencyEnergyTitle:                     'Electron Kinetic Energy vs Light Frequency'
+    voltageCurrentTitle:                      'Voltage vs. Current'
+    intensityCurrentTitle:                    'Intensity vs. Current'
+    frequencyEnergyTitle:                     'Frequency vs. Energy'
     actionButton:                             'Graph action'
     voltageAxisLabel:                         'Voltage (V)'
     currentAxisLabel:                         'Current (μA)'
@@ -186,6 +186,8 @@ a11y:
     accessibleHelpText: Move across the stacked graphs to compare values at the same position.
   intensityCurrentGraphNode:
     accessibleHeading: Intensity vs. Current Graph
+    expandCollapseButton:
+      accessibleName: Intensity vs. Current
     cameraButton:
       accessibleName: Save Snapshot, Intensity vs. Current
     trashButton:
@@ -195,6 +197,8 @@ a11y:
       accessibleHelpText: Compare your saved snapshots of this graph side by side.
   frequencyEnergyGraphNode:
     accessibleHeading: Frequency vs. Energy Graph
+    expandCollapseButton:
+      accessibleName: Frequency vs. Energy
     cameraButton:
       accessibleName: Save Snapshot, Frequency vs. Energy
     trashButton:
@@ -204,6 +208,8 @@ a11y:
       accessibleHelpText: Compare your saved snapshots of this graph side by side.
   voltageCurrentGraphNode:
     accessibleHeading: Voltage vs. Current Graph
+    expandCollapseButton:
+      accessibleName: Voltage vs. Current
     cameraButton:
       accessibleName: Save Snapshot, Voltage vs. Current
     trashButton:

@@ -9,6 +9,7 @@
  */
 
 import DerivedProperty from '../../../../../../axon/js/DerivedProperty.js';
+import DynamicProperty from '../../../../../../axon/js/DynamicProperty.js';
 import type { TReadOnlyProperty } from '../../../../../../axon/js/TReadOnlyProperty.js';
 import type Bounds2 from '../../../../../../dot/js/Bounds2.js';
 import type Range from '../../../../../../dot/js/Range.js';
@@ -18,8 +19,8 @@ import VBox from '../../../../../../scenery/js/layout/nodes/VBox.js';
 import VSeparator from '../../../../../../scenery/js/layout/nodes/VSeparator.js';
 import type Node from '../../../../../../scenery/js/nodes/Node.js';
 import Text from '../../../../../../scenery/js/nodes/Text.js';
+import type Material from '../../../../common/model/Material.js';
 import PhotoelectricEffectConstants from '../../../../common/PhotoelectricEffectConstants.js';
-import getMaterialLabelStringProperty from '../../../../common/view/getMaterialLabelStringProperty.js';
 import PhotoelectricEffectFluent from '../../../../PhotoelectricEffectFluent.js';
 import GraphSnapshot from '../../../model/GraphSnapshot.js';
 import GraphPlotAreaNode, { type GraphPlotAreaNodeOptions } from '../GraphPlotAreaNode.js';
@@ -47,26 +48,13 @@ export default class GraphSnapshotRowNode extends HBox {
     plotOptions: GraphPlotAreaNodeOptions
   ) {
 
-    // Resolves the displayed material label from the snapshot's material identity. All material string Properties
-    // are listed as dependencies so locale changes propagate correctly.
-    const materialLabelStringProperty = new DerivedProperty( [
-        snapshot.metadata.materialTypeProperty,
-        snapshot.metadata.materialLabelKeyProperty,
-        PhotoelectricEffectFluent.materials.sodiumStringProperty,
-        PhotoelectricEffectFluent.materials.copperStringProperty,
-        PhotoelectricEffectFluent.materials.calciumStringProperty,
-        PhotoelectricEffectFluent.materials.platinumStringProperty,
-        PhotoelectricEffectFluent.materials.zincStringProperty,
-        PhotoelectricEffectFluent.materials.customStringProperty,
-        PhotoelectricEffectFluent.materials.mysteryStringProperty,
-        PhotoelectricEffectFluent.materials.mystery1StringProperty,
-        PhotoelectricEffectFluent.materials.mystery2StringProperty,
-        PhotoelectricEffectFluent.materials.mystery3StringProperty,
-        PhotoelectricEffectFluent.materials.mystery4StringProperty,
-        PhotoelectricEffectFluent.materials.mystery5StringProperty
-      ],
-      ( materialType, materialLabelKey ) => getMaterialLabelStringProperty( materialType, materialLabelKey ).value
-    );
+    // The snapshot metadata stores a Material reference. This DynamicProperty follows the current
+    // material.labelStringProperty, so the row updates when snapshot metadata points to another Material and when the
+    // localized label itself changes.
+    const materialLabelStringProperty = new DynamicProperty<string, string, Material>(
+      snapshot.metadata.materialProperty, {
+        derive: 'labelStringProperty'
+      } );
 
     const secondValueStringProperty = new DerivedProperty( [ snapshot.metadata.secondValueProperty ],
       value => snapshot.metadata.formatSecondValue( value ) );

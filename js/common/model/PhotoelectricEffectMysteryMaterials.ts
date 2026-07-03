@@ -22,34 +22,35 @@
  */
 
 import Tandem from '../../../../tandem/js/Tandem.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectQueryParameters from '../PhotoelectricEffectQueryParameters.js';
 import Material, { MaterialType } from './Material.js';
 
 const PREFERENCES_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial1' ),
-  labelKey: 'mystery1',
+  labelStringProperty: PhotoelectricEffectFluent.materials.mystery1StringProperty,
   enabled: true
 } );
 const PREFERENCES_MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.PREFERENCES.createTandem( 'mysteryMaterial2' ),
-  labelKey: 'mystery2',
+  labelStringProperty: PhotoelectricEffectFluent.materials.mystery2StringProperty,
   workFunctionInitialValue: PhotoelectricEffectQueryParameters.mysteryMaterial2WorkFunction,
   bandDepthInitialValue: PhotoelectricEffectQueryParameters.mysteryMaterial2BandDepth,
   enabled: PhotoelectricEffectQueryParameters.mysteryMaterial2Enabled
 } );
 const PHET_IO_MYSTERY_MATERIAL_1 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial1' ),
-  labelKey: 'mystery3',
+  labelStringProperty: PhotoelectricEffectFluent.materials.mystery3StringProperty,
   enabled: false
 } );
 const PHET_IO_MYSTERY_MATERIAL_2 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial2' ),
-  labelKey: 'mystery4',
+  labelStringProperty: PhotoelectricEffectFluent.materials.mystery4StringProperty,
   enabled: false
 } );
 const PHET_IO_MYSTERY_MATERIAL_3 = new Material( MaterialType.MYSTERY, {
   tandem: Tandem.GLOBAL_MODEL.createTandem( 'mysteryMaterial3' ),
-  labelKey: 'mystery5',
+  labelStringProperty: PhotoelectricEffectFluent.materials.mystery5StringProperty,
   enabled: false
 } );
 

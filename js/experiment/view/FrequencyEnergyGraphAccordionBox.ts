@@ -62,6 +62,7 @@ export default class FrequencyEnergyGraphAccordionBox extends GraphAssemblyAccor
         numberFormatter: value => electronVoltUnit.getDualString( value, { decimalPlaces: 2 } ),
         numberFormatterDependencies: electronVoltUnit.getDependentProperties()
       },
+      accessibleName: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.cameraButton.accessibleNameStringProperty,
       trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.trashButton.accessibleNameStringProperty,
       snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,

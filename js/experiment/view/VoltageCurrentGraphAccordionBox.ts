@@ -68,6 +68,7 @@ export default class VoltageCurrentGraphAccordionBox extends GraphAssemblyAccord
         numberFormatter: value => microamperesUnit.getDualString( value, { decimalPlaces: 3 } ),
         numberFormatterDependencies: microamperesUnit.getDependentProperties()
       },
+      accessibleName: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty,
       cameraButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty,
       trashButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.trashButton.accessibleNameStringProperty,
       snapshotsGalleryButtonAccessibleNameProperty: PhotoelectricEffectFluent.a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty,
