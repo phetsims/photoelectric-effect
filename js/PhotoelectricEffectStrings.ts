@@ -156,7 +156,7 @@ type StringsType = {
         'interactionHintStringProperty': LocalizedStringProperty;
       }
     };
-    'photonSourcePanel': {
+    'photonSourceControl': {
       'accessibleHeadingStringProperty': LocalizedStringProperty;
       'intensitySlider': {
         'accessibleNameStringProperty': LocalizedStringProperty;

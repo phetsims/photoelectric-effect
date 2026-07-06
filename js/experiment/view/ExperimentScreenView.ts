@@ -41,7 +41,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     const options = optionize<ExperimentScreenViewOptions, SelfOptions, PhotonBeamScreenViewOptions>()( {
       createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter,
         model.photonSource.wavelengthProperty, model.photonSource.photonRateProperty ),
-      createPhotonSourcePanel: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
+      createPhotonSourceControl: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
       screenSummaryContent: new ScreenSummaryContent( {
         playAreaContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.playAreaStringProperty,
         controlAreaContent: PhotoelectricEffectFluent.a11y.experimentScreen.screenSummary.controlAreaStringProperty,
@@ -126,7 +126,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     // PDOM order
     //------------------------------------------------------------------------
     this.pdomPlayAreaNode.pdomOrder = [
-      this.photonSourcePanel,
+      this.photonSourceControl,
       this.materialsComboBox,
       voltageNumberControl,
       graphsVBox

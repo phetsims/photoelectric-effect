@@ -147,7 +147,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly PHOTON_SOURCE_WIDTH = PHOTON_SOURCE_WIDTH;
 
   public static readonly SCREEN_VIEW_X_MARGIN = 15;
-  public static readonly SCREEN_VIEW_Y_MARGIN = 15;
+  public static readonly SCREEN_VIEW_Y_MARGIN = 10;
 
   // Horizontal distance from the circuit's center to the near edge of the components sitting on the bottom wire:
   // the battery (left of center) and the ammeter (right of center).
@@ -158,7 +158,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly BATTERY_SIZE = new Dimension2( 110, 57 );
 
   // Shared visual styling for the photon source panels on all screens.
-  public static readonly PHOTON_SOURCE_PANEL_CORNER_RADIUS = 4;
+  public static readonly PHOTON_SOURCE_CONTROL_CORNER_RADIUS = 4;
 
   // Shared side length for square rectangular radio buttons.
   public static readonly SQUARE_RADIO_BUTTON_SIDE_LENGTH = 64;

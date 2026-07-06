@@ -29,8 +29,8 @@ export default class PhotoelectricEffectColors {
       default: 'white'
     } );
 
-  public static readonly photonSourcePanelFillColorProperty = new ProfileColorProperty(
-    photoelectricEffect, 'photonSourcePanelFill', {
+  public static readonly photonSourceControlFillColorProperty = new ProfileColorProperty(
+    photoelectricEffect, 'photonSourceControlFill', {
       default: 'rgb( 238, 240, 242 )'
     } );
 

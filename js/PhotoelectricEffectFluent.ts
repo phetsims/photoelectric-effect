@@ -100,9 +100,9 @@ addToMapIfDefined( 'a11y_experimentScreen_screenSummary_playArea', 'a11y.experim
 addToMapIfDefined( 'a11y_experimentScreen_screenSummary_controlArea', 'a11y.experimentScreen.screenSummary.controlAreaStringProperty' );
 addToMapIfDefined( 'a11y_experimentScreen_screenSummary_currentDetails_leadingParagraph', 'a11y.experimentScreen.screenSummary.currentDetails.leadingParagraphStringProperty' );
 addToMapIfDefined( 'a11y_experimentScreen_screenSummary_interactionHint', 'a11y.experimentScreen.screenSummary.interactionHintStringProperty' );
-addToMapIfDefined( 'a11y_photonSourcePanel_accessibleHeading', 'a11y.photonSourcePanel.accessibleHeadingStringProperty' );
-addToMapIfDefined( 'a11y_photonSourcePanel_intensitySlider_accessibleName', 'a11y.photonSourcePanel.intensitySlider.accessibleNameStringProperty' );
-addToMapIfDefined( 'a11y_photonSourcePanel_wavelengthNumberControl_accessibleName', 'a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_photonSourceControl_accessibleHeading', 'a11y.photonSourceControl.accessibleHeadingStringProperty' );
+addToMapIfDefined( 'a11y_photonSourceControl_intensitySlider_accessibleName', 'a11y.photonSourceControl.intensitySlider.accessibleNameStringProperty' );
+addToMapIfDefined( 'a11y_photonSourceControl_wavelengthNumberControl_accessibleName', 'a11y.photonSourceControl.wavelengthNumberControl.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_ammeterDisplayPanel_accessibleName', 'a11y.ammeterDisplayPanel.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_materialsComboBox_accessibleName', 'a11y.materialsComboBox.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_representationRadioButtonGroup_accessibleName', 'a11y.representationRadioButtonGroup.accessibleNameStringProperty' );
@@ -300,14 +300,14 @@ const PhotoelectricEffectFluent = {
         interactionHintStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_experimentScreen_screenSummary_interactionHint', _.get( PhotoelectricEffectStrings, 'a11y.experimentScreen.screenSummary.interactionHintStringProperty' ) )
       }
     },
-    _comment_2: new FluentComment( {"comment":"Photon source panel and its inner controls","associatedKey":"photonSourcePanel"} ),
-    photonSourcePanel: {
-      accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourcePanel_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.photonSourcePanel.accessibleHeadingStringProperty' ) ),
+    _comment_2: new FluentComment( {"comment":"Photon source control and its inner controls","associatedKey":"photonSourceControl"} ),
+    photonSourceControl: {
+      accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourceControl_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.photonSourceControl.accessibleHeadingStringProperty' ) ),
       intensitySlider: {
-        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourcePanel_intensitySlider_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.photonSourcePanel.intensitySlider.accessibleNameStringProperty' ) )
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourceControl_intensitySlider_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.photonSourceControl.intensitySlider.accessibleNameStringProperty' ) )
       },
       wavelengthNumberControl: {
-        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourcePanel_wavelengthNumberControl_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty' ) )
+        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_photonSourceControl_wavelengthNumberControl_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.photonSourceControl.wavelengthNumberControl.accessibleNameStringProperty' ) )
       }
     },
     _comment_3: new FluentComment( {"comment":"Ammeter current readout","associatedKey":"ammeterDisplayPanel"} ),

@@ -53,7 +53,7 @@ type SelfOptions = {
   createLightSourceNode: ( beamStartCenter: Vector2 ) => LightSourceNodeInterface;
 
   // Factory for the screen-specific photon source panel. The base positions the returned node at leftTop.
-  createPhotonSourcePanel: ( tandem: Tandem ) => Node;
+  createPhotonSourceControl: ( tandem: Tandem ) => Node;
 
   // Whether individual photons are rendered. When false, a LightBeamNode stands in for the photons. Defaults to
   // always visible, so screens that emit single photons (e.g. Energy) are unaffected. Continuous-beam screens
@@ -81,7 +81,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
 
   // Exposed for subclasses to wire into pdom order and to position screen-specific content relative to.
   protected readonly materialsComboBox: Node;
-  protected readonly photonSourcePanel: Node;
+  protected readonly photonSourceControl: Node;
   protected readonly timeControlNode: TimeControlNode;
   protected readonly resetAllButton: Node;
 
@@ -131,12 +131,12 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // Photon source group: panel (top, left-aligned with the materials combo box), light source lamp, connecting wire
     //------------------------------------------------------------------------
 
-    this.photonSourcePanel = options.createPhotonSourcePanel( options.tandem.createTandem( 'photonSourcePanel' ) );
+    this.photonSourceControl = options.createPhotonSourceControl( options.tandem.createTandem( 'photonSourceControl' ) );
 
     // Keep the panel left-aligned with the combo box when dynamic strings resize either node.
-    ManualConstraint.create( this, [ this.photonSourcePanel, this.materialsComboBox ],
-      ( photonSourcePanelProxy, materialsComboBoxProxy ) => {
-        photonSourcePanelProxy.leftTop = new Vector2(
+    ManualConstraint.create( this, [ this.photonSourceControl, this.materialsComboBox ],
+      ( photonSourceControlProxy, materialsComboBoxProxy ) => {
+        photonSourceControlProxy.leftTop = new Vector2(
           materialsComboBoxProxy.left,
           this.layoutBounds.top + PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN
         );
@@ -151,10 +151,10 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const WIRE_CURVE = 25;
     const WIRE_PANEL_OVERLAP = 2;
     const photonSourceWireStart = lightSourceNode.cordAttachmentPoint;
-    const getPhotonSourceWireEnd = ( photonSourcePanelRightCenter: Vector2 ): Vector2 => {
+    const getPhotonSourceWireEnd = ( photonSourceControlRightCenter: Vector2 ): Vector2 => {
 
       // Overlap with the panel so the wire appears tucked under the panel border.
-      return photonSourcePanelRightCenter.plusXY( -WIRE_PANEL_OVERLAP, 0 );
+      return photonSourceControlRightCenter.plusXY( -WIRE_PANEL_OVERLAP, 0 );
     };
     const createPhotonSourceWireShape = ( photonSourceWireEnd: Vector2 ): Shape => {
       return new Shape()
@@ -165,14 +165,14 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
         );
     };
     const photonSourceWireNode = new Path( createPhotonSourceWireShape(
-      getPhotonSourceWireEnd( this.photonSourcePanel.rightCenter )
+      getPhotonSourceWireEnd( this.photonSourceControl.rightCenter )
     ), {
       stroke: PhotoelectricEffectColors.circuitWireColorProperty,
       lineWidth: 3
     } );
-    ManualConstraint.create( this, [ this.photonSourcePanel ], photonSourcePanelProxy => {
+    ManualConstraint.create( this, [ this.photonSourceControl ], photonSourceControlProxy => {
       photonSourceWireNode.shape = createPhotonSourceWireShape(
-        getPhotonSourceWireEnd( photonSourcePanelProxy.rightCenter )
+        getPhotonSourceWireEnd( photonSourceControlProxy.rightCenter )
       );
     } );
 
@@ -196,7 +196,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // wire end.
     this.addChild( photonSourceWireNode );
     this.addChild( lightSourceNode );
-    this.addChild( this.photonSourcePanel );
+    this.addChild( this.photonSourceControl );
 
     //------------------------------------------------------------------------
     // Particle canvas: renders photons and electrons in the play area
@@ -223,8 +223,8 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       },
 
       // Left align with combo box and photon source panel.
-      leftCenter: new Vector2( this.materialsComboBox.left,
-        this.layoutBounds.bottom - ( PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN + 25 ) ),
+      leftBottom: new Vector2( this.materialsComboBox.left,
+        this.layoutBounds.bottom - PhotoelectricEffectConstants.SCREEN_VIEW_Y_MARGIN ),
       tandem: options.tandem.createTandem( 'timeControlNode' )
     } );
 
@@ -270,7 +270,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
           new Text( devPhotonEnergyStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } ),
           new Text( devCurrentStringProperty, { font: PhotoelectricEffectConstants.READOUT_FONT } )
         ],
-        leftTop: this.photonSourcePanel.rightTop
+        leftTop: this.photonSourceControl.rightTop
       } ) );
     }
   }

@@ -52,7 +52,8 @@ export default class FrequencyEnergyGraphAccordionBox extends GraphAssemblyAccor
         xTickLabelMode: 'all',
         xTickLabelFormatter: value => toFixed( value, 2 ),
         yTickLabelMode: 'all',
-        fill: PhotoelectricEffectColors.frequencyEnergyGraphFillColorProperty
+        fill: PhotoelectricEffectColors.frequencyEnergyGraphFillColorProperty,
+        yTickLabelFormatter: value => toFixed( value, 2 )
       },
       referenceLineXDisplayOptions: {
         displayRange: xRange,

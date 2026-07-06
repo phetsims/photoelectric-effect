@@ -25,7 +25,7 @@ import GraphSnapshotsDialog from './snapshots/GraphSnapshotsDialog.js';
 import { type GraphSnapshotsReferenceLineValueDisplayOptions } from './snapshots/referenceLine/GraphSnapshotsReferenceLineNode.js';
 
 // Horizontal spacing between the chart content and the right-side button column.
-const GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 10;
+const GRAPH_ASSEMBLY_BUTTON_COLUMN_SPACING = 5;
 
 // Maximum width for collapsed graph AccordionBox titles.
 const GRAPH_TITLE_MAX_WIDTH = 340;
@@ -54,7 +54,7 @@ export type GraphAssemblyAccordionBoxOptions =
 export default class GraphAssemblyAccordionBox extends AccordionBox {
 
   // Vertical spacing between stacked graph assemblies in the experiment screen layout.
-  public static readonly GRAPH_ASSEMBLY_SPACING = 12;
+  public static readonly GRAPH_ASSEMBLY_SPACING = 18;
 
   /**
    * @param graphData - Source of live samples, snapshots, and current operating-point state.

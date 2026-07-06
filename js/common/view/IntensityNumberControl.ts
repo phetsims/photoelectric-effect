@@ -95,7 +95,7 @@ export default class IntensityNumberControl extends NumberControl {
         xSpacing: 10
       } ),
       delta: 1,
-      accessibleName: PhotoelectricEffectFluent.a11y.photonSourcePanel.intensitySlider.accessibleNameStringProperty,
+      accessibleName: PhotoelectricEffectFluent.a11y.photonSourceControl.intensitySlider.accessibleNameStringProperty,
       titleNodeOptions: {
         font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: TITLE_MAX_WIDTH

@@ -32,7 +32,7 @@ export default class IntroScreenView extends PhotonBeamScreenView {
     const options = optionize<IntroScreenViewOptions, SelfOptions, PhotonBeamScreenViewOptions>()( {
       createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter,
         model.photonSource.wavelengthProperty, model.photonSource.photonRateProperty ),
-      createPhotonSourcePanel: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
+      createPhotonSourceControl: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
 
       // Center the circuit artwork horizontally in the layout bounds
       targetViewX: CircuitNode.getTargetViewXToCenterCircuit( ScreenView.DEFAULT_LAYOUT_BOUNDS.centerX ),
@@ -73,7 +73,7 @@ export default class IntroScreenView extends PhotonBeamScreenView {
     } );
 
     this.pdomPlayAreaNode.pdomOrder = [
-      this.photonSourcePanel,
+      this.photonSourceControl,
       this.materialsComboBox,
       representationRadioButtonGroup
     ];

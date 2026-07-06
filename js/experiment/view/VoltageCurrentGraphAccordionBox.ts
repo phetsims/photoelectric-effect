@@ -54,7 +54,7 @@ export default class VoltageCurrentGraphAccordionBox extends GraphAssemblyAccord
         xTickLabelFormatter: value => toFixed( value, 0 ),
         yTickLabelMode: 'all',
         fill: PhotoelectricEffectColors.voltageCurrentGraphFillColorProperty,
-        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 3 )
+        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 0 )
       },
       referenceLineXDisplayOptions: {
         displayRange: xRange,

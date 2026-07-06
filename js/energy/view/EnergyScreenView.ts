@@ -38,7 +38,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
   public constructor( model: EnergyModel, providedOptions: EnergyScreenViewOptions ) {
     const options = optionize<EnergyScreenViewOptions, SelfOptions, PhotoelectricEffectScreenViewOptions>()( {
       createLightSourceNode: beamStartCenter => new EnergyLightSourceNode( beamStartCenter ),
-      createPhotonSourcePanel: tandem => new EnergyPhotonSourceControl(
+      createPhotonSourceControl: tandem => new EnergyPhotonSourceControl(
         model.wavelengthProperty,
         model.isSinglePhotonModeProperty,
         model.firePhotonEmitter,
@@ -101,7 +101,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
 
     // TODO: Define PDOM order for screen specific components
     this.pdomPlayAreaNode.setPDOMOrder( [
-      this.photonSourcePanel,
+      this.photonSourceControl,
       this.materialsComboBox,
       velocityVectorsCheckbox
     ] );

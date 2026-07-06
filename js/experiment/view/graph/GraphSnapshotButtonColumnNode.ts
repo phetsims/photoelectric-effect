@@ -2,7 +2,7 @@
 
 /**
  * GraphSnapshotButtonColumnNode owns the action buttons beside an experiment graph plot area: capture snapshot, show
- * saved snapshots, and clear snapshots.
+ * saved snapshots, and clear snapshots. A snapshot count readout sits below the buttons.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
@@ -16,10 +16,12 @@ import CameraButton, { type CameraButtonOptions } from '../../../../../scenery-p
 import TrashButton, { type TrashButtonOptions } from '../../../../../scenery-phet/js/buttons/TrashButton.js';
 import VBox from '../../../../../scenery/js/layout/nodes/VBox.js';
 import Path from '../../../../../scenery/js/nodes/Path.js';
+import Text from '../../../../../scenery/js/nodes/Text.js';
 import expandSolidShape from '../../../../../sherpa/js/fontawesome-5/expandSolidShape.js';
 import RectangularPushButton, { type RectangularPushButtonOptions } from '../../../../../sun/js/buttons/RectangularPushButton.js';
 import type { PhetioObjectOptions } from '../../../../../tandem/js/PhetioObject.js';
 import PhotoelectricEffectColors from '../../../common/PhotoelectricEffectColors.js';
+import PhotoelectricEffectConstants from '../../../common/PhotoelectricEffectConstants.js';
 import GraphData from '../../model/GraphData.js';
 
 // Vertical spacing between action buttons in the right-side column.
@@ -92,13 +94,19 @@ export default class GraphSnapshotButtonColumnNode extends VBox {
       accessibleName: options.trashButtonAccessibleNameProperty
     } ) );
 
+    const snapshotCountReadoutText = new Text(
+      new DerivedProperty( [ graphData.snapshotsCountProperty ], count => `${count}/${GraphData.MAX_SNAPSHOTS}` ),
+      { font: PhotoelectricEffectConstants.CONTENT_FONT }
+    );
+
     super( {
       spacing: GRAPH_ASSEMBLY_BUTTON_SPACING,
       align: 'center',
       children: [
         cameraButton,
         snapshotsGalleryButton,
-        trashButton
+        trashButton,
+        snapshotCountReadoutText
       ]
     } );
   }

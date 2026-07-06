@@ -152,8 +152,8 @@ a11y:
                             The ammeter reads CURRENT.
       interactionHint: Turn up the light source intensity and adjust the wavelength, voltage, and material to start collecting data in the graphs.
 
-  # Photon source panel and its inner controls
-  photonSourcePanel:
+  # Photon source control and its inner controls
+  photonSourceControl:
     accessibleHeading: Light Source
     intensitySlider:
       accessibleName: Intensity

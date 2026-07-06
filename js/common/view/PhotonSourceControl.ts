@@ -31,12 +31,12 @@ export default class PhotonSourceControl extends Panel {
   public constructor( photonSource: PhotonSource, providedOptions: PhotonSourceControlOptions ) {
     const options = optionize<PhotonSourceControlOptions, SelfOptions, PanelOptions>()( {
       stroke: PhotoelectricEffectColors.circuitWireColorProperty,
-      cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_CORNER_RADIUS,
-      fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,
+      cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_CONTROL_CORNER_RADIUS,
+      fill: PhotoelectricEffectColors.photonSourceControlFillColorProperty,
       align: 'center',
       isDisposable: false,
       yMargin: 8,
-      accessibleHeading: PhotoelectricEffectFluent.a11y.photonSourcePanel.accessibleHeadingStringProperty,
+      accessibleHeading: PhotoelectricEffectFluent.a11y.photonSourceControl.accessibleHeadingStringProperty,
       phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 

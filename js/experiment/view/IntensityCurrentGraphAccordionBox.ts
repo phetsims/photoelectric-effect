@@ -57,7 +57,7 @@ export default class IntensityCurrentGraphAccordionBox extends GraphAssemblyAcco
         },
         fill: PhotoelectricEffectColors.intensityCurrentGraphFillColorProperty,
         yTickLabelMode: 'all',
-        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 3 )
+        yTickLabelFormatter: value => toFixed( ampsToMicroamps( value ), 0 )
       },
       referenceLineXDisplayOptions: {
         displayRange: new Range( 0, 100 ),

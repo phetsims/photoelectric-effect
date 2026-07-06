@@ -291,7 +291,7 @@
         }
       }
     },
-    "photonSourcePanel": {
+    "photonSourceControl": {
       "accessibleHeading": {
         "value": "Light Source"
       },

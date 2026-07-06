@@ -97,7 +97,7 @@ export default class LabeledWavelengthNumberControl extends NumberControl {
         align: 'left',
         xSpacing: 10
       } ),
-      accessibleName: PhotoelectricEffectFluent.a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty,
+      accessibleName: PhotoelectricEffectFluent.a11y.photonSourceControl.wavelengthNumberControl.accessibleNameStringProperty,
       titleNodeOptions: {
         font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: TITLE_MAX_WIDTH
