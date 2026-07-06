@@ -170,14 +170,14 @@ export default class GraphPlotAxesNode extends Node {
     } );
 
     const xAxisLabelText = new RichText( options.xAxisLabelStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT,
+      font: PhotoelectricEffectConstants.LABEL_FONT,
 
       // Long strings scale down to the chart width rather than growing the layout.
       maxWidth: plotBounds.width
     } );
 
     const yAxisLabelText = new RichText( options.yAxisLabelStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT,
+      font: PhotoelectricEffectConstants.LABEL_FONT,
       rotation: -Math.PI / 2,
 
       // The label is rotated along the chart's left side, so the text length becomes vertical extent — limit it

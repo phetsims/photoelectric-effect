@@ -32,7 +32,7 @@ export default class GraphSnapshotsReferenceLineVisibilityControl extends Checkb
         spacing: 8,
         children: [
           new Text( PhotoelectricEffectFluent.experiment.graph.referenceLineStringProperty, {
-            font: PhotoelectricEffectConstants.CONTENT_FONT
+            font: PhotoelectricEffectConstants.LABEL_FONT
           } ),
           GraphSnapshotsReferenceLineVisibilityControl.createIcon()
         ]

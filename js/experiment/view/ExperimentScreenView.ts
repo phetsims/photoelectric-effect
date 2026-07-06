@@ -8,7 +8,6 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import Dimension2 from '../../../../dot/js/Dimension2.js';
 import Matrix3 from '../../../../dot/js/Matrix3.js';
 import ScreenSummaryContent from '../../../../joist/js/ScreenSummaryContent.js';
 import optionize, { EmptySelfOptions } from '../../../../phet-core/js/optionize.js';
@@ -17,6 +16,7 @@ import BatteryNode from '../../../../scenery-phet/js/BatteryNode.js';
 import NumberDisplay from '../../../../scenery-phet/js/NumberDisplay.js';
 import ManualConstraint from '../../../../scenery/js/layout/constraints/ManualConstraint.js';
 import VBox from '../../../../scenery/js/layout/nodes/VBox.js';
+import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
 import CircuitNode from '../../common/view/CircuitNode.js';
 import LightSourceNode from '../../common/view/LightSourceNode.js';
@@ -85,10 +85,13 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     // Battery / voltage control: the battery sits on the bottom wire, offset left of the circuit center
     // (mirroring the ammeter on the right), with the slider directly below it.
     //------------------------------------------------------------------------
-    const batteryNode = new BatteryNode( { size: new Dimension2( 110, 57 ) } );
+    const batteryNode = new BatteryNode( { size: PhotoelectricEffectConstants.BATTERY_SIZE, stroke: PhotoelectricEffectColors.circuitWireColorProperty } );
     const voltageNumberDisplay = new NumberDisplay( model.voltageProperty, model.voltageProperty.range, {
       center: batteryNode.center,
-      decimalPlaces: 2
+      decimalPlaces: 2,
+      textOptions: {
+        font: PhotoelectricEffectConstants.READOUT_FONT
+      }
     } );
     const voltageNumberControl = new VoltageNumberControl( model.voltageProperty, {
       tandem: options.tandem.createTandem( 'voltageNumberControl' )

@@ -73,7 +73,7 @@ export default class EnergyBarGraphNode extends Node {
     const decorationsNode = new EnergyBarGraphDecorationsNode( this.chartTransform, workFunctionProperty );
 
     const yAxisLabel = new Text( PhotoelectricEffectFluent.energy.graph.yAxisLabelStringProperty, {
-      font: PhotoelectricEffectConstants.CONTENT_FONT,
+      font: PhotoelectricEffectConstants.LABEL_FONT,
       rotation: -Math.PI / 2,
 
       // The label is rotated along the chart's left side, so the text length becomes vertical extent — limit it
@@ -83,7 +83,7 @@ export default class EnergyBarGraphNode extends Node {
 
     const xLabels = _.times( EnergyGraphData.NUMBER_OF_ENERGY_GRAPH_SAMPLES, sampleIndex => {
       const label = new Text( `${sampleIndex + 1}`, {
-        font: PhotoelectricEffectConstants.CONTENT_FONT
+        font: PhotoelectricEffectConstants.TICK_LABEL_FONT
       } );
       label.centerTop = new Vector2(
         this.chartTransform.modelToViewX( EnergyGraphLayout.getSampleCenterX( sampleIndex ) ),

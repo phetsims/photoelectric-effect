@@ -40,7 +40,7 @@ export default class EnergyGraphAccordionBox extends AccordionBox {
         contentYMargin: 10,
 
         titleNode: new Text( PhotoelectricEffectFluent.energy.energyGraphAccordionBox.titleStringProperty, {
-          font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
+          font: PhotoelectricEffectConstants.CONTENT_FONT
         } )
       },
       providedOptions

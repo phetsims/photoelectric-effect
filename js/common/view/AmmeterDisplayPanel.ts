@@ -26,6 +26,9 @@ import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
 
 const MIN_DISPLAYED_MICROAMPS = 0.001;
 
+// Panel outline stroke width.
+const PANEL_LINE_WIDTH = 2;
+
 type SelfOptions = EmptySelfOptions;
 
 export type AmmeterDisplayPanelOptions =
@@ -38,11 +41,14 @@ export default class AmmeterDisplayPanel extends Panel {
   public constructor( currentProperty: ReadOnlyProperty<number>, providedOptions: AmmeterDisplayPanelOptions ) {
 
     const options = optionize<AmmeterDisplayPanelOptions, SelfOptions, PanelOptions>()( {
-      stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
-      lineWidth: 3,
+      stroke: PhotoelectricEffectColors.circuitWireColorProperty,
+      lineWidth: PANEL_LINE_WIDTH,
       cornerRadius: 8,
       fill: PhotoelectricEffectColors.ammeterPanelFillColorProperty,
-      minWidth: 120,
+      minWidth: 110,
+
+      // Match the battery's height so the components sitting on the bottom wire read at the same scale.
+      preferredHeight: PhotoelectricEffectConstants.BATTERY_SIZE.height - PANEL_LINE_WIDTH,
       align: 'center',
       xMargin: 10,
       yMargin: 8,
@@ -88,11 +94,11 @@ export default class AmmeterDisplayPanel extends Panel {
 
     const currentLabel = new Text( PhotoelectricEffectFluent.current.labelStringProperty, {
       font: PhotoelectricEffectConstants.CONTENT_FONT,
-      maxWidth: 120
+      maxWidth: PhotoelectricEffectConstants.BATTERY_SIZE.width
     } );
 
     const content = new VBox( {
-      spacing: 6,
+      spacing: 5,
       align: 'center',
       children: [
         currentLabel,

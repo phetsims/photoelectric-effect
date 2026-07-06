@@ -120,7 +120,7 @@ export default class PhotoelectricEffectColors {
   } );
 
   public static readonly circuitWireColorProperty = new ProfileColorProperty( photoelectricEffect, 'circuitWire', {
-    default: 'gray'
+    default: '#666666'
   } );
 
   public static readonly lightSourceBodyColorProperty = new ProfileColorProperty( photoelectricEffect, 'lightSourceBody', {
@@ -158,12 +158,7 @@ export default class PhotoelectricEffectColors {
       default: '#E03722'
     } );
 
-  // Stroke color shared by panel borders and the slider gradient rectangle outline.
-  public static readonly panelStrokeColorProperty = new ProfileColorProperty( photoelectricEffect, 'panelStroke', {
-    default: 'dark grey'
-  } );
-
-  // Stroke color shared by circuit visual elements (wires, plate material outline, ground symbol).
+  // Stroke color shared by circuit visual elements (plate material outline, ground symbol).
   public static readonly circuitStrokeColorProperty = new ProfileColorProperty( photoelectricEffect, 'circuitStroke', {
     default: 'black'
   } );

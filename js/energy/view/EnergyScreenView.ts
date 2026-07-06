@@ -62,10 +62,11 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
     const velocityVectorsCheckbox = new Checkbox(
       model.velocityVectorsVisibleProperty,
       new Text( PhotoelectricEffectFluent.velocityVectorsStringProperty, {
-        font: PhotoelectricEffectConstants.CONTENT_FONT,
+        font: PhotoelectricEffectConstants.LABEL_FONT,
         maxWidth: 170
       } ),
       {
+        boxWidth: PhotoelectricEffectConstants.CHECKBOX_BOX_WIDTH,
         tandem: options.tandem.createTandem( 'velocityVectorsCheckbox' )
       }
     );

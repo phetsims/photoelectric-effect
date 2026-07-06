@@ -41,7 +41,7 @@ const TITLE_MAX_WIDTH = 100;
 
 const NUMBER_DISPLAY_BASE: NumberDisplayOptions = {
   cornerRadius: 5,
-  backgroundStroke: PhotoelectricEffectColors.panelStrokeColorProperty,
+  backgroundStroke: PhotoelectricEffectColors.circuitWireColorProperty,
   align: 'center',
   xMargin: 2
 };
@@ -75,7 +75,7 @@ export default class IntensityNumberControl extends NumberControl {
     // is vertically centered on the thumb.
     const gradientRectangle = new Rectangle(
       0, 0, TRACK_SIZE.width, TRACK_SIZE.height, {
-        stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
+        stroke: PhotoelectricEffectColors.circuitWireColorProperty,
         lineWidth: 1
       } );
     wavelengthProperty.link( wavelength => {
@@ -97,7 +97,7 @@ export default class IntensityNumberControl extends NumberControl {
       delta: 1,
       accessibleName: PhotoelectricEffectFluent.a11y.photonSourcePanel.intensitySlider.accessibleNameStringProperty,
       titleNodeOptions: {
-        font: PhotoelectricEffectConstants.PANEL_TITLE_FONT,
+        font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: TITLE_MAX_WIDTH
       },
       numberDisplayOptions: combineOptions<NumberDisplayOptions>(

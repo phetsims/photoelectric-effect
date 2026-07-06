@@ -8,6 +8,7 @@
  */
 
 import Bounds2 from '../../../dot/js/Bounds2.js';
+import Dimension2 from '../../../dot/js/Dimension2.js';
 import Range from '../../../dot/js/Range.js';
 import Vector2 from '../../../dot/js/Vector2.js';
 import PhetFont from '../../../scenery-phet/js/PhetFont.js';
@@ -20,7 +21,7 @@ import PhotoelectricEffectColors from './PhotoelectricEffectColors.js';
 const PHOTON_SOURCE_WIDTH = 70;
 
 // view units
-const PLATE_HEIGHT = 150;
+const PLATE_HEIGHT = 155;
 
 const MODEL_VIEW_SCALE = 3.5;
 
@@ -34,7 +35,7 @@ export default class PhotoelectricEffectConstants {
   public static readonly TARGET_X = 0;
 
   // X position of the collector plate center in model coordinates.
-  public static readonly COLLECTOR_X = 105;
+  public static readonly COLLECTOR_X = 100;
 
   // Photon emission origin, positioned above and to the right of the target.
   public static readonly PHOTON_SOURCE_POSITION = new Vector2( 85, 50 );
@@ -150,7 +151,11 @@ export default class PhotoelectricEffectConstants {
 
   // Horizontal distance from the circuit's center to the near edge of the components sitting on the bottom wire:
   // the battery (left of center) and the ammeter (right of center).
-  public static readonly WIRE_COMPONENT_CENTER_OFFSET = 40;
+  public static readonly WIRE_COMPONENT_CENTER_OFFSET = 30;
+
+  // Size of the battery on the Experiment screen. The ammeter display panel matches this height so the two
+  // components sitting on the bottom wire read at the same scale.
+  public static readonly BATTERY_SIZE = new Dimension2( 110, 57 );
 
   // Shared visual styling for the photon source panels on all screens.
   public static readonly PHOTON_SOURCE_PANEL_CORNER_RADIUS = 4;
@@ -199,15 +204,19 @@ export default class PhotoelectricEffectConstants {
   // Title font shared by dialogs.
   public static readonly DIALOG_TITLE_FONT = new PhetFont( { size: 24, weight: 'bold' } );
 
-  // Font for subsection titles in control panels (e.g. photon source intensity label).
-  public static readonly PANEL_TITLE_FONT = new PhetFont( 18 );
-
-  // Fonts for general screen content
+  // Font for primary content: control titles (Intensity, Wavelength, Current), combo box items, collapsed
+  // graph headings, and the snapshot count readout.
   public static readonly CONTENT_FONT = new PhetFont( 16 );
 
-  // Font for numeric readouts (NumberDisplay) and experiment graph axis titles (shared 12 pt instance).
-  public static readonly READOUT_FONT = new PhetFont( 12 );
+  // Font for numeric readout values (NumberDisplay).
+  public static readonly READOUT_FONT = new PhetFont( 14 );
 
-  // Font for small numeric tick labels on experiment graph axes.
-  public static readonly GRAPH_TICK_LABEL_FONT = new PhetFont( 10 );
+  // Font for secondary labels: checkbox labels, graph axis labels, and spectrum UV/IR labels.
+  public static readonly LABEL_FONT = new PhetFont( 14 );
+
+  // Font for numeric tick labels on graph axes and slider tick marks.
+  public static readonly TICK_LABEL_FONT = new PhetFont( 12 );
+
+  // Checkbox boxes match the size of their label font so the box and text read at the same scale.
+  public static readonly CHECKBOX_BOX_WIDTH = PhotoelectricEffectConstants.LABEL_FONT.numericSize;
 }

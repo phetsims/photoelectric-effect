@@ -63,13 +63,17 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
     // Electron visibility checkboxes (bottom-left of the play area)
     //------------------------------------------------------------------------
 
+    // Spacing between a checkbox's box and its label. Set explicitly so the nested highest-energy-only checkbox
+    // can indent by the box-plus-spacing width, left-aligning its box with the "Show Electrons" label text.
+    const checkboxLabelSpacing = 5;
+
     const showElectronsCheckbox = new Checkbox(
       model.showElectronsProperty,
       new HBox( {
         spacing: 8,
         children: [
           new Text( PhotoelectricEffectFluent.showElectronsStringProperty, {
-            font: PhotoelectricEffectConstants.CONTENT_FONT,
+            font: PhotoelectricEffectConstants.LABEL_FONT,
             maxWidth: 170
           } ),
 
@@ -78,6 +82,8 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
         ]
       } ),
       {
+        boxWidth: PhotoelectricEffectConstants.CHECKBOX_BOX_WIDTH,
+        spacing: checkboxLabelSpacing,
         tandem: options.tandem.createTandem( 'showElectronsCheckbox' )
       }
     );
@@ -89,10 +95,11 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
     const highestEnergyOnlyCheckbox = new Checkbox(
       model.showHighestEnergyOnlyProperty,
       new Text( PhotoelectricEffectFluent.highestEnergyOnlyStringProperty, {
-        font: PhotoelectricEffectConstants.CONTENT_FONT,
+        font: PhotoelectricEffectConstants.LABEL_FONT,
         maxWidth: 170
       } ),
       {
+        boxWidth: PhotoelectricEffectConstants.CHECKBOX_BOX_WIDTH,
         enabledProperty: model.showElectronsProperty,
 
         // For phet-io customization, this checkbox is hidden when the showElectronsCheckbox is hidden.
@@ -101,7 +108,7 @@ export default class PhotonBeamScreenView extends PhotoelectricEffectScreenView 
           highestEnergyOnlyCheckboxTandem
         ),
         layoutOptions: {
-          leftMargin: 20
+          leftMargin: PhotoelectricEffectConstants.CHECKBOX_BOX_WIDTH + checkboxLabelSpacing
         },
         tandem: highestEnergyOnlyCheckboxTandem
       }

@@ -49,9 +49,10 @@ export default class EnergyPhotonSourcePanel extends Panel {
   ) {
 
     const options = optionize<EnergyPhotonSourcePanelOptions, SelfOptions, PanelOptions>()( {
-      stroke: PhotoelectricEffectColors.panelStrokeColorProperty,
+      stroke: PhotoelectricEffectColors.circuitWireColorProperty,
       cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_CORNER_RADIUS,
       fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,
+      yMargin: 8,
       phetioVisiblePropertyInstrumented: false // Component cannot be hidden since it is critical to usage of the sim.
     }, providedOptions );
 

@@ -31,7 +31,6 @@ const CHECKBOX_SPACING = 10;
 
 // Checkbox layout.
 const CHECKBOX_LABEL_MAX_WIDTH = 130;
-const CHECKBOX_BOX_WIDTH = 17;
 const PHOTON_ARROW_ICON_LENGTH = 18;
 const PHOTON_ARROW_ICON_SPACING = 6;
 const PHOTON_ARROW_ICON_TAIL_WIDTH = 1.25;
@@ -71,10 +70,10 @@ export default class EnergyDiagramControlsNode extends VBox {
         new Checkbox(
           workFunctionVisibleProperty,
           new Text( workFunctionLabelStringProperty, {
-            font: PhotoelectricEffectConstants.CONTENT_FONT,
+            font: PhotoelectricEffectConstants.LABEL_FONT,
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
-            boxWidth: CHECKBOX_BOX_WIDTH,
+            boxWidth: PhotoelectricEffectConstants.CHECKBOX_BOX_WIDTH,
             spacing: 4,
             tandem: providedOptions.tandem.createTandem( 'workFunctionCheckbox' )
           }
@@ -83,10 +82,10 @@ export default class EnergyDiagramControlsNode extends VBox {
         new Checkbox(
           labelsVisibleProperty,
           new RichText( PhotoelectricEffectFluent.energy.graph.diagramControls.labelStringProperty, {
-            font: PhotoelectricEffectConstants.CONTENT_FONT,
+            font: PhotoelectricEffectConstants.LABEL_FONT,
             maxWidth: CHECKBOX_LABEL_MAX_WIDTH
           } ), {
-            boxWidth: CHECKBOX_BOX_WIDTH,
+            boxWidth: PhotoelectricEffectConstants.CHECKBOX_BOX_WIDTH,
             spacing: 4,
             tandem: providedOptions.tandem.createTandem( 'labelCheckbox' )
           }
@@ -99,13 +98,13 @@ export default class EnergyDiagramControlsNode extends VBox {
             align: 'center',
             children: [
               new Text( PhotoelectricEffectFluent.energy.graph.diagramControls.photonArrowStringProperty, {
-                font: PhotoelectricEffectConstants.CONTENT_FONT,
+                font: PhotoelectricEffectConstants.LABEL_FONT,
                 maxWidth: PHOTON_ARROW_CHECKBOX_LABEL_MAX_WIDTH
               } ),
               EnergyDiagramControlsNode.createPhotonArrowIcon()
             ]
           } ), {
-            boxWidth: CHECKBOX_BOX_WIDTH,
+            boxWidth: PhotoelectricEffectConstants.CHECKBOX_BOX_WIDTH,
             spacing: 4,
             tandem: providedOptions.tandem.createTandem( 'photonArrowCheckbox' )
           }

@@ -39,7 +39,7 @@ const TITLE_MAX_WIDTH = 100;
 
 const DEFAULT_NUMBER_DISPLAY_OPTIONS: NumberDisplayOptions = {
   cornerRadius: 5,
-  backgroundStroke: PhotoelectricEffectColors.panelStrokeColorProperty,
+  backgroundStroke: PhotoelectricEffectColors.circuitWireColorProperty,
   align: 'center',
   xMargin: 2
 };
@@ -60,11 +60,11 @@ export default class LabeledWavelengthNumberControl extends NumberControl {
     } );
 
     const uvText = new Text( PhotoelectricEffectFluent.spectrumTrack.uvLabelStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT,
+      font: PhotoelectricEffectConstants.LABEL_FONT,
       maxWidth: 75
     } );
     const irText = new Text( PhotoelectricEffectFluent.spectrumTrack.irLabelStringProperty, {
-      font: PhotoelectricEffectConstants.READOUT_FONT,
+      font: PhotoelectricEffectConstants.LABEL_FONT,
       maxWidth: 18
     } );
     trackNode.addChild( uvText );
@@ -99,7 +99,7 @@ export default class LabeledWavelengthNumberControl extends NumberControl {
       } ),
       accessibleName: PhotoelectricEffectFluent.a11y.photonSourcePanel.wavelengthNumberControl.accessibleNameStringProperty,
       titleNodeOptions: {
-        font: PhotoelectricEffectConstants.PANEL_TITLE_FONT,
+        font: PhotoelectricEffectConstants.CONTENT_FONT,
         maxWidth: TITLE_MAX_WIDTH
       },
       numberDisplayOptions: combineOptions<NumberDisplayOptions>(

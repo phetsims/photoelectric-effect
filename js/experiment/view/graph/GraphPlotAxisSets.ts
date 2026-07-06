@@ -150,7 +150,7 @@ export default class GraphPlotAxisSets {
     const isInteger = Math.abs( value - roundSymmetric( value ) ) < 1e-6;
     const label = formatter ? formatter( value ) : toFixed( value, isInteger ? 0 : 2 );
     return new Text( label, {
-      font: PhotoelectricEffectConstants.GRAPH_TICK_LABEL_FONT
+      font: PhotoelectricEffectConstants.TICK_LABEL_FONT
     } );
   }
 

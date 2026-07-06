@@ -42,7 +42,7 @@ const TIME_CONTROL_NODE_FLOW_BOX_SPACING = 24;
 
 // Vertical gap between the bottom of the materials combo box and the top of the target plate. Sized to clear the
 // vacuum tube artwork, which extends a bit above the plate.
-const MATERIALS_COMBO_BOX_PLATE_GAP = 25;
+const MATERIALS_COMBO_BOX_PLATE_GAP = 30;
 
 // Minimal interface every screen-specific light source node must satisfy.
 export type LightSourceNodeInterface = Node & { readonly cordAttachmentPoint: Vector2 };
@@ -94,7 +94,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       // Photons are rendered by default; continuous-beam screens override this with the 'show photons' preference.
       photonsVisibleProperty: new TinyProperty( true ),
       timeSpeedProperty: null,
-      targetViewX: 140 // TODO: This should be centered in the space between graphs and left edge of screen
+      targetViewX: 146 // TODO: This should be centered in the space between graphs and left edge of screen
     }, providedOptions );
 
     super( options );
@@ -110,7 +110,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     // y centered in the layout bounds. Screens may shift the whole apparatus via targetViewX.
     this.modelViewTransform = ModelViewTransform2.createSinglePointScaleInvertedYMapping(
       new Vector2( PhotoelectricEffectConstants.TARGET_X, 0 ),           // model point — the target is the origin
-      new Vector2( options.targetViewX, this.layoutBounds.centerY + 20 ), // view point
+      new Vector2( options.targetViewX, this.layoutBounds.centerY + 36 ), // view point
       PhotoelectricEffectConstants.MODEL_VIEW_SCALE
     );
 
@@ -167,7 +167,7 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
     const photonSourceWireNode = new Path( createPhotonSourceWireShape(
       getPhotonSourceWireEnd( this.photonSourcePanel.rightCenter )
     ), {
-      stroke: PhotoelectricEffectColors.circuitStrokeColorProperty,
+      stroke: PhotoelectricEffectColors.circuitWireColorProperty,
       lineWidth: 3
     } );
     ManualConstraint.create( this, [ this.photonSourcePanel ], photonSourcePanelProxy => {

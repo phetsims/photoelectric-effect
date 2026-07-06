@@ -46,7 +46,7 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
         titleAlignX: 'left',
 
         titleNode: new Text( PhotoelectricEffectFluent.energy.materialPropertiesAccordionBox.titleStringProperty, {
-          font: PhotoelectricEffectConstants.PANEL_TITLE_FONT
+          font: PhotoelectricEffectConstants.CONTENT_FONT
         } ),
         showTitleWhenExpanded: false
       },
@@ -120,13 +120,13 @@ export default class MaterialPropertiesAccordionBox extends AccordionBox {
           {
             value: range.min,
             label: new Text( toFixed( range.min, 1 ), {
-              font: PhotoelectricEffectConstants.READOUT_FONT
+              font: PhotoelectricEffectConstants.TICK_LABEL_FONT
             } )
           },
           {
             value: range.max,
             label: new Text( toFixed( range.max, 1 ), {
-              font: PhotoelectricEffectConstants.READOUT_FONT
+              font: PhotoelectricEffectConstants.TICK_LABEL_FONT
             } )
           }
         ],
