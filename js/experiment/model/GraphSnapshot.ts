@@ -7,6 +7,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import EnumerationProperty from '../../../../axon/js/EnumerationProperty.js';
 import NumberProperty from '../../../../axon/js/NumberProperty.js';
 import Property from '../../../../axon/js/Property.js';
 import { TReadOnlyProperty } from '../../../../axon/js/TReadOnlyProperty.js';
@@ -16,8 +17,9 @@ import PickRequired from '../../../../phet-core/js/types/PickRequired.js';
 import PhetioObject, { PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import Tandem from '../../../../tandem/js/Tandem.js';
 import ArrayIO from '../../../../tandem/js/types/ArrayIO.js';
-import ReferenceIO from '../../../../tandem/js/types/ReferenceIO.js';
-import Material from '../../common/model/Material.js';
+import NullableIO from '../../../../tandem/js/types/NullableIO.js';
+import StringIO from '../../../../tandem/js/types/StringIO.js';
+import Material, { MaterialType } from '../../common/model/Material.js';
 
 /**
  * Metadata captured with each GraphSnapshot. It is tightly coupled with GraphSnapshot so it seems best to keep here
@@ -26,8 +28,12 @@ import Material from '../../common/model/Material.js';
  */
 export class GraphSnapshotMetadata {
 
-  // Material active when this snapshot was saved, used for restoring the exact displayed material label.
-  public readonly materialProperty: Property<Material>;
+  // Canonical material identity for physics/state restoration and generic labeling.
+  public readonly materialTypeProperty: EnumerationProperty<MaterialType>;
+
+  // Optional instance-level label override key (for example mystery1/mystery2) used to preserve the exact
+  // displayed material label in snapshot rows when multiple materials share one MaterialType.
+  public readonly materialLabelKeyProperty: Property<string | null>;
 
   // Operating conditions captured when this metadata is saved.
   public readonly secondValueProperty: NumberProperty;
@@ -37,7 +43,8 @@ export class GraphSnapshotMetadata {
    * Creates metadata with explicit initial values. These values are required because metadata is part of each serialized
    * snapshot, and callers should make the initial material identity and operating conditions visible at construction.
    *
-   * @param material - Material active when this snapshot was saved.
+   * @param materialType - Canonical material identity.
+   * @param materialLabelKey - Optional instance-level label override key for the material.
    * @param secondValueLabelProperty
    * @param secondValue - Captured second value.
    * @param formatSecondValue - Formatter for the second value shown in snapshot legends.
@@ -47,7 +54,8 @@ export class GraphSnapshotMetadata {
    * @param tandem - Used to instrument the metadata Properties.
    */
   public constructor(
-    material: Material,
+    materialType: MaterialType,
+    materialLabelKey: string | null,
     public readonly secondValueLabelProperty: TReadOnlyProperty<string>,
     secondValue: number,
     public readonly formatSecondValue: ( value: number ) => string,
@@ -56,11 +64,16 @@ export class GraphSnapshotMetadata {
     public readonly formatThirdValue: ( value: number ) => string,
     tandem: Tandem
   ) {
-    this.materialProperty = new Property<Material>( material, {
-      tandem: tandem.createTandem( 'materialProperty' ),
-      phetioDocumentation: 'The material that was active when this snapshot was taken. Used to display the ' +
-                           'correct material label in snapshot rows.',
-      phetioValueType: ReferenceIO( Material.MaterialIO ),
+    this.materialTypeProperty = new EnumerationProperty( MaterialType.SODIUM, {
+      tandem: tandem.createTandem( 'materialTypeProperty' ),
+      phetioReadOnly: true
+    } );
+    this.materialLabelKeyProperty = new Property<string | null>( null, {
+      tandem: tandem.createTandem( 'materialLabelKeyProperty' ),
+      phetioDocumentation: 'The label key identifying which mystery material instance was active when this ' +
+                           'snapshot was taken. Used to display the correct label (e.g. Mystery 1 vs Mystery 2) ' +
+                           'in snapshot rows, since all mystery materials share MaterialType.MYSTERY.',
+      phetioValueType: NullableIO( StringIO ),
       phetioReadOnly: true
     } );
     this.secondValueProperty = new NumberProperty( 0, {
@@ -78,18 +91,20 @@ export class GraphSnapshotMetadata {
       phetioReadOnly: true
     } );
 
-    this.setValues( material, secondValue, thirdValue );
+    this.setValues( materialType, materialLabelKey, secondValue, thirdValue );
   }
 
   /**
    * Sets all metadata Properties from captured model values.
    */
   public setValues(
-    material: Material,
+    materialType: MaterialType,
+    materialLabelKey: string | null,
     secondValue: number,
     thirdValue: number
   ): void {
-    this.materialProperty.value = material;
+    this.materialTypeProperty.value = materialType;
+    this.materialLabelKeyProperty.value = materialLabelKey;
     this.secondValueProperty.value = secondValue;
     this.thirdValueProperty.value = thirdValue;
   }
@@ -109,8 +124,7 @@ export default class GraphSnapshot extends PhetioObject {
   // Captured material identity and operating conditions for this snapshot slot.
   public readonly metadata: GraphSnapshotMetadata;
 
-  public constructor( initialMaterial: Material,
-                      secondValueLabelProperty: TReadOnlyProperty<string>,
+  public constructor( secondValueLabelProperty: TReadOnlyProperty<string>,
                       formatSecondValue: ( value: number ) => string,
                       thirdValueLabelProperty: TReadOnlyProperty<string>,
                       formatThirdValue: ( value: number ) => string,
@@ -130,7 +144,7 @@ export default class GraphSnapshot extends PhetioObject {
       phetioFeatured: true
     } );
 
-    this.metadata = new GraphSnapshotMetadata( initialMaterial,
+    this.metadata = new GraphSnapshotMetadata( MaterialType.SODIUM, null,
       secondValueLabelProperty, 0, formatSecondValue,
       thirdValueLabelProperty, 0, formatThirdValue,
       options.tandem
@@ -149,7 +163,8 @@ export default class GraphSnapshot extends PhetioObject {
                secondValueProperty: TReadOnlyProperty<number>, thirdValueProperty: TReadOnlyProperty<number> ): void {
     this.pointsProperty.value = points.map( point => new Vector2( point.x, point.y ) );
     this.metadata.setValues(
-      materialProperty.value,
+      materialProperty.value.materialType,
+      materialProperty.value.labelKey,
       secondValueProperty.value,
       thirdValueProperty.value
     );

@@ -16,6 +16,7 @@ import ComboBox, { ComboBoxItem, ComboBoxOptions } from '../../../../sun/js/Comb
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import Material from '../model/Material.js';
 import PhotoelectricEffectConstants from '../PhotoelectricEffectConstants.js';
+import getMaterialLabelStringProperty from './getMaterialLabelStringProperty.js';
 
 type SelfOptions = EmptySelfOptions;
 
@@ -39,7 +40,7 @@ export default class MaterialsComboBox extends ComboBox<Material> {
       return {
         value: material,
         createNode: () => new Text(
-          material.labelStringProperty,
+          getMaterialLabelStringProperty( material.materialType, material.labelKey ),
           {
             font: PhotoelectricEffectConstants.CONTENT_FONT
           }

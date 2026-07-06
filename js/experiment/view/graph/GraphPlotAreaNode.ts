@@ -20,17 +20,17 @@ import optionize from '../../../../../phet-core/js/optionize.js';
 import StrictOmit from '../../../../../phet-core/js/types/StrictOmit.js';
 import Node, { type NodeOptions } from '../../../../../scenery/js/nodes/Node.js';
 import type TColor from '../../../../../scenery/js/util/TColor.js';
+import GraphLayoutConstants from './GraphLayoutConstants.js';
 import GraphPlotAxesNode, { type BorderStyle, type TickLabelMode } from './GraphPlotAxesNode.js';
 import GraphPlotDataNode from './GraphPlotDataNode.js';
 import { getPaddedRange, getZoomLevelForDataSetY, sortYZoomRanges } from './GraphPlotRangeUtils.js';
 
-// Default chart size in view coordinates (experiment screen graphs).
-export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH = 220;
-export const EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT = 136;
-
 // Default major tick counts (including min/max endpoints).
 const DEFAULT_X_TICK_COUNT = 5;
 const DEFAULT_Y_TICK_COUNT = 5;
+
+// Base fractional padding applied to model ranges to create visual inset.
+const DEFAULT_RANGE_PADDING_FRACTION = 0.05;
 
 type GraphPlotAreaSelfOptions = {
 
@@ -123,8 +123,8 @@ export default class GraphPlotAreaNode extends Node {
       StrictOmit<GraphPlotAreaSelfOptions, 'xAxisLabelStringProperty' | 'yAxisLabelStringProperty'>,
       NodeOptions
     >()( {
-      chartViewWidth: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_WIDTH,
-      chartViewHeight: EXPERIMENT_GRAPH_PLOT_AREA_DEFAULT_VIEW_HEIGHT,
+      chartViewWidth: GraphLayoutConstants.PLOT_AREA_DEFAULT_VIEW_WIDTH,
+      chartViewHeight: GraphLayoutConstants.PLOT_AREA_DEFAULT_VIEW_HEIGHT,
       yAxisLabelYOffset: 0,
       xTickLabelFormatter: null,
       yTickLabelFormatter: null,
@@ -132,7 +132,7 @@ export default class GraphPlotAreaNode extends Node {
       yTickLabelMode: 'edge',
       xTickCount: DEFAULT_X_TICK_COUNT,
       yTickCount: DEFAULT_Y_TICK_COUNT,
-      rangePaddingFraction: 0.05,
+      rangePaddingFraction: DEFAULT_RANGE_PADDING_FRACTION,
       fill: 'black',
       linePlotOptions: {
         lineWidth: 6,

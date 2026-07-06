@@ -25,7 +25,7 @@ import PhotonIntensityControl from '../../common/view/PhotonIntensityControl.js'
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import ExperimentModel from '../model/ExperimentModel.js';
 import FrequencyEnergyGraphAccordionBox from './FrequencyEnergyGraphAccordionBox.js';
-import GraphAssemblyAccordionBox from './graph/GraphAssemblyAccordionBox.js';
+import GraphLayoutConstants from './graph/GraphLayoutConstants.js';
 import IntensityCurrentGraphAccordionBox from './IntensityCurrentGraphAccordionBox.js';
 import VoltageCurrentGraphAccordionBox from './VoltageCurrentGraphAccordionBox.js';
 import VoltageNumberControl from './VoltageNumberControl.js';
@@ -64,7 +64,7 @@ export default class ExperimentScreenView extends PhotonBeamScreenView {
     //------------------------------------------------------------------------
 
     const graphsVBox = new VBox( {
-      spacing: GraphAssemblyAccordionBox.GRAPH_ASSEMBLY_SPACING,
+      spacing: GraphLayoutConstants.GRAPH_ASSEMBLY_SPACING,
       align: 'right',
       children: [
         new IntensityCurrentGraphAccordionBox( model, {

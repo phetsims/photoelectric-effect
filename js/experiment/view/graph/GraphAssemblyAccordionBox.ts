@@ -48,9 +48,6 @@ export type GraphAssemblyAccordionBoxOptions =
 
 export default class GraphAssemblyAccordionBox extends AccordionBox {
 
-  // Vertical spacing between stacked graph assemblies in the experiment screen layout.
-  public static readonly GRAPH_ASSEMBLY_SPACING = 12;
-
   /**
    * @param graphData - Source of live samples, snapshots, and current operating-point state.
    * @param xRange - Shared x range used for all zoom levels in this plot.
