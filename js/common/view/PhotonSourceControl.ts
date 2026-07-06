@@ -21,15 +21,15 @@ import LabeledWavelengthNumberControl from './LabeledWavelengthNumberControl.js'
 
 type SelfOptions = EmptySelfOptions;
 
-type PhotonIntensityControlOptions =
+type PhotonSourceControlOptions =
   SelfOptions &
   NodeBoundsBasedTranslationOptions &
   PickRequired<PanelOptions, 'tandem'>;
 
-export default class PhotonIntensityControl extends Panel {
+export default class PhotonSourceControl extends Panel {
 
-  public constructor( photonSource: PhotonSource, providedOptions: PhotonIntensityControlOptions ) {
-    const options = optionize<PhotonIntensityControlOptions, SelfOptions, PanelOptions>()( {
+  public constructor( photonSource: PhotonSource, providedOptions: PhotonSourceControlOptions ) {
+    const options = optionize<PhotonSourceControlOptions, SelfOptions, PanelOptions>()( {
       stroke: PhotoelectricEffectColors.circuitWireColorProperty,
       cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_CORNER_RADIUS,
       fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,

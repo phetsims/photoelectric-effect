@@ -17,7 +17,7 @@ import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConsta
 import CircuitNode from '../../common/view/CircuitNode.js';
 import LightSourceNode from '../../common/view/LightSourceNode.js';
 import PhotonBeamScreenView, { PhotonBeamScreenViewOptions } from '../../common/view/PhotonBeamScreenView.js';
-import PhotonIntensityControl from '../../common/view/PhotonIntensityControl.js';
+import PhotonSourceControl from '../../common/view/PhotonSourceControl.js';
 import IntroModel from '../model/IntroModel.js';
 import GroundedCircuitNode from './GroundedCircuitNode.js';
 import RepresentationRadioButtonGroup from './RepresentationRadioButtonGroup.js';
@@ -32,7 +32,7 @@ export default class IntroScreenView extends PhotonBeamScreenView {
     const options = optionize<IntroScreenViewOptions, SelfOptions, PhotonBeamScreenViewOptions>()( {
       createLightSourceNode: beamStartCenter => new LightSourceNode( beamStartCenter,
         model.photonSource.wavelengthProperty, model.photonSource.photonRateProperty ),
-      createPhotonSourcePanel: tandem => new PhotonIntensityControl( model.photonSource, { tandem: tandem } ),
+      createPhotonSourcePanel: tandem => new PhotonSourceControl( model.photonSource, { tandem: tandem } ),
 
       // Center the circuit artwork horizontally in the layout bounds
       targetViewX: CircuitNode.getTargetViewXToCenterCircuit( ScreenView.DEFAULT_LAYOUT_BOUNDS.centerX ),

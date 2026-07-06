@@ -24,7 +24,7 @@ import EnergyModel from '../model/EnergyModel.js';
 import ElectronVelocityVectorsNode from './ElectronVelocityVectorsNode.js';
 import EnergyGraphAccordionBox from './EnergyGraphAccordionBox.js';
 import EnergyLightSourceNode from './EnergyLightSourceNode.js';
-import EnergyPhotonSourcePanel from './EnergyPhotonSourcePanel.js';
+import EnergyPhotonSourceControl from './EnergyPhotonSourceControl.js';
 import MaterialPropertiesAccordionBox from './MaterialPropertiesAccordionBox.js';
 
 type SelfOptions = EmptySelfOptions;
@@ -38,7 +38,7 @@ export default class EnergyScreenView extends PhotoelectricEffectScreenView {
   public constructor( model: EnergyModel, providedOptions: EnergyScreenViewOptions ) {
     const options = optionize<EnergyScreenViewOptions, SelfOptions, PhotoelectricEffectScreenViewOptions>()( {
       createLightSourceNode: beamStartCenter => new EnergyLightSourceNode( beamStartCenter ),
-      createPhotonSourcePanel: tandem => new EnergyPhotonSourcePanel(
+      createPhotonSourcePanel: tandem => new EnergyPhotonSourceControl(
         model.wavelengthProperty,
         model.isSinglePhotonModeProperty,
         model.firePhotonEmitter,

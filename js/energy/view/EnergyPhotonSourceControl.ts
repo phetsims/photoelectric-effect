@@ -29,9 +29,9 @@ import LabeledWavelengthNumberControl from '../../common/view/LabeledWavelengthN
 import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 
 type SelfOptions = EmptySelfOptions;
-type EnergyPhotonSourcePanelOptions = SelfOptions & WithRequired<PanelOptions, 'tandem'>;
+type EnergyPhotonSourceControlOptions = SelfOptions & WithRequired<PanelOptions, 'tandem'>;
 
-export default class EnergyPhotonSourcePanel extends Panel {
+export default class EnergyPhotonSourceControl extends Panel {
 
   /**
    * @param wavelengthProperty - Wavelength controlled by the slider.
@@ -45,10 +45,10 @@ export default class EnergyPhotonSourcePanel extends Panel {
     isSinglePhotonModeProperty: Property<boolean>,
     firePhotonEmitter: Emitter,
     photonsTravelingProperty: TReadOnlyProperty<boolean>,
-    providedOptions: EnergyPhotonSourcePanelOptions
+    providedOptions: EnergyPhotonSourceControlOptions
   ) {
 
-    const options = optionize<EnergyPhotonSourcePanelOptions, SelfOptions, PanelOptions>()( {
+    const options = optionize<EnergyPhotonSourceControlOptions, SelfOptions, PanelOptions>()( {
       stroke: PhotoelectricEffectColors.circuitWireColorProperty,
       cornerRadius: PhotoelectricEffectConstants.PHOTON_SOURCE_PANEL_CORNER_RADIUS,
       fill: PhotoelectricEffectColors.photonSourcePanelFillColorProperty,
