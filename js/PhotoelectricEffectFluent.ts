@@ -112,19 +112,16 @@ addToMapIfDefined( 'a11y_voltageNumberControl_accessibleName', 'a11y.voltageNumb
 addToMapIfDefined( 'a11y_referenceLine_accessibleName', 'a11y.referenceLine.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_referenceLine_accessibleHelpText', 'a11y.referenceLine.accessibleHelpTextStringProperty' );
 addToMapIfDefined( 'a11y_intensityCurrentGraphNode_accessibleHeading', 'a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty' );
-addToMapIfDefined( 'a11y_intensityCurrentGraphNode_expandCollapseButton_accessibleName', 'a11y.intensityCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_intensityCurrentGraphNode_cameraButton_accessibleName', 'a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_intensityCurrentGraphNode_trashButton_accessibleName', 'a11y.intensityCurrentGraphNode.trashButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_intensityCurrentGraphNode_snapshotsGalleryButton_accessibleName', 'a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_intensityCurrentGraphNode_snapshotsGalleryButton_accessibleHelpText', 'a11y.intensityCurrentGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' );
 addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_accessibleHeading', 'a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty' );
-addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_expandCollapseButton_accessibleName', 'a11y.frequencyEnergyGraphNode.expandCollapseButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_cameraButton_accessibleName', 'a11y.frequencyEnergyGraphNode.cameraButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_trashButton_accessibleName', 'a11y.frequencyEnergyGraphNode.trashButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_snapshotsGalleryButton_accessibleName', 'a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_frequencyEnergyGraphNode_snapshotsGalleryButton_accessibleHelpText', 'a11y.frequencyEnergyGraphNode.snapshotsGalleryButton.accessibleHelpTextStringProperty' );
 addToMapIfDefined( 'a11y_voltageCurrentGraphNode_accessibleHeading', 'a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty' );
-addToMapIfDefined( 'a11y_voltageCurrentGraphNode_expandCollapseButton_accessibleName', 'a11y.voltageCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_voltageCurrentGraphNode_cameraButton_accessibleName', 'a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_voltageCurrentGraphNode_trashButton_accessibleName', 'a11y.voltageCurrentGraphNode.trashButton.accessibleNameStringProperty' );
 addToMapIfDefined( 'a11y_voltageCurrentGraphNode_snapshotsGalleryButton_accessibleName', 'a11y.voltageCurrentGraphNode.snapshotsGalleryButton.accessibleNameStringProperty' );
@@ -342,9 +339,6 @@ const PhotoelectricEffectFluent = {
     },
     intensityCurrentGraphNode: {
       accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.accessibleHeadingStringProperty' ) ),
-      expandCollapseButton: {
-        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_expandCollapseButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' ) )
-      },
       cameraButton: {
         accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_intensityCurrentGraphNode_cameraButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.intensityCurrentGraphNode.cameraButton.accessibleNameStringProperty' ) )
       },
@@ -358,9 +352,6 @@ const PhotoelectricEffectFluent = {
     },
     frequencyEnergyGraphNode: {
       accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.accessibleHeadingStringProperty' ) ),
-      expandCollapseButton: {
-        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_expandCollapseButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.expandCollapseButton.accessibleNameStringProperty' ) )
-      },
       cameraButton: {
         accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_frequencyEnergyGraphNode_cameraButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.frequencyEnergyGraphNode.cameraButton.accessibleNameStringProperty' ) )
       },
@@ -374,9 +365,6 @@ const PhotoelectricEffectFluent = {
     },
     voltageCurrentGraphNode: {
       accessibleHeadingStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_accessibleHeading', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.accessibleHeadingStringProperty' ) ),
-      expandCollapseButton: {
-        accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_expandCollapseButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.expandCollapseButton.accessibleNameStringProperty' ) )
-      },
       cameraButton: {
         accessibleNameStringProperty: new FluentConstant( fluentSupport.bundleProperty, 'a11y_voltageCurrentGraphNode_cameraButton_accessibleName', _.get( PhotoelectricEffectStrings, 'a11y.voltageCurrentGraphNode.cameraButton.accessibleNameStringProperty' ) )
       },

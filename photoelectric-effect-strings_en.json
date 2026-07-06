@@ -54,13 +54,13 @@
   "experiment": {
     "graph": {
       "voltageCurrentTitle": {
-        "value": "Voltage vs. Current"
+        "value": "Current vs Voltage"
       },
       "intensityCurrentTitle": {
-        "value": "Intensity vs. Current"
+        "value": "Current vs Intensity"
       },
       "frequencyEnergyTitle": {
-        "value": "Frequency vs. Energy"
+        "value": "Electron Kinetic Energy vs Light Frequency"
       },
       "actionButton": {
         "value": "Graph action"
@@ -348,11 +348,6 @@
       "accessibleHeading": {
         "value": "Intensity vs. Current Graph"
       },
-      "expandCollapseButton": {
-        "accessibleName": {
-          "value": "Intensity vs. Current"
-        }
-      },
       "cameraButton": {
         "accessibleName": {
           "value": "Save Snapshot, Intensity vs. Current"
@@ -376,11 +371,6 @@
       "accessibleHeading": {
         "value": "Frequency vs. Energy Graph"
       },
-      "expandCollapseButton": {
-        "accessibleName": {
-          "value": "Frequency vs. Energy"
-        }
-      },
       "cameraButton": {
         "accessibleName": {
           "value": "Save Snapshot, Frequency vs. Energy"
@@ -403,11 +393,6 @@
     "voltageCurrentGraphNode": {
       "accessibleHeading": {
         "value": "Voltage vs. Current Graph"
-      },
-      "expandCollapseButton": {
-        "accessibleName": {
-          "value": "Voltage vs. Current"
-        }
       },
       "cameraButton": {
         "accessibleName": {
