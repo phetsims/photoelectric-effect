@@ -85,7 +85,10 @@ export default class IntensityNumberControl extends NumberControl {
         .addColorStop( 1, endColor );
     } );
     const sliderTrack = new SliderTrack( percentProperty, gradientRectangle, percentRange, {
-      size: TRACK_SIZE
+      size: TRACK_SIZE,
+
+      // Track node must be nested under the slider tandem.
+      tandem: providedOptions.tandem.createTandem( 'slider' ).createTandem( 'trackNode' ),
     } );
 
     const options = optionize<IntensityNumberControlOptions, SelfOptions, NumberControlOptions>()( {
