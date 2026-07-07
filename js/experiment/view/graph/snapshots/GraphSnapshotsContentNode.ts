@@ -19,10 +19,15 @@ import ColorConstants from '../../../../../../sun/js/ColorConstants.js';
 import Tandem from '../../../../../../tandem/js/Tandem.js';
 import GraphData from '../../../model/GraphData.js';
 import GraphSnapshotsReferenceLineModel from '../../../model/GraphSnapshotsReferenceLineModel.js';
+import GraphLayoutConstants from '../GraphLayoutConstants.js';
 import type { GraphPlotAreaNodeOptions } from '../GraphPlotAreaNode.js';
 import GraphSnapshotPlotStackNode from './GraphSnapshotPlotStackNode.js';
 import GraphSnapshotsReferenceLineVisibilityControl from './GraphSnapshotsReferenceLineVisibilityControl.js';
 import GraphSnapshotsReferenceLineNode, { type GraphSnapshotsReferenceLineValueDisplayOptions } from './referenceLine/GraphSnapshotsReferenceLineNode.js';
+
+// Tick counts for the wider plots shown in snapshots dialogs.
+const SNAPSHOT_PLOT_X_TICK_COUNT = 17;
+const SNAPSHOT_PLOT_Y_TICK_COUNT = 5;
 
 export default class GraphSnapshotsContentNode extends VBox {
 
@@ -65,14 +70,14 @@ export default class GraphSnapshotsContentNode extends VBox {
 
       // Plots in this dialog take up most of the screen, and do not have the full rectangular border so they appear
       // more joined.
-      chartViewWidth: 600,
+      chartViewWidth: GraphLayoutConstants.SNAPSHOT_PLOT_VIEW_WIDTH,
       showXLabels: false,
       borderStyle: 'line',
 
-      // TODO: @design What should these be, and do we need to customize it per plot?
-      //   17 ticks creates nice divisions for the largest range (voltage).
-      xTickCount: 17,
-      yTickCount: 5,
+      // TODO: Mockups are coming for this. The x tick count will likely be static, while y tick count changes
+      //   with zoom. On hold until we refine teh snapshots accordion box content.
+      xTickCount: SNAPSHOT_PLOT_X_TICK_COUNT,
+      yTickCount: SNAPSHOT_PLOT_Y_TICK_COUNT,
       xTickLabelMode: 'edge',
       yTickLabelMode: 'edge'
     } );

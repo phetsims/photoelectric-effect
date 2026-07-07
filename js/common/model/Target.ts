@@ -139,13 +139,17 @@ export default class Target {
     // TODO: @design If emitAllAbsorbedPhotons and highestEnergyOnly are both true, emitAllAbsorbedPhotons wins.
     //  Discuss whether this should instead be represented as mutually exclusive modes. But if so,
     //  how do we reflect that in the user interface?
+    //  Discussed 7/2/26 - We need to check on it at next team design meeting.
 
     // TODO: @design Are we sure that emitAllAbsorbedPhotons doesnt need to change the model for calculating current?
     //  Now we will have far more electrons than we used to. It will be very easy to create many electrons
     //  but have 0 current.
+    //  Discussed 7/2/26 - We need to check on it at next team design meeting.
 
     // TODO: @design Was emitAllAbsorbedPhotons intended only for the 3rd screen? If so, maybe it should be a
     //  checkbox on screen instead of a simulation preference?
+    //  NOTE: It will apply to all three screens.
+    //  Discussed 7/2/26 - We need to check on it at next team design meeting.
 
     let bindingEnergy: number | null;
     if ( emitAllAbsorbedPhotons ) {

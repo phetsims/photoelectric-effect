@@ -3,7 +3,7 @@
 /**
  * Material is an instantiable class representing a target material with its own physical parameter Properties.
  * MaterialType is the enumeration of available materials, their initial physical parameter values, and their target
- * plate colors.
+ * plate colors and labels.
  *
  * @author Marla Schulz (PhET Interactive Simulations)
  * @author Jesse Greenberg (PhET Interactive Simulations)
@@ -24,9 +24,13 @@ import type Color from '../../../../scenery/js/util/Color.js';
 import PhetioObject, { type PhetioObjectOptions } from '../../../../tandem/js/PhetioObject.js';
 import EnumerationIO from '../../../../tandem/js/types/EnumerationIO.js';
 import IOType from '../../../../tandem/js/types/IOType.js';
+import PhotoelectricEffectFluent from '../../PhotoelectricEffectFluent.js';
 import PhotoelectricEffectColors from '../PhotoelectricEffectColors.js';
 
 type MaterialTypeOptions = {
+
+  // Localized default display label for this material type.
+  labelStringProperty: TReadOnlyProperty<string>;
 
   // Color used for the target plate material strip when this type is selected.
   targetPlateFillColorProperty: TReadOnlyProperty<Color>;
@@ -42,18 +46,23 @@ export class MaterialType extends EnumerationValue {
   // Band depth is the effective range of binding energies available for photoemission, measured downward from
   // the Fermi level. It determines both the KE spread of ejected electrons and where the I-vs-f curve saturates.
   public static readonly SODIUM = new MaterialType( 2.46, 3.24, {
+    labelStringProperty: PhotoelectricEffectFluent.materials.sodiumStringProperty,
     targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateSodiumFillColorProperty
   } );
   public static readonly COPPER = new MaterialType( 4.70, 7.00, {
+    labelStringProperty: PhotoelectricEffectFluent.materials.copperStringProperty,
     targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateCopperFillColorProperty
   } );
   public static readonly CALCIUM = new MaterialType( 2.87, 4.69, {
+    labelStringProperty: PhotoelectricEffectFluent.materials.calciumStringProperty,
     targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateCalciumFillColorProperty
   } );
   public static readonly PLATINUM = new MaterialType( 6.35, 6.0, {
+    labelStringProperty: PhotoelectricEffectFluent.materials.platinumStringProperty,
     targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlatePlatinumFillColorProperty
   } );
   public static readonly ZINC = new MaterialType( 4.31, 9.47, {
+    labelStringProperty: PhotoelectricEffectFluent.materials.zincStringProperty,
     targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateZincFillColorProperty
   } );
 
@@ -61,6 +70,7 @@ export class MaterialType extends EnumerationValue {
   // preferences or with a PhET-iO customization. As such, simulation reset should not affect mystery materials.
   // Work function and band depth match Magnesium (φ=3.66 eV, bandDepth=7.08 eV).
   public static readonly MYSTERY = new MaterialType( 3.66, 7.08, {
+    labelStringProperty: PhotoelectricEffectFluent.materials.mysteryStringProperty,
     targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateFillColorProperty,
     parametersPhetioReadOnly: false
   } );
@@ -69,12 +79,18 @@ export class MaterialType extends EnumerationValue {
   // in the simulation. Reset should restore both properties to their initial values.
   // Defaults and range from the Material Properties section in doc/model-reference.md
   public static readonly CUSTOM = new MaterialType( 5, 5.0, {
+    labelStringProperty: PhotoelectricEffectFluent.materials.customStringProperty,
     targetPlateFillColorProperty: PhotoelectricEffectColors.targetPlateFillColorProperty,
     parametersPhetioReadOnly: false
   } );
 
   // Must be defined after all values are declared.
   public static readonly enumeration = new Enumeration( MaterialType );
+
+  /**
+   * Localized default display label for this material type.
+   */
+  public readonly labelStringProperty: TReadOnlyProperty<string>;
 
   /**
    * Whether the physical parameters are read-only through PhET-iO.
@@ -87,7 +103,7 @@ export class MaterialType extends EnumerationValue {
   public readonly targetPlateFillColorProperty: TReadOnlyProperty<Color>;
 
   /**
-   * Creates a material type with physics parameters, target-plate color, and PhET-iO mutability policy.
+   * Creates a material type with physics parameters, label, target-plate color, and PhET-iO mutability policy.
    *
    * @param workFunctionInitialValue - minimum energy to eject an electron from the Fermi level, in eV (φ)
    * @param bandDepthInitialValue - effective occupied-band depth available for photoemission, in eV
@@ -105,6 +121,7 @@ export class MaterialType extends EnumerationValue {
     }, providedOptions );
 
     this.parametersPhetioReadOnly = options.parametersPhetioReadOnly;
+    this.labelStringProperty = options.labelStringProperty;
     this.targetPlateFillColorProperty = options.targetPlateFillColorProperty;
   }
 }
@@ -115,8 +132,8 @@ type MaterialStateObject = {
 
 type SelfOptions = {
 
-  // An identifier for the material label that can be used by the view layer.
-  labelKey?: string | null;
+  // Optional localized label override for this Material instance.
+  labelStringProperty?: TReadOnlyProperty<string> | null;
 
   // Initial work function for this Material instance, in eV.
   workFunctionInitialValue?: number;
@@ -141,9 +158,9 @@ export default class Material extends PhetioObject {
   public readonly materialType: MaterialType;
 
   /**
-   * Identifier for the material label used by the view layer.
+   * Localized display label for this material instance.
    */
-  public readonly labelKey: string | null;
+  public readonly labelStringProperty: TReadOnlyProperty<string>;
 
   /**
    * Minimum energy required for an electron to escape this material.
@@ -168,12 +185,12 @@ export default class Material extends PhetioObject {
   /**
    * Creates a material instance with its own physical parameter Properties.
    * @param materialType
-   * @param providedOptions - material configuration including required tandem and optional label key override
+   * @param providedOptions - material configuration including required tandem and optional label override
    */
   public constructor( materialType: MaterialType, providedOptions: MaterialOptions ) {
 
     const options = optionize<MaterialOptions, SelfOptions, PhetioObjectOptions>()( {
-      labelKey: null,
+      labelStringProperty: null,
       workFunctionInitialValue: materialType.workFunctionInitialValue,
       bandDepthInitialValue: materialType.bandDepthInitialValue,
       enabled: true,
@@ -182,7 +199,7 @@ export default class Material extends PhetioObject {
 
     super( options );
     this.materialType = materialType;
-    this.labelKey = options.labelKey;
+    this.labelStringProperty = options.labelStringProperty || materialType.labelStringProperty;
 
     this.workFunctionProperty = new NumberProperty( options.workFunctionInitialValue, {
       range: Material.WORK_FUNCTION_RANGE,

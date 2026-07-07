@@ -191,6 +191,7 @@ export default class GraphData extends PhetioObject {
     } );
     const snapshotsTandem = options.tandem.createGroupTandem( 'snapshot' );
     this.snapshots = _.times( GraphData.MAX_SNAPSHOTS, () => new GraphSnapshot(
+      model.target.materialProperty.value,
       secondValueMetadata.labelProperty, secondValueMetadata.formatValue,
       thirdValueMetadata.labelProperty, thirdValueMetadata.formatValue,
       { tandem: snapshotsTandem.createNextTandem() }

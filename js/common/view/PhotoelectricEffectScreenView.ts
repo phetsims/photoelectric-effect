@@ -33,7 +33,6 @@ import type Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
-import GraphAssemblyAccordionBox from '../../experiment/view/graph/GraphAssemblyAccordionBox.js';
 import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
 import CircuitNode from './CircuitNode.js';
 import LightBeamNode from './LightBeamNode.js';
