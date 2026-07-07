@@ -30,27 +30,29 @@ export default class CircuitNode extends Node {
   public static readonly WIRE_LINE_WIDTH = 10;
 
   // How far the circuit wire extends horizontally beyond the outer edge of each plate.
-  public static readonly WIRE_PLATE_EXTENSION = 50;
+  public static readonly WIRE_PLATE_EXTENSION = 35;
 
-  // Horizontal extent of the circuit's wire (its widest element) relative to the target anchor at
-  // modelToViewX( TARGET_X ), measured to the wire centerline. The circuit is not symmetric about the midpoint
-  // between the plates because the target side is wider than the collector side by the material strip.
-  private static readonly CIRCUIT_LEFT_OFFSET = -( PhotoelectricEffectConstants.PLATE_BOUNDS.width +
-                                                   PhotoelectricEffectConstants.PLATE_MATERIAL_BOUNDS.width +
-                                                   CircuitNode.WIRE_PLATE_EXTENSION );
-  private static readonly CIRCUIT_RIGHT_OFFSET = PhotoelectricEffectConstants.PLATE_SEPARATION *
+
+  // The distance between the right edge of the Target Plate Material rectangle to the right edge of the circuit node in
+  // view coordinates.
+  private static readonly TARGET_X_TO_RIGHT_EDGE = PhotoelectricEffectConstants.PLATE_SEPARATION *
                                                  PhotoelectricEffectConstants.MODEL_VIEW_SCALE +
                                                  PhotoelectricEffectConstants.PLATE_BOUNDS.width +
                                                  CircuitNode.WIRE_PLATE_EXTENSION;
 
+  // The width of the fully drawn circuit node in view coordinates.
+  private static readonly CIRCUIT_WIDTH = PhotoelectricEffectConstants.PLATE_SEPARATION *
+                                          PhotoelectricEffectConstants.MODEL_VIEW_SCALE +
+                                          PhotoelectricEffectConstants.PLATE_BOUNDS.width * 2 +
+                                          PhotoelectricEffectConstants.PLATE_MATERIAL_BOUNDS.width +
+                                          CircuitNode.WIRE_PLATE_EXTENSION * 2;
+
   /**
    * Computes the view x-coordinate for the target (model x = TARGET_X) that horizontally centers the circuit
-   * artwork at circuitCenterX. The circuit's horizontal extent is defined by the wire, which extends
-   * WIRE_PLATE_EXTENSION beyond the outer edge of each plate. Stroke widths extend both ends equally and
-   * therefore do not affect the center.
+   * at the provided circuitCenterX.
    */
   public static getTargetViewXToCenterCircuit( circuitCenterX: number ): number {
-    return circuitCenterX - ( CircuitNode.CIRCUIT_LEFT_OFFSET + CircuitNode.CIRCUIT_RIGHT_OFFSET ) / 2;
+    return circuitCenterX - ( CircuitNode.TARGET_X_TO_RIGHT_EDGE - CircuitNode.CIRCUIT_WIDTH / 2 );
   }
 
   /**
@@ -59,7 +61,7 @@ export default class CircuitNode extends Node {
    */
   public static getCircuitRightX( modelViewTransform: ModelViewTransform2 ): number {
     return modelViewTransform.modelToViewX( PhotoelectricEffectConstants.TARGET_X ) +
-           CircuitNode.CIRCUIT_RIGHT_OFFSET + CircuitNode.WIRE_LINE_WIDTH / 2;
+           CircuitNode.TARGET_X_TO_RIGHT_EDGE + CircuitNode.WIRE_LINE_WIDTH / 2;
   }
 
   /**
@@ -68,7 +70,7 @@ export default class CircuitNode extends Node {
    */
   public static getCircuitCenterX( modelViewTransform: ModelViewTransform2 ): number {
     return modelViewTransform.modelToViewX( PhotoelectricEffectConstants.TARGET_X ) +
-           ( CircuitNode.CIRCUIT_LEFT_OFFSET + CircuitNode.CIRCUIT_RIGHT_OFFSET ) / 2;
+           CircuitNode.TARGET_X_TO_RIGHT_EDGE - CircuitNode.CIRCUIT_WIDTH / 2;
   }
 
   public constructor(

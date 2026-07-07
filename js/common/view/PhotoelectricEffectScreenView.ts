@@ -33,7 +33,9 @@ import type Tandem from '../../../../tandem/js/Tandem.js';
 import PhotoelectricEffectModel from '../../common/model/PhotoelectricEffectModel.js';
 import PhotoelectricEffectColors from '../../common/PhotoelectricEffectColors.js';
 import PhotoelectricEffectConstants from '../../common/PhotoelectricEffectConstants.js';
+import GraphAssemblyAccordionBox from '../../experiment/view/graph/GraphAssemblyAccordionBox.js';
 import { wavelengthToEnergy } from '../model/PhotoelectricEffectUtils.js';
+import CircuitNode from './CircuitNode.js';
 import LightBeamNode from './LightBeamNode.js';
 import MaterialsComboBox from './MaterialsComboBox.js';
 import ParticleCanvasNode from './ParticleCanvasNode.js';
@@ -94,7 +96,13 @@ export default class PhotoelectricEffectScreenView extends ScreenView {
       // Photons are rendered by default; continuous-beam screens override this with the 'show photons' preference.
       photonsVisibleProperty: new TinyProperty( true ),
       timeSpeedProperty: null,
-      targetViewX: 146 // TODO: This should be centered in the space between graphs and left edge of screen
+
+      // Center the circuit in the space between the left edge of the layout bounds and the left edge of the
+      // right-aligned graph accordion box column.
+      // TODO: 385 is a magic number. Eventually that needs to be derived from the graph accordion box width.
+      targetViewX: CircuitNode.getTargetViewXToCenterCircuit( ( ScreenView.DEFAULT_LAYOUT_BOUNDS.width -
+                                                                PhotoelectricEffectConstants.SCREEN_VIEW_X_MARGIN -
+                                                                385 ) / 2 )
     }, providedOptions );
 
     super( options );
